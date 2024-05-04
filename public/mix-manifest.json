@@ -1,0 +1,10 @@
+{
+    "/assets/js/pages/slick.init.js": "/assets/js/pages/slick.init.js",
+    "/assets/js/pages/select.init.js": "/assets/js/pages/select.init.js",
+    "/assets/js/pages/daterangepicker.init.js": "/assets/js/pages/daterangepicker.init.js",
+    "/assets/js/pages/datetimepicker.init.js": "/assets/js/pages/datetimepicker.init.js",
+    "/assets/js/pages/fullcalendar.init.js": "/assets/js/pages/fullcalendar.init.js",
+    "/assets/js/pages/progress-bar.init.js": "/assets/js/pages/progress-bar.init.js",
+    "/assets/js/pages/dropzone.init.js": "/assets/js/pages/dropzone.init.js",
+    "/assets/js/pages/profile-settings.init.js": "/assets/js/pages/profile-settings.init.js"
+}

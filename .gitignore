@@ -12,3 +12,4 @@ yarn-error.log
 /.idea
 /.vscode
 u187576213_hospital.sql
+.env
