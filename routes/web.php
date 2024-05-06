@@ -23,7 +23,7 @@ use App\Http\Controllers\PrivacyAndTermsConditionController;
 use App\Http\Controllers\Hospital\DoctorScheduleController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/lang/change', [HomeController::class, 'changeLang'])->name('changeLang');
+Route::get('/lang/change/{lang}', [HomeController::class, 'changeLang'])->name('changeLang');
 
 Route::get('/', [HomeController::class, 'welcome']);
 Route::get('/about-us', function () {

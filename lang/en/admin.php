@@ -1,6 +1,7 @@
 
 <?php
 return [
+    'pageDir' => 'ltr',
      'speciality' => [
         // add form content
                 'add_speciality'             =>   'Add Speciality',

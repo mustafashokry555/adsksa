@@ -1,9 +1,9 @@
 @php
     use Illuminate\Support\Facades\Request;
     use Illuminate\Support\Facades\Auth;
-    
+
     $setting = \App\Models\Settings::query()->first();
-    
+
     $notifications = [];
     if (Auth::check()) {
         $notifications = \App\Models\Notification::query()
@@ -59,7 +59,8 @@
         <div class="container">
             <header class="header">
                 <div class="nav-bg home-four-nav">
-                    <nav class="navbar navbar-expand-lg header-nav nav-transparent">
+                    <nav style="justify-content: space-between"
+                        class="navbar navbar-expand-lg header-nav nav-transparent">
                         <div class="navbar-header">
                             <a id="mobile_btn" href="javascript:void(0);">
                                 <span class="bar-icon blue-bar">
@@ -80,7 +81,7 @@
                                 </a>
                             @endauth
                         </div>
-                        <div class="main-menu-wrapper align-items-center">
+                        <div style="margin-left: 0px" class="main-menu-wrapper align-items-center">
                             <div class="menu-header">
                                 @auth
                                     <a href="{{ url('/') }}" class="menu-logo">
@@ -100,25 +101,25 @@
                             <ul class="main-nav black-font grey-font mx-4">
                                 @auth
                                     <li class="{{ Request::routeIs('/') ? 'active' : '' }}">
-                                        <a href="{{ url('/') }}">Home</a>
+                                        <a href="{{ url('/') }}">{{ __('web.home') }}</a>
                                     </li>
                                 @else
                                     <li class="{{ Request::routeIs('/') ? 'active' : '' }}">
-                                        <a href="/">Home</a>
+                                        <a href="/">{{ __('web.home') }}</a>
                                     </li>
                                 @endauth
                                 <li class="{{ Request::routeIs('blog-list') ? 'active' : '' }}">
-                                    <a href="{{ route('blog-list') }}">Blogs</a>
+                                    <a href="{{ route('blog-list') }}">{{ __('web.blog') }}</a>
                                 </li>
                                 <li class="{{ Request::routeIs('about-us') ? 'active' : '' }}">
-                                    <a href="{{ route('about-us') }}">About Us</a>
+                                    <a href="{{ route('about-us') }}">{{ __('web.aboutUs') }}</a>
                                 </li>
                                 <li class="{{ Request::routeIs('contact-us') ? 'active' : '' }}">
-                                    <a href="{{ route('contact-us') }}">Contact Us</a>
+                                    <a href="{{ route('contact-us') }}">{{ __('web.contactUs') }}</a>
                                 </li>
                                 @auth
                                     <li class="{{ Request::routeIs('patient_dashboard') ? 'active' : '' }}">
-                                        <a href="{{ route('patient_dashboard') }}">Dashboard</a>
+                                        <a href="{{ route('patient_dashboard') }}">{{ __('web.dashboard') }}</a>
                                     </li>
                                 @endauth
                             </ul>
@@ -129,10 +130,11 @@
                                     <div class="col-md-6">
                                         <div class="section-heading">
                                             <div class="notification_icon">
-                                            <a href="{{ route('notifications') }}">
-                                        <i class="feather-bell"></i> <span class="badge"></span>
-                                    </a>
-                                    <span class="badge badge-danger">{{$notifications?count($notifications):0}}</span>
+                                                <a href="{{ route('notifications') }}">
+                                                    <i class="feather-bell"></i> <span class="badge"></span>
+                                                </a>
+                                                <span
+                                                    class="badge badge-danger">{{ $notifications ? count($notifications) : 0 }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -146,8 +148,8 @@
                                         <span class="user-img">
                                             @if (auth()->user()->profile_image ?? '')
                                                 <img class="rounded-circle"
-                                                    src="{{ asset(auth()->user()->profile_image) }}"
-                                                    width="31" alt="{{ auth()->user()->name }}">
+                                                    src="{{ asset(auth()->user()->profile_image) }}" width="31"
+                                                    alt="{{ auth()->user()->name }}">
                                             @else
                                                 <img src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
                                                     alt="User Image" class="avatar-img rounded-circle">
@@ -171,29 +173,46 @@
                                                 <p class="text-muted mb-0">{{ auth()?->user()?->username }}</p>
                                             </div>
                                         </div>
-                                        <a class="dropdown-item" href="{{ url('patient-dashboard') }}">Dashboard</a>
-                                        <a class="dropdown-item" href="{{ route('profile.index') }}">Profile</a>
+                                        <a class="dropdown-item" href="{{ url('patient-dashboard') }}">{{ __('web.dashboard') }}</a>
+                                        <a class="dropdown-item" href="{{ route('profile.index') }}">{{ __('web.profile') }}</a>
                                         <a onclick="document.getElementById('formlogout').submit();" class="dropdown-item"
                                             href="#">
-                                            Logout
+                                            {{ __('web.signOut') }}
                                         </a>
                                         <form id="formlogout" method="POST" action="{{ route('logout') }}">
                                             @csrf
                                         </form>
                                     </div>
-</div>
+                                </div>
                             @else
                                 <ul class="nav header-navbar-rht right-menu">
                                     <li class="nav-item">
-                                        <a class="nav-link theme-btn btn-four" href="{{ url('login') }}">Sign In</a>
+                                        <a class="nav-link theme-btn btn-four" href="{{ url('login') }}">
+                                            {{ __('web.signIn') }}
+                                        </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link theme-btn btn-four-light" href="{{ url('register') }}">Sign
-                                            Up</a>
+                                        <a class="nav-link theme-btn btn-four-light" href="{{ url('register') }}">
+                                            {{ __('web.signUp') }}
+                                        </a>
                                     </li>
                                 </ul>
                             @endauth
-
+                            <ul class="nav header-navbar-rht right-menu">
+                                @if (App::getLocale() == 'ar')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('changeLang', ['lang' => 'en']) }}">
+                                            EN
+                                        </a>
+                                    </li>
+                                @else
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('changeLang', ['lang' => 'ar']) }}">
+                                            ع
+                                        </a>
+                                    </li>
+                                @endif
+                            </ul>
                         </div>
                     </nav>
                 </div>

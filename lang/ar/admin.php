@@ -2,6 +2,7 @@
 
 return [
 
+    'pageDir' => 'rtl',
     'speciality' => [
         //ADD FORM CONTENT
         'add_speciality'             =>   'أضف التخصص',
