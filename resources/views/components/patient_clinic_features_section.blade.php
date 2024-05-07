@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="section-header-four text-center aos" data-aos="fade-up">
-                        <h2 class="title-four">Available Features <span class="color-primary">in Our Clinic</span>
+                        <h2 class="title-four">{{ __('patient.Available Features') }} <span class="color-primary">{{ __('patient.in Our Clinic') }}</span>
                         </h2>
                         <p class="sub-title color-grey">It is a long established fact that a reader will be
                             distracted by the readable content of a page when looking at its layout.</p>
@@ -27,7 +27,7 @@
                                          class="img-fluid">
                                 </div>
                                 <div class="feature-clinic-overlay">
-                                    <p>Medical</p>
+                                    <p>{{ __('patient.Medical') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                                          class="img-fluid">
                                 </div>
                                 <div class="feature-clinic-overlay">
-                                    <p>Patient Ward</p>
+                                    <p>{{ __('patient.Patient Ward') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                                          class="img-fluid">
                                 </div>
                                 <div class="feature-clinic-overlay">
-                                    <p>Operation</p>
+                                    <p>{{ __('patient.Operation') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +60,7 @@
                                          class="img-fluid">
                                 </div>
                                 <div class="feature-clinic-overlay">
-                                    <p>Laboratory</p>
+                                    <p>{{ __('patient.Laboratory') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                             <div class="owl-nav slide-nav-8 nav-control"></div>
                             <div class="float-end">
                                 <div class="text-end">
-                                    <a href="#" class="btn btn-one">View More</a>
+                                    <a href="#" class="btn btn-one">{{ __('patient.View More') }}</a>
                                 </div>
                             </div>
                         </div>

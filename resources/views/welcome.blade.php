@@ -65,18 +65,18 @@
     <div class="col-lg-12 col-md-12">
         <div class="home-four-doctor">
             <div class="home-four-header">
-                <h2>Search Doctor, Make an <span>Appointment</span></h2>
+                <h2>{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2>
             </div>
 
             <form method="GET" action="{{ route('search_doctor') }}" class="banner-four-search">
 
             <div class="search_bar" style="background-color:white">
-           
+
                 <div class="drop_down_wrap">
-                    <label>Select a specility</label>
+                    <label>{{ __('web.Select a specility') }}</label>
                     <div class="dropdown">
                         <select name="speciality_id" class="select form-control">
-                            <option value="">Select Specility</option>
+                            <option value="">{{ __('web.Select a specility') }}</option>
                             @forelse($specialities as $speciality)
                             <option value="{{$speciality->id}}">{{$speciality->name}}</option>
                             @empty
@@ -87,10 +87,10 @@
                     </div>
                 </div>
                 <div class="drop_down_wrap">
-                    <label>Select a Insurance</label>
+                    <label>{{ __('web.Select a Insurance') }}</label>
                     <div class="dropdown">
                     <select name="insurance" class="select form-control">
-                                        <option value="">Select Insurance</option>
+                                        <option value="">{{ __('web.Select a Insurance') }}</option>
                                         @forelse($insurances as $insurance)
                                         <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
                                         @empty
@@ -100,19 +100,19 @@
                     </div>
                 </div>
                 <div class="drop_down_wrap">
-                    <label>Enter City</label>
+                    <label>{{ __('web.Enter City') }}</label>
                     <div class="dropdown">
-                    <input name="city" type="text" class="select form-control" placeholder="city">
+                    <input name="city" type="text" class="select form-control" placeholder="{{ __('web.Enter City') }}">
                     </div>
                 </div>
                 <div class="drop_down_wrap">
-                    <label>Enter Area</label>
+                    <label>{{ __('web.Enter Area') }}</label>
                     <div class="dropdown">
-                    <input name="area" type="text" class="select form-control" placeholder="area">
+                    <input name="area" type="text" class="select form-control" placeholder="{{ __('web.Enter Area') }}">
                     </div>
                 </div>
-              
-                <button class="btn_search">Search</button>
+
+                <button class="btn_search">{{ __('web.Search') }}</button>
             </div>
             </form>
 

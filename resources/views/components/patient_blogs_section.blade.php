@@ -1,11 +1,11 @@
 <div>
-    
+
     <section class="blog-section-four">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="section-header-four text-center aos" data-aos="fade-up">
-                        <h2 class="title-four">Our Latest <span class="color-primary">Blogs</span></h2>
+                        <h2 class="title-four">{{ __('patient.Our Latest') }} <span class="color-primary">{{ __('patient.Blogs') }} </span></h2>
                         <p class="sub-title color-grey">It is a long established fact that a reader will be
                             distracted by the readable content of a page when looking at its layout.</p>
                     </div>
@@ -20,7 +20,7 @@
                                 <img class="img-fluid" src="{{URL::asset('images/'.$blog->blog_image)}}"
                                      alt="News Image">
                             </a>
-                          
+
                             <div class="blog-date-four">
                                 <a href="#">
                                     <i class="feather-calendar me-2"></i>
@@ -148,7 +148,7 @@
                 </div> -->
             </div>
             <div class="text-center">
-                <a href="{{ route('blog-list') }}" class="btn btn-one">View More</a>
+                <a href="{{ route('blog-list') }}" class="btn btn-one">{{ __('patient.View More') }}</a>
             </div>
         </div>
     </section>

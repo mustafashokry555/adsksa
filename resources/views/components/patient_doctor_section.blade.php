@@ -4,9 +4,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="section-header-four text-center aos aos-init aos-animate" data-aos="fade-up">
-                        <h2 class="title-four">Book Our <span class="color-primary">Best Doctor</span></h2>
-                        <p class="sub-title color-grey">Access to expert physicians and surgeons, advanced
-                            technologies and top-quality surgery facilities right here.</p>
+                        <h2 class="title-four">{{ __('patient.Book Our') }} <span class="color-primary">{{ __('patient.Best Doctor') }}</span></h2>
+                        <p class="sub-title color-grey">{{ __('patient.Access to expert physicians and surgeons, advanced technologies and top-quality surgery facilities right here.') }}</p>
                     </div>
                 </div>
             </div>
@@ -14,7 +13,7 @@
                 <div class="col-md-12 aos aos-init aos-animate" data-aos="fade-up">
                     <div class="best-doctors-slider slider slick-initialized slick-slider slick-dotted">
                         <button class="slick-prev slick-arrow" aria-label="Previous" type="button"
-                                style="display: inline-block;">Previous
+                                style="display: inline-block;">{{ __('patient.Previous') }}
                         </button>
                         <div class="slick-list draggable">
                             <div class="slick-track"
@@ -48,14 +47,14 @@
                                                     @if($doctor->speciality ?? '')
                                                     <p class="doctor-posting">{{ $doctor->speciality->name }}</p>
                                                     @else
-                                                    <p class="doctor-posting">No Speciality Found</p>
+                                                    <p class="doctor-posting">{{ __('patient.No Speciality Found') }}</p>
                                                     @endif
                                                     @if($doctor->pricing == 0)
-                                                    <h5 class="doctors-amount">FREE</h5>
+                                                    <h5 class="doctors-amount">{{ __('patient.FREE') }}</h5>
                                                     @else
-                                                    <h5 class="doctors-amount">SAR {{ $doctor->pricing }}</h5>
+                                                    <h5 class="doctors-amount">{{ __('patient.SAR') }} {{ $doctor->pricing }}</h5>
                                                     @endif
-                                                    
+
                                                     <div class="rating">
                                                     @php
                                                 $reviews = App\Models\Review::query()->where('doctor_id', $doctor->id)->get();
@@ -75,8 +74,8 @@
                                                     @for ($j = $rat_num; $j < 5; $j++)
                                                         <i class="fas fa-star"></i>
                                                     @endfor
-                                            
-                                          
+
+
 
                                             <span class="d-inline-block average-rating">({{ $reviews->count().' reviews' }})</span>
                                                     </div>
@@ -84,7 +83,7 @@
                                                         <a href="{{ route('create_appointment', $doctor->id) }}" class="btn"
                                                            tabindex="{{ $loop->index }}">
 											<span>
-												Book Appointment <i class="fas fa-arrow-right ms-2"></i>
+												{{ __('patient.Book Appointment') }} <i class="fas fa-arrow-right ms-2"></i>
 											</span>
                                                         </a>
                                                     </div>
@@ -123,7 +122,7 @@
                                                         <a href="http://127.0.0.1:8000/booking" class="btn"
                                                            tabindex="0">
 											<span>
-												Book Appointment <i class="fas fa-arrow-right ms-2"></i>
+												{{ __('patient.Book Appointment') }} <i class="fas fa-arrow-right ms-2"></i>
 											</span>
                                                         </a>
                                                     </div>
@@ -135,7 +134,7 @@
                             </div>
                         </div>
                         <button class="slick-next slick-arrow" aria-label="Next" type="button"
-                                style="display: inline;">Next
+                                style="display: inline;">{{ __('patient.Next') }}
                         </button>
                         <ul class="slick-dots" style="" role="tablist">
                             <li class="slick-active" role="presentation">

@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="section-header-four text-center aos" data-aos="fade-up">
-                        <h2>What are you <span class="color-primary">looking</span> for?</h2>
+                        <h2>{{ __('patient.What are you') }} <span class="color-primary">{{ __('patient.looking') }} </span>{{ __('patient.for?') }} </h2>
                     </div>
                 </div>
             </div>
@@ -15,14 +15,13 @@
                             <div class="looking-inner-box">
                                 <div class="looking-info-four">
                                     <a href="{{ route('search_doctor_index') }}">
-                                        <i class="fas fa-user-md me-2"></i> Visit a Doctor
+                                        <i class="fas fa-user-md me-2"></i> {{ __('patient.Visit a Doctor') }}
                                     </a>
-                                    <p>We hire the best specialists to deliver top-notch diagnostic services for you
-                                        diagnostic services for you.</p>
+                                    <p>{{ __('patient.We hire the best specialists to deliver top-notch diagnostic services for you diagnostic services for you.') }}</p>
                                 </div>
                                 <div class="looking-four-btn">
                                     <a href="{{ route('search_doctor_index') }}">
-                                        Book Now <i class="fas fa-arrow-right ms-2"></i>
+                                        {{ __('patient.Book Now') }} <i class="fas fa-arrow-right ms-2"></i>
                                     </a>
                                 </div>
                             </div>
@@ -35,14 +34,13 @@
                             <div class="looking-inner-box">
                                 <div class="looking-info-four">
                                     <a href="{{ route('search_pharmacy') }}">
-                                        <i class="fas fa-tablets me-2"></i> Find a Pharmacy
+                                        <i class="fas fa-tablets me-2"></i> {{ __('patient.Find a Pharmacy') }}
                                     </a>
-                                    <p>We provide the a wide range of medical services, so every person could have
-                                        the opportunity.</p>
+                                    <p>{{ __('patient.We provide the a wide range of medical services, so every person could have the opportunity.') }}</p>
                                 </div>
                                 <div class="looking-four-btn">
                                     <a href="{{ route('search_pharmacy') }}">
-                                        Find Now <i class="fas fa-arrow-right ms-2"></i>
+                                        {{ __('patient.Find Now') }} <i class="fas fa-arrow-right ms-2"></i>
                                     </a>
                                 </div>
                             </div>
@@ -55,14 +53,13 @@
                             <div class="looking-inner-box">
                                 <div class="looking-info-four">
                                     <a href="#">
-                                        <i class="fas fa-vial me-2"></i> Find a Lab
+                                        <i class="fas fa-vial me-2"></i> {{ __('patient.Find a Lab') }}
                                     </a>
-                                    <p>We use the first-class medical equipment for timely diagnostics of various
-                                        diseases.</p>
+                                    <p>{{ __('patient.We use the first-class medical equipment for timely diagnostics of various diseases.') }}</p>
                                 </div>
                                 <div class="looking-four-btn">
                                     <a href="#">
-                                        Book Now <i class="fas fa-arrow-right ms-2"></i>
+                                        {{ __('patient.Book Now') }}<i class="fas fa-arrow-right ms-2"></i>
                                     </a>
                                 </div>
                             </div>
