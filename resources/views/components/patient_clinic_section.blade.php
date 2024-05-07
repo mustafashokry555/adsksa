@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="section-header-four text-center aos" data-aos="fade-up">
-                        <h2>Clinic & <span class="color-primary">Specialities</span></h2>
+                        <h2>{{ __('patient.Clinic &') }} <span class="color-primary">{{ __('patient.Specialities') }}</span></h2>
                         <p class="sub-title">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                             tempor incididunt ut labore et dolore magna aliqua.</p>
                     </div>
@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="overlay">
                             <div class="clinic-cricle">
                                 <div class="clinic-round">
@@ -43,7 +43,7 @@
                 </div>
                 @empty
                 @endforelse
-               
+
             </div>
         </div>
     </section>

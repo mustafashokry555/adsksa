@@ -21,7 +21,7 @@
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
                     <div class="col-md-12 text-center">
-                        <h3 class="mb-4">Contact Us</h3>
+                        <h3 class="mb-4">{{ __('web.Contact Us') }}</h3>
                         <p>Great doctor if you need your family member to get effective immediate
                             assistance, emergency treatment or a simple consultation.</p>
                     </div>
@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                             <div class="infor-details text-center">
-                                <label>Phone Number</label>
+                                <label>{{ __('web.Phone Number') }}</label>
                                 <p>+152 534-468-854</p>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                                 </div>
                             </div>
                             <div class="infor-details text-center">
-                                <label>Email</label>
+                                <label>{{ __('web.Email') }}</label>
                                 <p>contact@example.com</p>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                             <div class="infor-details text-center">
-                                <label>Location</label>
+                                <label>{{ __('web.Location') }}</label>
                                 <p>C/54 Northwest Freeway, Suite 558,
                                     Houston, USA 485</p>
                             </div>
@@ -75,7 +75,7 @@
         <section class="contact-form mt-4">
             <div class="container">
                 <div class="section-header text-center">
-                    <h2>Get in touch!</h2>
+                    <h2>{{ __('web.Get in touch!') }}</h2>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -83,31 +83,31 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Your Name <span>*</span></label>
+                                        <label>{{ __('web.Your Name') }} <span>*</span></label>
                                         <input type="text" name="name" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Your Email <span>*</span></label>
+                                        <label>{{ __('web.Your Email') }} <span>*</span></label>
                                         <input type="email" name="email" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Subject</label>
+                                        <label>{{ __('web.Subject') }}</label>
                                         <input type="text" name="subject" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>Comments <span>*</span></label>
+                                        <label>{{ __('web.Comments') }} <span>*</span></label>
                                         <textarea class="form-control" name="message" required></textarea>
                                     </div>
                                 </div>
                             </div>
                             @csrf
-                            <button class="btn bg-primary">Send Message</button>
+                            <button class="btn bg-primary">{{ __('web.Send Message') }}</button>
                         </form>
                     </div>
                 </div>
