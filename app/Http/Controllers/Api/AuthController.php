@@ -14,6 +14,29 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function login(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return $this->SuccessResponse(404, trans('auth.email'), null);
+            }
+            if (!Hash::check($request->password, $user->password)) {
+                return $this->ErrorResponse(401, trans('auth.password'));
+            }
+            $user->status = 'Active';
+            $user->save();
+            $token = $user->createToken('MyApp')->plainTextToken;
+            return $this->SuccessResponse(200, trans('auth.loginGood'), $token);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
     public function LoginWithNumber(Request $request)
     {
 
@@ -60,7 +83,7 @@ class AuthController extends Controller
                 'otp' => 'required',
                 'country_code' => 'required',
             ]);
-              $user = User::where('mobile', $request->mobile)->first();
+            $user = User::where('mobile', $request->mobile)->first();
             if (!$user) {
                 return $this->SuccessResponse(404, 'you are not registered with the given mobile number', null);
             }
@@ -95,7 +118,8 @@ class AuthController extends Controller
 
     public function PatientProfile(Request $request)
     {
-        $patient = User::where('id', $request->user()->id)->select('name', 'profile_image', 'address', 'email', 'country', 'state', 'zip_code', 'date_of_birth', 'gender', 'age', 'blood_group', 'mobile', 'last_name', 'marital_status', 'emergency_contact_name', 'emergency_contact_number', 'nationality', 'address_line_1', 'address_line_2')->first();
+        // $patient = User::where('id', $request->user()->id)->select('name', 'profile_image', 'address', 'email', 'country', 'state', 'zip_code', 'date_of_birth', 'gender', 'age', 'blood_group', 'mobile', 'last_name', 'marital_status', 'emergency_contact_name', 'emergency_contact_number', 'nationality', 'address_line_1', 'address_line_2')->first();
+        $patient = Auth::user();
         return $this->SuccessResponse(200, 'Patient profile!', $patient);
     }
 

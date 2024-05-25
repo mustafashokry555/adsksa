@@ -12,15 +12,15 @@ trait ApiResponser{
 
     protected function SuccessResponse($status,$message,$data){
         return response()->json([
-            'status'=>$status,
+            // 'status'=>$status,
             'message'=>$message,
             'data'=>$data,
         ],$status);
     }
 
-    protected function ErrorResponse($status,$message){
+    protected function ErrorResponse($status,$message, $messageAr = null){
         return response()->json([
-            'status'=>$status,
+            // 'status'=>$status,
             'message'=>$message,
             'data'=>null,
         ],$status);
