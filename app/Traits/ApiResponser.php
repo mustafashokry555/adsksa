@@ -18,7 +18,7 @@ trait ApiResponser{
         ],$status);
     }
 
-    protected function ErrorResponse($status,$message, $messageAr = null){
+    protected function ErrorResponse($status,$message){
         return response()->json([
             // 'status'=>$status,
             'message'=>$message,

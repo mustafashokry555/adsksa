@@ -5,9 +5,11 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponser;
 
 class CheckPatient
 {
+    use ApiResponser;
     /**
      * Handle an incoming request.
      *
@@ -21,7 +23,8 @@ class CheckPatient
 
             return $next($request);
         }else{
-            return response()->json(['message'=>'You are not authorized for this route.',"status"=>400,"data"=>null]);
+            return $this->ErrorResponse(422, trans('auth.user_type_fail'));
+            // response()->json(['message'=>'You are not authorized for this route.',"status"=>400,"data"=>null]);
         }
     }
 }

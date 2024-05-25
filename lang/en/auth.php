@@ -14,6 +14,7 @@ return [
     */
 
     'loginGood' => 'Login successful.',
+    'user_type_fail'=> "You are not authorized for this route.",
     'failed' => 'These credentials do not match our records.',
     'email' => 'you are not registered with the given Email.',
     'password' => 'The provided password is incorrect.',
