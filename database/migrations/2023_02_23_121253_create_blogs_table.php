@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique();
             $table->unsignedBigInteger('doctor_id')->index();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('user_id')->index();
             $table->string('blog_title');
             $table->text('blog_body');
             $table->string('blog_image');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

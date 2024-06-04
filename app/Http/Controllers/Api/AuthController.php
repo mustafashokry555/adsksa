@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Auth;
 use Faker\Factory as Faker;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
 class AuthController extends Controller
 {
+    // Done
     public function login(Request $request)
     {
         try {
@@ -37,6 +40,95 @@ class AuthController extends Controller
             return $this->ErrorResponse(422, $th->getMessage());
         }
     }
+    // Done
+    public function PatientProfile(Request $request)
+    {
+        // $patient = User::where('id', $request->user()->id)->select('name', 'profile_image', 'address', 'email', 'country', 'state', 'zip_code', 'date_of_birth', 'gender', 'age', 'blood_group', 'mobile', 'last_name', 'marital_status', 'emergency_contact_name', 'emergency_contact_number', 'nationality', 'address_line_1', 'address_line_2')->first();
+        $patient = Auth::user();
+        return $this->SuccessResponse(200, 'Patient profile!', $patient);
+    }
+
+    public function register(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'min:6'],
+                // 'mobile' => 'required|string|min:10|max:12|,',//unique:users,mobile
+                // 'date_of_birth' => 'required|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'gender' => 'required|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'height' => '|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'weight' => '|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'diabetes' => '|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'pressure' => '|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'disability' => '|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'medical_history' => '|string|min:10|max:12|unique:users,mobile,',//make validation
+                // 'address' => '',//make validation
+                // 'otp'=>    'required|integer',
+                // 'country_code' => 'required'
+            ]);
+            // ->default(json_encode([
+            //     'diabetes' => '0',
+            //     'pressure' => '0',
+            //     'disability' => '0',
+            //     'medical_history' => '0',
+            // ]));
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+
+
+            // $sid = getenv("TWILIO_ACCOUNT_SID");
+            // $token = getenv("TWILIO_AUTH_TOKEN");
+            // $service_sid = getenv("VERIFY_SERVICE_SID");
+
+            // $twilio = new Client($sid, $token);
+            // DB::beginTransaction();
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'mobile'  => $request->mobile,
+                'user_type'  => 'U',
+                'code'  => 'Mobile App',//we need to add this to migration
+            ]);
+            // create patient detials
+            $user->details = DB::table('patient_details')->insert([
+                'height' => $request->height,
+                'weight' => $request->weight,
+                'disease' => json_encode([
+                    'diabetes' => $request->diabetes ?? '0',
+                    'pressure' => $request->pressure ?? '0',
+                    'disability' => $request->disability ?? '0',
+                    'medical_history' => $request->medical_history ?? '0',
+                ]),
+                'user_id' => $user->id,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+            // if ($user->details) {
+            //     DB::commit();
+            // } else {
+            //     DB::rollback();
+            // }
+            // $verification = $twilio->verify->v2->services($service_sid)
+            //     ->verifications
+            //     ->create($request->country_code . $request->mobile, "sms");
+            return $this->SuccessResponse(200, trans('auth.logupGood'), NULL);
+        } catch (\Throwable $th) {
+            // DB::rollback();
+            //throw $th;
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
     public function LoginWithNumber(Request $request)
     {
 
@@ -103,10 +195,10 @@ class AuthController extends Controller
             //     );
 
             // if ($verification_check->valid) {
-                $user = User::where('mobile', $data['mobile'])->update(['status' => 'Active']);
-                $user = User::where('mobile', $data['mobile'])->first();
-                $user['token'] = $user->createToken('MyApp')->plainTextToken;
-                return $this->SuccessResponse(200, 'Mobile number verified', $user);
+            $user = User::where('mobile', $data['mobile'])->update(['status' => 'Active']);
+            $user = User::where('mobile', $data['mobile'])->first();
+            $user['token'] = $user->createToken('MyApp')->plainTextToken;
+            return $this->SuccessResponse(200, 'Mobile number verified', $user);
             // } else {
             //     return $this->ErrorResponse(400, 'Invalid verification code entered!');
             // }
@@ -116,12 +208,7 @@ class AuthController extends Controller
         }
     }
 
-    public function PatientProfile(Request $request)
-    {
-        // $patient = User::where('id', $request->user()->id)->select('name', 'profile_image', 'address', 'email', 'country', 'state', 'zip_code', 'date_of_birth', 'gender', 'age', 'blood_group', 'mobile', 'last_name', 'marital_status', 'emergency_contact_name', 'emergency_contact_number', 'nationality', 'address_line_1', 'address_line_2')->first();
-        $patient = Auth::user();
-        return $this->SuccessResponse(200, 'Patient profile!', $patient);
-    }
+
 
     public function UpdatePatientProfile(Request $request)
     {
@@ -171,59 +258,5 @@ class AuthController extends Controller
         } catch (\Throwable $th) {
             return $this->ErrorResponse(422, $th->getMessage());
         }
-    }
-    public function register(Request $request)
-    {
-
-       
-
-        try {
-
-            $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'min:8', 'confirmed'],
-                'mobile' => 'required|string|min:10|max:12|unique:users,mobile,',
-                // 'otp'=>    'required|integer',
-                'country_code'=>'required'
-            ]);
-    
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-    
-            
-           
-            $sid = getenv("TWILIO_ACCOUNT_SID");
-            $token = getenv("TWILIO_AUTH_TOKEN");
-            $service_sid = getenv("VERIFY_SERVICE_SID");
-
-            $twilio = new Client($sid, $token);
-
-          
-
-        
-
-            
-                $user = User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'mobile'  => $request->mobile,
-                ]);
-
-                $verification = $twilio->verify->v2->services($service_sid)
-                ->verifications
-                ->create($request->country_code . $request->mobile, "sms");
-                return $this->SuccessResponse(200, 'Mobile number verified', $user);
-          
-        } catch (\Throwable $th) {
-            //throw $th;
-            return $this->ErrorResponse(422, $th->getMessage());
-        }
-        return response()->json(['message' => 'Registration successful'], 201);
     }
 }
