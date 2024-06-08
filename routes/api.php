@@ -37,6 +37,8 @@ Route::get('best-doctors',[CommonController::class,'bestsDoctors']);
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
     
+    Route::post('app-setting',[CommonController::class,'updateOrCreateAppSetting']);
+
     Route::post('book-appointment',[CommonController::class,'BookAppointment']);
     Route::get('patient-appointments',[CommonController::class,'PatientAppointments']);
     Route::post('add-to-wishlist',[CommonController::class,'AddToWishlist']);

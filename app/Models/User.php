@@ -26,6 +26,7 @@ class User extends Authenticatable
         'description',
         'address',
         'country',
+        'code',
         'state',
         'zip_code',
         'date_of_birth',
@@ -94,7 +95,15 @@ class User extends Authenticatable
     {
         return $this->user_type == User::HOSPITAL;
     }
+    public function patientDetails()
+    {
+        return $this->hasOne(PatientDetail::class, 'user_id');
+    }
 
+    public function appSetting()
+    {
+        return $this->hasOne(AppSetting::class, 'user_id');
+    }
     public function is_doctor()
     {
         return $this->user_type == User::DOCTOR;

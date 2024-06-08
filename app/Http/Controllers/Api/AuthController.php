@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\PatientDetail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -43,11 +44,14 @@ class AuthController extends Controller
     // Done
     public function PatientProfile(Request $request)
     {
-        // $patient = User::where('id', $request->user()->id)->select('name', 'profile_image', 'address', 'email', 'country', 'state', 'zip_code', 'date_of_birth', 'gender', 'age', 'blood_group', 'mobile', 'last_name', 'marital_status', 'emergency_contact_name', 'emergency_contact_number', 'nationality', 'address_line_1', 'address_line_2')->first();
         $patient = Auth::user();
+
+        if ($patient) {
+            $patient = User::with(['patientDetails', 'appSetting'])->find($patient->id);
+        }
         return $this->SuccessResponse(200, 'Patient profile!', $patient);
     }
-
+    // Done
     public function register(Request $request)
     {
         try {
@@ -56,25 +60,19 @@ class AuthController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'min:6'],
-                // 'mobile' => 'required|string|min:10|max:12|,',//unique:users,mobile
-                // 'date_of_birth' => 'required|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'gender' => 'required|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'height' => '|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'weight' => '|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'diabetes' => '|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'pressure' => '|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'disability' => '|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'medical_history' => '|string|min:10|max:12|unique:users,mobile,',//make validation
-                // 'address' => '',//make validation
+                'mobile' => 'required|numeric|digits:9',//unique:users,mobile
+                'date_of_birth' => 'nullable|date|before:today',
+                'gender' => 'nullable|string|in:male,female',
+                'height' => 'nullable|numeric|min:30|max:300',
+                'weight' => 'nullable|numeric|min:1|max:500',
+                'diabetes' => 'nullable|boolean',
+                'pressure' => 'nullable|boolean',
+                'disability' => 'nullable|boolean',
+                'medical_history' => 'nullable|boolean',
+                'address' => 'nullable|string|max:255',
                 // 'otp'=>    'required|integer',
                 // 'country_code' => 'required'
             ]);
-            // ->default(json_encode([
-            //     'diabetes' => '0',
-            //     'pressure' => '0',
-            //     'disability' => '0',
-            //     'medical_history' => '0',
-            // ]));
 
             if ($validator->fails()) {
                 return response()->json([
@@ -82,8 +80,6 @@ class AuthController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-
-
 
             // $sid = getenv("TWILIO_ACCOUNT_SID");
             // $token = getenv("TWILIO_AUTH_TOKEN");
@@ -97,10 +93,11 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'mobile'  => $request->mobile,
                 'user_type'  => 'U',
+                'date_of_birth' => $request->date_of_birth,
                 'code'  => 'Mobile App',//we need to add this to migration
             ]);
             // create patient detials
-            $user->details = DB::table('patient_details')->insert([
+            $patientDetail = PatientDetail::create([
                 'height' => $request->height,
                 'weight' => $request->weight,
                 'disease' => json_encode([
@@ -110,8 +107,6 @@ class AuthController extends Controller
                     'medical_history' => $request->medical_history ?? '0',
                 ]),
                 'user_id' => $user->id,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
             ]);
             // if ($user->details) {
             //     DB::commit();

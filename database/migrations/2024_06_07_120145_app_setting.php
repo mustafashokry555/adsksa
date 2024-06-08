@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('patient_details', function (Blueprint $table) {
+        Schema::create('app_setting', function (Blueprint $table) {
             $table->id();
-            $table->string('height')->nullable();
-            $table->string('weight')->nullable();
-            $table->json('disease')->nullable();
+            $table->boolean('notifications')->default(false);
+            $table->boolean('msg_option')->default(false);
+            $table->boolean('call_option')->default(false);
+            $table->boolean('video_call_option')->default(false);
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
