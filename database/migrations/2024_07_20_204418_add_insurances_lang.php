@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('specialities', function (Blueprint $table) {
+        Schema::table('insurances', function (Blueprint $table) {
             // Add new column after renamed column
             $table->string('name_ar')->nullable()->after('name');
             // Rename column
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-
+        //
     }
 };

@@ -7,12 +7,12 @@ use App\Models\AppSetting;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Appointment;
+use App\Models\Insurance;
 use App\Models\Hospital;
+use App\Models\Appointment;
 use App\Models\Specialization;
 use App\Models\User;
 use App\Models\Wishlist;
-use App\Models\Insurance;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\Unavailability;
@@ -27,7 +27,7 @@ class MainController extends Controller
     {
         $this->lang = $request->header('lang', 'en');
     }
-
+    // API for Update Or Create App Setting (Done)
     public function updateOrCreateAppSetting(Request $request)
     {
         try {
@@ -54,11 +54,20 @@ class MainController extends Controller
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
-    // API fro All Specialities (Done with Lang)
-    public function allSpecialities()
+    /* Start Search For Doctors APIs*/
+    // API for All Specialities (Done with Lang)
+    public function allSpecialities(Request $request)
     {
         try {
-            $speciality = Speciality::select(
+            $query = Speciality::query();
+            if (request('search')) {
+                $query->where(function ($query) {
+                    $query->where("name_en", 'like', '%' . request('search') . '%')
+                    ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                });
+            }
+
+            $speciality = $query->select(
                 'id',
                 DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
                 'image'
@@ -72,4 +81,44 @@ class MainController extends Controller
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
+    // API for All Cities (Done with Lang)
+    public function allCities(Request $request)
+    {   
+        try {
+            $query = Hospital::query();
+            if (request('search')) {
+                $query->where(function ($query) {
+                    $query->where("city", 'like', '%' . request('search') . '%');
+                });
+            }
+            $cities = $query->select('city')->groupBy('city')->get();
+            return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
+    // API for All Insurances (Done with Lang)
+    public function get_insurances(Request $request)
+    {
+        $query = Insurance::query();
+        if (request('city')) {
+            $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
+            ->pluck('id');
+            $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
+                $query->whereIn('hospital_id', $hospitals_ids);
+            });
+        }
+        if (request('search')) {
+            $query->where(function ($query) {
+                $query->where("name_en", 'like', '%' . request('search') . '%')
+                ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+            });
+        }
+        $insurance = $query->select(
+            'id',
+            DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
+        )->orderBy('id', 'desc')->get();
+        return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
+    }
+    /* End Search For Doctors APIs*/
 }

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App;
+use Illuminate\Support\Facades\App;
 
 class LanguageManager
 {
@@ -22,7 +22,6 @@ class LanguageManager
         }else {
             App::setLocale(config('app.locale'));
         }
-
         return $next($request);
     }
 }

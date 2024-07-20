@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Insurance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Twilio\Rest\Preview\Sync;
 
@@ -33,22 +34,26 @@ class HospitalController extends Controller
             $query->with('users', function ($q) {
                 $q->where('user_type', 'H');
             });
-           
+
             $hospitals = $query->get();
             return view('admin.hospital.index', [
                 'hospitals' => $hospitals,
-                
+
             ]);
-        }else{
+        } else {
             abort(401);
         }
     }
     public function create()
     {
-        if(Auth::user()->is_admin()){
-            $insurances = Insurance::select('name','id')->where('user_id', Auth::id())->get();
-            return view('admin.hospital.create',compact('insurances'));
-        }else{
+        if (Auth::user()->is_admin()) {
+            $insurances = Insurance::select(
+                'id',
+                DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name")
+            )
+                ->where('user_id', Auth::id())->get();
+            return view('admin.hospital.create', compact('insurances'));
+        } else {
             abort(401);
         }
     }
@@ -62,7 +67,7 @@ class HospitalController extends Controller
             'state' => 'required',
             'city' => 'required',
             'zip' => 'required',
-            'insurance'=> 'required',
+            'insurance' => 'required',
             'profile_image' => 'image',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -76,7 +81,7 @@ class HospitalController extends Controller
         $attributes['image'] = $filename;
         $profileImg = $request['image'] = $filename;
 
-        $attributes['insurance_id']=$request->insurance;
+        $attributes['insurance_id'] = $request->insurance;
         $hospital = Hospital::create($attributes);
         $hospital->insurances()->sync($request->insurance);
 
@@ -95,10 +100,8 @@ class HospitalController extends Controller
             ->with('flash', ['type', 'success', 'message' => 'Hospital and Admin created Successfully']);
     }
 
-
     public function show($id)
     {
-
         $hospital = Hospital::find($id);
         $specialities = Speciality::all();
         $selectedSpecialities = request()->speciality;
@@ -121,15 +124,18 @@ class HospitalController extends Controller
 
     public function edit($id)
     {
-        if(Auth::user()->is_admin()){
-           $hospital = Hospital::find($id);
+        if (Auth::user()->is_admin()) {
+            $hospital = Hospital::find($id);
             return view('admin.hospital.edit', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
-                'insurances'    =>   Insurance::select('name','id')->get(),
-                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
+                'insurances'    =>   Insurance::select(
+                    'id',
+                    DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name")
+                )->get(),
+                'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
             ]);
-        }else{
+        } else {
             abort(401);
         }
     }
@@ -144,7 +150,7 @@ class HospitalController extends Controller
     public function update(Request $request, $id)
     {
         $hospital = Hospital::find($id);
-        if ( $hospital) {
+        if ($hospital) {
             $attributes = $request->validate([
                 'hospital_name' => 'required',
                 'image' => 'image',
@@ -153,7 +159,7 @@ class HospitalController extends Controller
                 'state' => 'required',
                 'city' => 'required',
                 'zip' => 'required',
-                'insurance'=> 'required',
+                'insurance' => 'required',
                 'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             ]);
             if ($attributes['image'] ?? false) {
@@ -171,9 +177,9 @@ class HospitalController extends Controller
                     'name' => $request->hospital_name,
                     'email' => $request->email,
                 ];
-                if(  @$attributes['image']){
-                    $data['profile_image'] = $attributes['image'];
-                }
+            if (@$attributes['image']) {
+                $data['profile_image'] = $attributes['image'];
+            }
             if ($request->password) {
                 $data['password'] = Hash::make($request->password);
             }

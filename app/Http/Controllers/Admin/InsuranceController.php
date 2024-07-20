@@ -18,7 +18,7 @@ class InsuranceController extends Controller
     public function index()
     {
         if (\Auth::user()->user_type == 'H') {
-            $insurance = Hospital::find( \Auth::user()->hospital_id)->insurances;
+            $insurance = Hospital::find(\Auth::user()->hospital_id)->insurances;
             // dd($hospital);
             // $insurance = Insurance::where('user_id', \Auth::user()->hospital_id)->get();
             return view('hospital.insurance.index', compact('insurance'));
@@ -49,7 +49,8 @@ class InsuranceController extends Controller
 
 
             $request->validate([
-                'name' => 'required|string|max:255',
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
                 'city' => 'required|string|max:255',
                 'state' => 'required|string|max:255',
                 'fax' => 'required|string|max:55',
@@ -65,15 +66,14 @@ class InsuranceController extends Controller
             $data['user_id'] = $user->id;
             if ($user->user_type == 'H') {
                 $data['user_id'] = $user->hospital_id;
-               
             }
             //  user_id null for admin 
-           $store = Insurance::create($data);
+            $store = Insurance::create($data);
 
-           if($user->user_type == 'H'){
-            $hospital = Hospital::find( $user->hospital_id);
-            $hospital->insurances()->save($store);
-           }
+            if ($user->user_type == 'H') {
+                $hospital = Hospital::find($user->hospital_id);
+                $hospital->insurances()->save($store);
+            }
 
             return redirect()->route('insurances.index')
                 ->with('flash', ['type', 'success', 'message' => 'Insurance company created successfully.']);
@@ -103,34 +103,35 @@ class InsuranceController extends Controller
     public function update(Request $request, Insurance $Insurance)
     {
         if (\Auth::user()->user_type == 'H' || \Auth::user()->user_type == 'A') {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'fax' => 'required|string|max:55',
-            'address' => 'required|string|max:255',
-            'phone1' => 'required|string|max:20|min:10',
-            'phone2' => 'required|string|max:20|min:10',
-            'email' => 'required|email|max:255',
-        ]);
+            $request->validate([
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+                'city' => 'required|string|max:255',
+                'state' => 'required|string|max:255',
+                'fax' => 'required|string|max:55',
+                'address' => 'required|string|max:255',
+                'phone1' => 'required|string|max:20|min:10',
+                'phone2' => 'required|string|max:20|min:10',
+                'email' => 'required|email|max:255',
+            ]);
 
-        $Insurance->update($request->all());
+            $Insurance->update($request->all());
 
-        return redirect()->route('insurances.index')
-            ->with('flash', ['type', 'success', 'message' => 'Insurance company updated successfully.']);
-    }else{
-        abort(401);
-    }
+            return redirect()->route('insurances.index')
+                ->with('flash', ['type', 'success', 'message' => 'Insurance company updated successfully.']);
+        } else {
+            abort(401);
+        }
     }
 
     // Remove the specified insurance company from the database
     public function destroy(Insurance $Insurance)
     {
         if (\Auth::user()->user_type == 'H' || \Auth::user()->user_type == 'A') {
-        $Insurance->delete();
+            $Insurance->delete();
 
-        return redirect()->route('insurances.index')
-            ->with('flash', ['type', 'success', 'message' => 'Insurance company deleted successfully.']);
+            return redirect()->route('insurances.index')
+                ->with('flash', ['type', 'success', 'message' => 'Insurance company deleted successfully.']);
         }
         abort(401);
     }

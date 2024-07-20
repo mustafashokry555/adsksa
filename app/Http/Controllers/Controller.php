@@ -7,8 +7,9 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Traits\ApiResponser;
+use App\Traits\WebLang;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests,ApiResponser;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests,ApiResponser,WebLang;
 }

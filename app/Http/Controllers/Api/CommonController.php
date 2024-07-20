@@ -189,7 +189,8 @@ class CommonController extends Controller
                         $subquery->where('name', 'like', '%' . $keyword . '%');
                     })
                     ->orWhereHas('hospital.insurances', function ($subquery) use ($keyword) {
-                        $subquery->where('name', 'like', '%' . $keyword . '%');
+                        $subquery->where('name_en', 'like', '%' . $keyword . '%')
+                        ->orWhere('name_ar', 'like', '%' . $keyword . '%');
                     });
             })
             ->get();
@@ -509,7 +510,8 @@ class CommonController extends Controller
         if (request('insurance')) {
             // Use whereHas to filter hospitals with a specific insurance name
             $query->whereHas('insurances', function ($q) {
-                $q->where('name', 'like', '%' . request('insurance') . '%');
+                $q->where('name_en', 'like', '%' . request('insurance') . '%')
+                ->orWhere('name_ar', 'like', '%' . request('insurance') . '%');
             });
         }
 

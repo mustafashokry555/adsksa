@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Insurance extends Model
 {
     use HasFactory;
-    protected $fillable = ['name','email', 'user_id', 'address','phone1','city','phone2','state','fax'];
+    protected $fillable = ['name_en', 'name_ar', 'email', 'user_id', 'address', 'phone1', 'city', 'phone2', 'state', 'fax'];
 
     public function hospitals()
     {
