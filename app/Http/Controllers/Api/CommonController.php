@@ -21,6 +21,14 @@ use Carbon\CarbonPeriod;
 
 class CommonController extends Controller
 {
+
+    protected $lang;
+
+    public function __construct(Request $request)
+    {
+        $this->lang = $request->header('lang', 'en');
+    }
+
     public function updateOrCreateAppSetting(Request $request)
     {
         try {
@@ -31,7 +39,7 @@ class CommonController extends Controller
                 'video_call_option' => 'nullable|boolean',
             ]);
             $user = $request->user();
-    
+
             $AppSetting = AppSetting::updateOrCreate(
                 ['user_id' => $user->id],
                 [
@@ -47,11 +55,14 @@ class CommonController extends Controller
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
+    // API fro All Specialities (Done with Lang)
     public function allSpecialities()
     {
         try {
-            $speciality = Speciality::all();
-
+            $speciality = Speciality::select(
+                'id',
+                DB::raw("IFNULL(name_{$this->lang}, name_en) as name")
+            )->get();
             return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
@@ -90,19 +101,18 @@ class CommonController extends Controller
             }
 
             $doctors = $query->join('specialities', 'specialities.id', 'users.speciality_id')
-            ->join('hospitals', 'hospitals.id', 'users.hospital_id')
-            ->select(
-                'users.id',
-                'users.name',
-                'users.profile_image',
-                DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), 
-                'specialities.name as speciality_name',
-                'hospitals.hospital_name'
-            )
-            ->paginate(10);
+                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.profile_image',
+                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"),
+                    'specialities.name as speciality_name',
+                    'hospitals.hospital_name'
+                )
+                ->paginate(10);
 
             return $this->SuccessResponse(200, 'All available doctors', $doctors);
-
         } catch (\Throwable $th) {
 
             return $this->ErrorResponse(400, $th->getMessage());
@@ -153,15 +163,16 @@ class CommonController extends Controller
     //         if($address){
     //             $q->where('address', 'like', '%' . $address . '%');
     //         }
-           
-          
-            
+
+
+
     //         $q->get();
     //         return $this->SuccessResponse(200, 'Doctor list', $doctors);
     // }
-    public function DoctorWithFilter(Request $request){
+    public function DoctorWithFilter(Request $request)
+    {
         $keyword = $request->search;
-        $doctors = User::with(['speciality','hospital','hospital.insurances'])
+        $doctors = User::with(['speciality', 'hospital', 'hospital.insurances'])
             ->where('user_type', 'D')
             ->where(function ($query) use ($keyword) {
                 $query->where('name', 'like', '%' . $keyword . '%')
@@ -177,20 +188,20 @@ class CommonController extends Controller
                     });
             })
             ->get();
-    
+
         return $this->SuccessResponse(200, 'Doctor list', $doctors);
     }
-    
+
 
     public function BookAppointment(Request $request)
     {
 
         try {
             $baseUrl = getenv('BASE_URL') . 'images/';
-           $isExist = Appointment::where(['appointment_date'=>$request->appointment_date,'appointment_time'=>$request->appointment_time])->first();
-           if($isExist){
-            return $this->SuccessResponse(200, 'This slot is already booked please try another one',null);
-           }
+            $isExist = Appointment::where(['appointment_date' => $request->appointment_date, 'appointment_time' => $request->appointment_time])->first();
+            if ($isExist) {
+                return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+            }
             $a = new Appointment();
             $a->doctor_id = $request->doctor_id;
             $a->patient_id = $request->user()->id;
@@ -415,25 +426,25 @@ class CommonController extends Controller
                 case 'pending':
                     $s = 'P';
                     break;
-                
+
                 case 'confirmed':
                     $s = 'C';
                     break;
-                
+
                 case 'cancelled':
                     $s = 'U';
                     break;
-                
+
                 case 'd_cancelled':
                     $s = 'D';
                     break;
-                            
+
                 default:
                     $s = 'P';
                     break;
             }
 
-            $query->where(function ($query) use ($s){
+            $query->where(function ($query) use ($s) {
                 $query->orWhere('appointments.status', $s);
             });
         }
@@ -461,47 +472,49 @@ class CommonController extends Controller
         return $this->SuccessResponse(200, "Patient's Appointments", $appointment);
     }
 
-    public function CancelAppointment(Request $request){
-        Appointment::where('patient_id',$request->user()->id)->where('id',$request->appointment_id)->update(['status'=>'U']);
+    public function CancelAppointment(Request $request)
+    {
+        Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->update(['status' => 'U']);
 
         return $this->SuccessResponse(200, "Appointment cancelled", null);
-
-
     }
 
-    public function get_insurances(Request $request){
+    public function get_insurances(Request $request)
+    {
 
         $q = Insurance::query();
-        if($request->search){
-            $q->where('name', 'LIKE', "%".$request->search."%");
+        if ($request->search) {
+            $q->where('name', 'LIKE', "%" . $request->search . "%");
         }
-        $insurance = $q->orderBy('id','desc')->paginate(10);
+        $insurance = $q->orderBy('id', 'desc')->paginate(10);
 
         return $this->SuccessResponse(200, "Patient's Appointments", $insurance);
     }
 
-    public function HospitalsByFilter(Request $request) {
+    public function HospitalsByFilter(Request $request)
+    {
         $query = Hospital::query();
-        if(!request('city') && !request('insurance')){
-            return $this->SuccessResponse(200,'Hospital not found', []);
+        if (!request('city') && !request('insurance')) {
+            return $this->SuccessResponse(200, 'Hospital not found', []);
         }
         if (request('city')) {
             $query->where('city', 'like', '%' . request('city') . '%');
         }
-    
+
         if (request('insurance')) {
             // Use whereHas to filter hospitals with a specific insurance name
             $query->whereHas('insurances', function ($q) {
                 $q->where('name', 'like', '%' . request('insurance') . '%');
             });
         }
-    
+
         $results = $query->with('insurances')->paginate(10);
-    
+
         return $this->SuccessResponse(200, 'All Hospitals', $results);
     }
 
-    public function bestsDoctors(Request $request) {
+    public function bestsDoctors(Request $request)
+    {
         // $users = User::select('users.*')
         // ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
         // ->groupBy('users.id')
@@ -517,14 +530,14 @@ class CommonController extends Controller
             // ->select('users.id', 'users.name', 'users.profile_image','specialities.name as speciality_name', 'users.description', 'specialities.image as speciality_image', 'hospitals.hospital_name', 'hospitals.id as hospital_id')
             // ->orderByRaw('AVG(reviews.star_rated) DESC')->get();
             $doctors = User::leftJoin('reviews', 'reviews.doctor_id', 'users.id')
-            ->join('specialities', 'specialities.id', 'users.speciality_id')
-            ->join('hospitals', 'hospitals.id', 'users.hospital_id')
-            ->where('users.user_type', '=', 'D')
-            ->select('users.id', 'users.name', 'users.profile_image', 'specialities.name as speciality_name', 'users.description', 'specialities.image as speciality_image', 'hospitals.hospital_name', 'hospitals.id as hospital_id', DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating'))
-            ->groupBy('users.id', 'users.name', 'users.profile_image', 'specialities.name', 'users.description', 'specialities.image', 'hospitals.hospital_name', 'hospitals.id')
-            ->orderBy('avg_rating', 'DESC')
-        
-                    ->paginate(12);
+                ->join('specialities', 'specialities.id', 'users.speciality_id')
+                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                ->where('users.user_type', '=', 'D')
+                ->select('users.id', 'users.name', 'users.profile_image', 'specialities.name as speciality_name', 'users.description', 'specialities.image as speciality_image', 'hospitals.hospital_name', 'hospitals.id as hospital_id', DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating'))
+                ->groupBy('users.id', 'users.name', 'users.profile_image', 'specialities.name', 'users.description', 'specialities.image', 'hospitals.hospital_name', 'hospitals.id')
+                ->orderBy('avg_rating', 'DESC')
+
+                ->paginate(12);
             return $this->SuccessResponse(200, 'Doctor profiles by specialty', $doctors);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
