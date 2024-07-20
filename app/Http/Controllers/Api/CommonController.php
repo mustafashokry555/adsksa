@@ -61,7 +61,8 @@ class CommonController extends Controller
         try {
             $speciality = Speciality::select(
                 'id',
-                DB::raw("IFNULL(name_{$this->lang}, name_en) as name")
+                DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
+                'image'
             )->get();
             return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
         } catch (\Throwable $th) {

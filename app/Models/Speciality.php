@@ -16,7 +16,7 @@ class Speciality extends Model
     }
 
     public function getImageAttribute($value){
-        if($value !=null) return env('BASE_URL').'images/'.$value; 
+        if($value !=null) return env('BASE_URL').'/api/getImage/'.$value; 
     }
 
 }
