@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CommonController;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Response;
+// use Illuminate\Support\Facades\File;
+// use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,19 +35,19 @@ Route::get('insurances',[CommonController::class,'get_insurances']);
 Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
 Route::get('best-doctors',[CommonController::class,'bestsDoctors']);
 
-Route::get('getImage/{name}', function ($name) {
-    $path = public_path('images/' . $name);
+// Route::get('images/{name}', function ($name) {
+//     $path = public_path('images/' . $name);
 
-    if (!File::exists($path)) {
-        return $this->ErrorResponse(404, 'Image not found.');
-    }
-    $file = File::get($path);
-    $type = File::mimeType($path);
-    $response = Response::make($file, 200);
-    $response->header("Content-Type", $type);
+//     if (!File::exists($path)) {
+//         return $this->ErrorResponse(404, 'Image not found.');
+//     }
+//     $file = File::get($path);
+//     $type = File::mimeType($path);
+//     $response = Response::make($file, 200);
+//     $response->header("Content-Type", $type);
 
-    return $response;    
-});
+//     return $response;    
+// });
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
     

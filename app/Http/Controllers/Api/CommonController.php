@@ -64,6 +64,10 @@ class CommonController extends Controller
                 DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
                 'image'
             )->get();
+            // $speciality = $speciality->map(function ($special) {
+            //     $special->image = url("api/{$special->image}");
+            //     return $special;
+            // });
             return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
