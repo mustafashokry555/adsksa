@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CommonController;
+use App\Http\Controllers\Api\MainController;
+
 // use Illuminate\Support\Facades\File;
 // use Illuminate\Support\Facades\Response;
 
@@ -24,7 +26,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
 Route::post('verify',[AuthController::class,'VerifyOtp']);
-Route::get('specialities',[CommonController::class,'allSpecialities']);
+
+Route::get('specialities',[MainController::class,'allSpecialities']);
 Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::get('doctor-profile/{id}',[CommonController::class,'DoctorProfile']);
@@ -51,7 +54,7 @@ Route::get('best-doctors',[CommonController::class,'bestsDoctors']);
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
     
-    Route::post('app-setting',[CommonController::class,'updateOrCreateAppSetting']);
+    Route::post('app-setting',[MainController::class,'updateOrCreateAppSetting']);
 
     Route::post('book-appointment',[CommonController::class,'BookAppointment']);
     Route::get('patient-appointments',[CommonController::class,'PatientAppointments']);
