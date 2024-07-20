@@ -12,7 +12,127 @@
             ->get();
     }
 @endphp
+<style>
+    .flag-icon {
+        width: 20px;
+        margin-right: 5px;
+    }
+    .wrapper-dropdown-5 {
+        /* Size & position */
+        position: relative;
+        width: 140px;
+        margin: 10px 0 0 20px;
+        padding: 8px 10px;
 
+        /* Styles */
+        background: #fff;
+        border-radius: 5px;
+        border: 1px solid #0071DC;
+        color: #0071DC;
+        /* box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2); */
+        cursor: pointer;
+        outline: none;
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -ms-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+    }
+
+    .wrapper-dropdown-5:after {
+        /* Little arrow */
+        content: "";
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        margin-top: -3px;
+        border-width: 6px 6px 0 6px;
+        border-style: solid;
+        border-color: #0071DC transparent;
+    }
+
+    .wrapper-dropdown-5 .dropdown {
+        /* Size & position */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 0;
+        
+        /* Styles */
+        background: #fff;
+        border-radius: 0 0 5px 5px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-top: none;
+        border-bottom: none;
+        list-style: none;
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -ms-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+
+        /* Hiding */
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    .wrapper-dropdown-5 .dropdown li {
+        padding: 0 10px;
+    }
+
+    .wrapper-dropdown-5 .dropdown li a {
+        display: block;
+        text-decoration: none;
+        color: #333;
+        padding: 10px 0;
+        transition: all 0.3s ease-out;
+        border-bottom: 1px solid #e6e8ea;
+    }
+
+    .wrapper-dropdown-5 .dropdown li:last-of-type a {
+        border: none;
+    }
+
+    .wrapper-dropdown-5 .dropdown li i {
+        margin-right: 5px;
+        color: inherit;
+        vertical-align: middle;
+    }
+
+    /* Hover state */
+
+    .wrapper-dropdown-5 .dropdown li:hover a {
+        color: #0071DC;
+    }
+
+    /* Active state */
+
+    .wrapper-dropdown-5.active {
+        border-radius: 5px 5px 0 0;
+        background: #0071DC;
+        box-shadow: none;
+        border-bottom: none;
+        color: white;
+    }
+
+    .wrapper-dropdown-5.active:after {
+        border-color: #0071DC transparent;
+    }
+
+    .wrapper-dropdown-5.active .dropdown {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        max-height: 400px;
+    }
+
+    @media (max-width: 992px) {
+        .wrapper-dropdown-5 {
+            margin: 5px auto;
+        }
+    }
+</style>
 
 <div class="main-wrapper">
     <!-- Home Banner -->
@@ -173,8 +293,10 @@
                                                 <p class="text-muted mb-0">{{ auth()?->user()?->username }}</p>
                                             </div>
                                         </div>
-                                        <a class="dropdown-item" href="{{ url('patient-dashboard') }}">{{ __('web.dashboard') }}</a>
-                                        <a class="dropdown-item" href="{{ route('profile.index') }}">{{ __('web.profile') }}</a>
+                                        <a class="dropdown-item"
+                                            href="{{ url('patient-dashboard') }}">{{ __('web.dashboard') }}</a>
+                                        <a class="dropdown-item"
+                                            href="{{ route('profile.index') }}">{{ __('web.profile') }}</a>
                                         <a onclick="document.getElementById('formlogout').submit();" class="dropdown-item"
                                             href="#">
                                             {{ __('web.signOut') }}
@@ -185,7 +307,8 @@
                                     </div>
                                 </div>
                             @else
-                                <ul class="nav header-navbar-rht right-menu">
+                                <ul class="nav header-navbar-rht right-menu"
+                                    style="justify-content: center;margin-top: 10px;">
                                     <li class="nav-item">
                                         <a class="nav-link theme-btn btn-four" href="{{ url('login') }}">
                                             {{ __('web.signIn') }}
@@ -198,22 +321,76 @@
                                     </li>
                                 </ul>
                             @endauth
-                            <ul class="nav header-navbar-rht right-menu">
+
+
+                            <div id="dd" class="wrapper-dropdown-5" tabindex="1">
                                 @if (App::getLocale() == 'ar')
-                                    <li class="nav-item">
+                                    <img src="{{ asset('assets/img/Ar-flag.svg') }}" alt="Arabic" class="flag-icon"><span>العربية</span>
+                                @else
+                                    <img src="{{ asset('assets/img/Eng-flag.svg') }}" alt="English" class="flag-icon"><span>English</span>
+                                @endif
+                                <ul class="dropdown">
+                                    <li>
+                                        <a href="{{ route('changeLang', ['lang' => 'en']) }}">
+                                            <img src="{{ asset('assets/img/Eng-flag.svg') }}" alt="English" class="flag-icon">
+                                            English
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('changeLang', ['lang' => 'ar']) }}">
+                                            <img src="{{ asset('assets/img/Ar-flag.svg') }}" alt="Arabic" class="flag-icon">
+                                            العربية
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+
+                            {{-- <ul class="nav header-navbar-rht right-menu"
+                                style="justify-content: center;margin-top: 10px;">
+                                <li class="nav-item" style="border-radius: 5px; background-color: #fff">
+                                    @if (App::getLocale() == 'ar')
                                         <a class="nav-link" href="{{ route('changeLang', ['lang' => 'en']) }}">
                                             EN
                                         </a>
-                                    </li>
-                                @else
-                                    <li class="nav-item">
+                                    @else
                                         <a class="nav-link" href="{{ route('changeLang', ['lang' => 'ar']) }}">
                                             ع
                                         </a>
-                                    </li>
-                                @endif
-                            </ul>
+                                    @endif
+                                </li>
+                            </ul> --}}
                         </div>
                     </nav>
                 </div>
             </header>
+        {{-- </div>
+    </section> --}}
+    <script src="{{ asset('assets/js/jquery-3.2.1.slim.min.js')}}"></script>
+    <script>
+        function DropDown(el) {
+            this.dd = el;
+            this.initEvents();
+        }
+        DropDown.prototype = {
+            initEvents: function() {
+                var obj = this;
+
+                obj.dd.on('click', function(event) {
+                    $(this).toggleClass('active');
+                    event.stopPropagation();
+                });
+            }
+        }
+
+        $(function() {
+
+            var dd = new DropDown($('#dd'));
+
+            $(document).click(function() {
+                // all dropdowns
+                $('.wrapper-dropdown-5').removeClass('active');
+            });
+
+        });
+    </script>
