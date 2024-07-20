@@ -6,15 +6,18 @@ return [
     'speciality' => [
         //ADD FORM CONTENT
         'add_speciality'             =>   'أضف التخصص',
-        'speciality_name'            =>   'اسم التخصص',
-        'enter_speciality_name'      =>   'أدخل اسم التخصص',
+        'speciality_name_en'            =>   'اسم التخصص بالانجليزية',
+        'speciality_name_ar'            =>   'اسم التخصص بالعربية',
+        'enter_speciality_name_en'      =>   'أدخل اسم التخصص بالانجليزية',
+        'enter_speciality_name_ar'      =>   'أدخل اسم التخصص بالعربية',
         'image'                      =>   'صورة',
         'add_speciality_btn'         =>   'أضف التخصص',
 
         // list page content
         'specialities'               =>   'التخصصات',
         'id'                         =>   'بطاقة تعريف',
-        'name'                       =>   'اسم',
+        'name_ar'                       =>   'اسم بالعربية',
+        'name_en'                       =>   'اسم بالانجليزية',
         'created_at'                 =>   'أنشئت في',
         'action'                     =>   'فعل',
         'add_new'                    =>    'اضف جديد ',

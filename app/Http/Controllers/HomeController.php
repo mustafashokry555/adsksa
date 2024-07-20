@@ -23,11 +23,16 @@ class HomeController extends Controller
 {
     public function welcome()
     {
+        $lang = App::getLocale();
         return view('welcome', [
             'blogs' => Blog::with('user')->inRandomOrder()->latest()->take(3)->get(),
             'doctors' => User::query()->where('user_type', 'D')->take('8')->latest()->get(),
             'setting' => Settings::query()->first(),
-            'specialities' => Speciality::query()->orderByDesc('id')->get(),
+            'specialities' => Speciality::select(
+                'id',
+                DB::raw("IFNULL(name_{$lang}, name_en) as name"),
+                'image'
+            )->orderByDesc('id')->get(),
             'insurances' => Insurance::all(),
 
         ]);

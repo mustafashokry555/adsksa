@@ -23,7 +23,7 @@
           //$(this).toggleClass("active");
         });*/
     });
-    var url = "{{ route('changeLang') }}";
+    var url = "{{ route('changeLang', ['lang' => 'ar']) }}";
 
     $(".changeLang").change(function(){
         window.location.href = url + "?lang="+ $(this).val();

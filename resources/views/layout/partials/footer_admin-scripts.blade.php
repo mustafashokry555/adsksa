@@ -32,7 +32,7 @@
 		<script src="{{ URL::asset('/assets_admin/js/app.js')}}"></script>
 		<script type="text/javascript">
 
-    var url = "{{ route('changeLang') }}";
+    var url = "{{ route('changeLang', ['lang' => 'ar']) }}";
 
     $(".changeLang").change(function(){
         window.location.href = url + "?lang="+ $(this).val();

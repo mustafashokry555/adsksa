@@ -45,7 +45,8 @@ class SpecialityController extends Controller
     public function store(Request $request)
     {
         $attributes = $request->validate([
-            'name' => 'required',
+            'name_en' => 'required',
+            'name_ar' => 'required',
             'image' => 'required|image'
         ]);
         if ($file = $request->file('image')) {
@@ -84,7 +85,8 @@ class SpecialityController extends Controller
     {
         if ($speciality = Speciality::find($id)) {
             $attributes = $request->validate([
-                'name' => 'required',
+                'name_en' => 'required',
+                'name_ar' => 'required',
                 'image' => 'image'
             ]);
 

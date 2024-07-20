@@ -19,6 +19,8 @@ class LanguageManager
     {
         if (session()->has('locale')) {
             App::setLocale(session()->get('locale'));
+        }else {
+            App::setLocale(config('app.locale'));
         }
 
         return $next($request);

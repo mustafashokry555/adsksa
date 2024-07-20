@@ -5,15 +5,18 @@ return [
      'speciality' => [
         // add form content
                 'add_speciality'             =>   'Add Speciality',
-                'speciality_name'            =>   'Speciality name',
-                'enter_speciality_name'      =>   'Enter Speciality name',
+                'speciality_name_en'            =>   'Speciality name EN',
+                'speciality_name_ar'            =>   'Speciality name AR',
+                'enter_speciality_name_en'      =>   'Enter Speciality name EN',
+                'enter_speciality_name_ar'      =>   'Enter Speciality name AR',
                 'image'                      =>   'Image',
                 'add_speciality_btn'         =>   'Add Speciality',
 
          // LIST PAGE CONTENT
                 'specialities'               =>   'specialities',
                 'id'                         =>   'ID',
-                'name'                       =>   'Name',
+                'name_ar'                       =>   'Name AR',
+                'name_en'                       =>   'Name EN',
                 'created_at'                 =>   'Created At',
                 'action'                     => 'Action',
                 'add_new'                   =>  'Add New',
