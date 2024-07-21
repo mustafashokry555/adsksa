@@ -100,25 +100,80 @@ class MainController extends Controller
     // API for All Insurances (Done with Lang)
     public function get_insurances(Request $request)
     {
-        $query = Insurance::query();
-        if (request('city')) {
-            $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
-            ->pluck('id');
-            $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
-                $query->whereIn('hospital_id', $hospitals_ids);
-            });
+        try {
+            $query = Insurance::query();
+            if (request('city')) {
+                $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
+                ->pluck('id');
+                $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
+                    $query->whereIn('hospital_id', $hospitals_ids);
+                });
+            }
+            if (request('search')) {
+                $query->where(function ($query) {
+                    $query->where("name_en", 'like', '%' . request('search') . '%')
+                    ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                });
+            }
+            $insurance = $query->select(
+                'id',
+                DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
+            )->orderBy('id', 'desc')->get();
+            return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
         }
-        if (request('search')) {
-            $query->where(function ($query) {
-                $query->where("name_en", 'like', '%' . request('search') . '%')
-                ->orWhere("name_ar", 'like', '%' . request('search') . '%');
-            });
+    }
+    // API for All Doctoes (Done with Out Lang)
+    public function DoctorWithFilter(Request $request)
+    {
+        try {
+            $hospital_query = Hospital::query();
+            if(request('insurance') && !empty(request('insurance'))){
+                $hospital_query->whereHas('insurances', function ($query) {
+                    $query->where('insurance_id', request('insurance'));
+                });    
+            }
+            if (request('city')) {
+                $hospital_query = $hospital_query->where('city', 'like', '%' . request('city') . '%');
+            }
+            $hospital_ids = $hospital_query->pluck('id');
+            $query = User::query();
+            if (request('search')) {
+                $query->where(function ($query) {
+                    $query->where("name", 'like', '%' . request('search') . '%');
+                });
+            }
+            if (request('speciality') && !empty(request('speciality'))) {
+                $query->where(function ($query) {
+                    $query->where("speciality_id", request('speciality'));
+                });
+            }
+            $doctors = $query->where('user_type', 'D')
+            ->whereIn('hospital_id', $hospital_ids)
+            ->with(['speciality', 'hospital', 'hospital.insurances'])->get();
+            return $this->SuccessResponse(200, 'Doctor list', $doctors);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
         }
-        $insurance = $query->select(
-            'id',
-            DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
-        )->orderBy('id', 'desc')->get();
-        return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
+        // $keyword = $request->search;
+        // $doctors = User::with(['speciality', 'hospital', 'hospital.insurances'])
+        // ->where('user_type', 'D')
+        // ->where(function ($query) use ($keyword) {
+        //     $query->where('name', 'like', '%' . $keyword . '%')
+        //         ->orWhere('address', 'like', '%' . $keyword . '%')
+        //         ->orWhereHas('hospital', function ($subquery) use ($keyword) {
+        //             $subquery->where('hospital_name', 'like', '%' . $keyword . '%');
+        //         })
+        //         ->orWhereHas('speciality', function ($subquery) use ($keyword) {
+        //             $subquery->where('name', 'like', '%' . $keyword . '%');
+        //         })
+        //         ->orWhereHas('hospital.insurances', function ($subquery) use ($keyword) {
+        //             $subquery->where('name_en', 'like', '%' . $keyword . '%')
+        //             ->orWhere('name_ar', 'like', '%' . $keyword . '%');
+        //         });
+        // })
+        // ->get();
     }
     /* End Search For Doctors APIs*/
 }

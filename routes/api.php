@@ -30,11 +30,11 @@ Route::post('verify',[AuthController::class,'VerifyOtp']);
 Route::get('specialities',[MainController::class,'allSpecialities']);
 Route::get('cities',[MainController::class,'allCities']);
 Route::get('insurances',[MainController::class,'get_insurances']);
+Route::get('doctors',[MainController::class,'DoctorWithFilter']);
 
 Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::get('doctor-profile/{id}',[CommonController::class,'DoctorProfile']);
-Route::get('doctors',[CommonController::class,'DoctorWithFilter']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
 Route::get('availability/{id}',[CommonController::class,'get_availability']);
 Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
