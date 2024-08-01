@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Hospital extends Model
 {
     use HasFactory;
-    protected $fillable = ['hospital_name', 'address','city', 'country', 'state', 'zip', 'image'];
+    protected $fillable = ['hospital_name_ar','hospital_name_en', 'address','city', 'country', 'state', 'zip', 'image'];
 
     public function users()
     {
@@ -39,6 +39,5 @@ class Hospital extends Model
 
     public function getImageAttribute($value){
         if($value !=null) return env('BASE_URL').'images/'.$value ;
-
     }
 }

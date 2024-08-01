@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    protected $lang;
+
+    public function __construct(Request $request)
+    {
+        $this->lang = $request->header('lang', 'en');
+    }
     // Done
     public function login(Request $request)
     {
@@ -45,9 +51,14 @@ class AuthController extends Controller
     public function PatientProfile(Request $request)
     {
         $patient = Auth::user();
-
+        $lang = $request->header('lang', 'en');
         if ($patient) {
             $patient = User::with(['patientDetails', 'appSetting'])->find($patient->id);
+            if( $lang == 'ar' && (!empty($patient->name_ar) || $patient->name_ar != null)){
+                $patient->name = $patient->name_ar;
+            }else{
+                $patient->name = $patient->name_en;
+            }
         }
         return $this->SuccessResponse(200, 'Patient profile!', $patient);
     }
