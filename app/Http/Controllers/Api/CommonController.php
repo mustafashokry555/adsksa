@@ -113,7 +113,8 @@ class CommonController extends Controller
                     'users.profile_image',
                     DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"),
                     'specialities.name as speciality_name',
-                    'hospitals.hospital_name'
+                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                    // 'hospitals.hospital_name'
                 )
                 ->paginate(10);
 
@@ -141,7 +142,8 @@ class CommonController extends Controller
                     'specialities.name as speciality_name',
                     'users.description',
                     DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with the image path
-                    'hospitals.hospital_name',
+                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                    // 'hospitals.hospital_name'
                     'hospitals.id as hospital_id'
                 )
                 ->first();
@@ -183,7 +185,8 @@ class CommonController extends Controller
                 $query->where('name', 'like', '%' . $keyword . '%')
                     ->orWhere('address', 'like', '%' . $keyword . '%')
                     ->orWhereHas('hospital', function ($subquery) use ($keyword) {
-                        $subquery->where('hospital_name', 'like', '%' . $keyword . '%');
+                        $subquery->where('hospital_name_en', 'like', '%' . $keyword . '%')
+                        ->orWhere('hospital_name_ar', 'like', '%' . $keyword . '%');
                     })
                     ->orWhereHas('speciality', function ($subquery) use ($keyword) {
                         $subquery->where('name', 'like', '%' . $keyword . '%');
@@ -243,7 +246,8 @@ class CommonController extends Controller
                     'specialities.name as speciality_name',
                     'doctoruser.description',
                     DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with speciality_image
-                    'hospitals.hospital_name',
+                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                    // 'hospitals.hospital_name'
                     'hospitals.id as hospital_id',
                     'appointments.booking_for',
                     'appointments.concern',
@@ -266,7 +270,8 @@ class CommonController extends Controller
         $query = Hospital::query();
         if (request('search')) {
             $query->where(function ($query) {
-                $query->where('hospital_name', 'like', '%' . request('search') . '%');
+                $query->where('hospital_name_en', 'like', '%' . request('search') . '%')
+                ->oeWhere('hospital_name_ar', 'like', '%' . request('search') . '%');
             });
         }
 
@@ -312,7 +317,8 @@ class CommonController extends Controller
                 DB::raw("CONCAT('$baseUrl', users.profile_image) as profile_image"), // Concatenate the base URL with profile_image
                 'specialities.name as speciality_name',
                 DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with speciality_image
-                'hospitals.hospital_name'
+                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                    // 'hospitals.hospital_name'
             )
             ->paginate(10);
         return $this->SuccessResponse(200, 'wishlist  Data', $doctors);
@@ -321,7 +327,13 @@ class CommonController extends Controller
     public function SpecialityDoctors($id)
     {
         try {
-            $profile = User::join('specialities', 'specialities.id', 'users.speciality_id')->join('hospitals', 'hospitals.id', 'users.hospital_id')->select('users.id', 'users.name', 'users.profile_image', 'specialities.name as speciality_name', 'users.description', 'specialities.image as speciality_image', 'hospitals.hospital_name', 'hospitals.id as hospital_id')->where('users.speciality_id', $id)->get();
+            $profile = User::join('specialities', 'specialities.id', 'users.speciality_id')
+            ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+            ->select('users.id', 'users.name', 'users.profile_image', 'specialities.name as speciality_name',
+            'users.description', 'specialities.image as speciality_image',
+            DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+            // 'hospitals.hospital_name'
+            'hospitals.id as hospital_id')->where('users.speciality_id', $id)->get();
 
             return $this->SuccessResponse(200, 'Doctor profiles by specialty', $profile);
         } catch (\Throwable $th) {
@@ -411,7 +423,17 @@ class CommonController extends Controller
                 ->where('appointments.patient_id', $request->user()->id)->where('appointments.id', request('appointment_id'));
 
 
-            $appointment = $query->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')->join('specialities', 'specialities.id', 'doctoruser.speciality_id')->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')->select('doctoruser.id as doctor_id', 'doctoruser.name', 'doctoruser.profile_image', 'specialities.name as speciality_name', 'doctoruser.description', 'specialities.image as speciality_image', 'hospitals.hospital_name', 'hospitals.id as hospital_id', 'appointments.booking_for', 'appointments.concern', 'appointments.appointment_date', 'appointments.appointment_time', 'appointments.appointment_type', 'appointments.description', 'appointments.status as appointment_status')->orderBy('appointments.id', 'desc')->first();
+            $appointment = $query->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
+            ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
+            ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
+            ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
+            ->select('doctoruser.id as doctor_id', 'doctoruser.name', 'doctoruser.profile_image',
+            'specialities.name as speciality_name', 'doctoruser.description', 'specialities.image as speciality_image',
+            DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+            // 'hospitals.hospital_name'
+            'hospitals.id as hospital_id', 'appointments.booking_for', 'appointments.concern', 'appointments.appointment_date',
+            'appointments.appointment_time', 'appointments.appointment_type', 'appointments.description',
+            'appointments.status as appointment_status')->orderBy('appointments.id', 'desc')->first();
             $doctoruser = User::find($appointment->doctor_id);
 
             // Access the "profile_image" attribute using the accessor
@@ -470,7 +492,8 @@ class CommonController extends Controller
                 'appointments.appointment_type',
                 'appointments.status as appointment_status',
                 'doctoruser.name as doctor_name',
-                'hospitals.hospital_name as hospitals_name',
+                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                // 'hospitals.hospital_name'
                 'patientuser.name as patient_name',
             ])->orderBy('appointments.id', 'desc')
             ->paginate(10);
@@ -540,8 +563,15 @@ class CommonController extends Controller
                 ->join('specialities', 'specialities.id', 'users.speciality_id')
                 ->join('hospitals', 'hospitals.id', 'users.hospital_id')
                 ->where('users.user_type', '=', 'D')
-                ->select('users.id', 'users.name', 'users.profile_image', 'specialities.name as speciality_name', 'users.description', 'specialities.image as speciality_image', 'hospitals.hospital_name', 'hospitals.id as hospital_id', DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating'))
-                ->groupBy('users.id', 'users.name', 'users.profile_image', 'specialities.name', 'users.description', 'specialities.image', 'hospitals.hospital_name', 'hospitals.id')
+                ->select('users.id', 'users.name', 'users.profile_image', 'specialities.name as speciality_name',
+                'users.description', 'specialities.image as speciality_image',
+                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                // 'hospitals.hospital_name'
+                'hospitals.id as hospital_id', DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating'))
+                ->groupBy('users.id', 'users.name', 'users.profile_image', 'specialities.name', 'users.description',
+                'specialities.image',
+                'hospitals.hospital_name_ar', 'hospitals.hospital_name_en',
+                'hospitals.id')
                 ->orderBy('avg_rating', 'DESC')
 
                 ->paginate(12);

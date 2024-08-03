@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
           ['website_name' => 'Hospital maangement',]
         );
         Hospital::create([
-            'hospital_name' => 'Hospital 1',
+            'hospital_name_en' => 'Hospital 1',
+            'hospital_name_ar' => 'مستشفى 1',
             'address' => 'jordan',
             'country' => 'jordan',
             'state' => 'jordan',

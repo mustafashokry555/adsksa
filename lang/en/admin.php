@@ -63,7 +63,8 @@ return [
     'hospital' => [
         'add_hospital'                 =>  'Add New Hospital',
         'insurance'                    => 'Insurance',
-        'hospital_name'               => 'Hopital Name',
+        'hospital_name_en'               => 'Hopital Name in EN',
+        'hospital_name_ar'               => 'Hopital Name in AR',
         'address'                      => 'Address',
         'city'                        => 'City',
         'country'                     => 'Country',
@@ -78,7 +79,8 @@ return [
 
         'hospitals'                => 'Hospitals',
         'id'                           => 'Id',
-        'name'                         =>  'Name',
+        'name_en'                         =>  'Name in EN',
+        'name_ar'                         =>  'Name in AR',
         'email'                        => 'Email',
         'location'                     => 'Location',
         'insurance'                     => 'Insurance',
@@ -86,7 +88,8 @@ return [
         'action'                      => 'Action',
         'hospitals'                   => 'Hospitals',
 
-        'enter_hospital_name'               => 'Enter Hopital Name',
+        'enter_hospital_name_en'               => 'Enter Hopital Name in EN',
+        'enter_hospital_name_ar'               => 'Enter Hopital Name in AR',
         'enter_address'                      => 'Enter Address',
         'enter_city'                        => 'Enter City',
         'enter_country'                     => 'Enter Country',

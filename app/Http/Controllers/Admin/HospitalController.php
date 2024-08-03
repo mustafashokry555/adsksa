@@ -60,7 +60,8 @@ class HospitalController extends Controller
     public function store(Request $request)
     {
         $attributes = $request->validate([
-            'hospital_name' => 'required',
+            'hospital_name_en' => 'required',
+            'hospital_name_ar' => 'required',
             'image' => 'required|image',
             'address' => 'required',
             'country' => 'required',
@@ -152,7 +153,8 @@ class HospitalController extends Controller
         $hospital = Hospital::find($id);
         if ($hospital) {
             $attributes = $request->validate([
-                'hospital_name' => 'required',
+                'hospital_name_en' => 'required',
+                'hospital_name_ar' => 'required',
                 'image' => 'image',
                 'address' => 'required',
                 'country' => 'required',
@@ -174,7 +176,8 @@ class HospitalController extends Controller
             $hospital->update($attributes);
             if ($admin = User::query()->where('hospital_id', $id)->where('user_type', 'H')->first())
                 $data = [
-                    'name' => $request->hospital_name,
+                    'name_en' => $request->hospital_name_en,
+                    'name_ar' => $request->hospital_name_ar,
                     'email' => $request->email,
                 ];
             if (@$attributes['image']) {

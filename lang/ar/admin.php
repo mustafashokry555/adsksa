@@ -66,7 +66,8 @@ return [
     'hospital' => [
         'add_hospital'                 =>  'إضافة مستشفى جديد',
         'insurance'                    => 'تأمين',
-        'hospital_name'               => 'اسم المستشفى',
+        'hospital_name_en'               => 'اسم المستشفى بالانجليزية',
+        'hospital_name_ar'               => 'اسم المستشفى بالعربية',
         'address'                      => 'اسم المستشفى',
         'city'                        => 'مدينة',
         'country'                     => 'دولة',
@@ -81,13 +82,15 @@ return [
 
         'hospitals'                   => 'المستشفيات',
         'id'                           => 'بطاقة تعريف',
-        'name'                         =>  'اسم',
+        'name_ar'                         =>  'اسم بالعربية',
+        'name_en'                         =>  'اسم بالانجليزية',
         'email'                        => 'بريد إلكتروني',
         'location'                     => 'موقع',
         'created_at'                   => 'أنشئت في',
         'action'                      => 'فعل',
 
-        'enter_hospital_name'               => 'أدخل اسم المستشفى',
+        'enter_hospital_name_en'               => 'أدخل اسم المستشفى بالانجليزية',
+        'enter_hospital_name_ar'               => 'أدخل اسم المستشفى بالعربية',
         'enter_address'                      => 'أدخل العنوان',
         'enter_city'                        => 'أدخل المدينة',
         'enter_country'                     => 'أدخل البلد',

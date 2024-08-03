@@ -77,8 +77,12 @@ class HomeController extends Controller
             $data['monthlyReport'] = $monthReport[0]; // weekly and monthly both in same code 
             $data['totalRevanue'] =  $monthReport[1];
             $data['distinctYears'] = DB::table('appointments')->select(DB::raw('YEAR(appointment_date) as year'))->distinct()->pluck('year');
-            $data['hospitals'] = DB::table('hospitals')->select('id', 'hospital_name')->get();
-            $data['top_doctors'] = User::with('specializations')->where(['user_type' => 'D', 'status' => 'Active'])->select('name', 'id', 'profile_image')->take(5)->get();
+            $data['hospitals'] = DB::table('hospitals')->select('id', DB::raw("IFNULL(hospital_name_{$this->getLang()}, hospital_name_en) as hospital_name"))->get();
+            $data['top_doctors'] = User::with('specializations')->where(['user_type' => 'D', 'status' => 'Active'])
+            ->select(
+                DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name"),
+                //'name'
+                'id', 'profile_image')->take(5)->get();
             $data['upcoming_appointments'] = Appointment::with(['doctor', 'patient'])->whereDate('appointment_date', '>', $todayFormatted)->get();
             $data['today_appointments'] = Appointment::query()->with('doctor', 'patient')->whereDate('appointment_date', $todayFormatted)->get();
             $distinctPatientIDs = Appointment::where('appointment_date', '>', $firstDayOfCurrentMonth)
@@ -167,8 +171,8 @@ class HomeController extends Controller
         // dd($query);
         if (request('search')) {
             $query->where(function ($query) {
-                $query->where('name', 'like', '%' . request('search') . '%');
-                // ->orWhere('name', 'like', '%' . request('name') . '%');
+                $query->where('name_en', 'like', '%' . request('search') . '%')
+                ->orWhere('name_ar', 'like', '%' . request('search') . '%');
             });
         }
         if (request('city')) {
@@ -200,7 +204,7 @@ class HomeController extends Controller
             'patient.doctor.search',
             [
                 'doctors' => $doctors,
-                'specialities' => Speciality::query()->orderBy('name')->get(),
+                'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
                 'queryParams' => request()->query(),
             ]
         );
@@ -209,7 +213,7 @@ class HomeController extends Controller
     {
         return view('patient.doctor.search_index', [
             'doctors' => User::latest()->where('user_type', 'D')->get(),
-            'specialities' => Speciality::query()->orderBy('name')->get(),
+            'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
         ]);
     }
     public function search_pharmacy()
