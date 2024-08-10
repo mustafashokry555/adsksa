@@ -65,7 +65,7 @@ class MainController extends Controller
             if (request('search')) {
                 $query->where(function ($query) {
                     $query->where("name_en", 'like', '%' . request('search') . '%')
-                    ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                 });
             }
 
@@ -85,7 +85,7 @@ class MainController extends Controller
     }
     // API for All Cities (Done with Lang)
     public function allCities(Request $request)
-    {   
+    {
         try {
             $query = Hospital::query();
             if (request('search')) {
@@ -106,7 +106,7 @@ class MainController extends Controller
             $query = Insurance::query();
             if (request('city')) {
                 $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
-                ->pluck('id');
+                    ->pluck('id');
                 $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
                     $query->whereIn('hospital_id', $hospitals_ids);
                 });
@@ -114,7 +114,7 @@ class MainController extends Controller
             if (request('search')) {
                 $query->where(function ($query) {
                     $query->where("name_en", 'like', '%' . request('search') . '%')
-                    ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                 });
             }
             $insurance = $query->select(
@@ -131,7 +131,7 @@ class MainController extends Controller
     {
         $token = request()->bearerToken();
         $patient_id = null;
-        if($token){
+        if ($token) {
             $tokenModel = PersonalAccessToken::findToken($token);
             if ($tokenModel) {
                 $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
@@ -139,10 +139,10 @@ class MainController extends Controller
         }
         try {
             $hospital_query = Hospital::query();
-            if(request('insurance') && !empty(request('insurance'))){
+            if (request('insurance') && !empty(request('insurance'))) {
                 $hospital_query->whereHas('insurances', function ($query) {
                     $query->where('insurance_id', request('insurance'));
-                });    
+                });
             }
             if (request('city')) {
                 $hospital_query = $hospital_query->where('city', 'like', '%' . request('city') . '%');
@@ -162,65 +162,159 @@ class MainController extends Controller
 
             // Perform the left join with the reviews table
             $query->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
-            ->leftJoin('wishlists', function($join) use ($patient_id) {
-                $join->on('users.id', '=', 'wishlists.doctor_id')
-                    ->where('wishlists.patient_id', '=', $patient_id);
-            })
-            ->where('user_type', 'D')
-            ->whereIn('users.hospital_id', $hospital_ids)
-            ->select(
-                'users.id',
-                DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
-                'users.profile_image',
-                DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
-                DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
-                DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                'users.gender',
-                'users.pricing',
-                'users.hospital_id', // Include hospital_id for the relationship
-                'users.speciality_id', // Include speciality_id for the relationship
-            )
-            ->with([
-                'hospital' => function ($query) {
-                    $query->select([
-                        'id',
-                        DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as hospital_name"),
-                    ]);
-                },
-                'speciality' => function ($query) {
-                    $query->select([
-                        'id',
-                        DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
-                    ]);
-                },
-                'hospital.insurances'
-            ])
-            ->groupBy('wishlists.id', 'users.id', 'users.hospital_id', 'users.speciality_id', 'users.name_en',
-                'users.pricing', 'users.gender', 'users.name_ar', 'users.profile_image'); // Group by user fields
+                ->leftJoin('wishlists', function ($join) use ($patient_id) {
+                    $join->on('users.id', '=', 'wishlists.doctor_id')
+                        ->where('wishlists.patient_id', '=', $patient_id);
+                })
+                ->where('user_type', 'D')
+                ->whereIn('users.hospital_id', $hospital_ids)
+                ->select(
+                    'users.id',
+                    DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
+                    DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
+                    DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
+                    'users.profile_image',
+                    DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                    'users.gender',
+                    'users.pricing',
+                    'users.hospital_id', // Include hospital_id for the relationship
+                    'users.speciality_id', // Include speciality_id for the relationship
+                )
+                ->with([
+                    'hospital' => function ($query) {
+                        $query->select([
+                            'id',
+                            DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as hospital_name"),
+                        ]);
+                    },
+                    'speciality' => function ($query) {
+                        $query->select([
+                            'id',
+                            DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
+                        ]);
+                    }
+                ])
+                ->groupBy(
+                    'wishlists.id',
+                    'users.id',
+                    'users.hospital_id',
+                    'users.speciality_id',
+                    'users.name_en',
+                    'users.pricing',
+                    'users.gender',
+                    'users.name_ar',
+                    'users.profile_image'
+                ); // Group by user fields
 
             $doctors = $query->get();
             return $this->SuccessResponse(200, 'Doctor list', $doctors);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
         }
-        // $keyword = $request->search;
-        // $doctors = User::with(['speciality', 'hospital', 'hospital.insurances'])
-        // ->where('user_type', 'D')
-        // ->where(function ($query) use ($keyword) {
-        //     $query->where('name', 'like', '%' . $keyword . '%')
-        //         ->orWhere('address', 'like', '%' . $keyword . '%')
-        //         ->orWhereHas('hospital', function ($subquery) use ($keyword) {
-        //             $subquery->where('hospital_name', 'like', '%' . $keyword . '%');
-        //         })
-        //         ->orWhereHas('speciality', function ($subquery) use ($keyword) {
-        //             $subquery->where('name', 'like', '%' . $keyword . '%');
-        //         })
-        //         ->orWhereHas('hospital.insurances', function ($subquery) use ($keyword) {
-        //             $subquery->where('name_en', 'like', '%' . $keyword . '%')
-        //             ->orWhere('name_ar', 'like', '%' . $keyword . '%');
-        //         });
-        // })
-        // ->get();
     }
     /* End Search For Doctors APIs*/
+
+    /* Start Doctor Profile API*/
+    public function DoctorProfile($id)
+    {
+        try {
+            $baseUrl = getenv('BASE_URL') . 'images/'; // Replace with your actual base URL
+            $profile = User::where('users.id', $id)
+                ->join('specialities', 'specialities.id', 'users.speciality_id')
+                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.profile_image',
+                    'users.pricing',
+                    'specialities.name as speciality_name',
+                    'users.description',
+                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with the image path
+                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                    // 'hospitals.hospital_name'
+                    'hospitals.id as hospital_id'
+                )
+                ->first();
+
+            $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
+            $profile['specialization'] = $specialization;
+            return $this->SuccessResponse(200, 'Doctor profile', $profile);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
+    /* End Doctor Profile API*/
+
+    // Start Avail Slot API
+    public function get_availability(Request $request, $id)
+    {
+        $doctor = User::find($id);
+        $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
+
+        $time_interval = 15;
+        // Create selected CarbonDate instance
+        $selectedDate = CarbonImmutable::parse($request->date);
+        // create date
+        $date = $selectedDate->format("Y-m-d");
+        // day of the week
+        $day_name = strtolower($selectedDate->format("l"));
+
+        // Doctor set unavailabilty on a specific date
+        $unavailability = $doctor->unavailailities()->where("date", $date)->first();
+        // return Not available
+        if ($unavailability) {
+
+            return $this->SuccessResponse(200, "Not Available", []);
+        }
+
+        // Check if doctor set One time appointment on a specific date
+        $availability = null;
+        $oneTimeAvailability = $doctor->oneTimeailabilities()->where("date", $date)->first();
+        if ($oneTimeAvailability) {
+            // Get time intervals to create slots
+            $time_interval = $oneTimeAvailability->time_interval ? $oneTimeAvailability->time_interval : 15;
+            $availability = $oneTimeAvailability;
+        } else {
+            $regularAvailability = $doctor->regularAvailabilities()->where("week_day", $day_name)->first();
+            if ($regularAvailability) {
+                // Get time intervals to create slots
+                $time_interval = $regularAvailability->time_interval ? $regularAvailability->time_interval : 15;
+                $availability = $regularAvailability;
+            }
+        }
+
+        // if availability is null
+        if (!$availability) {
+
+            return $this->SuccessResponse(200, "Not Available", []);
+        }
+        // Appointments of selected date
+        $appointments = Appointment::where('appointment_date', $date)
+            ->where('doctor_id', $doctor->id)->pluck("appointment_time");
+
+        // Creating Slots
+        $slots = [];
+        $filteredSlots = collect([]);
+        $intervals = collect($availability->slots);
+
+        // Fliter slots
+        foreach ($intervals as  $interval) {
+            $start_dt = $date . $interval["start_time"];
+            $end_dt = $date . $interval["end_time"];
+
+            // Create Slots
+            $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
+
+            foreach ($slots as $slot) {
+                if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
+                    if (!$appointments->contains($slot->format("H:i:s"))) {
+                        $filteredSlots->push($slot->format("H:i"));
+                    }
+                }
+            }
+        }
+        return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->slice(0, -1)->all());
+    }
+    // End Avail Slot API
+
 }

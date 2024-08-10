@@ -99,7 +99,7 @@ class AuthController extends Controller
             // $twilio = new Client($sid, $token);
             // DB::beginTransaction();
             $user = User::create([
-                'name' => $request->name,
+                'name' => $request->name_en,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'mobile'  => $request->mobile,
