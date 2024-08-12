@@ -224,7 +224,8 @@ class MainController extends Controller
                 ->join('hospitals', 'hospitals.id', 'users.hospital_id')
                 ->select(
                     'users.id',
-                    'users.name',
+                    // 'users.name',
+                    DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
                     'users.profile_image',
                     'users.pricing',
                     'specialities.name as speciality_name',
