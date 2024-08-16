@@ -151,7 +151,8 @@ class MainController extends Controller
             $query = User::query();
             if (request('search')) {
                 $query->where(function ($query) {
-                    $query->where("name", 'like', '%' . request('search') . '%');
+                    $query->where("name_en", 'like', '%' . request('search') . '%')
+                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                 });
             }
             if (request('speciality') && !empty(request('speciality'))) {
@@ -228,7 +229,8 @@ class MainController extends Controller
                     DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
                     'users.profile_image',
                     'users.pricing',
-                    'specialities.name as speciality_name',
+                    // 'specialities.name as speciality_name',
+                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
                     'users.description',
                     DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with the image path
                     DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
