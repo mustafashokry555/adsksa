@@ -239,7 +239,7 @@ class AuthController extends Controller
             }
 
             $patient = User::find($request->user()->id);
-            $patient->name_en = $request->name;
+            $patient->name_en = $request->name_en;
             $patient->profile_image = $imageName ?? explode(env('BASE_URL'), $patient->profile_image)[1];
             $patient->address = $request->address;
             $patient->email = $request->email ?? $patient->email;
