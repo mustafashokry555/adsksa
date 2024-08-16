@@ -58,11 +58,11 @@ Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
 Route::middleware(['auth:sanctum','patient'])->group( function () {
     
     Route::post('app-setting',[MainController::class,'updateOrCreateAppSetting']);
+    Route::post('add-to-wishlist',[MainController::class,'AddToWishlist']);
+    Route::get('wishlist',[MainController::class,'Wishlist']);
 
     Route::post('book-appointment',[CommonController::class,'BookAppointment']);
     Route::get('patient-appointments',[CommonController::class,'PatientAppointments']);
-    Route::post('add-to-wishlist',[CommonController::class,'AddToWishlist']);
-    Route::get('wishlist',[CommonController::class,'Wishlist']);
     Route::post('cancel-appointment',[CommonController::class,'CancelAppointment']);
 
     Route::get('profile',[AuthController::class,'PatientProfile']);
