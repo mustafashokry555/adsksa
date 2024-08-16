@@ -68,7 +68,7 @@ class AuthController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'max:255'],
+                'name_en' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'min:6'],
                 'mobile' => 'required|numeric|digits:9',//unique:users,mobile
@@ -99,7 +99,7 @@ class AuthController extends Controller
             // $twilio = new Client($sid, $token);
             // DB::beginTransaction();
             $user = User::create([
-                'name' => $request->name_en,
+                'name_en' => $request->name_en,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'mobile'  => $request->mobile,
@@ -219,7 +219,7 @@ class AuthController extends Controller
     public function UpdatePatientProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
+            'name_en' => ['required', 'string', 'max:255'],
             'profile_image' => 'nullable|image|mimes:jpeg,png,gif|max:2048',
         ]);
 
@@ -239,7 +239,7 @@ class AuthController extends Controller
             }
 
             $patient = User::find($request->user()->id);
-            $patient->name = $request->name;
+            $patient->name_en = $request->name;
             $patient->profile_image = $imageName ?? explode(env('BASE_URL'), $patient->profile_image)[1];
             $patient->address = $request->address;
             $patient->email = $request->email ?? $patient->email;
