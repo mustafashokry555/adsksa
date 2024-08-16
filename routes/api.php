@@ -34,12 +34,12 @@ Route::get('insurances',[MainController::class,'get_insurances']);
 Route::get('doctors',[MainController::class,'DoctorWithFilter']);
 Route::get('doctor-profile/{id}',[MainController::class,'DoctorProfile']);
 Route::get('availability/{id}',[MainController::class,'get_availability']);
+Route::get('best-doctors',[MainController::class,'bestsDoctors']);
 
 Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
 Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
-Route::get('best-doctors',[CommonController::class,'bestsDoctors']);
 
 // Route::get('images/{name}', function ($name) {
 //     $path = public_path('images/' . $name);

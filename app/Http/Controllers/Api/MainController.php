@@ -253,7 +253,7 @@ class MainController extends Controller
     {
         $doctor = User::find($id);
         $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
-
+        // return $doctor;
         $time_interval = 15;
         // Create selected CarbonDate instance
         $selectedDate = CarbonImmutable::parse($request->date);
@@ -319,5 +319,37 @@ class MainController extends Controller
         return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->slice(0, -1)->all());
     }
     // End Avail Slot API
+
+    // Start bestsDoctors API
+    public function bestsDoctors()
+    {
+        try {
+            $doctors = User::leftJoin('reviews', 'reviews.doctor_id', 'users.id')
+                ->join('specialities', 'specialities.id', 'users.speciality_id')
+                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                ->where('users.user_type', '=', 'D')
+                ->select('users.id',
+                DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
+                // 'users.name',
+                // 'users.profile_image', 'specialities.name as speciality_name',
+                DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                'users.description', 'specialities.image as speciality_image',
+                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                // 'hospitals.hospital_name'
+                'hospitals.id as hospital_id', DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating'))
+                ->groupBy('users.id', 'users.name_ar', 'users.name_en', 'users.profile_image', 'specialities.name_ar',
+                'specialities.name_en', 'users.description',
+                'specialities.image',
+                'hospitals.hospital_name_ar', 'hospitals.hospital_name_en',
+                'hospitals.id')
+                ->orderBy('avg_rating', 'DESC')
+
+            ->paginate(12);
+            return $this->SuccessResponse(200, 'Doctor profiles by specialty', $doctors);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
+    // End bestsDoctors API
 
 }
