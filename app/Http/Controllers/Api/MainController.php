@@ -218,29 +218,63 @@ class MainController extends Controller
     /* Start Doctor Profile API*/
     public function DoctorProfile($id)
     {
+        $token = request()->bearerToken();
+        $patient_id = null;
+        if ($token) {
+            $tokenModel = PersonalAccessToken::findToken($token);
+            if ($tokenModel) {
+                $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+            }
+        }
         try {
             $baseUrl = getenv('BASE_URL') . 'images/'; // Replace with your actual base URL
             $profile = User::where('users.id', $id)
-                ->join('specialities', 'specialities.id', 'users.speciality_id')
-                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
+                ->leftJoin('wishlists', function ($join) use ($patient_id) {
+                    $join->on('users.id', '=', 'wishlists.doctor_id')
+                        ->where('wishlists.patient_id', '=', $patient_id);
+                })
                 ->select(
                     'users.id',
-                    // 'users.name',
-                    DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
+                    DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
+                    DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
+                    DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
                     'users.profile_image',
+                    DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                    'users.gender',
                     'users.pricing',
-                    // 'specialities.name as speciality_name',
-                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                    'users.description',
-                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with the image path
-                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                    // 'hospitals.hospital_name'
-                    'hospitals.id as hospital_id'
+                    'users.hospital_id', // Include hospital_id for the relationship
+                    'users.speciality_id', // Include speciality_id for the relationship
                 )
-                ->first();
+                ->with([
+                    'hospital' => function ($query) {
+                        $query->select([
+                            'id',
+                            DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as hospital_name"),
+                        ]);
+                    },
+                    'speciality' => function ($query) {
+                        $query->select([
+                            'id',
+                            DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
+                        ]);
+                    }
+                ])
+                ->groupBy(
+                    'wishlists.id',
+                    'users.id',
+                    'users.hospital_id',
+                    'users.speciality_id',
+                    'users.name_en',
+                    'users.pricing',
+                    'users.gender',
+                    'users.name_ar',
+                    'users.profile_image'
+                )
+            ->first();
 
-            $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
-            $profile['specialization'] = $specialization;
+            // $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
+            // $profile['specialization'] = $specialization;
             return $this->SuccessResponse(200, 'Doctor profile', $profile);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
@@ -343,7 +377,6 @@ class MainController extends Controller
                 'hospitals.hospital_name_ar', 'hospitals.hospital_name_en',
                 'hospitals.id')
                 ->orderBy('avg_rating', 'DESC')
-
             ->paginate(12);
             return $this->SuccessResponse(200, 'Doctor profiles by specialty', $doctors);
         } catch (\Throwable $th) {
