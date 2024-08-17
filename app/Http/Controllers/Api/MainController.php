@@ -206,7 +206,14 @@ class MainController extends Controller
                     'users.name_ar',
                     'users.profile_image'
                 ); // Group by user fields
-
+            
+            if(request('orderBy') == 'low_price'){
+                $query->orderBy('users.pricing', "ASC");
+            } elseif (request('orderBy') == 'high_price') {
+                $query->orderBy('users.pricing', "DESC");
+            } elseif (request('orderBy') == 'recommend') {
+                $query->orderBy('avg_rating', "DESC");
+            }
             $doctors = $query->get();
             return $this->SuccessResponse(200, 'Doctor list', $doctors);
         } catch (\Throwable $th) {
