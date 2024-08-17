@@ -447,4 +447,199 @@ class MainController extends Controller
         return $this->SuccessResponse(200, 'wishlist  Data', $doctors);
     }
     // End wish List Part
+
+
+    /* Stert Appointment API's */
+    // Book New Appointmentneed need alot of updates
+    public function BookAppointment(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'doctor_id' => 'required', 'integer',
+            'hospital_id' => 'required', 'integer',
+            'appointment_date' => 'required|date_format:Y-m-d',
+            'appointment_time' => 'required|date_format:H:i',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $baseUrl = getenv('BASE_URL') . 'images/';
+            $isExist = Appointment::where(['appointment_date' => $request->appointment_date, 'appointment_time' => $request->appointment_time])->first();
+            if ($isExist) {
+                return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+            }
+            $a = new Appointment();
+            $a->doctor_id = $request->doctor_id;
+            $a->patient_id = $request->user()->id;
+            $a->hospital_id = $request->hospital_id;
+            $a->appointment_date = $request->appointment_date;  
+            $a->appointment_time = $request->appointment_time;
+            $a->appointment_type = $request->appointment_type;
+            $a->booking_for = $request->booking_for;
+            $a->concern = $request->concern;
+            $a->status = "P";
+            $a->description = $request->description;
+
+            $a->save();
+
+            // $user = User::find($request->user()->id);
+            // $user->name = $request->name;
+            // $user->gender = $request->gender;
+            // $user->age = $request->age;
+
+            // $user->save();
+
+
+
+            $appointment = Appointment::where('appointments.patient_id', $request->user()->id)
+                ->where('appointments.id', $a->id)
+                ->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
+                ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
+                ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
+                ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
+                ->select(
+                    // 'doctoruser.name',
+                    DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
+                    DB::raw("CONCAT('$baseUrl', doctoruser.profile_image) as profile_image"), // Concatenate the base URL with profile_image
+                    // 'specialities.name as speciality_name',
+                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                    'doctoruser.description',
+                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with speciality_image
+                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                    // 'hospitals.hospital_name'
+                    'hospitals.id as hospital_id',
+                    'appointments.booking_for',
+                    'appointments.concern',
+                    'appointments.appointment_date',
+                    'appointments.appointment_time',
+                    'appointments.appointment_type',
+                    'appointments.description'
+                )
+                ->first();
+
+            return $this->SuccessResponse(200, 'Appointment details', $appointment);
+        } catch (\Throwable $th) {
+
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
+
+    // Show the Patient Appointment
+    public function PatientAppointments(Request $request)
+    {
+        // single Appointment
+        if (request('appointment_id')) {
+            $query = Appointment::query()
+            ->where('appointments.patient_id', $request->user()->id)->where('appointments.id', request('appointment_id'));
+
+            $appointment = $query->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
+            ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
+            ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
+            ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
+            ->select('doctoruser.id as doctor_id',
+            // 'doctoruser.name',
+            DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
+            'doctoruser.profile_image',
+            // 'specialities.name as speciality_name',
+            DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+            'doctoruser.description', 'specialities.image as speciality_image',
+            DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+            // 'hospitals.hospital_name'
+            'hospitals.id as hospital_id', 'appointments.booking_for', 'appointments.concern', 'appointments.appointment_date',
+            'appointments.appointment_time', 'appointments.appointment_type', 'appointments.description',
+            'appointments.status as appointment_status')->orderBy('appointments.id', 'desc')->first();
+            $doctoruser = User::find($appointment->doctor_id);
+
+            // Access the "profile_image" attribute using the accessor
+            $profileImage = $doctoruser->profile_image;
+
+            // Add the profile_image attribute to the appointment object
+            $appointment->profile_image = $profileImage;
+            return $this->SuccessResponse(200, 'Patient`s Appointments', $appointment);
+        }
+
+
+        $baseUrl = getenv('BASE_URL') . 'images/'; // Replace with your actual base URL
+
+        $query = Appointment::query()
+            ->where('appointments.patient_id', $request->user()->id);
+
+        if (request('status')) {
+            switch (request('status')) {
+                case 'pending':
+                    $s = 'P';
+                    break;
+
+                case 'confirmed':
+                    $s = 'C';
+                    break;
+
+                case 'cancelled':
+                    $s = 'U';
+                    break;
+
+                case 'd_cancelled':
+                    $s = 'D';
+                    break;
+
+                default:
+                    $s = 'P';
+                    break;
+            }
+
+            $query->where(function ($query) use ($s) {
+                $query->orWhere('appointments.status', $s);
+            });
+        }
+
+        $appointment = $query
+            ->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
+            ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
+            ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
+            ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
+            ->select([
+                'appointments.id',
+                // 'doctoruser.name as doctor_name',
+                DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
+                DB::raw("CONCAT('$baseUrl', doctoruser.profile_image) as profile_image"),
+                // 'specialities.name as speciality_name',
+                DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                'appointments.appointment_date',
+                'appointments.appointment_time',
+                'appointments.appointment_type',
+                'appointments.status as appointment_status',
+                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                // 'hospitals.hospital_name'
+                // 'patientuser.name as patient_name',
+                DB::raw("IFNULL(patientuser.name_{$this->getLang()}, patientuser.name_en) as patient_name"),
+            ])->orderBy('appointments.id', 'desc')
+            ->paginate(10);
+
+        return $this->SuccessResponse(200, "Patient's Appointments", $appointment);
+    }
+
+    // cancel the appointment
+    public function CancelAppointment(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'appointment_id' => 'required', 'integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->update(['status' => 'U']);
+
+        return $this->SuccessResponse(200, "Appointment cancelled", null);
+    }
+    /* End Appointment API's */
+
 }

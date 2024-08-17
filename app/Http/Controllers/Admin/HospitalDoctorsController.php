@@ -87,7 +87,7 @@ class HospitalDoctorsController extends Controller
 
             if ($doctor = User::find($id)) {
                 $attributes = $request->validate([
-                    'name' => 'required',
+                    'name_en' => 'required',
                     'email' => 'required',
                     'profile_image' => 'image',
                     'user_type' => 'required',

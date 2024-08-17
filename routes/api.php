@@ -60,10 +60,10 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::post('app-setting',[MainController::class,'updateOrCreateAppSetting']);
     Route::post('add-to-wishlist',[MainController::class,'AddToWishlist']);
     Route::get('wishlist',[MainController::class,'Wishlist']);
+    Route::post('book-appointment',[MainController::class,'BookAppointment']);
+    Route::get('patient-appointments',[MainController::class,'PatientAppointments']);
+    Route::post('cancel-appointment',[MainController::class,'CancelAppointment']);
 
-    Route::post('book-appointment',[CommonController::class,'BookAppointment']);
-    Route::get('patient-appointments',[CommonController::class,'PatientAppointments']);
-    Route::post('cancel-appointment',[CommonController::class,'CancelAppointment']);
 
     Route::get('profile',[AuthController::class,'PatientProfile']);
     Route::post('update-profile',[AuthController::class,'UpdatePatientProfile']);
