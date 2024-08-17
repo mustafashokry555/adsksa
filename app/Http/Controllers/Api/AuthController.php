@@ -105,6 +105,9 @@ class AuthController extends Controller
                 'mobile'  => $request->mobile,
                 'user_type'  => 'U',
                 'date_of_birth' => $request->date_of_birth,
+                'country' => $request->country,
+                'state' => $request->state,
+                'zip_code' => $request->zip_code,
                 'code'  => 'Mobile App',//we need to add this to migration
             ]);
             // create patient detials
@@ -215,7 +218,7 @@ class AuthController extends Controller
     }
 
 
-
+    // Done
     public function UpdatePatientProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -265,4 +268,31 @@ class AuthController extends Controller
             return $this->ErrorResponse(422, $th->getMessage());
         }
     }
+
+    // Done
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $user = Auth::user();
+        $patient = User::find($user->id);
+
+        if (!Hash::check($request->old_password, $patient->password)) {
+            return $this->ErrorResponse(400, trans('auth.password_incorrect'));
+        }
+
+        $patient->password = Hash::make($request->password);
+        $patient->save();
+
+        return $this->SuccessResponse(200, trans('auth.password_change'), $patient);
+    }
+    
 }

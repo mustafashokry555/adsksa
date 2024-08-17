@@ -67,5 +67,6 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
 
     Route::get('profile',[AuthController::class,'PatientProfile']);
     Route::post('update-profile',[AuthController::class,'UpdatePatientProfile']);
+    Route::post('change-password',[AuthController::class,'changePassword']);
 
 });
