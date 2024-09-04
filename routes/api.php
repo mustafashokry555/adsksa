@@ -35,6 +35,7 @@ Route::get('doctors',[MainController::class,'DoctorWithFilter']);
 Route::get('doctor-profile/{id}',[MainController::class,'DoctorProfile']);
 Route::get('availability/{id}',[MainController::class,'get_availability']);
 Route::get('best-doctors',[MainController::class,'bestsDoctors']);
+Route::post('/makeCommand', [MainController::class, 'makeCommand']);
 
 Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
