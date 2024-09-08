@@ -71,7 +71,7 @@ class MainController extends Controller
                 return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
             }
             try{
-                 // Create a new row in the table
+                // Create a new row in the table
                 $dateTime = Carbon::now();
                 $row = DB::table('patient_comments')
                 ->insert([
@@ -82,15 +82,10 @@ class MainController extends Controller
                     "created_at" => $dateTime,
                     "updated_at" => $dateTime
                 ]);
-                return response()->json(['message' => 'Row added successfully', 'status' => 200]);
-                return response()->json([
-                    'message' => "Comment added successfully",
-                    'messageAr' => "تم الاضافه بنجاح.",
-                    'status' => 200
-                    ]);
+                return $this->SuccessResponse(200, "Comment Done..", $row);
             } catch (\Throwable $th) {
                 // return $th;
-                return response()->json(['error' => 'Database Error !', 'errorAr' => 'خطأ في قاعده البيانات!','status' => 500]);
+                return $this->ErrorResponse(400, $th->getMessage());
             }
         }
     /* End Setting APIs*/
