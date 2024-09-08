@@ -78,6 +78,7 @@ class MainController extends Controller
                     "subject" => $request->subject,
                     "name" => $request->name,
                     "mobile" => $request->mobile,
+                    "email" => $request->email,
                     "comment" => $request->comment,
                     "created_at" => $dateTime,
                     "updated_at" => $dateTime
