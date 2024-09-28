@@ -59,6 +59,7 @@ class HospitalController extends Controller
     }
     public function store(Request $request)
     {
+        return $request;
         $attributes = $request->validate([
             'hospital_name_en' => 'required',
             'hospital_name_ar' => 'required',
