@@ -32,6 +32,12 @@ class Hospital extends Model
     {
         return $this->hasMany(Review::class);
     }
+
+    public function hospitalReviews()
+    {
+        return $this->hasMany(HospitalReview::class);
+    }
+
     public function insurances()
     {
         return $this->belongsToMany(Insurance::class);

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Insurance;
 use App\Models\Hospital;
 use App\Models\Appointment;
+use App\Models\HospitalReview;
+use App\Models\Review;
 use App\Models\Specialization;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -356,6 +358,47 @@ class MainController extends Controller
                 return $this->ErrorResponse(400, $th->getMessage());
             }
         }
+        // review Doc
+        public function add_review(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'doctor_id' => 'required',
+                'hospital_id' => 'required',
+                'star_rated' => 'required|integer|between:0,5',
+                'review_title' => 'required',
+                'review_body' => 'required|max:100',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
+            }
+            try{
+                $doctor = User::where([
+                    'id' => $request->doctor_id,
+                    'user_type' => User::DOCTOR,
+                    'hospital_id' => $request->hospital_id,
+                ])->first();
+                if (!$doctor) {
+                    return $this->ErrorResponse(400, "Invalid Data");
+                }
+                $user = $request->user();
+                $review = Review::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'doctor_id' => $request->doctor_id,
+                        'hospital_id' => $request->hospital_id,
+                    ],
+                    [
+                        'star_rated' => $request->star_rated,
+                        'review_title' => $request->review_title,
+                        'review_body' => $request->review_body,
+                    ]
+                );
+                return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
+            } catch (\Throwable $th) {
+                // return $th;
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
     /* End Doctor APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -678,6 +721,46 @@ class MainController extends Controller
             return $this->SuccessResponse(200, "Appointment cancelled", null);
         }
     /* End Appointment API's */
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+    /* Start Hospital APIs*/
+        // review Hospital
+        public function add_Hospital_review(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'hospital_id' => 'required',
+                'star_rated' => 'required|integer|between:0,5',
+                'review_title' => 'required',
+                'review_body' => 'required|max:100',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
+            }
+            try{
+                $hospital = Hospital::where( 'id', $request->hospital_id )->first();
+                if (!$hospital) {
+                    return $this->ErrorResponse(400, "Invalid Data");
+                }
+                $user = $request->user();
+                $review = HospitalReview::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'hospital_id' => $request->hospital_id,
+                    ],
+                    [
+                        'star_rated' => $request->star_rated,
+                        'review_title' => $request->review_title,
+                        'review_body' => $request->review_body,
+                    ]
+                );
+                return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
+            } catch (\Throwable $th) {
+                // return $th;
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+    /* End Doctor APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
 

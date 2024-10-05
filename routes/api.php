@@ -64,7 +64,7 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::post('book-appointment',[MainController::class,'BookAppointment']);
     Route::get('patient-appointments',[MainController::class,'PatientAppointments']);
     Route::post('cancel-appointment',[MainController::class,'CancelAppointment']);
-
+    Route::post('add-review', [MainController::class, 'add_review']);
 
     Route::get('profile',[AuthController::class,'PatientProfile']);
     Route::post('update-profile',[AuthController::class,'UpdatePatientProfile']);
