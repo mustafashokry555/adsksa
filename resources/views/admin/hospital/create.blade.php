@@ -132,20 +132,10 @@
                                 <label for="location"
                                     class="col-form-label col-md-2">location</label>
                                 <div class="col-md-10">
-                                    <input id="pac-input" name="location" type="text" class="form-control"
-                                        placeholder="location" required>
-                                    @error('location')
-                                        <div class="text-danger pt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="zip" class="col-form-label col-md-2">Location</label>
-                                <div class="col-md-10" >
+                                    <input id="pac-input" dir="rtl" name="location" type="text" class="form-control"
+                                        placeholder="location" style="background-color: #fff; color:black" required>
                                     <div id="map"style="height: 500px; " class="form-control"></div>
-                                    @error('zip')
+                                    @error('location')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -381,7 +371,7 @@
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
-        $("#pac-input").val("أبحث هنا ");
+        // $("#pac-input").val("أبحث هنا ");
         var searchBox = new google.maps.places.SearchBox(input);
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
 
@@ -465,4 +455,4 @@
         return cordinations
     }
 </script>
-<script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m&libraries=places&callback=initAutocomplete&language=s&region=EG&loading=async"></script>
+<script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m&libraries=places&callback=initAutocomplete&language=AR&region=EG&loading=async"></script>
