@@ -129,13 +129,23 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="location"
-                                    class="col-form-label col-md-2">location</label>
                                 <div class="col-md-10">
-                                    <input id="pac-input" dir="rtl" name="location" type="text" class="form-control"
-                                        placeholder="location" style="background-color: #fff; color:black" required>
-                                    <div id="map"style="height: 500px; " class="form-control"></div>
+                                    <input hidden id="latitude" name="lat" type="text">
+                                    <input hidden id="longitude" name="long" type="text">
+                                    <input dir="rtl" id="pac-input" name="location" type="text" class="form-control"
+                                        placeholder="location" style="color:black;background-color: rgb(255, 255, 255);" required>
                                     @error('location')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="zip" class="col-form-label col-md-2">Location</label>
+                                <div class="col-md-10" >
+                                    <div id="map"style="height: 500px; " class="form-control"></div>
+                                    @error('zip')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -166,12 +176,68 @@
                             </div>
                             <div class="form-group row">
                                 <label for="email"
-                                    class="col-form-label col-md-2">{{ __('admin.hospital.hospital_administrator_name') }}</label>
+                                    class="col-form-label col-md-2">Hospital Administrator Email</label>
                                 <div class="col-md-10">
                                     <input id="email" name="email" type="email" class="form-control"
-                                        placeholder="{{ __('admin.hospital.enter_hospital_administrator_name') }}"
+                                        placeholder="Enter Hospital Administrator Email"
                                         required>
                                     @error('email')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="about"
+                                    class="col-form-label col-md-2">About Hospital 1</label>
+                                <div class="col-md-10">
+                                    <textarea id="about" name="about" type="text" class="form-control"
+                                        placeholder="About The Hospital"></textarea>
+                                    @error('about')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="about1"
+                                    class="col-form-label col-md-2">About Hospital 2</label>
+                                <div class="col-md-10">
+                                    <textarea id="about1" name="about1" type="text" class="form-control"
+                                        placeholder="About The Hospital"></textarea>
+                                    @error('about1')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="about2"
+                                    class="col-form-label col-md-2">About Hospital 3</label>
+                                <div class="col-md-10">
+                                    <textarea id="about2" name="about2" type="text" class="form-control"
+                                        placeholder="About The Hospital"></textarea>
+                                    @error('about2')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="opening_hours"
+                                    class="col-form-label col-md-2">Opening Hours</label>
+                                <div class="col-md-10">
+                                    <input id="opening_hours" name="opening_hours" type="text" class="form-control"
+                                        placeholder="The Hospital Opening Hours">
+                                    @error('opening_hours')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -223,8 +289,7 @@
     <!-- /Main Wrapper -->
 
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+<script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
@@ -252,10 +317,10 @@
     function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: 30.209095839506176,
-                lng: 31.219282979077857 
+                lat: 21.42269762230259,
+                lng: 39.82616489607454
             },
-            zoom: 13,
+            zoom: 12,
             mapTypeId: 'roadmap'
         });
 
@@ -301,11 +366,10 @@
                         deleteMarkers();
                         addMarkerRunTime(event.latLng);
                         SelectedLocation = results[0].formatted_address;
-                        console.log(results[0].formatted_address);
                         var cordinations = splitLatLng(String(event.latLng));
-                        // console.log(cordinations);
-                        // console.log($("#longitude").val());
                         $("#pac-input").val(results[0].formatted_address);
+                        $("#latitude").val(cordinations.lat);
+                        $("#longitude").val(cordinations.lng);
                     }
                 }
             });
@@ -371,7 +435,7 @@
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
-        // $("#pac-input").val("أبحث هنا ");
+        $("#pac-input").val();
         var searchBox = new google.maps.places.SearchBox(input);
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
 
@@ -455,4 +519,4 @@
         return cordinations
     }
 </script>
-<script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m&libraries=places&callback=initAutocomplete&language=AR&region=EG&loading=async"></script>
+<script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m&libraries=places&callback=initAutocomplete&language=s&region=SA&loading=async"></script>
