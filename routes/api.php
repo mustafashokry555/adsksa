@@ -37,10 +37,13 @@ Route::get('availability/{id}',[MainController::class,'get_availability']);
 Route::get('best-doctors',[MainController::class,'bestsDoctors']);
 Route::post('/makeComplaint', [MainController::class, 'makeComplaint']);
 
-Route::get('hospitals',[CommonController::class,'Hospitals']);
+Route::get('hospitals',[MainController::class,'HospitalWithFilter']);
+
+
+// Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
-Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
+// Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
 
 // Route::get('images/{name}', function ($name) {
 //     $path = public_path('images/' . $name);
@@ -65,6 +68,7 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::get('patient-appointments',[MainController::class,'PatientAppointments']);
     Route::post('cancel-appointment',[MainController::class,'CancelAppointment']);
     Route::post('add-review', [MainController::class, 'add_review']);
+    Route::post('add-hospital-review', [MainController::class, 'add_hospital_review']);
 
     Route::get('profile',[AuthController::class,'PatientProfile']);
     Route::post('update-profile',[AuthController::class,'UpdatePatientProfile']);

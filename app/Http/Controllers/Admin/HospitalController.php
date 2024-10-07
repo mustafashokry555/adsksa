@@ -59,7 +59,7 @@ class HospitalController extends Controller
     }
     public function store(Request $request)
     {
-        return $request;
+        // return $request;
         $attributes = $request->validate([
             'hospital_name_en' => 'required',
             'hospital_name_ar' => 'required',
@@ -69,8 +69,15 @@ class HospitalController extends Controller
             'state' => 'required',
             'city' => 'required',
             'zip' => 'required',
+            'lat' => 'required',
+            'long' => 'required',
+            'location' => 'required',
             'insurance' => 'required',
             'profile_image' => 'image',
+            'about' => 'string|nullable',
+            'about1' => 'string|nullable',
+            'about2' => 'string|nullable',
+            'opening_hours' => 'string|nullable',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
 
@@ -83,12 +90,14 @@ class HospitalController extends Controller
         $attributes['image'] = $filename;
         $profileImg = $request['image'] = $filename;
 
-        $attributes['insurance_id'] = $request->insurance;
+        // $attributes['insurance_id'] = $request->insurance;
+        // return $attributes;
         $hospital = Hospital::create($attributes);
         $hospital->insurances()->sync($request->insurance);
 
         User::create([
-            'name' => $request->name,
+            'name_en' => $request->name,
+            'name_ar' => $request->name,
             'email' => $request->email,
             'profile_image' => $profileImg,
             'user_type' => User::HOSPITAL,

@@ -8,10 +8,27 @@ use Illuminate\Database\Eloquent\Model;
 class Hospital extends Model
 {
     use HasFactory;
-    protected $fillable = ['hospital_name_ar','hospital_name_en', 'address','city', 'country', 'state', 'zip', 'image'];
+    protected $fillable = [
+        'hospital_name_ar',
+        'hospital_name_en',
+        'address',
+        'city',
+        'country',
+        'state',
+        'zip',
+        'image',
+        'location',
+        'long',
+        'lat',
+        'about',
+        'about1',
+        'about2',
+        'opening_hours',
+
+    ];
 
     public function users()
-    {
+    {   
         return $this->hasMany(User::class);
     }
     // public function hospitalAdmin()

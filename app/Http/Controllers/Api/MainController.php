@@ -726,7 +726,7 @@ class MainController extends Controller
 
     /* Start Hospital APIs*/
         // review Hospital
-        public function add_Hospital_review(Request $request)
+        public function add_hospital_review(Request $request)
         {
             $validator = Validator::make($request->all(), [
                 'hospital_id' => 'required',
@@ -757,6 +757,60 @@ class MainController extends Controller
                 return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
             } catch (\Throwable $th) {
                 // return $th;
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+        // API for All Doctoes (Done with Out Lang)
+        public function HospitalWithFilter(Request $request)
+        {
+            // $token = request()->bearerToken();
+            // $patient_id = null;
+            // if ($token) {
+            //     $tokenModel = PersonalAccessToken::findToken($token);
+            //     if ($tokenModel) {
+            //         $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+            //     }
+            // }
+            try {
+                $query = Hospital::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("hospital_name_ar", 'like', '%' . request('search') . '%')
+                            ->orWhere("hospital_name_en", 'like', '%' . request('search') . '%');
+                    });
+                }
+                $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
+                    ->select(
+                        'hospitals.id',
+                        DB::raw("IFNULL(hospitals.hospital_name_{$this->lang}, hospitals.hospital_name_en) as hospital_name"),
+                        DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'), // Average of ratings
+                        'hospitals.image',
+                        'hospitals.state',
+                        'hospitals.lat',
+                        'hospitals.long',
+                        'hospitals.location',
+                    )
+                    ->groupBy(
+                        'hospitals.id',
+                        'hospitals.hospital_name_en',
+                        'hospitals.hospital_name_ar',
+                        'hospitals.image',
+                        'hospitals.state',
+                        'hospitals.lat',
+                        'hospitals.long',
+                        'hospitals.location'
+                    ); // Group by user fields
+                
+                if(request('orderBy') == 'low_price'){
+                    $query->orderBy('users.pricing', "ASC");
+                } elseif (request('orderBy') == 'high_price') {
+                    $query->orderBy('users.pricing', "DESC");
+                } elseif (request('orderBy') == 'recommend') {
+                    $query->orderBy('avg_rating', "DESC");
+                }
+                $doctors = $query->get();
+                return $this->SuccessResponse(200, 'Doctor list', $doctors);
+            } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }
         }
