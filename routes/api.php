@@ -38,6 +38,7 @@ Route::get('best-doctors',[MainController::class,'bestsDoctors']);
 Route::post('/makeComplaint', [MainController::class, 'makeComplaint']);
 
 Route::get('hospitals',[MainController::class,'HospitalWithFilter']);
+Route::get('hospital-profile/{id}',[MainController::class,'hospitalProfile']);
 
 
 // Route::get('hospitals',[CommonController::class,'Hospitals']);

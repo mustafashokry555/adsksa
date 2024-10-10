@@ -193,9 +193,26 @@ class User extends Authenticatable
         return $this->hasMany(Blog::class);
     }
 
+    public function getAvgRatingAttribute()
+    {
+        if ($this->user_type == self::DOCTOR) {
+            return $this->reviews()->avg('star_rated') ?? 0;
+        }
+        return null;
+    }
+
+    // Accessor for rating count
+    public function getRatingCountAttribute()
+    {
+        if ($this->user_type == self::DOCTOR) {
+            return $this->reviews()->count();
+        }
+        return null;
+    }
+
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class, "doctor_id");
     }
 
     public function hospitalReviews()
