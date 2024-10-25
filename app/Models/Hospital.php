@@ -80,6 +80,14 @@ class Hospital extends Model
         return $this->hospitalReviews()->avg('star_rated') ?? 0;
     }
 
+    public function getHospitalNameAttribute()
+    {
+        if (app()->getLocale() == 'ar' && $this->hospital_name_ar != NULL) {
+            return $this->hospital_name_ar;
+        }
+        return $this->hospital_name_en;
+    }
+
     public function getRatingCountAttribute()
     {
         return $this->hospitalReviews()->count();

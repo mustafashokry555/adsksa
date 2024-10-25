@@ -201,6 +201,14 @@ class User extends Authenticatable
         return null;
     }
 
+    public function getNameAttribute()
+    {
+        if (app()->getLocale() == 'ar' && $this->name_ar != NULL) {
+            return $this->name_ar;
+        }
+        return $this->name_en;
+    }
+
     // Accessor for rating count
     public function getRatingCountAttribute()
     {

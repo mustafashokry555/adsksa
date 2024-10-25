@@ -14,4 +14,11 @@ class Insurance extends Model
     {
         return $this->belongsToMany(Hospital::class);
     }
+    public function getNameAttribute()
+    {
+        if (app()->getLocale() == 'ar' && $this->name_ar != NULL) {
+            return $this->name_ar;
+        }
+        return $this->name_en;
+    }
 }

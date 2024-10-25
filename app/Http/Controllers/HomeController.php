@@ -28,11 +28,7 @@ class HomeController extends Controller
             'blogs' => Blog::with('user')->inRandomOrder()->latest()->take(3)->get(),
             'doctors' => User::query()->where('user_type', 'D')->take('8')->latest()->get(),
             'setting' => Settings::query()->first(),
-            'specialities' => Speciality::select(
-                'id',
-                DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name"),
-                'image'
-            )->orderByDesc('id')->get(),
+            'specialities' => Speciality::orderByDesc('id')->get(),
             'insurances' => Insurance::select(
                 'id',
                 DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name")
