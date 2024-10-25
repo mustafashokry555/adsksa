@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Insurance;
 use App\Models\Hospital;
 use App\Models\Appointment;
+use App\Models\Banner;
 use App\Models\HospitalReview;
 use App\Models\Review;
 use App\Models\Specialization;
@@ -899,5 +900,20 @@ class MainController extends Controller
     /* End hospitals APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
+
+    /* Start Banners APIs*/
+        // All Banners
+        public function banners(Request $request)
+        {
+            try {
+                $banners = Banner::where('is_active', 1)
+                ->where('expired_at', '>', now())
+                ->get();
+                return $this->SuccessResponse(200, null, $banners);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+    /* End Banners APIs*/
 
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BannerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -39,6 +40,9 @@ Route::post('/makeComplaint', [MainController::class, 'makeComplaint']);
 
 Route::get('hospitals',[MainController::class,'HospitalWithFilter']);
 Route::get('hospital-profile/{id}',[MainController::class,'hospitalProfile']);
+
+Route::get('banners',[MainController::class,'banners']);
+Route::post('banner/store',[BannerController::class,'store']);
 
 
 // Route::get('hospitals',[CommonController::class,'Hospitals']);

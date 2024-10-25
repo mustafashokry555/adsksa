@@ -32,6 +32,10 @@ class Hospital extends Model
     {   
         return $this->hasMany(User::class);
     }
+    public function banners()
+    {   
+        return $this->hasMany(Banner::class);
+    }
     public function doctors()
     {
         return $this->hasMany(User::class)
