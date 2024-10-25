@@ -513,7 +513,8 @@ class CommonController extends Controller
 
         $q = Insurance::query();
         if ($request->search) {
-            $q->where('name', 'LIKE', "%" . $request->search . "%");
+            $q->where('name_en', 'like', '%' . $request->search . '%')
+            ->orWhere('name_ar', 'like', '%' . $request->search . '%');
         }
         $insurance = $q->orderBy('id', 'desc')->paginate(10);
 

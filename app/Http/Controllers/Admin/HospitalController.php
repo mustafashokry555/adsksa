@@ -47,11 +47,7 @@ class HospitalController extends Controller
     public function create()
     {
         if (Auth::user()->is_admin()) {
-            $insurances = Insurance::select(
-                'id',
-                DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name")
-            )
-                ->where('user_id', Auth::id())->get();
+            $insurances = Insurance::where('user_id', Auth::id())->get();
             return view('admin.hospital.create', compact('insurances'));
         } else {
             abort(401);
@@ -140,10 +136,7 @@ class HospitalController extends Controller
             return view('admin.hospital.edit', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
-                'insurances'    =>   Insurance::select(
-                    'id',
-                    DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name")
-                )->get(),
+                'insurances'    =>   Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
             ]);
         } else {

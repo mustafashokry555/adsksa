@@ -99,319 +99,323 @@ class MainController extends Controller
 
     /* Start Search For Doctors APIs*/
     // API for All Specialities (Done with Lang)
-    public function allSpecialities(Request $request)
-    {
-        try {
-            $query = Speciality::query();
-            if (request('search')) {
-                $query->where(function ($query) {
-                    $query->where("name_en", 'like', '%' . request('search') . '%')
-                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
-                });
-            }
+        public function allSpecialities(Request $request)
+        {
+            try {
+                $query = Speciality::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("name_en", 'like', '%' . request('search') . '%')
+                            ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                    });
+                }
 
-            $speciality = $query->select(
-                'id',
-                DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
-                'image'
-            )->get();
-            // $speciality = $speciality->map(function ($special) {
-            //     $special->image = url("api/{$special->image}");
-            //     return $special;
-            // });
-            return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // API for All Cities (Done with Lang)
-    public function allCities(Request $request)
-    {
-        try {
-            $query = Hospital::query();
-            if (request('search')) {
-                $query->where(function ($query) {
-                    $query->where("city", 'like', '%' . request('search') . '%');
-                });
-            }
-            $cities = $query->select('city')->groupBy('city')->get();
-            return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // API for All Insurances (Done with Lang)
-    public function get_insurances(Request $request)
-    {
-        try {
-            $query = Insurance::query();
-            if (request('city')) {
-                $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
-                    ->pluck('id');
-                $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
-                    $query->whereIn('hospital_id', $hospitals_ids);
-                });
-            }
-            if (request('search')) {
-                $query->where(function ($query) {
-                    $query->where("name_en", 'like', '%' . request('search') . '%')
-                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
-                });
-            }
-            $insurance = $query->select(
-                'id',
-                DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
-            )->orderBy('id', 'desc')->get();
-            return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // API for All Doctoes (Done with Out Lang)
-    public function DoctorWithFilter(Request $request)
-    {
-        $token = request()->bearerToken();
-        $patient_id = null;
-        if ($token) {
-            $tokenModel = PersonalAccessToken::findToken($token);
-            if ($tokenModel) {
-                $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                $speciality = $query->select(
+                    'id',
+                    DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
+                    'image'
+                )->get();
+                // $speciality = $speciality->map(function ($special) {
+                //     $special->image = url("api/{$special->image}");
+                //     return $special;
+                // });
+                return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
             }
         }
-        try {
-            $hospital_query = Hospital::query();
-            if (request('insurance') && !empty(request('insurance'))) {
-                $hospital_query->whereHas('insurances', function ($query) {
-                    $query->where('insurance_id', request('insurance'));
-                });
+        // API for All Cities (Done with Lang)
+        public function allCities(Request $request)
+        {
+            try {
+                $query = Hospital::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("city", 'like', '%' . request('search') . '%');
+                    });
+                }
+                $cities = $query->select('city')->groupBy('city')->get();
+                return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
             }
-            if (request('city')) {
-                $hospital_query = $hospital_query->where('city', 'like', '%' . request('city') . '%');
+        }
+        // API for All Insurances (Done with Lang)
+        public function get_insurances(Request $request)
+        {
+            try {
+                $query = Insurance::query();
+                if (request('city')) {
+                    $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
+                        ->pluck('id');
+                    $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
+                        $query->whereIn('hospital_id', $hospitals_ids);
+                    });
+                }
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("name_en", 'like', '%' . request('search') . '%')
+                            ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                    });
+                }
+                $insurance = $query->select(
+                    'id',
+                    DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
+                )->orderBy('id', 'desc')->get();
+                return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
             }
-            $hospital_ids = $hospital_query->pluck('id');
-            $query = User::query();
-            if (request('search')) {
-                $query->where(function ($query) {
-                    $query->where("name_en", 'like', '%' . request('search') . '%')
-                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
-                });
+        }
+        // API for All Doctoes (Done with Out Lang)
+        public function DoctorWithFilter(Request $request)
+        {
+            $token = request()->bearerToken();
+            $patient_id = null;
+            if ($token) {
+                $tokenModel = PersonalAccessToken::findToken($token);
+                if ($tokenModel) {
+                    $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                }
             }
-            if (request('speciality') && !empty(request('speciality'))) {
-                $query->where(function ($query) {
-                    $query->where("speciality_id", request('speciality'));
-                });
-            }
+            try {
+                $hospital_query = Hospital::query();
+                if (request('insurance') && !empty(request('insurance'))) {
+                    $hospital_query->whereHas('insurances', function ($query) {
+                        $query->where('insurance_id', request('insurance'));
+                    });
+                }
+                if (request('city')) {
+                    $hospital_query = $hospital_query->where('city', 'like', '%' . request('city') . '%');
+                }
+                $hospital_ids = $hospital_query->pluck('id');
+                $query = User::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("name_en", 'like', '%' . request('search') . '%')
+                            ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                    });
+                }
+                if (request('speciality') && !empty(request('speciality'))) {
+                    $query->where(function ($query) {
+                        $query->where("speciality_id", request('speciality'));
+                    });
+                }
 
-            // Perform the left join with the reviews table
-            $query->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
-                ->leftJoin('wishlists', function ($join) use ($patient_id) {
-                    $join->on('users.id', '=', 'wishlists.doctor_id')
-                        ->where('wishlists.patient_id', '=', $patient_id);
-                })
-                ->where('user_type', 'D')
-                ->whereIn('users.hospital_id', $hospital_ids)
-                ->select(
-                    'users.id',
-                    DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
-                    DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
-                    DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
-                    'users.profile_image',
-                    DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                    'users.gender',
-                    'users.pricing',
-                    'users.hospital_id', // Include hospital_id for the relationship
-                    'users.speciality_id', // Include speciality_id for the relationship
-                )
-                ->with([
-                    'hospital' => function ($query) {
-                        $query->select([
-                            'id',
-                            DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as hospital_name"),
-                        ]);
-                    },
-                    'speciality' => function ($query) {
-                        $query->select([
-                            'id',
-                            DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
-                        ]);
-                    }
-                ])
-                ->groupBy(
-                    'wishlists.id',
-                    'users.id',
-                    'users.hospital_id',
-                    'users.speciality_id',
-                    'users.name_en',
-                    'users.pricing',
-                    'users.gender',
-                    'users.name_ar',
-                    'users.profile_image'
-                ); // Group by user fields
+                // Perform the left join with the reviews table
+                $query->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
+                    ->leftJoin('wishlists', function ($join) use ($patient_id) {
+                        $join->on('users.id', '=', 'wishlists.doctor_id')
+                            ->where('wishlists.patient_id', '=', $patient_id);
+                    })
+                    ->where('user_type', 'D')
+                    ->whereIn('users.hospital_id', $hospital_ids)
+                    ->select(
+                        'users.id',
+                        DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
+                        DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
+                        DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
+                        'users.profile_image',
+                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                        'users.gender',
+                        'users.pricing',
+                        'users.hospital_id', // Include hospital_id for the relationship
+                        'users.speciality_id', // Include speciality_id for the relationship
+                    )
+                    ->with([
+                        'hospital' => function ($query) {
+                            $query->select([
+                                'id',
+                                DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as name"),
+                                'lat',
+                                'long',
+                            ]);
+                        },
+                        'speciality' => function ($query) {
+                            $query->select([
+                                'id',
+                                DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
+                            ]);
+                        }
+                    ])
+                    ->groupBy(
+                        'wishlists.id',
+                        'users.id',
+                        'users.hospital_id',
+                        'users.speciality_id',
+                        'users.name_en',
+                        'users.pricing',
+                        'users.gender',
+                        'users.name_ar',
+                        'users.profile_image'
+                    ); // Group by user fields
 
-            if (request('orderBy') == 'low_price') {
-                $query->orderBy('users.pricing', "ASC");
-            } elseif (request('orderBy') == 'high_price') {
-                $query->orderBy('users.pricing', "DESC");
-            } elseif (request('orderBy') == 'recommend') {
-                $query->orderBy('avg_rating', "DESC");
+                if (request('orderBy') == 'low_price') {
+                    $query->orderBy('users.pricing', "ASC");
+                } elseif (request('orderBy') == 'high_price') {
+                    $query->orderBy('users.pricing', "DESC");
+                } elseif (request('orderBy') == 'recommend') {
+                    $query->orderBy('avg_rating', "DESC");
+                }
+                $doctors = $query->get();
+                return $this->SuccessResponse(200, 'Doctor list', $doctors);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
             }
-            $doctors = $query->get();
-            return $this->SuccessResponse(200, 'Doctor list', $doctors);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
         }
-    }
     /* End Search For Doctors APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
     /* Start Doctor APIs*/
-    // Start DoctorProfile API
-    public function DoctorProfile($id)
-    {
-        $token = request()->bearerToken();
-        $patient_id = null;
-        if ($token) {
-            $tokenModel = PersonalAccessToken::findToken($token);
-            if ($tokenModel) {
-                $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+        // Start DoctorProfile API
+        public function DoctorProfile($id)
+        {
+            $token = request()->bearerToken();
+            $patient_id = null;
+            if ($token) {
+                $tokenModel = PersonalAccessToken::findToken($token);
+                if ($tokenModel) {
+                    $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                }
             }
-        }
-        try {
-            $profile = User::where('users.id', $id)
-                ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
-                ->leftJoin('wishlists', function ($join) use ($patient_id) {
-                    $join->on('users.id', '=', 'wishlists.doctor_id')
-                        ->where('wishlists.patient_id', '=', $patient_id);
-                })
-                ->select(
-                    'users.id',
-                    DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
-                    DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
-                    DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
-                    'users.profile_image',
-                    DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                    'users.gender',
-                    'users.pricing',
-                    'users.hospital_id', // Include hospital_id for the relationship
-                    'users.speciality_id', // Include speciality_id for the relationship
-                )
-                ->with([
-                    'hospital' => function ($query) {
-                        $query->select([
-                            'id',
-                            DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as hospital_name"),
-                        ]);
-                    },
-                    'speciality' => function ($query) {
-                        $query->select([
-                            'id',
-                            DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
-                        ]);
-                    }
-                ])
-                ->groupBy(
-                    'wishlists.id',
-                    'users.id',
-                    'users.hospital_id',
-                    'users.speciality_id',
-                    'users.name_en',
-                    'users.pricing',
-                    'users.gender',
-                    'users.name_ar',
-                    'users.profile_image'
-                )
-                ->first();
+            try {
+                $profile = User::where('users.id', $id)
+                    ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
+                    ->leftJoin('wishlists', function ($join) use ($patient_id) {
+                        $join->on('users.id', '=', 'wishlists.doctor_id')
+                            ->where('wishlists.patient_id', '=', $patient_id);
+                    })
+                    ->select(
+                        'users.id',
+                        DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
+                        DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
+                        DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
+                        'users.profile_image',
+                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                        'users.gender',
+                        'users.pricing',
+                        'users.hospital_id', // Include hospital_id for the relationship
+                        'users.speciality_id', // Include speciality_id for the relationship
+                    )
+                    ->with([
+                        'hospital' => function ($query) {
+                            $query->select([
+                                'id',
+                                DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as name"),
+                                'lat',
+                                'long',
+                            ]);
+                        },
+                        'speciality' => function ($query) {
+                            $query->select([
+                                'id',
+                                DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
+                            ]);
+                        }
+                    ])
+                    ->groupBy(
+                        'wishlists.id',
+                        'users.id',
+                        'users.hospital_id',
+                        'users.speciality_id',
+                        'users.name_en',
+                        'users.pricing',
+                        'users.gender',
+                        'users.name_ar',
+                        'users.profile_image'
+                    )
+                    ->first();
 
-            // $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
-            // $profile['specialization'] = $specialization;
-            return $this->SuccessResponse(200, 'Doctor profile', $profile);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // Start bestsDoctors API
-    public function bestsDoctors()
-    {
-        try {
-            $doctors = User::leftJoin('reviews', 'reviews.doctor_id', 'users.id')
-                ->join('specialities', 'specialities.id', 'users.speciality_id')
-                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
-                ->where('users.user_type', '=', 'D')
-                ->select(
-                    'users.id',
-                    DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
-                    // 'users.name',
-                    // 'users.profile_image', 'specialities.name as speciality_name',
-                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                    'users.description',
-                    'specialities.image as speciality_image',
-                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                    // 'hospitals.hospital_name'
-                    'hospitals.id as hospital_id',
-                    DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating')
-                )
-                ->groupBy(
-                    'users.id',
-                    'users.name_ar',
-                    'users.name_en',
-                    'users.profile_image',
-                    'specialities.name_ar',
-                    'specialities.name_en',
-                    'users.description',
-                    'specialities.image',
-                    'hospitals.hospital_name_ar',
-                    'hospitals.hospital_name_en',
-                    'hospitals.id'
-                )
-                ->orderBy('avg_rating', 'DESC')
-                ->paginate(12);
-            return $this->SuccessResponse(200, 'Doctor profiles by specialty', $doctors);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // review Doc
-    public function add_review(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required',
-            'hospital_id' => 'required',
-            'star_rated' => 'required|integer|between:0,5',
-            'review_title' => 'required',
-            'review_body' => 'required|max:100',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
-        }
-        try {
-            $doctor = User::where([
-                'id' => $request->doctor_id,
-                'user_type' => User::DOCTOR,
-                'hospital_id' => $request->hospital_id,
-            ])->first();
-            if (!$doctor) {
-                return $this->ErrorResponse(400, "Invalid Data");
+                // $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
+                // $profile['specialization'] = $specialization;
+                return $this->SuccessResponse(200, 'Doctor profile', $profile);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
             }
-            $user = $request->user();
-            $review = Review::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'doctor_id' => $request->doctor_id,
-                    'hospital_id' => $request->hospital_id,
-                ],
-                [
-                    'star_rated' => $request->star_rated,
-                    'review_title' => $request->review_title,
-                    'review_body' => $request->review_body,
-                ]
-            );
-            return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
-        } catch (\Throwable $th) {
-            // return $th;
-            return $this->ErrorResponse(400, $th->getMessage());
         }
-    }
+        // Start bestsDoctors API
+        public function bestsDoctors()
+        {
+            try {
+                $doctors = User::leftJoin('reviews', 'reviews.doctor_id', 'users.id')
+                    ->join('specialities', 'specialities.id', 'users.speciality_id')
+                    ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                    ->where('users.user_type', '=', 'D')
+                    ->select(
+                        'users.id',
+                        DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
+                        // 'users.name',
+                        // 'users.profile_image', 'specialities.name as speciality_name',
+                        DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                        'users.description',
+                        'specialities.image as speciality_image',
+                        DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                        // 'hospitals.hospital_name'
+                        'hospitals.id as hospital_id',
+                        DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating')
+                    )
+                    ->groupBy(
+                        'users.id',
+                        'users.name_ar',
+                        'users.name_en',
+                        'users.profile_image',
+                        'specialities.name_ar',
+                        'specialities.name_en',
+                        'users.description',
+                        'specialities.image',
+                        'hospitals.hospital_name_ar',
+                        'hospitals.hospital_name_en',
+                        'hospitals.id'
+                    )
+                    ->orderBy('avg_rating', 'DESC')
+                    ->paginate(12);
+                return $this->SuccessResponse(200, 'Doctor profiles by specialty', $doctors);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+        // review Doc
+        public function add_review(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'doctor_id' => 'required',
+                'hospital_id' => 'required',
+                'star_rated' => 'required|integer|between:0,5',
+                'review_title' => 'required',
+                'review_body' => 'required|max:100',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
+            }
+            try {
+                $doctor = User::where([
+                    'id' => $request->doctor_id,
+                    'user_type' => User::DOCTOR,
+                    'hospital_id' => $request->hospital_id,
+                ])->first();
+                if (!$doctor) {
+                    return $this->ErrorResponse(400, "Invalid Data");
+                }
+                $user = $request->user();
+                $review = Review::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'doctor_id' => $request->doctor_id,
+                        'hospital_id' => $request->hospital_id,
+                    ],
+                    [
+                        'star_rated' => $request->star_rated,
+                        'review_title' => $request->review_title,
+                        'review_body' => $request->review_body,
+                    ]
+                );
+                return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
+            } catch (\Throwable $th) {
+                // return $th;
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
     /* End Doctor APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -750,148 +754,148 @@ class MainController extends Controller
     ////////////////////////////////////////////////////////////////////////////////////////
 
     /* Start Hospital APIs*/
-    // review Hospital
-    public function add_hospital_review(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'hospital_id' => 'required',
-            'star_rated' => 'required|integer|between:0,5',
-            'review_title' => 'required',
-            'review_body' => 'required|max:100',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
-        }
-        try {
-            $hospital = Hospital::where('id', $request->hospital_id)->first();
-            if (!$hospital) {
-                return $this->ErrorResponse(400, "Invalid Data");
+        // review Hospital
+        public function add_hospital_review(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'hospital_id' => 'required',
+                'star_rated' => 'required|integer|between:0,5',
+                'review_title' => 'required',
+                'review_body' => 'required|max:100',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
             }
-            $user = $request->user();
-            $review = HospitalReview::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'hospital_id' => $request->hospital_id,
-                ],
-                [
-                    'star_rated' => $request->star_rated,
-                    'review_title' => $request->review_title,
-                    'review_body' => $request->review_body,
-                ]
-            );
-            return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
-        } catch (\Throwable $th) {
-            // return $th;
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // API for All hospitals (Done with Out Lang)
-    public function HospitalWithFilter(Request $request)
-    {
-        try {
-            $query = Hospital::query();
-            if (request('search')) {
-                $query->where(function ($query) {
-                    $query->where("hospital_name_ar", 'like', '%' . request('search') . '%')
-                        ->orWhere("hospital_name_en", 'like', '%' . request('search') . '%');
-                });
+            try {
+                $hospital = Hospital::where('id', $request->hospital_id)->first();
+                if (!$hospital) {
+                    return $this->ErrorResponse(400, "Invalid Data");
+                }
+                $user = $request->user();
+                $review = HospitalReview::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'hospital_id' => $request->hospital_id,
+                    ],
+                    [
+                        'star_rated' => $request->star_rated,
+                        'review_title' => $request->review_title,
+                        'review_body' => $request->review_body,
+                    ]
+                );
+                return $this->SuccessResponse(200, "Thank You for rating my profile.!", $review);
+            } catch (\Throwable $th) {
+                // return $th;
+                return $this->ErrorResponse(400, $th->getMessage());
             }
-            $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-                ->select(
-                    'hospitals.id',
-                    DB::raw("IFNULL(hospitals.hospital_name_{$this->lang}, hospitals.hospital_name_en) as hospital_name"),
-                    DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'), // Average of ratings
-                    'hospitals.image',
-                    'hospitals.state',
-                    'hospitals.lat',
-                    'hospitals.long',
-                    'hospitals.location',
-                    DB::raw('NULL as distance')
-                )
-                ->groupBy(
-                    'hospitals.id',
-                    'hospitals.hospital_name_en',
-                    'hospitals.hospital_name_ar',
-                    'hospitals.image',
-                    'hospitals.state',
-                    'hospitals.lat',
-                    'hospitals.long',
-                    'hospitals.location'
-                ); // Group by user fields
+        }
+        // API for All hospitals (Done with Out Lang)
+        public function HospitalWithFilter(Request $request)
+        {
+            try {
+                $query = Hospital::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("hospital_name_ar", 'like', '%' . request('search') . '%')
+                            ->orWhere("hospital_name_en", 'like', '%' . request('search') . '%');
+                    });
+                }
+                $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
+                    ->select(
+                        'hospitals.id',
+                        DB::raw("IFNULL(hospitals.hospital_name_{$this->lang}, hospitals.hospital_name_en) as hospital_name"),
+                        DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'), // Average of ratings
+                        'hospitals.image',
+                        'hospitals.state',
+                        'hospitals.lat',
+                        'hospitals.long',
+                        'hospitals.location',
+                        DB::raw('NULL as distance')
+                    )
+                    ->groupBy(
+                        'hospitals.id',
+                        'hospitals.hospital_name_en',
+                        'hospitals.hospital_name_ar',
+                        'hospitals.image',
+                        'hospitals.state',
+                        'hospitals.lat',
+                        'hospitals.long',
+                        'hospitals.location'
+                    ); // Group by user fields
 
-            if (request('orderBy') == 'recommend') {
-                $query->orderBy('avg_rating', "DESC");
-            }
-            $hospitals = $query->get();
-            if($request->has("long") && $request->has("lat")){
-                foreach ($hospitals as $hospital) {
-                    if($hospital->lat != null && $hospital->long != null){
-                        $hospitalLatitude = $hospital->lat;
-                        $hospitalLongitude = $hospital->long;
-                        $userLatitude = $request->lat;
-                        $userLongitude = $request->long;
-                        // Make a request to Google Distance Matrix API
-                        $response = Http::get("https://maps.gomaps.pro/maps/api/distancematrix/json", [
-                            'origins' => "$userLatitude,$userLongitude",
-                            'destinations' => "$hospitalLatitude,$hospitalLongitude",
-                            'key' => "AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m",
-                        ]);
-                        // Parse the response to get the distance in kilometers
-                        if ($response->successful()) {
-                            $data = $response->json();
-                            $distanceInMeters = $data['rows'][0]['elements'][0]['distance']['value'] ?? null;
-                            if ($distanceInMeters) {
-                                $distanceInKilometers = $distanceInMeters / 1000; // Convert meters to kilometers
-                                $hospital['distance'] = round($distanceInKilometers,2);
+                if (request('orderBy') == 'recommend') {
+                    $query->orderBy('avg_rating', "DESC");
+                }
+                $hospitals = $query->get();
+                if($request->has("long") && $request->has("lat")){
+                    foreach ($hospitals as $hospital) {
+                        if($hospital->lat != null && $hospital->long != null){
+                            $hospitalLatitude = $hospital->lat;
+                            $hospitalLongitude = $hospital->long;
+                            $userLatitude = $request->lat;
+                            $userLongitude = $request->long;
+                            // Make a request to Google Distance Matrix API
+                            $response = Http::get("https://maps.gomaps.pro/maps/api/distancematrix/json", [
+                                'origins' => "$userLatitude,$userLongitude",
+                                'destinations' => "$hospitalLatitude,$hospitalLongitude",
+                                'key' => "AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m",
+                            ]);
+                            // Parse the response to get the distance in kilometers
+                            if ($response->successful()) {
+                                $data = $response->json();
+                                $distanceInMeters = $data['rows'][0]['elements'][0]['distance']['value'] ?? null;
+                                if ($distanceInMeters) {
+                                    $distanceInKilometers = $distanceInMeters / 1000; // Convert meters to kilometers
+                                    $hospital['distance'] = round($distanceInKilometers,2);
+                                }
                             }
                         }
                     }
+                    if (request('orderBy') == 'distance') {
+                        $hospitals = $hospitals->sortByDesc(function ($hospital) {
+                            return $hospital->distance;
+                        })->values();
+                    }
                 }
-                if (request('orderBy') == 'distance') {
-                    $hospitals = $hospitals->sortByDesc(function ($hospital) {
-                        return $hospital->distance;
-                    })->values();
+
+
+                return $this->SuccessResponse(200, 'Hospitals list', $hospitals);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+        // Hospital profile
+        public function hospitalProfile($id)
+        {
+            try {
+                $profile = Hospital::where('hospitals.id', $id)
+                // ->select('hospitals.*', DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as name"))
+                ->with([
+                    'doctors', 'specialities'
+                ])
+                ->first();
+                
+                $profile->avg_rating = $profile->avg_rating;
+                $profile->rating_count = $profile->rating_count;
+                $doctorsList = [];
+                foreach ($profile->doctors as $doctor) {
+                    $d = [];
+                    $d['id'] = $doctor->id;
+                    $d['name'] = $doctor["name_$this->lang"] ?? $doctor->name_en;
+                    $d['profile_image'] = $doctor->profile_image;
+                    $d['hospital_id'] = $doctor->hospital_id;
+                    $d['avg_rating'] = $doctor->avg_rating;
+                    $d['rating_count'] = $doctor->rating_count;
+
+                    $doctorsList[] = $d;
                 }
+                unset($profile->doctors);
+                $profile->doctors = $doctorsList;
+                return $this->SuccessResponse(200, 'Hospital Profile', $profile);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
             }
-
-
-            return $this->SuccessResponse(200, 'Hospitals list', $hospitals);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
         }
-    }
-    // Hospital profile
-    public function hospitalProfile($id)
-    {
-        try {
-            $profile = Hospital::where('hospitals.id', $id)
-            ->select('hospitals.*', DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as hospital_name"))
-            ->with([
-                'doctors', 'specialities'
-            ])
-            ->first();
-            
-            $profile->avg_rating = $profile->avg_rating;
-            $profile->rating_count = $profile->rating_count;
-            $doctorsList = [];
-            foreach ($profile->doctors as $doctor) {
-                $d = [];
-                $d['id'] = $doctor->id;
-                $d['name'] = $doctor["name_$this->lang"] ?? $doctor->name_en;
-                $d['profile_image'] = $doctor->profile_image;
-                $d['hospital_id'] = $doctor->hospital_id;
-                $d['avg_rating'] = $doctor->avg_rating;
-                $d['rating_count'] = $doctor->rating_count;
-
-                $doctorsList[] = $d;
-            }
-            unset($profile->doctors);
-            $profile->doctors = $doctorsList;
-            return $this->SuccessResponse(200, 'Hospital Profile', $profile);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
     /* End hospitals APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
