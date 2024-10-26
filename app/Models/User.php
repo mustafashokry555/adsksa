@@ -56,6 +56,8 @@ class User extends Authenticatable
         "timezone"
 
     ];
+    protected $appends = ['name'];
+
 
     /**
      * The attributes that should be hidden for serialization.

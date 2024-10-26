@@ -35,71 +35,71 @@ class MainController extends Controller
     }
 
     /* Start Setting APIs*/
-    // API for Update Or Create App Setting (Done)
-    public function updateOrCreateAppSetting(Request $request)
-    {
-        try {
-            $request->validate([
-                'notifications' => 'nullable|boolean',
-                'msg_option' => 'nullable|boolean',
-                'call_option' => 'nullable|boolean',
-                'video_call_option' => 'nullable|boolean',
-            ]);
-            $user = $request->user();
-
-            $AppSetting = AppSetting::updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'notifications' => $request->notifications ?? '0',
-                    'msg_option' => $request->msg_option ?? '0',
-                    'call_option' => $request->call_option ?? '0',
-                    'video_call_option' => $request->video_call_option ?? '0',
-                ]
-            );
-
-            return $this->SuccessResponse(200, null, $AppSetting);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // Make Complain
-    function makeComplaint(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'subject' => 'required|string',
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'mobile' => 'required|numeric|digits:9',
-            'comment' => 'required|string',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
-        }
-        try {
-            // Create a new row in the table
-            $dateTime = Carbon::now();
-            $row = DB::table('patient_comments')
-                ->insert([
-                    "subject" => $request->subject,
-                    "name" => $request->name,
-                    "mobile" => $request->mobile,
-                    "email" => $request->email,
-                    "comment" => $request->comment,
-                    "created_at" => $dateTime,
-                    "updated_at" => $dateTime
+        // API for Update Or Create App Setting (Done)
+        public function updateOrCreateAppSetting(Request $request)
+        {
+            try {
+                $request->validate([
+                    'notifications' => 'nullable|boolean',
+                    'msg_option' => 'nullable|boolean',
+                    'call_option' => 'nullable|boolean',
+                    'video_call_option' => 'nullable|boolean',
                 ]);
-            return $this->SuccessResponse(200, "Comment Done..", $row);
-        } catch (\Throwable $th) {
-            // return $th;
-            return $this->ErrorResponse(400, $th->getMessage());
+                $user = $request->user();
+
+                $AppSetting = AppSetting::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'notifications' => $request->notifications ?? '0',
+                        'msg_option' => $request->msg_option ?? '0',
+                        'call_option' => $request->call_option ?? '0',
+                        'video_call_option' => $request->video_call_option ?? '0',
+                    ]
+                );
+
+                return $this->SuccessResponse(200, null, $AppSetting);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
         }
-    }
+        // Make Complain
+        function makeComplaint(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'subject' => 'required|string',
+                'name' => 'required|string',
+                'email' => 'required|email',
+                'mobile' => 'required|numeric|digits:9',
+                'comment' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
+            }
+            try {
+                // Create a new row in the table
+                $dateTime = Carbon::now();
+                $row = DB::table('patient_comments')
+                    ->insert([
+                        "subject" => $request->subject,
+                        "name" => $request->name,
+                        "mobile" => $request->mobile,
+                        "email" => $request->email,
+                        "comment" => $request->comment,
+                        "created_at" => $dateTime,
+                        "updated_at" => $dateTime
+                    ]);
+                return $this->SuccessResponse(200, "Comment Done..", $row);
+            } catch (\Throwable $th) {
+                // return $th;
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
     /* End Setting APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
     /* Start Search For Doctors APIs*/
-    // API for All Specialities (Done with Lang)
+        // API for All Specialities (Done with Lang)
         public function allSpecialities(Request $request)
         {
             try {
@@ -280,18 +280,18 @@ class MainController extends Controller
                         $join->on('users.id', '=', 'wishlists.doctor_id')
                             ->where('wishlists.patient_id', '=', $patient_id);
                     })
-                    ->select(
-                        'users.id',
-                        DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
-                        DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
-                        DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
-                        'users.profile_image',
-                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                        'users.gender',
-                        'users.pricing',
-                        'users.hospital_id', // Include hospital_id for the relationship
-                        'users.speciality_id', // Include speciality_id for the relationship
-                    )
+                    // ->select(
+                    //     'users.id',
+                    //     DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
+                    //     DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
+                    //     DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
+                    //     'users.profile_image',
+                    //     DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                    //     'users.gender',
+                    //     'users.pricing',
+                    //     'users.hospital_id', // Include hospital_id for the relationship
+                    //     'users.speciality_id', // Include speciality_id for the relationship
+                    // )
                     ->with([
                         'hospital' => function ($query) {
                             $query->select([
@@ -308,17 +308,17 @@ class MainController extends Controller
                             ]);
                         }
                     ])
-                    ->groupBy(
-                        'wishlists.id',
-                        'users.id',
-                        'users.hospital_id',
-                        'users.speciality_id',
-                        'users.name_en',
-                        'users.pricing',
-                        'users.gender',
-                        'users.name_ar',
-                        'users.profile_image'
-                    )
+                    // ->groupBy(
+                    //     'wishlists.id',
+                    //     'users.id',
+                    //     'users.hospital_id',
+                    //     'users.speciality_id',
+                    //     'users.name_en',
+                    //     'users.pricing',
+                    //     'users.gender',
+                    //     'users.name_ar',
+                    //     'users.profile_image'
+                    // )
                     ->first();
 
                 // $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
