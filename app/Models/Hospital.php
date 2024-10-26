@@ -27,7 +27,7 @@ class Hospital extends Model
         'opening_hours',
 
     ];
-
+    protected $appends = ['hospital_name'];
     public function users()
     {   
         return $this->hasMany(User::class);

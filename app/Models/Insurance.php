@@ -9,6 +9,7 @@ class Insurance extends Model
 {
     use HasFactory;
     protected $fillable = ['name_en', 'name_ar', 'email', 'user_id', 'address', 'phone1', 'city', 'phone2', 'state', 'fax'];
+    protected $appends = ['name'];
 
     public function hospitals()
     {

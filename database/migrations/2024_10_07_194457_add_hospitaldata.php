@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('hospitals', function (Blueprint $table) {
-            $table->dropColumn(['location', 'long', 'lat', 'about1', 'about2', 'about', 'opening_hours']);
-        });
+        //Schema::table('hospitals', function (Blueprint $table) {
+        //    $table->dropColumn(['location', 'long', 'lat', 'about1', 'about2', 'about', 'opening_hours']);
+        //});
         Schema::table('hospitals', function (Blueprint $table) {
             $table->string('location')->nullable();
             $table->double('long', 20, 15)->nullable();

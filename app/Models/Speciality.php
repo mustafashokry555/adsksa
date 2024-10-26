@@ -9,6 +9,7 @@ class Speciality extends Model
 {
     use HasFactory;
     protected $fillable = ['name_en', 'name_ar', 'image'];
+    protected $appends = ['name'];
 
     public function users()
     {
