@@ -111,11 +111,7 @@ class MainController extends Controller
                     });
                 }
 
-                $speciality = $query->select(
-                    'id',
-                    DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
-                    'image'
-                )->get();
+                $speciality = $query->get();
                 // $speciality = $speciality->map(function ($special) {
                 //     $special->image = url("api/{$special->image}");
                 //     return $special;
@@ -159,10 +155,7 @@ class MainController extends Controller
                             ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
-                $insurance = $query->select(
-                    'id',
-                    DB::raw("IFNULL(name_{$this->lang}, name_en) as name"),
-                )->orderBy('id', 'desc')->get();
+                $insurance = $query->orderBy('id', 'desc')->get();
                 return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -804,7 +797,7 @@ class MainController extends Controller
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
                     ->select(
                         'hospitals.id',
-                        DB::raw("IFNULL(hospitals.hospital_name_{$this->lang}, hospitals.hospital_name_en) as hospital_name"),
+                        DB::raw("IFNULL(hospitals.hospital_name_{$this->lang}, hospitals.hospital_name_en) as name"),
                         DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'), // Average of ratings
                         'hospitals.image',
                         'hospitals.state',
@@ -887,7 +880,8 @@ class MainController extends Controller
                     $d['hospital_id'] = $doctor->hospital_id;
                     $d['avg_rating'] = $doctor->avg_rating;
                     $d['rating_count'] = $doctor->rating_count;
-
+                    $d['speciality_id'] = $doctor->speciality->id;
+                    $d['speciality_name'] = $doctor->speciality->name;
                     $doctorsList[] = $d;
                 }
                 unset($profile->doctors);
