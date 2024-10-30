@@ -69,6 +69,7 @@ class AuthController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name_en' => ['required', 'string', 'max:255'],
+                // 'name_ar' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'min:6'],
                 'mobile' => 'required|numeric|digits:9',//unique:users,mobile
@@ -100,6 +101,7 @@ class AuthController extends Controller
             // DB::beginTransaction();
             $user = User::create([
                 'name_en' => $request->name_en,
+                'name_ar' => $request->name_ar,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'mobile'  => $request->mobile,
@@ -223,6 +225,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name_en' => ['required', 'string', 'max:255'],
+            // 'name_ar' => ['required', 'string', 'max:255'],
             'profile_image' => 'nullable|image|mimes:jpeg,png,gif|max:2048',
         ]);
 
@@ -243,6 +246,7 @@ class AuthController extends Controller
 
             $patient = User::find($request->user()->id);
             $patient->name_en = $request->name_en;
+            $patient->name_ar = $request->name_ar;
             $patient->profile_image = $imageName ?? explode(env('BASE_URL'), $patient->profile_image)[1];
             $patient->address = $request->address;
             $patient->email = $request->email ?? $patient->email;

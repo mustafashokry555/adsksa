@@ -110,12 +110,7 @@ class MainController extends Controller
                             ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
-
                 $speciality = $query->get();
-                // $speciality = $speciality->map(function ($special) {
-                //     $special->image = url("api/{$special->image}");
-                //     return $special;
-                // });
                 return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -131,7 +126,8 @@ class MainController extends Controller
                         $query->where("city", 'like', '%' . request('search') . '%');
                     });
                 }
-                $cities = $query->select('city')->groupBy('city')->get();
+                $cities = $query->select('city', 'hospital_name_en', 'hospital_name_ar')
+                ->groupBy('city', 'hospital_name_en', 'hospital_name_ar')->get();
                 return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -206,21 +202,23 @@ class MainController extends Controller
                     ->whereIn('users.hospital_id', $hospital_ids)
                     ->select(
                         'users.id',
-                        DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
-                        DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
-                        DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
+                        'users.name_en',
+                        'users.name_ar',
+                        DB::raw('AVG(reviews.star_rated) as avg_rating'),
+                        DB::raw('COUNT(reviews.id) as reviews_count'),
                         'users.profile_image',
                         DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
                         'users.gender',
                         'users.pricing',
-                        'users.hospital_id', // Include hospital_id for the relationship
-                        'users.speciality_id', // Include speciality_id for the relationship
+                        'users.hospital_id',
+                        'users.speciality_id',
                     )
                     ->with([
                         'hospital' => function ($query) {
                             $query->select([
                                 'id',
-                                DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as name"),
+                                'hospital_name_en',
+                                'hospital_name_ar',
                                 'lat',
                                 'long',
                             ]);
@@ -228,7 +226,8 @@ class MainController extends Controller
                         'speciality' => function ($query) {
                             $query->select([
                                 'id',
-                                DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
+                                'name_en',
+                                'name_ar',
                             ]);
                         }
                     ])
@@ -242,7 +241,7 @@ class MainController extends Controller
                         'users.gender',
                         'users.name_ar',
                         'users.profile_image'
-                    ); // Group by user fields
+                    );
 
                 if (request('orderBy') == 'low_price') {
                     $query->orderBy('users.pricing', "ASC");
@@ -280,23 +279,25 @@ class MainController extends Controller
                         $join->on('users.id', '=', 'wishlists.doctor_id')
                             ->where('wishlists.patient_id', '=', $patient_id);
                     })
-                    // ->select(
-                    //     'users.id',
-                    //     DB::raw('AVG(reviews.star_rated) as avg_rating'), // Average of ratings
-                    //     DB::raw('COUNT(reviews.id) as reviews_count'), // Count of reviews
-                    //     DB::raw("IFNULL(users.name_{$this->lang}, users.name_en) as name"),
-                    //     'users.profile_image',
-                    //     DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                    //     'users.gender',
-                    //     'users.pricing',
-                    //     'users.hospital_id', // Include hospital_id for the relationship
-                    //     'users.speciality_id', // Include speciality_id for the relationship
-                    // )
+                    ->select(
+                        'users.id',
+                        "users.name_ar",
+                        'users.name_en',
+                        'users.profile_image',
+                        DB::raw('AVG(reviews.star_rated) as avg_rating'),
+                        DB::raw('COUNT(reviews.id) as reviews_count'),
+                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                        'users.gender',
+                        'users.pricing',
+                        'users.hospital_id',
+                        'users.speciality_id'
+                    )
                     ->with([
                         'hospital' => function ($query) {
                             $query->select([
                                 'id',
-                                DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as name"),
+                                'hospital_name_ar',
+                                'hospital_name_en',
                                 'lat',
                                 'long',
                             ]);
@@ -304,63 +305,87 @@ class MainController extends Controller
                         'speciality' => function ($query) {
                             $query->select([
                                 'id',
-                                DB::raw("IFNULL(name_{$this->lang}, name_en) as speciality_name")
+                                'name_en',
+                                'name_ar',
                             ]);
                         }
                     ])
-                    // ->groupBy(
-                    //     'wishlists.id',
-                    //     'users.id',
-                    //     'users.hospital_id',
-                    //     'users.speciality_id',
-                    //     'users.name_en',
-                    //     'users.pricing',
-                    //     'users.gender',
-                    //     'users.name_ar',
-                    //     'users.profile_image'
-                    // )
+                    ->groupBy(
+                        'wishlists.id',
+                        'users.id',
+                        'users.hospital_id',
+                        'users.speciality_id',
+                        'users.name_en',
+                        'users.pricing',
+                        'users.gender',
+                        'users.name_ar',
+                        'users.profile_image'
+                    )
                     ->first();
-
-                // $specialization = Specialization::where('user_id', $id)->select('specialization_title')->get();
-                // $profile['specialization'] = $specialization;
                 return $this->SuccessResponse(200, 'Doctor profile', $profile);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }
         }
         // Start bestsDoctors API
-        public function bestsDoctors()
+        public function bestsDoctors(Request $request)
         {
+            $token = request()->bearerToken();
+            $patient_id = null;
+            if ($token) {
+                $tokenModel = PersonalAccessToken::findToken($token);
+                if ($tokenModel) {
+                    $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                }
+            }
             try {
                 $doctors = User::leftJoin('reviews', 'reviews.doctor_id', 'users.id')
-                    ->join('specialities', 'specialities.id', 'users.speciality_id')
-                    ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                    ->leftJoin('wishlists', function ($join) use ($patient_id) {
+                        $join->on('users.id', '=', 'wishlists.doctor_id')
+                            ->where('wishlists.patient_id', '=', $patient_id);
+                    })
                     ->where('users.user_type', '=', 'D')
                     ->select(
                         'users.id',
-                        DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
-                        // 'users.name',
-                        // 'users.profile_image', 'specialities.name as speciality_name',
-                        DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                        'users.description',
-                        'specialities.image as speciality_image',
-                        DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                        // 'hospitals.hospital_name'
-                        'hospitals.id as hospital_id',
-                        DB::raw('IFNULL(AVG(reviews.star_rated), 0) as avg_rating')
-                    )
-                    ->groupBy(
-                        'users.id',
-                        'users.name_ar',
                         'users.name_en',
+                        'users.name_ar',
+                        DB::raw('AVG(reviews.star_rated) as avg_rating'),
+                        DB::raw('COUNT(reviews.id) as reviews_count'),
                         'users.profile_image',
-                        'specialities.name_ar',
-                        'specialities.name_en',
-                        'users.description',
-                        'specialities.image',
-                        'hospitals.hospital_name_ar',
-                        'hospitals.hospital_name_en',
-                        'hospitals.id'
+                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                        'users.gender',
+                        'users.pricing',
+                        'users.hospital_id',
+                        'users.speciality_id',
+                    )
+                    ->with([
+                        'hospital' => function ($query) {
+                            $query->select([
+                                'id',
+                                'hospital_name_en',
+                                'hospital_name_ar',
+                                'lat',
+                                'long',
+                            ]);
+                        },
+                        'speciality' => function ($query) {
+                            $query->select([
+                                'id',
+                                'name_en',
+                                'name_ar',
+                            ]);
+                        }
+                    ])
+                    ->groupBy(
+                        'wishlists.id',
+                        'users.id',
+                        'users.hospital_id',
+                        'users.speciality_id',
+                        'users.name_en',
+                        'users.pricing',
+                        'users.gender',
+                        'users.name_ar',
+                        'users.profile_image'
                     )
                     ->orderBy('avg_rating', 'DESC')
                     ->paginate(12);
@@ -415,334 +440,319 @@ class MainController extends Controller
     ////////////////////////////////////////////////////////////////////////////////////////
 
     /* Start wish List Part*/
-    public function AddToWishlist(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required',
-            'integer',
-        ]);
+        public function AddToWishlist(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'doctor_id' => 'required',
+                'integer',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            $isExist = DB::table('wishlists')->Where('patient_id', '=', $request->user()->id)
+                ->where(function ($query) use ($request) {
+                    $query->where('doctor_id', '=', $request->doctor_id);
+                });
+            if ($isExist->first() != null) {
+                DB::table('wishlists')->where('id', $isExist->first()->id)->delete();
+
+                return $this->SuccessResponse(200, 'Removed from wishlist!', null);
+            }
+            DB::table('wishlists')->insert(
+                [
+                    'doctor_id' => $request->doctor_id,
+                    'patient_id' => $request->user()->id
+                ]
+            );
+            return $this->SuccessResponse(200, 'Added to wishlist!', null);
         }
-        $isExist = DB::table('wishlists')->Where('patient_id', '=', $request->user()->id)
-            ->where(function ($query) use ($request) {
-                $query->where('doctor_id', '=', $request->doctor_id);
-            });
-        if ($isExist->first() != null) {
-            DB::table('wishlists')->where('id', $isExist->first()->id)->delete();
+        public function Wishlist(Request $request)
+        {
 
-            return $this->SuccessResponse(200, 'Removed from wishlist!', null);
+            $baseUrl = getenv('BASE_URL') . 'images/';
+
+            $doctors = Wishlist::join('users', 'users.id', 'wishlists.doctor_id')
+                ->join('specialities', 'specialities.id', 'users.speciality_id')
+                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
+                ->where('wishlists.patient_id', $request->user()->id)
+                ->select(
+                    'users.id',
+                    DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
+                    DB::raw("CONCAT('$baseUrl', users.profile_image) as profile_image"),
+                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"),
+                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                )
+                ->get();
+            return $this->SuccessResponse(200, 'wishlist  Data', $doctors);
         }
-        DB::table('wishlists')->insert(
-            [
-                'doctor_id' => $request->doctor_id,
-                'patient_id' => $request->user()->id
-            ]
-        );
-        return $this->SuccessResponse(200, 'Added to wishlist!', null);
-    }
-    public function Wishlist(Request $request)
-    {
-
-        $baseUrl = getenv('BASE_URL') . 'images/';
-
-        $doctors = Wishlist::join('users', 'users.id', 'wishlists.doctor_id')
-            ->join('specialities', 'specialities.id', 'users.speciality_id')
-            ->join('hospitals', 'hospitals.id', 'users.hospital_id')
-            ->where('wishlists.patient_id', $request->user()->id)
-            ->select(
-                'users.id',
-                // 'users.name',
-                DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
-                DB::raw("CONCAT('$baseUrl', users.profile_image) as profile_image"), // Concatenate the base URL with profile_image
-                // 'specialities.name as speciality_name',
-                DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with speciality_image
-                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                // 'hospitals.hospital_name'
-            )
-            ->get();
-        return $this->SuccessResponse(200, 'wishlist  Data', $doctors);
-    }
     /* End wish List Part*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
 
     /* Stert Appointment API's */
-    // Start Avail Slot API
-    public function get_availability(Request $request, $id)
-    {
-        $doctor = User::find($id);
-        $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
-        // return $doctor;
-        $time_interval = 15;
-        // Create selected CarbonDate instance
-        $selectedDate = CarbonImmutable::parse($request->date);
-        // create date
-        $date = $selectedDate->format("Y-m-d");
-        // day of the week
-        $day_name = strtolower($selectedDate->format("l"));
+        // Start Avail Slot API
+        public function get_availability(Request $request, $id)
+        {
+            $doctor = User::find($id);
+            $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
+            // return $doctor;
+            $time_interval = 15;
+            // Create selected CarbonDate instance
+            $selectedDate = CarbonImmutable::parse($request->date);
+            // create date
+            $date = $selectedDate->format("Y-m-d");
+            // day of the week
+            $day_name = strtolower($selectedDate->format("l"));
 
-        // Doctor set unavailabilty on a specific date
-        $unavailability = $doctor->unavailailities()->where("date", $date)->first();
-        // return Not available
-        if ($unavailability) {
+            // Doctor set unavailabilty on a specific date
+            $unavailability = $doctor->unavailailities()->where("date", $date)->first();
+            // return Not available
+            if ($unavailability) {
 
-            return $this->SuccessResponse(200, "Not Available", []);
-        }
-
-        // Check if doctor set One time appointment on a specific date
-        $availability = null;
-        $oneTimeAvailability = $doctor->oneTimeailabilities()->where("date", $date)->first();
-        if ($oneTimeAvailability) {
-            // Get time intervals to create slots
-            $time_interval = $oneTimeAvailability->time_interval ? $oneTimeAvailability->time_interval : 15;
-            $availability = $oneTimeAvailability;
-        } else {
-            $regularAvailability = $doctor->regularAvailabilities()->where("week_day", $day_name)->first();
-            if ($regularAvailability) {
-                // Get time intervals to create slots
-                $time_interval = $regularAvailability->time_interval ? $regularAvailability->time_interval : 15;
-                $availability = $regularAvailability;
+                return $this->SuccessResponse(200, "Not Available", []);
             }
-        }
 
-        // if availability is null
-        if (!$availability) {
+            // Check if doctor set One time appointment on a specific date
+            $availability = null;
+            $oneTimeAvailability = $doctor->oneTimeailabilities()->where("date", $date)->first();
+            if ($oneTimeAvailability) {
+                // Get time intervals to create slots
+                $time_interval = $oneTimeAvailability->time_interval ? $oneTimeAvailability->time_interval : 15;
+                $availability = $oneTimeAvailability;
+            } else {
+                $regularAvailability = $doctor->regularAvailabilities()->where("week_day", $day_name)->first();
+                if ($regularAvailability) {
+                    // Get time intervals to create slots
+                    $time_interval = $regularAvailability->time_interval ? $regularAvailability->time_interval : 15;
+                    $availability = $regularAvailability;
+                }
+            }
 
-            return $this->SuccessResponse(200, "Not Available", []);
-        }
-        // Appointments of selected date
-        $appointments = Appointment::where('appointment_date', $date)
-            ->where('doctor_id', $doctor->id)->pluck("appointment_time");
+            // if availability is null
+            if (!$availability) {
 
-        // Creating Slots
-        $slots = [];
-        $filteredSlots = collect([]);
-        $intervals = collect($availability->slots);
+                return $this->SuccessResponse(200, "Not Available", []);
+            }
+            // Appointments of selected date
+            $appointments = Appointment::where('appointment_date', $date)
+                ->where('doctor_id', $doctor->id)->pluck("appointment_time");
 
-        // Fliter slots
-        foreach ($intervals as  $interval) {
-            $start_dt = $date . $interval["start_time"];
-            $end_dt = $date . $interval["end_time"];
+            // Creating Slots
+            $slots = [];
+            $filteredSlots = collect([]);
+            $intervals = collect($availability->slots);
 
-            // Create Slots
-            $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
+            // Fliter slots
+            foreach ($intervals as  $interval) {
+                $start_dt = $date . $interval["start_time"];
+                $end_dt = $date . $interval["end_time"];
 
-            foreach ($slots as $slot) {
-                if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
-                    if (!$appointments->contains($slot->format("H:i:s"))) {
-                        $filteredSlots->push($slot->format("H:i"));
+                // Create Slots
+                $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
+
+                foreach ($slots as $slot) {
+                    if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
+                        if (!$appointments->contains($slot->format("H:i:s"))) {
+                            $filteredSlots->push($slot->format("H:i"));
+                        }
                     }
                 }
             }
+            return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->slice(0, -1)->all());
         }
-        return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->slice(0, -1)->all());
-    }
-    // Book New Appointmentneed need alot of updates
-    public function BookAppointment(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required',
-            'integer',
-            'hospital_id' => 'required',
-            'integer',
-            'appointment_date' => 'required|date_format:Y-m-d',
-            'appointment_time' => 'required|date_format:H:i',
-        ]);
+        // Book New Appointmentneed need alot of updates
+        public function BookAppointment(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'doctor_id' => 'required',
+                'integer',
+                'hospital_id' => 'required',
+                'integer',
+                'appointment_date' => 'required|date_format:Y-m-d',
+                'appointment_time' => 'required|date_format:H:i',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        try {
-            $baseUrl = getenv('BASE_URL') . 'images/';
-            $isExist = Appointment::where(['appointment_date' => $request->appointment_date, 'appointment_time' => $request->appointment_time])->first();
-            if ($isExist) {
-                return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
             }
-            $a = new Appointment();
-            $a->doctor_id = $request->doctor_id;
-            $a->patient_id = $request->user()->id;
-            $a->hospital_id = $request->hospital_id;
-            $a->appointment_date = $request->appointment_date;
-            $a->appointment_time = $request->appointment_time;
-            $a->appointment_type = $request->appointment_type;
-            $a->booking_for = $request->booking_for;
-            $a->concern = $request->concern;
-            $a->status = "P";
-            $a->description = $request->description;
 
-            $a->save();
+            try {
+                $baseUrl = getenv('BASE_URL') . 'images/';
+                $isExist = Appointment::where(['appointment_date' => $request->appointment_date, 'appointment_time' => $request->appointment_time])->first();
+                if ($isExist) {
+                    return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+                }
+                $a = new Appointment();
+                $a->doctor_id = $request->doctor_id;
+                $a->patient_id = $request->user()->id;
+                $a->hospital_id = $request->hospital_id;
+                $a->appointment_date = $request->appointment_date;
+                $a->appointment_time = $request->appointment_time;
+                $a->appointment_type = $request->appointment_type;
+                $a->booking_for = $request->booking_for;
+                $a->concern = $request->concern;
+                $a->status = "P";
+                $a->description = $request->description;
 
-            // $user = User::find($request->user()->id);
-            // $user->name = $request->name;
-            // $user->gender = $request->gender;
-            // $user->age = $request->age;
+                $a->save();
 
-            // $user->save();
+                // $user = User::find($request->user()->id);
+                // $user->name = $request->name;
+                // $user->gender = $request->gender;
+                // $user->age = $request->age;
+
+                // $user->save();
+
+                $appointment = Appointment::where('appointments.patient_id', $request->user()->id)
+                    ->where('appointments.id', $a->id)
+                    ->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
+                    ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
+                    ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
+                    ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
+                    ->select(
+                        DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
+                        DB::raw("CONCAT('$baseUrl', doctoruser.profile_image) as profile_image"),
+                        DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                        'doctoruser.description',
+                        DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"),
+                        DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                        'hospitals.id as hospital_id',
+                        'appointments.booking_for',
+                        'appointments.concern',
+                        'appointments.appointment_date',
+                        'appointments.appointment_time',
+                        'appointments.appointment_type',
+                        'appointments.description'
+                    )
+                    ->first();
+
+                return $this->SuccessResponse(200, 'Appointment details', $appointment);
+            } catch (\Throwable $th) {
+
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+        // Show the Patient Appointment
+        public function PatientAppointments(Request $request)
+        {
+            // single Appointment
+            if (request('appointment_id')) {
+                $query = Appointment::query()
+                    ->where('appointments.patient_id', $request->user()->id)->where('appointments.id', request('appointment_id'));
+
+                $appointment = $query->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
+                    ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
+                    ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
+                    ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
+                    ->select(
+                        'doctoruser.id as doctor_id',
+                        DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
+                        'doctoruser.profile_image',
+                        DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
+                        'doctoruser.description',
+                        'specialities.image as speciality_image',
+                        DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
+                        'hospitals.id as hospital_id',
+                        'appointments.booking_for',
+                        'appointments.concern',
+                        'appointments.appointment_date',
+                        'appointments.appointment_time',
+                        'appointments.appointment_type',
+                        'appointments.description',
+                        'appointments.status as appointment_status'
+                    )->orderBy('appointments.id', 'desc')->first();
+                $doctoruser = User::find($appointment->doctor_id);
+
+                // Access the "profile_image" attribute using the accessor
+                $profileImage = $doctoruser->profile_image;
+
+                // Add the profile_image attribute to the appointment object
+                $appointment->profile_image = $profileImage;
+                return $this->SuccessResponse(200, 'Patient`s Appointments', $appointment);
+            }
 
 
+            $baseUrl = getenv('BASE_URL') . 'images/'; // Replace with your actual base URL
 
-            $appointment = Appointment::where('appointments.patient_id', $request->user()->id)
-                ->where('appointments.id', $a->id)
+            $query = Appointment::query()
+                ->where('appointments.patient_id', $request->user()->id);
+
+            if (request('status')) {
+                switch (request('status')) {
+                    case 'pending':
+                        $s = 'P';
+                        break;
+
+                    case 'confirmed':
+                        $s = 'C';
+                        break;
+
+                    case 'cancelled':
+                        $s = 'U';
+                        break;
+
+                    case 'd_cancelled':
+                        $s = 'D';
+                        break;
+
+                    default:
+                        $s = 'P';
+                        break;
+                }
+
+                $query->where(function ($query) use ($s) {
+                    $query->orWhere('appointments.status', $s);
+                });
+            }
+
+            $appointment = $query
                 ->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
                 ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
                 ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
                 ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
-                ->select(
-                    // 'doctoruser.name',
+                ->select([
+                    'appointments.id',
                     DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
-                    DB::raw("CONCAT('$baseUrl', doctoruser.profile_image) as profile_image"), // Concatenate the base URL with profile_image
-                    // 'specialities.name as speciality_name',
+                    DB::raw("CONCAT('$baseUrl', doctoruser.profile_image) as profile_image"),
                     DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                    'doctoruser.description',
-                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"), // Concatenate the base URL with speciality_image
-                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                    // 'hospitals.hospital_name'
-                    'hospitals.id as hospital_id',
-                    'appointments.booking_for',
-                    'appointments.concern',
                     'appointments.appointment_date',
                     'appointments.appointment_time',
                     'appointments.appointment_type',
-                    'appointments.description'
-                )
-                ->first();
-
-            return $this->SuccessResponse(200, 'Appointment details', $appointment);
-        } catch (\Throwable $th) {
-
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-    // Show the Patient Appointment
-    public function PatientAppointments(Request $request)
-    {
-        // single Appointment
-        if (request('appointment_id')) {
-            $query = Appointment::query()
-                ->where('appointments.patient_id', $request->user()->id)->where('appointments.id', request('appointment_id'));
-
-            $appointment = $query->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
-                ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
-                ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
-                ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
-                ->select(
-                    'doctoruser.id as doctor_id',
-                    // 'doctoruser.name',
-                    DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
-                    'doctoruser.profile_image',
-                    // 'specialities.name as speciality_name',
-                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                    'doctoruser.description',
-                    'specialities.image as speciality_image',
+                    'appointments.status as appointment_status',
                     DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                    // 'hospitals.hospital_name'
-                    'hospitals.id as hospital_id',
-                    'appointments.booking_for',
-                    'appointments.concern',
-                    'appointments.appointment_date',
-                    'appointments.appointment_time',
-                    'appointments.appointment_type',
-                    'appointments.description',
-                    'appointments.status as appointment_status'
-                )->orderBy('appointments.id', 'desc')->first();
-            $doctoruser = User::find($appointment->doctor_id);
+                    DB::raw("IFNULL(patientuser.name_{$this->getLang()}, patientuser.name_en) as patient_name"),
+                ])->orderBy('appointments.id', 'desc')
+                ->paginate(10);
 
-            // Access the "profile_image" attribute using the accessor
-            $profileImage = $doctoruser->profile_image;
-
-            // Add the profile_image attribute to the appointment object
-            $appointment->profile_image = $profileImage;
-            return $this->SuccessResponse(200, 'Patient`s Appointments', $appointment);
+            return $this->SuccessResponse(200, "Patient's Appointments", $appointment);
         }
+        // cancel the appointment
+        public function CancelAppointment(Request $request)
+        {
+            $validator = Validator::make($request->all(), [
+                'appointment_id' => 'required',
+                'integer',
+            ]);
 
-
-        $baseUrl = getenv('BASE_URL') . 'images/'; // Replace with your actual base URL
-
-        $query = Appointment::query()
-            ->where('appointments.patient_id', $request->user()->id);
-
-        if (request('status')) {
-            switch (request('status')) {
-                case 'pending':
-                    $s = 'P';
-                    break;
-
-                case 'confirmed':
-                    $s = 'C';
-                    break;
-
-                case 'cancelled':
-                    $s = 'U';
-                    break;
-
-                case 'd_cancelled':
-                    $s = 'D';
-                    break;
-
-                default:
-                    $s = 'P';
-                    break;
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
             }
+            Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->update(['status' => 'U']);
 
-            $query->where(function ($query) use ($s) {
-                $query->orWhere('appointments.status', $s);
-            });
+            return $this->SuccessResponse(200, "Appointment cancelled", null);
         }
-
-        $appointment = $query
-            ->join('users as doctoruser', 'doctoruser.id', 'appointments.doctor_id')
-            ->join('users as patientuser', 'patientuser.id', 'appointments.patient_id')
-            ->join('specialities', 'specialities.id', 'doctoruser.speciality_id')
-            ->join('hospitals', 'hospitals.id', 'doctoruser.hospital_id')
-            ->select([
-                'appointments.id',
-                // 'doctoruser.name as doctor_name',
-                DB::raw("IFNULL(doctoruser.name_{$this->getLang()}, doctoruser.name_en) as doctor_name"),
-                DB::raw("CONCAT('$baseUrl', doctoruser.profile_image) as profile_image"),
-                // 'specialities.name as speciality_name',
-                DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                'appointments.appointment_date',
-                'appointments.appointment_time',
-                'appointments.appointment_type',
-                'appointments.status as appointment_status',
-                DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                // 'hospitals.hospital_name'
-                // 'patientuser.name as patient_name',
-                DB::raw("IFNULL(patientuser.name_{$this->getLang()}, patientuser.name_en) as patient_name"),
-            ])->orderBy('appointments.id', 'desc')
-            ->paginate(10);
-
-        return $this->SuccessResponse(200, "Patient's Appointments", $appointment);
-    }
-    // cancel the appointment
-    public function CancelAppointment(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'appointment_id' => 'required',
-            'integer',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-        Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->update(['status' => 'U']);
-
-        return $this->SuccessResponse(200, "Appointment cancelled", null);
-    }
     /* End Appointment API's */
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -797,8 +807,9 @@ class MainController extends Controller
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
                     ->select(
                         'hospitals.id',
-                        DB::raw("IFNULL(hospitals.hospital_name_{$this->lang}, hospitals.hospital_name_en) as name"),
-                        DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'), // Average of ratings
+                        'hospitals.hospital_name_ar',
+                        'hospitals.hospital_name_en',
+                        DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
                         'hospitals.image',
                         'hospitals.state',
                         'hospitals.lat',
@@ -815,7 +826,7 @@ class MainController extends Controller
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.location'
-                    ); // Group by user fields
+                    );
 
                 if (request('orderBy') == 'recommend') {
                     $query->orderBy('avg_rating', "DESC");
@@ -863,7 +874,6 @@ class MainController extends Controller
         {
             try {
                 $profile = Hospital::where('hospitals.id', $id)
-                // ->select('hospitals.*', DB::raw("IFNULL(hospital_name_{$this->lang}, hospital_name_en) as name"))
                 ->with([
                     'doctors', 'specialities'
                 ])
