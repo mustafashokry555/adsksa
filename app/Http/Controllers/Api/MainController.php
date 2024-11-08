@@ -172,7 +172,7 @@ class MainController extends Controller
                 $hospital_query = Hospital::query();
                 if (request('insurance') && !empty(request('insurance'))) {
                     $hospital_query->whereHas('insurances', function ($query) {
-                        $query->where('insurance_id', request('insurance'));
+                        $query->whereIn('insurance_id', request('insurance'));
                     });
                 }
                 if (request('city')) {
@@ -180,15 +180,18 @@ class MainController extends Controller
                 }
                 $hospital_ids = $hospital_query->pluck('id');
                 $query = User::query();
+                $query->leftJoin('hospitals', 'users.hospital_id', '=', 'hospitals.id');
                 if (request('search')) {
                     $query->where(function ($query) {
                         $query->where("name_en", 'like', '%' . request('search') . '%')
-                            ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                            ->orWhere("name_ar", 'like', '%' . request('search') . '%')
+                            ->orWhere("hospitals.hospital_name_en", 'like', '%' . request('search') . '%')
+                            ->orWhere("hospitals.hospital_name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
                 if (request('speciality') && !empty(request('speciality'))) {
                     $query->where(function ($query) {
-                        $query->where("speciality_id", request('speciality'));
+                        $query->whereIn("speciality_id", request('speciality'));
                     });
                 }
 
@@ -731,7 +734,7 @@ class MainController extends Controller
                     DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
                     DB::raw("IFNULL(patientuser.name_{$this->getLang()}, patientuser.name_en) as patient_name"),
                 ])->orderBy('appointments.id', 'desc')
-                ->paginate(10);
+                ->get();
 
             return $this->SuccessResponse(200, "Patient's Appointments", $appointment);
         }
