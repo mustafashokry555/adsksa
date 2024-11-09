@@ -1,7 +1,22 @@
 @extends('layout.mainlayout_admin')
 @section('title', 'Add New Hospital')
 @section('content')
-
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .mapboxgl-ctrl-geocoder {
+            width: 100%;
+            max-width: none;
+            margin-bottom: 10px;
+        }
+    </style>
     <div class="page-wrapper">
 
         <!-- Specialities -->
@@ -129,23 +144,14 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="map" class="col-form-label col-md-2">Select Location:</label>
                                 <div class="col-md-10">
-                                    <input hidden id="latitude" name="lat" type="text">
-                                    <input hidden id="longitude" name="long" type="text">
-                                    <input dir="rtl" id="pac-input" name="location" type="text" class="form-control"
-                                        placeholder="location" style="color:black;background-color: rgb(255, 255, 255);" required>
-                                    @error('location')
-                                        <div class="text-danger pt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="zip" class="col-form-label col-md-2">Location</label>
-                                <div class="col-md-10" >
-                                    <div id="map"style="height: 500px; " class="form-control"></div>
-                                    @error('zip')
+                                    <div id="geocoder" class="geocoder"></div>
+                                    <div id="map"></div>
+                                    <div id="selectedLocation"></div>
+                                    <input type="hidden" id="latitude" name="latitude">
+                                    <input type="hidden" id="longitude" name="longitude">
+                                    @error('map')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -175,12 +181,10 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="email"
-                                    class="col-form-label col-md-2">Hospital Administrator Email</label>
+                                <label for="email" class="col-form-label col-md-2">Hospital Administrator Email</label>
                                 <div class="col-md-10">
                                     <input id="email" name="email" type="email" class="form-control"
-                                        placeholder="Enter Hospital Administrator Email"
-                                        required>
+                                        placeholder="Enter Hospital Administrator Email" required>
                                     @error('email')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -190,11 +194,9 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="about"
-                                    class="col-form-label col-md-2">About Hospital 1</label>
+                                <label for="about" class="col-form-label col-md-2">About Hospital 1</label>
                                 <div class="col-md-10">
-                                    <textarea id="about" name="about" type="text" class="form-control"
-                                        placeholder="About The Hospital"></textarea>
+                                    <textarea id="about" name="about" type="text" class="form-control" placeholder="About The Hospital"></textarea>
                                     @error('about')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -204,11 +206,9 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="about1"
-                                    class="col-form-label col-md-2">About Hospital 2</label>
+                                <label for="about1" class="col-form-label col-md-2">About Hospital 2</label>
                                 <div class="col-md-10">
-                                    <textarea id="about1" name="about1" type="text" class="form-control"
-                                        placeholder="About The Hospital"></textarea>
+                                    <textarea id="about1" name="about1" type="text" class="form-control" placeholder="About The Hospital"></textarea>
                                     @error('about1')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -218,11 +218,9 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="about2"
-                                    class="col-form-label col-md-2">About Hospital 3</label>
+                                <label for="about2" class="col-form-label col-md-2">About Hospital 3</label>
                                 <div class="col-md-10">
-                                    <textarea id="about2" name="about2" type="text" class="form-control"
-                                        placeholder="About The Hospital"></textarea>
+                                    <textarea id="about2" name="about2" type="text" class="form-control" placeholder="About The Hospital"></textarea>
                                     @error('about2')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -232,8 +230,7 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="opening_hours"
-                                    class="col-form-label col-md-2">Opening Hours</label>
+                                <label for="opening_hours" class="col-form-label col-md-2">Opening Hours</label>
                                 <div class="col-md-10">
                                     <input id="opening_hours" name="opening_hours" type="text" class="form-control"
                                         placeholder="The Hospital Opening Hours">
@@ -289,234 +286,344 @@
     <!-- /Main Wrapper -->
 
 @endsection
+
+
 <script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    console.log("sdglakjj");
+    
     $(document).ready(function() {
-        $('.js-example-basic-multiple').select2();
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
+
+        initMap();
     });
-</script>
-<script>
-    $("#pac-input").focusin(function() {
-        $(this).val('');
-    });
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
+    let map;
+    let marker;
+    let selectedLocation = null;
 
-    $('#latitude').val('');
-    $('#longitude').val('');
-
-
-    // This example adds a search box to a map, using the Google Place Autocomplete
-    // feature. People can enter geographical searches. The search box will return a
-    // pick list containing a mix of places and predicted search terms.
-
-    // This example requires the Places library. Include the libraries=places
-    // parameter when you first load the API. For example:
-    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
-    function initAutocomplete() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-                lat: 21.42269762230259,
-                lng: 39.82616489607454
-            },
-            zoom: 12,
-            mapTypeId: 'roadmap'
+    function initMap() {
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [39.826288, 21.422438], // Kaaba
+            zoom: 5
         });
 
-        // move pin and current location
-        infoWindow = new google.maps.InfoWindow;
-        geocoder = new google.maps.Geocoder();
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                map.setCenter(pos);
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(pos),
-                    map: map,
-                    title: 'موقعك الحالي'
-                });
-                markers.push(marker);
-                marker.addListener('click', function() {
-                    geocodeLatLng(geocoder, map, infoWindow, marker);
-                });
-                // to get current position address on load
-                google.maps.event.trigger(marker, 'click');
-            }, function() {
-                handleLocationError(true, infoWindow, map.getCenter());
+        // Add navigation control (zoom in/out buttons)
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+        // Initialize marker
+        marker = new mapboxgl.Marker({
+            draggable: true
+        })
+        .setLngLat([39.826288, 21.422438])
+        .addTo(map);
+
+        // Update selectedLocation when marker is dragged
+        marker.on('dragend', onMarkerDragEnd);
+
+        // Add click event to map
+        map.on('click', onMapClick);
+
+        // Initialize the geocoder
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: false
+        });
+
+        // Add the geocoder to the map
+        document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+        // Listen for the 'result' event from the geocoder
+        geocoder.on('result', function(e) {
+            const coords = e.result.center;
+            updateMarkerPosition(coords);
+        });
+    }
+
+    function onMapClick(e) {
+        updateMarkerPosition([e.lngLat.lng, e.lngLat.lat]);
+    }
+
+    function onMarkerDragEnd() {
+        const lngLat = marker.getLngLat();
+        updateMarkerPosition([lngLat.lng, lngLat.lat]);
+    }
+
+    function updateMarkerPosition(coords) {
+        marker.setLngLat(coords);
+        console.log(coords);
+        
+        selectedLocation = {
+            lng: coords[0],
+            lat: coords[1]
+        };
+        getAddressFromCoordinates(coords);
+    }
+    function getAddressFromCoordinates(coords) {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${mapboxgl.accessToken}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.features && data.features.length > 0) {
+                    const address = data.features[0].place_name;
+                    console.log(address);
+                    
+                    updateSelectedLocationText(address);
+                } else {
+                    console.log('Address not found');
+
+                    updateSelectedLocationText('Address not found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching address:', error);
+                updateSelectedLocationText('Error fetching address');
             });
+    }
+    function updateSelectedLocationText() {
+        const locationDiv = document.getElementById('selectedLocation');
+        if (selectedLocation) {
+            locationDiv.textContent = `Selected Location: ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}`;
         } else {
-            // Browser doesn't support Geolocation
-            console.log('dsdsdsdsddsd');
-            handleLocationError(false, infoWindow, map.getCenter());
+            locationDiv.textContent = '';
         }
-
-        var geocoder = new google.maps.Geocoder();
-        google.maps.event.addListener(map, 'click', function(event) {
-            SelectedLatLng = event.latLng;
-
-            geocoder.geocode({
-                'latLng': event.latLng
-            }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    if (results[0]) {
-                        deleteMarkers();
-                        addMarkerRunTime(event.latLng);
-                        SelectedLocation = results[0].formatted_address;
-                        var cordinations = splitLatLng(String(event.latLng));
-                        $("#pac-input").val(results[0].formatted_address);
-                        $("#latitude").val(cordinations.lat);
-                        $("#longitude").val(cordinations.lng);
-                    }
-                }
-            });
-        });
-
-        function geocodeLatLng(geocoder, map, infowindow, markerCurrent) {
-            var latlng = {
-                lat: markerCurrent.position.lat(),
-                lng: markerCurrent.position.lng()
-            };
-            /* $('#branch-latLng').val("("+markerCurrent.position.lat() +","+markerCurrent.position.lng()+")");*/
-            $('#latitude').val(markerCurrent.position.lat());
-            $('#longitude').val(markerCurrent.position.lng());
-
-            geocoder.geocode({
-                'location': latlng
-            }, function(results, status) {
-                if (status === 'OK') {
-                    if (results[0]) {
-                        map.setZoom(8);
-                        var marker = new google.maps.Marker({
-                            position: latlng,
-                            map: map
-                        });
-                        markers.push(marker);
-                        infowindow.setContent(results[0].formatted_address);
-                        SelectedLocation = results[0].formatted_address;
-                        $("#pac-input").val(results[0].formatted_address);
-
-                        infowindow.open(map, marker);
-                    } else {
-                        window.alert('No results found');
-                    }
-                } else {
-                    window.alert('Geocoder failed due to: ' + status);
-                }
-            });
-            SelectedLatLng = (markerCurrent.position.lat(), markerCurrent.position.lng());
-        }
-
-        function addMarkerRunTime(location) {
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-            markers.push(marker);
-        }
-
-        function setMapOnAll(map) {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(map);
-            }
-        }
-
-        function clearMarkers() {
-            setMapOnAll(null);
-        }
-
-        function deleteMarkers() {
-            clearMarkers();
-            markers = [];
-        }
-
-        // Create the search box and link it to the UI element.
-        var input = document.getElementById('pac-input');
-        $("#pac-input").val();
-        var searchBox = new google.maps.places.SearchBox(input);
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
-
-        // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
-            searchBox.setBounds(map.getBounds());
-        });
-
-        var markers = [];
-        // Listen for the event fired when the user selects a prediction and retrieve
-        // more details for that place.
-        searchBox.addListener('places_changed', function() {
-            var places = searchBox.getPlaces();
-
-            if (places.length == 0) {
-                return;
-            }
-
-            // Clear out the old markers.
-            markers.forEach(function(marker) {
-                marker.setMap(null);
-            });
-            markers = [];
-
-            // For each place, get the icon, name and location.
-            var bounds = new google.maps.LatLngBounds();
-            places.forEach(function(place) {
-                if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
-                    return;
-                }
-                var icon = {
-                    url: place.icon,
-                    size: new google.maps.Size(100, 100),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25)
-                };
-
-                // Create a marker for each place.
-                markers.push(new google.maps.Marker({
-                    map: map,
-                    icon: icon,
-                    title: place.name,
-                    position: place.geometry.location
-                }));
-
-
-                $('#latitude').val(place.geometry.location.lat());
-                $('#longitude').val(place.geometry.location.lng());
-
-                if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
-            });
-            map.fitBounds(bounds);
-        });
     }
 
-    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
-    }
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value,
+            location: selectedLocation
+        };
+        console.log('Form submitted:', formData);
+        // Here you would typically send this data to your server
+        alert('Form submitted! Check the console for details.');
+    });
 
-    function splitLatLng(latLng) {
-        var newString = latLng.substring(0, latLng.length - 1);
-        var newString2 = newString.substring(1);
-        var trainindIdArray = newString2.split(',');
-        var lat = trainindIdArray[0];
-        var Lng = trainindIdArray[1];
-
-        $("#latitude").val(lat);
-        $("#longitude").val(Lng);
-        var cordinations = { lat: lat, lng: Lng };
-        return cordinations
-    }
 </script>
-<script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m&libraries=places&callback=initAutocomplete&language=s&region=SA&loading=async"></script>
+
+
+
+
+
+
+
+{{-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form with Mapbox Map and Search</title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: grid;
+            gap: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .mapboxgl-ctrl-geocoder {
+            width: 100%;
+            max-width: none;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Contact Form with Location</h1>
+        <form id="contactForm">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <div>
+                <label for="map">Select Location:</label>
+                <div id="geocoder" class="geocoder"></div>
+                <div id="map"></div>
+            </div>
+            <div id="selectedLocation"></div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
+        let map;
+        let marker;
+        let selectedLocation = null;
+
+        function initMap() {
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [39.826288, 21.422438], // Kaaba
+                zoom: 5
+            });
+
+            // Add navigation control (zoom in/out buttons)
+            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+            // Initialize marker
+            marker = new mapboxgl.Marker({
+                draggable: true
+            })
+            .setLngLat([39.826288, 21.422438])
+            .addTo(map);
+
+            // Update selectedLocation when marker is dragged
+            marker.on('dragend', onMarkerDragEnd);
+
+            // Add click event to map
+            map.on('click', onMapClick);
+
+            // Initialize the geocoder
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl,
+                marker: false
+            });
+
+            // Add the geocoder to the map
+            document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+            // Listen for the 'result' event from the geocoder
+            geocoder.on('result', function(e) {
+                const coords = e.result.center;
+                updateMarkerPosition(coords);
+            });
+        }
+
+        function onMapClick(e) {
+            updateMarkerPosition([e.lngLat.lng, e.lngLat.lat]);
+        }
+
+        function onMarkerDragEnd() {
+            const lngLat = marker.getLngLat();
+            updateMarkerPosition([lngLat.lng, lngLat.lat]);
+        }
+
+        function updateMarkerPosition(coords) {
+            marker.setLngLat(coords);
+            console.log(coords);
+            
+            selectedLocation = {
+                lng: coords[0],
+                lat: coords[1]
+            };
+            getAddressFromCoordinates(coords);
+        }
+        function getAddressFromCoordinates(coords) {
+            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${mapboxgl.accessToken}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        const address = data.features[0].place_name;
+                        console.log(address);
+                        
+                        updateSelectedLocationText(address);
+                    } else {
+                        console.log('Address not found');
+
+                        updateSelectedLocationText('Address not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching address:', error);
+                    updateSelectedLocationText('Error fetching address');
+                });
+        }
+        function updateSelectedLocationText() {
+            const locationDiv = document.getElementById('selectedLocation');
+            if (selectedLocation) {
+                locationDiv.textContent = `Selected Location: ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}`;
+            } else {
+                locationDiv.textContent = '';
+            }
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                location: selectedLocation
+            };
+            console.log('Form submitted:', formData);
+            // Here you would typically send this data to your server
+            alert('Form submitted! Check the console for details.');
+        });
+
+        // Initialize the map when the page loads
+        window.onload = initMap;
+    </script>
+</body>
+</html> --}}
