@@ -176,7 +176,7 @@ class MainController extends Controller
                     });
                 }
                 if (request('city')) {
-                    $hospital_query = $hospital_query->where('city', 'like', '%' . request('city') . '%');
+                    $hospital_query = $hospital_query->whereIn('city', request('city'));
                 }
                 $hospital_ids = $hospital_query->pluck('id');
                 $query = User::query();
@@ -224,6 +224,7 @@ class MainController extends Controller
                                 'hospital_name_ar',
                                 'lat',
                                 'long',
+                                'city',
                             ]);
                         },
                         'speciality' => function ($query) {
