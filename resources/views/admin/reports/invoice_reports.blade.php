@@ -78,41 +78,36 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @forelse($invoices as $invoice)
-                                            @php
-                                            $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first();
-                                            @endphp
-                                        <tr>
-                                            <td><a href="#" data-bs-toggle="modal" data-bs-target="#transaction"><span class="text-primary user-name">INV 000{{ $loop->index+1 }}</span></a></td>
-                                            <td>
-                                                <h2 class="table-avatar">
-                                                    @if($patient->profile_image ?? '')
-                                                    <a href="#"><img class="avatar avatar-img" src="{{ asset($patient->profile_image) }}" alt="User Image"></a>
-                                                    @else
-                                                    <a href="#"><img class="avatar avatar-img" src="{{ URL::asset('/assets_admin/img/profiles/avatar-07.jpg')}}" alt="User Image"></a>
-                                                    @endif
-                                                    <a href="#"><span class="user-name">{{ $patient->name }}</span></a>
-                                                </h2>
-                                            </td>
-                                            @php
-                                            $hospital = \App\Models\Hospital::query()?->where('id',$invoice->hospital_id)?->first();
-                                            @endphp
-                                            <td>{{ $hospital?->hospital_name}}</td>
-                                            <td><span class="user-name">{{ date('d M Y', strtotime($invoice->appointment_date))}} </span><span class="d-block">{{ date('H:i a', strtotime($invoice->appointment_time)) }}</span></td>
-                                            {{-- <td>{{$invoice->fee?{{ __('admin.invoice_reports.SAR')  }} .$invoice->fee:{{ __('admin.invoice_reports.free')  }}}}</td> --}}
-                                            <td>{{ $invoice->fee ? __('admin.invoice_reports.SAR') . $invoice->fee : __('admin.invoice_reports.free') }}</td>
-                                            <td><span class="badge bg-badge-grey text-success"><i class="fas fa-circle me-1"></i> {{ __('admin.invoice_reports.paid')  }}</span></td>
-                                            <!-- <td class="text-end">
-                                                <div class="actions">
-                                                    <a class="text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="feather-trash-2"></i> Delete
-                                                    </a>
-                                                </div>
-                                            </td> -->
-                                        </tr>
-                                        @empty
-                                        @endforelse
-
+                                            @forelse($invoices as $invoice)
+                                                @php
+                                                $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first();
+                                                @endphp
+                                                <tr>
+                                                    <td><a href="#" data-bs-toggle="modal" data-bs-target="#transaction"><span class="text-primary user-name">INV 000{{ $loop->index + 1 }}</span></a></td>
+                                                    <td>
+                                                        <h2 class="table-avatar">
+                                                            @if($patient && $patient->profile_image)
+                                                                <a href="#"><img class="avatar avatar-img" src="{{ asset($patient->profile_image) }}" alt="User Image"></a>
+                                                            @else
+                                                                <a href="#"><img class="avatar avatar-img" src="{{ URL::asset('/assets_admin/img/profiles/avatar-07.jpg') }}" alt="User Image"></a>
+                                                            @endif
+                                                            <a href="#"><span class="user-name">{{ $patient ? $patient->name : 'Unknown Patient' }}</span></a>
+                                                        </h2>
+                                                    </td>
+                                                    @php
+                                                    $hospital = \App\Models\Hospital::query()->where('id', $invoice->hospital_id)->first();
+                                                    @endphp
+                                                    <td>{{ $hospital ? $hospital->hospital_name : 'Unknown Hospital' }}</td>
+                                                    <td><span class="user-name">{{ date('d M Y', strtotime($invoice->appointment_date)) }}</span><span class="d-block">{{ date('H:i a', strtotime($invoice->appointment_time)) }}</span></td>
+                                                    <td>{{ $invoice->fee ? __('admin.invoice_reports.SAR') . $invoice->fee : __('admin.invoice_reports.free') }}</td>
+                                                    <td><span class="badge bg-badge-grey text-success"><i class="fas fa-circle me-1"></i> {{ __('admin.invoice_reports.paid') }}</span></td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                    <td colspan="6">No invoices found</td>
+                                                </tr>
+                                            @endforelse
+                                        
                                         </tbody>
                                     </table>
                                 </div>
