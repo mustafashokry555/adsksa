@@ -28,16 +28,16 @@ class ReportController extends Controller
     public function appointment_reports()
     {
         if (Auth::user()->is_admin()) {
-           $appointments = Appointment::query()->orderByDesc('id')->get();
-           $monthlyReport = $this->monthlyAppointmentReport();
-           $months = $this->getMonths();
-           $hospitals =  User::where('user_type', 'H')->get();
+            $appointments = Appointment::query()->orderByDesc('id')->get();
+            $monthlyReport = $this->monthlyAppointmentReport();
+            $months = $this->getMonths();
+            $hospitals =  User::where('user_type', 'H')->get();
             return view('admin.reports.appointment_reports', [
                 'appointments' => $appointments,
-                'monthlyReport'=>  $monthlyReport,
+                'monthlyReport' =>  $monthlyReport,
                 'months' => $months,
-                'hospitals'=> $hospitals,
-                
+                'hospitals' => $hospitals,
+
             ]);
         } else {
             abort(401);
@@ -52,10 +52,10 @@ class ReportController extends Controller
             $doctors = User::query()->where('user_type', 'D')->get();
             return view('admin.reports.income_reports', [
                 'doctors' => $doctors,
-                'monthlyReport'=>  $monthlyReport[0],
+                'monthlyReport' =>  $monthlyReport[0],
                 'months' => $months,
                 'totalIncome' => $monthlyReport[1],
-                'hospitals'=> $hospitals,
+                'hospitals' => $hospitals,
             ]);
         } else {
             abort(401);
@@ -70,9 +70,9 @@ class ReportController extends Controller
         if (Auth::user()->is_admin()) {
             return view('admin.reports.invoice_reports', [
                 'invoices' => Appointment::query()->orderByDesc('id')->get(),
-                'monthlyReport'=>  $monthlyReport,
+                'monthlyReport' =>  $monthlyReport,
                 'months' => $months,
-                'hospitals'=> $hospitals,
+                'hospitals' => $hospitals,
             ]);
         } else {
             abort(401);
@@ -92,9 +92,10 @@ class ReportController extends Controller
             abort(401);
         }
     }
-    public function getMonths(){
+    public function getMonths()
+    {
         $firstDayOfCurrentMonth = Carbon::now()->startOfMonth();
-        $lastDayOfCurrentMonth=Carbon::now()->lastOfMonth();
+        $lastDayOfCurrentMonth = Carbon::now()->lastOfMonth();
         $firstDayOfNextMonth = $firstDayOfCurrentMonth->copy()->addMonth();
 
         $currentYear = Carbon::now()->year;
@@ -139,10 +140,11 @@ class ReportController extends Controller
             $dataForMonth[$date] = $dataForDate;
         }
         // dd($dataForMonth );
-        return $dataForMonth??[];
+        return $dataForMonth ?? [];
     }
 
-    public function monthlyInvoiceReport(){
+    public function monthlyInvoiceReport()
+    {
         $dataForMonth = [];
         $dateRange = [];
         $currentYear = Carbon::now()->year;
@@ -174,44 +176,43 @@ class ReportController extends Controller
             $dataForMonth[$date] = $dataForDate;
         }
         // dd($dataForMonth );
-        return $dataForMonth??[];
+        return $dataForMonth ?? [];
     }
 
-   
-    public function monthlyIncomeReport(){
-            $dataForMonth = [];
-            $dateRange = [];
-            $currentYear = Carbon::now()->year;
-            $currentMonth = Carbon::now()->month;
-            $daysInMonth = Carbon::create($currentYear, $currentMonth)->daysInMonth;
-    
-            // Create a mapping of month names to month numbers
-            $monthMapping = $this->monthMapping;
-            $totalAmount = 0;
-            $monthNumber = request()->month ? $monthMapping[request()->month] : Carbon::now()->month;
-            for ($day = 1; $day <= $daysInMonth; $day++) {
-                $date = Carbon::create($currentYear, $monthNumber, $day)->toDateString();
-                $dateRange[] = $date;
-            }
-            foreach ($dateRange as $date) {
-                $query = \DB::table('appointments');
-                if (Auth::user()->is_hospital()) {
-                    $query->where('hospital_id', Auth::user()->hospital_id);
-                }
-                if (request()->month) {
-    
-                    $query->whereYear('appointment_date', $currentYear)->whereMonth('appointment_date', $monthNumber);
-                }
-    
-                $dataForDate =  $query->whereDate('appointment_date', $date)
-                    ->sum('fee');
-                $totalAmount += $dataForDate;
-                // Set the value to 0 if no data exists
-                $dataForMonth[$date] = $dataForDate ?? 0;
-            }
-            // dd($dataForMonth );
-            return [$dataForMonth ?? [], $totalAmount ?? 0];
-    }
 
-   
+    public function monthlyIncomeReport()
+    {
+        $dataForMonth = [];
+        $dateRange = [];
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+        $daysInMonth = Carbon::create($currentYear, $currentMonth)->daysInMonth;
+
+        // Create a mapping of month names to month numbers
+        $monthMapping = $this->monthMapping;
+        $totalAmount = 0;
+        $monthNumber = request()->month ? $monthMapping[request()->month] : Carbon::now()->month;
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = Carbon::create($currentYear, $monthNumber, $day)->toDateString();
+            $dateRange[] = $date;
+        }
+        foreach ($dateRange as $date) {
+            $query = \DB::table('appointments');
+            if (Auth::user()->is_hospital()) {
+                $query->where('hospital_id', Auth::user()->hospital_id);
+            }
+            if (request()->month) {
+
+                $query->whereYear('appointment_date', $currentYear)->whereMonth('appointment_date', $monthNumber);
+            }
+
+            $dataForDate =  $query->whereDate('appointment_date', $date)
+                ->sum('fee');
+            $totalAmount += $dataForDate;
+            // Set the value to 0 if no data exists
+            $dataForMonth[$date] = $dataForDate ?? 0;
+        }
+        // dd($dataForMonth );
+        return [$dataForMonth ?? [], $totalAmount ?? 0];
+    }
 }

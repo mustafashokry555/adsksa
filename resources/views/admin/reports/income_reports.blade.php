@@ -153,7 +153,7 @@
                                             <td><span class="user-name">{{ $doctor?->created_at?->format('d M Y')??"" }} </span></td>
                                             <td>{{ $total_appointments }}</td>
 
-                                            <td> {{ __('admin.income_report.SAR')  }} {{ \App\Models\Appointment::query()->where('doctor_id', $doctor->id)->sum('fee')??0 }}</td>
+                                            <td> SAR {{ \App\Models\Appointment::query()->where('doctor_id', $doctor->id)->sum('fee')??0 }}</td>
 
 {{--                                            <td>--}}
 {{--                                                <label class="toggle-switch" for="status1">--}}
