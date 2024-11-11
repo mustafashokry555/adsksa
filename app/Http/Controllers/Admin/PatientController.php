@@ -84,7 +84,8 @@ class PatientController extends Controller
         if (Auth::user()->is_admin() || Auth::user()->is_hospital()) {
 
             $attributes = $request->validate([
-                'name' => 'required',
+                'name_en' => 'required',
+                'name_ar' => 'required',
                 'email' => 'required',
                 'gender' => 'required',
                 'user_type' => 'required',
@@ -137,7 +138,8 @@ class PatientController extends Controller
 
             if ($patient = User::find($id)) {
                 $attributes = $request->validate([
-                    'name' => 'required',
+                    'name_ar' => 'required',
+                    'name_en' => 'required',
                     'email' => 'required',
                     'gender' => 'required',
                     'user_type' => 'required',

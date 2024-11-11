@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Doctor;
 use App\Models\Hospital;
 use App\Models\Schedule;
 use App\Models\Speciality;
@@ -70,7 +69,8 @@ class DoctorController extends Controller
         if (Auth::user()->is_admin() || Auth::user()->is_hospital()) {
 
             $attributes = $request->validate([
-                'name' => 'required',
+                'name_ar' => 'required',
+                'name_en' => 'required',
                 'email' => 'required',
                 'profile_image' => 'image',
                 'user_type' => 'required',
@@ -156,7 +156,8 @@ class DoctorController extends Controller
 
             if ($doctor = User::find($id)) {
                 $attributes = $request->validate([
-                    'name' => 'required',
+                    'name_en' => 'required',
+                    'name_ar' => 'required',
                     'email' => 'required',
                     'profile_image' => 'image',
                     'gender' => 'required',

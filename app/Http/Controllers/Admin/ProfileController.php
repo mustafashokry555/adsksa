@@ -60,11 +60,11 @@ class ProfileController extends Controller
     {
         // dd($id);
         $user = User::find($id);
-       
+
         $appointments = Appointment::where('patient_id', Auth::id())
             ->where('doctor_id', $id)
             ->get();
-        if (Auth::user()->is_doctor() && $user->user_type === 'U' ) {
+        if (Auth::user()->is_doctor() && $user->user_type === 'U') {
             return view('doctor.patient.patient-profile', [
                 'patient' => $user
             ]);
@@ -79,7 +79,7 @@ class ProfileController extends Controller
             foreach ($appointments as $appointment) {
                 if ($appointment->doctor_id == $id) {
                     return view('patient.doctor.profile', [
-                        'doctor' => $user,  
+                        'doctor' => $user,
                         'reviews' => $reviews,
                         'review_value' => $review_value
                     ]);
@@ -95,7 +95,7 @@ class ProfileController extends Controller
                     'experiences' => Experience::query()->where('user_id', $user->id)->orderByDesc('id')->get(),
                 ]);
                 // && Auth::user()->hospital_id == $user->hospital_id
-            } elseif ($user->user_type === 'U' ) {
+            } elseif ($user->user_type === 'U') {
 
                 return view('hospital.patient.patient-profile', [
                     'patient' => $user
@@ -136,7 +136,8 @@ class ProfileController extends Controller
     {
         if (Auth::user()->is_admin() || Auth::user()->is_patient() || Auth::user()->is_hospital() || Auth::user()->is_doctor()) {
             $attributes = $request->validate([
-                'name' => 'required',
+                'name_en' => 'required',
+                'name_ar' => 'required',
                 'email' => 'required',
                 'username' => 'nullable',
                 'profile_image' => 'image',
@@ -165,8 +166,8 @@ class ProfileController extends Controller
                     $file->move(public_path('images'), $filename);
                 }
                 $attributes['profile_image'] = $filename;
-                if(Auth::user()->is_hospital()){
-                    Hospital::where('id',Auth::user()->hospital_id)->update(['image'=>$attributes['profile_image']]);
+                if (Auth::user()->is_hospital()) {
+                    Hospital::where('id', Auth::user()->hospital_id)->update(['image' => $attributes['profile_image']]);
                 }
             }
             Auth::user()->update($attributes);

@@ -24,12 +24,15 @@
                 <li class="{{ Request::routeIs('patient.*') ? 'active' : '' }}">
                     <a href="{{ route('patient.index') }}"><i class="feather-users"></i> <span>{{ __('admin.sidebar.patients')  }}</span></a>
                 </li>
+                <li class="{{ Request::routeIs('banner.*') ? 'active' : '' }}">
+                    <a href="{{ route('banner.index') }}"><i class="feather-bookmark"></i> <span>Banners</span></a>
+                </li>
                 <li class="{{ Request::routeIs('appointments') ? 'active' : '' }}">
                     <a href="{{ route('appointments') }}"><i class="feather-calendar"></i> <span>{{ __('admin.sidebar.appointments')  }}</span></a>
                 </li>
-                <li class="{{ Request::routeIs('blogs') ? 'active' : '' }}">
+                {{-- <li class="{{ Request::routeIs('blogs') ? 'active' : '' }}">
                     <a href="{{ route('blogs') }}"><i class="feather-grid"></i> <span>{{ __('admin.sidebar.blogs')  }}</span></a>
-                </li>
+                </li> --}}
                 <li class="{{ Request::routeIs('invoices') ? 'active' : '' }}">
                     <a href="{{ route('invoices') }}"><i class="feather-users"></i> <span>{{ __('admin.sidebar.invoices')  }}</span></a>
                 </li>

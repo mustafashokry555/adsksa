@@ -39,11 +39,11 @@ class BlogController extends Controller
 
     public function create()
     {
-        
+
         if (Auth::user()->is_admin()) {
             return view('admin.blog.create');
         } elseif (Auth::user()->is_doctor() || Auth::user()->is_hospital()) {
-           
+
             return view('doctor.blog.create');
         } else {
             abort(401);
@@ -55,10 +55,10 @@ class BlogController extends Controller
         if (Auth::user()->is_admin() || Auth::user()->is_doctor() || Auth::user()->is_hospital()) {
 
             $attributes = $request->validate([
-                'blog_title' => 'required',
-                // 'slug' => ['required', Rule::unique('blogs', 'slug')],
-                // 'doctor_id' => 'required',
-                'blog_body' => 'required',
+                'blog_title_en' => 'required',
+                'blog_title_ar' => 'required',
+                'blog_body_en' => 'required',
+                'blog_body_ar' => 'required',
                 'blog_image' => 'image',
             ]);
             if ($attributes['blog_image'] ?? false) {
@@ -112,8 +112,10 @@ class BlogController extends Controller
 
             if ($blog = $blog) {
                 $attributes = request()->validate([
-                    'blog_title' => 'required',
-                    'blog_body' => 'required',
+                    'blog_title_en' => 'required',
+                    'blog_title_ar' => 'required',
+                    'blog_body_en' => 'required',
+                    'blog_body_ar' => 'required',
                     'blog_image' => 'image'
                 ]);
                 if ($attributes['blog_image'] ?? false) {
@@ -154,13 +156,13 @@ class BlogController extends Controller
     }
     public function destroy(Blog $blog)
     {
-        if(Auth::user()->is_admin() || Auth::user()->is_hospital() || Auth::user()->is_doctor()){
+        if (Auth::user()->is_admin() || Auth::user()->is_hospital() || Auth::user()->is_doctor()) {
 
             $blog->delete();
             return redirect()
-            ->route('blogs')
-            ->with('flash', ['type', 'success', 'message' => 'Blog Deleted Successfully']);
-        }else{
+                ->route('blogs')
+                ->with('flash', ['type', 'success', 'message' => 'Blog Deleted Successfully']);
+        } else {
             abort(401);
         }
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CommonController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\HospitalController;
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('speciality', SpecialityController::class);
     Route::resource('hospital', HospitalController::class);
     Route::resource('doctor', DoctorController::class);
+    Route::resource('banner', BannerController::class);
     Route::resource('patient', PatientController::class);
     Route::get('hospital-patients/{hospital}/list', [CommonController::class, 'hospital_patients'])->name('hospital_patients');
     Route::get('doctor-patients/{doctor}/list', [CommonController::class, 'doctor_patients'])->name('doctor_patients');

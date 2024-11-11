@@ -153,6 +153,7 @@ class HospitalController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return $request;
         $hospital = Hospital::find($id);
         if ($hospital) {
             $attributes = $request->validate([
@@ -164,6 +165,9 @@ class HospitalController extends Controller
                 'state' => 'required',
                 'city' => 'required',
                 'zip' => 'required',
+                'lat' => 'required',
+                'long' => 'required',
+                'location' => 'required',
                 'insurance' => 'required',
                 'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             ]);

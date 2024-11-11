@@ -143,21 +143,24 @@
                                     @enderror
                                 </div>
                             </div>
+                            {{-- Maps --}}
                             <div class="form-group row">
                                 <label for="map" class="col-form-label col-md-2">Select Location:</label>
                                 <div class="col-md-10">
                                     <div id="geocoder" class="geocoder"></div>
                                     <div id="map"></div>
                                     <div id="selectedLocation"></div>
-                                    <input type="hidden" id="latitude" name="latitude">
-                                    <input type="hidden" id="longitude" name="longitude">
-                                    @error('map')
+                                    <input type="hidden" id="latitude" name="lat">
+                                    <input type="hidden" id="longitude" name="long">
+                                    <input type="hidden" id="addressLocation" name="location">
+                                    @error('location')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
                             </div>
+                            {{-- Maps --}}
                             <div class="form-group row">
                                 <label for="image"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.image') }}</label>
@@ -292,14 +295,11 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-    console.log("sdglakjj");
-    
     $(document).ready(function() {
+        $('.js-example-basic-multiple').select2();
         mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
-
         initMap();
     });
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
     let map;
     let marker;
     let selectedLocation = null;
@@ -365,19 +365,17 @@
         getAddressFromCoordinates(coords);
     }
     function getAddressFromCoordinates(coords) {
+        $('#latitude').val(coords[1]);
+        $('#longitude').val(coords[0]);
         const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${mapboxgl.accessToken}`;
-        
         fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.features && data.features.length > 0) {
-                    const address = data.features[0].place_name;
-                    console.log(address);
-                    
-                    updateSelectedLocationText(address);
+        .then(response => response.json())
+        .then(data => {
+            if (data.features && data.features.length > 0) {
+                const address = data.features[0].place_name;
+                updateSelectedLocationText(address);
+                $('#addressLocation').val(address);
                 } else {
-                    console.log('Address not found');
-
                     updateSelectedLocationText('Address not found');
                 }
             })
@@ -386,244 +384,14 @@
                 updateSelectedLocationText('Error fetching address');
             });
     }
-    function updateSelectedLocationText() {
+    function updateSelectedLocationText(address) {
         const locationDiv = document.getElementById('selectedLocation');
         if (selectedLocation) {
-            locationDiv.textContent = `Selected Location: ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}`;
+            locationDiv.textContent = `Selected Location: ${address}`;
         } else {
             locationDiv.textContent = '';
         }
     }
 
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            message: document.getElementById('message').value,
-            location: selectedLocation
-        };
-        console.log('Form submitted:', formData);
-        // Here you would typically send this data to your server
-        alert('Form submitted! Check the console for details.');
-    });
 
 </script>
-
-
-
-
-
-
-
-{{-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Form with Mapbox Map and Search</title>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            display: grid;
-            gap: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-        }
-        input[type="text"],
-        input[type="email"],
-        textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        #map {
-            height: 400px;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .mapboxgl-ctrl-geocoder {
-            width: 100%;
-            max-width: none;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Contact Form with Location</h1>
-        <form id="contactForm">
-            <div>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div>
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div>
-                <label for="message">Message:</label>
-                <textarea id="message" name="message" required></textarea>
-            </div>
-            <div>
-                <label for="map">Select Location:</label>
-                <div id="geocoder" class="geocoder"></div>
-                <div id="map"></div>
-            </div>
-            <div id="selectedLocation"></div>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
-        let map;
-        let marker;
-        let selectedLocation = null;
-
-        function initMap() {
-            map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [39.826288, 21.422438], // Kaaba
-                zoom: 5
-            });
-
-            // Add navigation control (zoom in/out buttons)
-            map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-            // Initialize marker
-            marker = new mapboxgl.Marker({
-                draggable: true
-            })
-            .setLngLat([39.826288, 21.422438])
-            .addTo(map);
-
-            // Update selectedLocation when marker is dragged
-            marker.on('dragend', onMarkerDragEnd);
-
-            // Add click event to map
-            map.on('click', onMapClick);
-
-            // Initialize the geocoder
-            const geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-                marker: false
-            });
-
-            // Add the geocoder to the map
-            document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-            // Listen for the 'result' event from the geocoder
-            geocoder.on('result', function(e) {
-                const coords = e.result.center;
-                updateMarkerPosition(coords);
-            });
-        }
-
-        function onMapClick(e) {
-            updateMarkerPosition([e.lngLat.lng, e.lngLat.lat]);
-        }
-
-        function onMarkerDragEnd() {
-            const lngLat = marker.getLngLat();
-            updateMarkerPosition([lngLat.lng, lngLat.lat]);
-        }
-
-        function updateMarkerPosition(coords) {
-            marker.setLngLat(coords);
-            console.log(coords);
-            
-            selectedLocation = {
-                lng: coords[0],
-                lat: coords[1]
-            };
-            getAddressFromCoordinates(coords);
-        }
-        function getAddressFromCoordinates(coords) {
-            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${mapboxgl.accessToken}`;
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.features && data.features.length > 0) {
-                        const address = data.features[0].place_name;
-                        console.log(address);
-                        
-                        updateSelectedLocationText(address);
-                    } else {
-                        console.log('Address not found');
-
-                        updateSelectedLocationText('Address not found');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching address:', error);
-                    updateSelectedLocationText('Error fetching address');
-                });
-        }
-        function updateSelectedLocationText() {
-            const locationDiv = document.getElementById('selectedLocation');
-            if (selectedLocation) {
-                locationDiv.textContent = `Selected Location: ${selectedLocation.lat.toFixed(6)}, ${selectedLocation.lng.toFixed(6)}`;
-            } else {
-                locationDiv.textContent = '';
-            }
-        }
-
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                message: document.getElementById('message').value,
-                location: selectedLocation
-            };
-            console.log('Form submitted:', formData);
-            // Here you would typically send this data to your server
-            alert('Form submitted! Check the console for details.');
-        });
-
-        // Initialize the map when the page loads
-        window.onload = initMap;
-    </script>
-</body>
-</html> --}}

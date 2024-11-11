@@ -72,9 +72,7 @@ class HomeController extends Controller
             $data['distinctYears'] = DB::table('appointments')->select(DB::raw('YEAR(appointment_date) as year'))->distinct()->pluck('year');
             $data['hospitals'] = DB::table('hospitals')->select('id', DB::raw("IFNULL(hospital_name_{$this->getLang()}, hospital_name_en) as hospital_name"))->get();
             $data['top_doctors'] = User::with('specializations')->where(['user_type' => 'D', 'status' => 'Active'])
-            ->select(
-                DB::raw("IFNULL(name_{$this->getLang()}, name_en) as name"),
-                //'name'
+            ->select("name_ar","name_en",
                 'id', 'profile_image')->take(5)->get();
             $data['upcoming_appointments'] = Appointment::with(['doctor', 'patient'])->whereDate('appointment_date', '>', $todayFormatted)->get();
             $data['today_appointments'] = Appointment::query()->with('doctor', 'patient')->whereDate('appointment_date', $todayFormatted)->get();

@@ -14,7 +14,7 @@ class Banner extends Model
 
     public function hospital()
     {
-        return $this->belongsToMany(Hospital::class);
+        return $this->belongsTo(Hospital::class);
     }
 
     public function getImageAttribute($value){
