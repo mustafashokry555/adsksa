@@ -27,14 +27,21 @@
                             <td>{{$invoice->id}}</td>
                             <td>
                                 <h2 class="table-avatar">
-                                    <a href="{{ route('profile.show', ['profile' => $patient->id])}}" class="avatar avatar-sm me-2">
-                                        @if($patient->profile_image)
-                                        <img class="avatar-img rounded-circle" src="{{ asset($patient->profile_image) }}" alt="User Image">
-                                        @else
-                                        <img class="avatar-img rounded-circle" src="assets/img/patients/patient.jpg" alt="User Image">
-                                        @endif
-                                    </a>
-                                    <a href="{{ route('profile.show', ['profile' => $patient->id])}}">{{ $patient->name }}</a>
+                                    @if ($patient)
+                                        <a href="{{ route('profile.show', ['profile' => $patient->id]) }}" class="avatar avatar-sm me-2">
+                                            @if ($patient->profile_image)
+                                                <img class="avatar-img rounded-circle" src="{{ asset($patient->profile_image) }}" alt="Patient Image">
+                                            @else
+                                                <img class="avatar-img rounded-circle" src="{{ URL::asset('/assets/img/patients/patient.jpg') }}" alt="Patient Image">
+                                            @endif
+                                        </a>
+                                        <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient?->name??'' }}</a>
+                                    @else
+                                        <a href="#" class="avatar avatar-sm me-2">
+                                            <img class="avatar-img rounded-circle" src="{{ URL::asset('/assets/img/patients/patient.jpg') }}" alt="Patient Image">
+                                        </a>
+                                        <a href="#">Unknown Patient</a>
+                                    @endif
                                 </h2>
                             </td>
                             <td>{{ $invoice->fee?'SAR '.$invoice->fee:'FREE' }}</td>
