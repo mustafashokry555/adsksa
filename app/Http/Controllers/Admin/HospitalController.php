@@ -131,9 +131,17 @@ class HospitalController extends Controller
 
     public function edit($id)
     {
-        if (Auth::user()->is_admin()) {
+        if (Auth::user()->user_type == 'A') {
             $hospital = Hospital::find($id);
             return view('admin.hospital.edit', [
+                'hospital' => $hospital,
+                'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
+                'insurances'    =>   Insurance::get(),
+                'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
+            ]);
+        }elseif (Auth::user()->user_type == 'H') {
+            $hospital = Hospital::find($id);
+            return view('hospital.profile.editHospital', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
                 'insurances'    =>   Insurance::get(),
@@ -156,21 +164,45 @@ class HospitalController extends Controller
         // return $request;
         $hospital = Hospital::find($id);
         if ($hospital) {
-            $attributes = $request->validate([
-                'hospital_name_en' => 'required',
-                'hospital_name_ar' => 'required',
-                'image' => 'image',
-                'address' => 'required',
-                'country' => 'required',
-                'state' => 'required',
-                'city' => 'required',
-                'zip' => 'required',
-                'lat' => 'required',
-                'long' => 'required',
-                'location' => 'required',
-                'insurance' => 'required',
-                'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            ]);
+            if(Auth::user()->user_type == 'A'){
+                $attributes = $request->validate([
+                    'hospital_name_en' => 'required',
+                    'hospital_name_ar' => 'required',
+                    'image' => 'image',
+                    'address' => 'required',
+                    'country' => 'required',
+                    'state' => 'required',
+                    'city' => 'required',
+                    'zip' => 'required',
+                    'lat' => 'required',
+                    'long' => 'required',
+                    'location' => 'required',
+                    'insurance' => 'required',
+                    'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+                ]);
+                if ($admin = User::query()->where('hospital_id', $id)->where('user_type', 'H')->first())
+                $data = [
+                    'name_en' => $request->hospital_name_en,
+                    'name_ar' => $request->hospital_name_ar,
+                    'email' => $request->email,
+                ];
+                $admin->update($data);
+            }elseif(Auth::user()->user_type == 'H'){
+                $attributes = $request->validate([
+                    'hospital_name_en' => 'required',
+                    'hospital_name_ar' => 'required',
+                    'image' => 'image',
+                    'address' => 'required',
+                    'country' => 'required',
+                    'state' => 'required',
+                    'city' => 'required',
+                    'zip' => 'required',
+                    'lat' => 'required',
+                    'long' => 'required',
+                    'location' => 'required',
+                    'insurance' => 'required',
+                ]);
+            }
             if ($attributes['image'] ?? false) {
                 if ($file = $request->file('image')) {
                     $filename = time() . '-' . $file->getClientOriginalName();
@@ -181,24 +213,24 @@ class HospitalController extends Controller
             }
             //  $attributes['insurance_id'] = $request->insurance;
             $hospital->update($attributes);
-            if ($admin = User::query()->where('hospital_id', $id)->where('user_type', 'H')->first())
-                $data = [
-                    'name_en' => $request->hospital_name_en,
-                    'name_ar' => $request->hospital_name_ar,
-                    'email' => $request->email,
-                ];
+
             if (@$attributes['image']) {
                 $data['profile_image'] = $attributes['image'];
             }
             if ($request->password) {
                 $data['password'] = Hash::make($request->password);
             }
-            $admin->update($data);
+            
             $hospital->insurances()->sync($request->insurance);
-
-            return redirect()
-                ->route('hospital.index')
-                ->with('flash', ['type', 'success', 'message' => 'Hospital Details updated Successfully']);
+            if(Auth::user()->user_type == 'A'){
+                return redirect()
+                    ->route('hospital.index')
+                    ->with('flash', ['type', 'success', 'message' => 'Hospital Details updated Successfully']);
+            }else{
+                return redirect()
+                    ->route('hospital.edit', $id)
+                    ->with('flash', ['type', 'success', 'message' => 'Hospital Details updated Successfully']);
+            }
         }
     }
 

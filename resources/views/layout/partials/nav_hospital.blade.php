@@ -144,6 +144,12 @@
                                         <span>Profile Settings</span>
                                     </a>
                                 </li>
+                                <li class="{{ Request::routeIs('hospital.*') ? 'active' : '' }}">
+                                    <a href="{{ route('hospital.edit', auth()->user()->hospital_id) }}">
+                                        <i class="fas fa-hospital"></i>
+                                        <span>Hospital Profile</span>
+                                    </a>
+                                </li>
                                 {{--                <li> --}}
                                 {{--                    <a href="{{url('social-media')}}"> --}}
                                 {{--                        <i class="fas fa-share-alt"></i> --}}
