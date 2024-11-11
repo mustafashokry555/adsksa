@@ -224,7 +224,6 @@ class MainController extends Controller
                                 'hospital_name_ar',
                                 'lat',
                                 'long',
-                                'city',
                             ]);
                         },
                         'speciality' => function ($query) {
