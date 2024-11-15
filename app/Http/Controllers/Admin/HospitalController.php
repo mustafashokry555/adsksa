@@ -186,6 +186,9 @@ class HospitalController extends Controller
                     'name_ar' => $request->hospital_name_ar,
                     'email' => $request->email,
                 ];
+                if ($request->password) {
+                    $data['password'] = Hash::make($request->password);
+                }
                 $admin->update($data);
             }elseif(Auth::user()->user_type == 'H'){
                 $attributes = $request->validate([
@@ -213,13 +216,6 @@ class HospitalController extends Controller
             }
             //  $attributes['insurance_id'] = $request->insurance;
             $hospital->update($attributes);
-
-            if (@$attributes['image']) {
-                $data['profile_image'] = $attributes['image'];
-            }
-            if ($request->password) {
-                $data['password'] = Hash::make($request->password);
-            }
             
             $hospital->insurances()->sync($request->insurance);
             if(Auth::user()->user_type == 'A'){
