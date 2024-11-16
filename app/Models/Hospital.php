@@ -25,9 +25,12 @@ class Hospital extends Model
         'about1',
         'about2',
         'opening_hours',
-
+        'profile_images',
     ];
-    protected $appends = ['hospital_name'];
+    protected $casts = [
+        'profile_images' => 'array', // Ensures profile_images is handled as an array
+    ];
+    protected $appends = ['hospital_name', 'images_links'];
     public function users()
     {   
         return $this->hasMany(User::class);
@@ -77,6 +80,19 @@ class Hospital extends Model
 
     public function getImageAttribute($value){
         if($value !=null) return env('BASE_URL').'images/'.$value ;
+    }
+
+    public function getImagesLinksAttribute($value)
+    {
+        if ($this->profile_images != null) {
+            $images = $this->profile_images;
+            if (is_array($images)) {
+                return array_map(function ($image) {
+                    return env('BASE_URL') . 'images/' . $image;
+                }, $images);
+            }
+        }
+        return [];
     }
     
     public function getAvgRatingAttribute()

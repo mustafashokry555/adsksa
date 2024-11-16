@@ -141,6 +141,7 @@ class HospitalController extends Controller
             ]);
         }elseif (Auth::user()->user_type == 'H') {
             $hospital = Hospital::find($id);
+            // return $hospital;
             return view('hospital.profile.editHospital', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
@@ -178,6 +179,7 @@ class HospitalController extends Controller
                     'long' => 'required',
                     'location' => 'required',
                     'insurance' => 'required',
+                    'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'password' => ['nullable', 'string', 'min:8', 'confirmed'],
                 ]);
                 if ($admin = User::query()->where('hospital_id', $id)->where('user_type', 'H')->first())
@@ -204,6 +206,7 @@ class HospitalController extends Controller
                     'long' => 'required',
                     'location' => 'required',
                     'insurance' => 'required',
+                    'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ]);
             }
             if ($attributes['image'] ?? false) {
@@ -214,7 +217,36 @@ class HospitalController extends Controller
                 }
                 $attributes['image'] = $filename;
             }
-            //  $attributes['insurance_id'] = $request->insurance;
+            // Handle image deletion
+            if ($request->deletedImages) {
+                $deletedKeys = explode(',', rtrim($request->deletedImages, ','));
+                $images = $hospital->profile_images;
+                foreach ($deletedKeys as $key) {
+                    $images = array_values(array_diff($images, [$key]));
+                    $imageToDelete = $key;
+                    $imagePath = public_path('images/' . $imageToDelete);
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+                $hospital->profile_images = array_values($images); // Re-index the array
+            }
+
+            // Handle new image uploads
+            if ($request->hasFile('profile_images')) {
+                $newImages = [];
+                $existingImages = $hospital->profile_images ?? [];
+                foreach ($request->file('profile_images') as $file) {
+                    $filename = time() . '-' . $file->getClientOriginalName();
+                    $file->move(public_path('images'), $filename);
+                    $newImages[] = $filename;
+                }
+                $allImages = array_merge($existingImages, $newImages);
+                $hospital->profile_images = $allImages;
+                // dd($hospital->profile_images);
+                $attributes['profile_images'] = $hospital->profile_images;
+            }
+
             $hospital->update($attributes);
             
             $hospital->insurances()->sync($request->insurance);

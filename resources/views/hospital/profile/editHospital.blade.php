@@ -179,6 +179,53 @@
                                     @enderror
                                 </div>
                             </div>
+                            <!-- Display existing images -->
+                            <div class="form-group row">
+                                <label for="existing_images" class="col-form-label col-md-2">Profile Images</label>
+                                <div class="col-md-10">
+                                    @if($hospital->profile_images)
+                                        @foreach($hospital->profile_images as $index => $image)
+                                            <div class="d-inline-block position-relative" id="image-{{ $index }}">
+                                                {{-- <p>{{ $image }}</p> --}}
+                                                <img src="{{ $hospital->images_links[$index] }}" alt="Profile Image" class="img-thumbnail" style="width: 150px; height: 150px; margin-right: 10px;">
+                                                <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="removeImage({{ $index }}, '{{ $image }}')">X</button>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <p>No Images Found</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <!-- JavaScript for removing images -->
+                            <script>
+                                function removeImage(index, image) {
+                                    if (confirm("Are you sure you want to delete this image?")) {
+                                        // Add the image to the hidden field for deletion
+                                        document.getElementById('deletedImages').value += image + ',';
+
+                                        // Remove the image from the DOM
+                                        var imageElement = document.getElementById('image-' + index);
+                                        if (imageElement) {
+                                            imageElement.remove();
+                                        }
+                                    }
+                                }
+                            </script>
+                            <input type="hidden" id="deletedImages" name="deletedImages" value="">
+                            <!-- Upload new images -->
+                            <div class="form-group row">
+                                <label for="profile_images" class="col-form-label col-md-2">Images</label>
+                                <div class="col-md-10">
+                                    <input id="profile_images" name="profile_images[]" class="form-control" type="file" multiple>
+                                    @error('profile_images')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
                                 {{ __('admin.hospital.update_hospital') }}
                             </button>
