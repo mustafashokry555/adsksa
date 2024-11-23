@@ -26,6 +26,12 @@ class Hospital extends Model
         'about2',
         'opening_hours',
         'profile_images',
+        'email',        // New field
+        'phone',        // New field
+        'whatsapp',     // New field
+        'facebook',     // New field
+        'instagram',    // New field
+        'tiktok',       // New field
     ];
     protected $casts = [
         'profile_images' => 'array', // Ensures profile_images is handled as an array

@@ -78,6 +78,77 @@
                                     @enderror
                                 </div>
                             </div>
+                            <!-- Email -->
+                            <div class="form-group row">
+                                <label for="email" class="col-form-label col-md-2">Email</label>
+                                <div class="col-md-10">
+                                    <input id="email" name="email" value="{{ old('email') }}"
+                                        type="email" class="form-control" placeholder="Enter Hospital Email">
+                                    @error('email')
+                                        <div class="text-danger pt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="form-group row">
+                                <label for="phone" class="col-form-label col-md-2">Phone</label>
+                                <div class="col-md-10">
+                                    <input id="phone" name="phone" value="{{ old('phone') }}"
+                                        type="text" class="form-control" placeholder="Enter Hospital Phone">
+                                    @error('phone')
+                                        <div class="text-danger pt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div class="form-group row">
+                                <label for="whatsapp" class="col-form-label col-md-2">WhatsApp</label>
+                                <div class="col-md-10">
+                                    <input id="whatsapp" name="whatsapp" value="{{ old('whatsapp') }}"
+                                        type="text" class="form-control" placeholder="Enter Hospital WhatsApp">
+                                    @error('whatsapp')
+                                        <div class="text-danger pt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Facebook -->
+                            <div class="form-group row">
+                                <label for="facebook" class="col-form-label col-md-2">Facebook</label>
+                                <div class="col-md-10">
+                                    <input id="facebook" name="facebook" value="{{ old('facebook') }}"
+                                        type="text" class="form-control" placeholder="Enter Hospital Facebook URL">
+                                    @error('facebook')
+                                        <div class="text-danger pt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Instagram -->
+                            <div class="form-group row">
+                                <label for="instagram" class="col-form-label col-md-2">Instagram</label>
+                                <div class="col-md-10">
+                                    <input id="instagram" name="instagram" value="{{ old('instagram') }}"
+                                        type="text" class="form-control" placeholder="Enter Hospital Instagram URL">
+                                    @error('instagram')
+                                        <div class="text-danger pt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- TikTok -->
+                            <div class="form-group row">
+                                <label for="tiktok" class="col-form-label col-md-2">TikTok</label>
+                                <div class="col-md-10">
+                                    <input id="tiktok" name="tiktok" value="{{ old('tiktok') }}"
+                                        type="text" class="form-control" placeholder="Enter Hospital TikTok URL">
+                                    @error('tiktok')
+                                        <div class="text-danger pt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="address"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.address') }}</label>
@@ -195,11 +266,11 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="email" class="col-form-label col-md-2">Hospital Administrator Email</label>
+                                <label for="admin_email" class="col-form-label col-md-2">Hospital Administrator Email</label>
                                 <div class="col-md-10">
-                                    <input id="email" name="email" type="email" class="form-control"
+                                    <input id="admin_email" name="admin_email" type="email" class="form-control"
                                         placeholder="Enter Hospital Administrator Email" required>
-                                    @error('email')
+                                    @error('admin_email')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -254,7 +325,6 @@
                                         </div>
                                     @enderror
                                 </div>
-
                             </div>
                             <div class="form-group row">
                                 <label for="password"

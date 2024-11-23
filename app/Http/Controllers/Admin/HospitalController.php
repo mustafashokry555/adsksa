@@ -72,8 +72,14 @@ class HospitalController extends Controller
             'about' => 'string|nullable',
             'about1' => 'string|nullable',
             'about2' => 'string|nullable',
+            'email' => 'string|nullable',
+            'phone' => 'string|nullable',
+            'whatsapp' => 'string|nullable',
+            'facebook' => 'string|nullable',
+            'instagram' => 'string|nullable',
+            'tiktok' => 'string|nullable',
             'opening_hours' => 'string|nullable',
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'admin_email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -99,7 +105,7 @@ class HospitalController extends Controller
         User::create([
             'name_en' => $request->name,
             'name_ar' => $request->name,
-            'email' => $request->email,
+            'email' => $request->admin_email,
             'profile_image' => $profileImg,
             'user_type' => User::HOSPITAL,
             'hospital_id' => $hospital->id,
@@ -186,12 +192,22 @@ class HospitalController extends Controller
                     'insurance' => 'required',
                     'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+                    'email' => 'string|nullable',
+                    'phone' => 'string|nullable',
+                    'whatsapp' => 'string|nullable',
+                    'facebook' => 'string|nullable',
+                    'instagram' => 'string|nullable',
+                    'tiktok' => 'string|nullable',
+                    'about' => 'string|nullable',
+                    'about1' => 'string|nullable',
+                    'about2' => 'string|nullable',
+                    'opening_hours' => 'string|nullable',
                 ]);
                 if ($admin = User::query()->where('hospital_id', $id)->where('user_type', 'H')->first())
                 $data = [
                     'name_en' => $request->hospital_name_en,
                     'name_ar' => $request->hospital_name_ar,
-                    'email' => $request->email,
+                    'email' => $request->admin_email,
                 ];
                 if ($request->password) {
                     $data['password'] = Hash::make($request->password);
@@ -212,6 +228,16 @@ class HospitalController extends Controller
                     'location' => 'required',
                     'insurance' => 'required',
                     'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'email' => 'string|nullable',
+                    'phone' => 'string|nullable',
+                    'whatsapp' => 'string|nullable',
+                    'facebook' => 'string|nullable',
+                    'instagram' => 'string|nullable',
+                    'tiktok' => 'string|nullable',
+                    'about' => 'string|nullable',
+                    'about1' => 'string|nullable',
+                    'about2' => 'string|nullable',
+                    'opening_hours' => 'string|nullable',
                 ]);
             }
             if ($attributes['image'] ?? false) {

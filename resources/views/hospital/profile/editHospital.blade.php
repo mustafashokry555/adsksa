@@ -81,6 +81,95 @@
                                     @enderror
                                 </div>
                             </div>
+                            <!-- Email -->
+                            <div class="form-group row">
+                                <label for="email" class="col-form-label col-md-2">{{ __('admin.hospital.email') }}</label>
+                                <div class="col-md-10">
+                                    <input id="email" name="email" value="{{ $hospital->email ?? '' }}" 
+                                        type="email" class="form-control" 
+                                        placeholder="Enter Hospital Email">
+                                    @error('email')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="form-group row">
+                                <label for="phone" class="col-form-label col-md-2">Hospital phone</label>
+                                <div class="col-md-10">
+                                    <input id="phone" name="phone" value="{{ $hospital->phone ?? '' }}" 
+                                        type="text" class="form-control" 
+                                        placeholder="Enter Hospital phone">
+                                    @error('phone')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div class="form-group row">
+                                <label for="whatsapp" class="col-form-label col-md-2">Hospital Whatsapp</label>
+                                <div class="col-md-10">
+                                    <input id="whatsapp" name="whatsapp" value="{{ $hospital->whatsapp ?? '' }}" 
+                                        type="text" class="form-control" 
+                                        placeholder="Enter Hospital Whatsapp">
+                                    @error('whatsapp')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Facebook -->
+                            <div class="form-group row">
+                                <label for="facebook" class="col-form-label col-md-2">Hospital Facebook</label>
+                                <div class="col-md-10">
+                                    <input id="facebook" name="facebook" value="{{ $hospital->facebook ?? '' }}" 
+                                        type="text" class="form-control" 
+                                        placeholder="Enter Hospital Facebook">
+                                    @error('facebook')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Instagram -->
+                            <div class="form-group row">
+                                <label for="instagram" class="col-form-label col-md-2">Hospital Instagram</label>
+                                <div class="col-md-10">
+                                    <input id="instagram" name="instagram" value="{{ $hospital->instagram ?? '' }}" 
+                                        type="text" class="form-control" 
+                                        placeholder="Enter Hospital Instagram">
+                                    @error('instagram')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- TikTok -->
+                            <div class="form-group row">
+                                <label for="tiktok" class="col-form-label col-md-2">Hospital Tiktok</label>
+                                <div class="col-md-10">
+                                    <input id="tiktok" name="tiktok" value="{{ $hospital->tiktok ?? '' }}" 
+                                        type="text" class="form-control" 
+                                        placeholder="Enter Hospital Tiktok">
+                                    @error('tiktok')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="address"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.location') }}</label>
@@ -224,7 +313,55 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="about" class="col-form-label col-md-2">About Hospital 1</label>
+                                <div class="col-md-10">
+                                    <textarea id="about" name="about" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about }}</textarea>
+                                    @error('about')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
 
+                            </div>
+                            <div class="form-group row">
+                                <label for="about1" class="col-form-label col-md-2">About Hospital 2</label>
+                                <div class="col-md-10">
+                                    <textarea id="about1"  name="about1" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about1 }}</textarea>
+                                    @error('about1')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="about2" class="col-form-label col-md-2">About Hospital 3</label>
+                                <div class="col-md-10">
+                                    <textarea id="about2"  name="about2" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about2 }}</textarea>
+                                    @error('about2')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="opening_hours" class="col-form-label col-md-2">Opening Hours</label>
+                                <div class="col-md-10">
+                                    <input id="opening_hours" value="{{ $hospital->opening_hours }}" name="opening_hours" type="text" class="form-control"
+                                        placeholder="The Hospital Opening Hours">
+                                    @error('opening_hours')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            
 
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
                                 {{ __('admin.hospital.update_hospital') }}
