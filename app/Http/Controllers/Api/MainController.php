@@ -818,6 +818,7 @@ class MainController extends Controller
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.location',
+                        'hospitals.profile_images',
                         DB::raw('NULL as distance')
                     )
                     ->groupBy(
@@ -828,6 +829,7 @@ class MainController extends Controller
                         'hospitals.state',
                         'hospitals.lat',
                         'hospitals.long',
+                        'hospitals.profile_images',
                         'hospitals.location'
                     );
 

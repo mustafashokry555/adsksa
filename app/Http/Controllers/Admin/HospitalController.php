@@ -55,7 +55,6 @@ class HospitalController extends Controller
     }
     public function store(Request $request)
     {
-        // return $request;
         $attributes = $request->validate([
             'hospital_name_en' => 'required',
             'hospital_name_ar' => 'required',
@@ -76,18 +75,24 @@ class HospitalController extends Controller
             'opening_hours' => 'string|nullable',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-
+            'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if ($file = $request->file('image')) {
             $filename = time() . '-' . $file->getClientOriginalName();
-            // Storage::disk('local')->put($this->image_path . $filename, $file->getContent());
             $file->move(public_path('images'), $filename);
         }
         $attributes['image'] = $filename;
         $profileImg = $request['image'] = $filename;
-
-        // $attributes['insurance_id'] = $request->insurance;
-        // return $attributes;
+        // Handle new image uploads
+        if ($request->hasFile('profile_images')) {
+            $newImages = [];
+            foreach ($request->file('profile_images') as $file) {
+                $filename = time() . '-' . $file->getClientOriginalName();
+                $file->move(public_path('images'), $filename);
+                $newImages[] = $filename;
+            }
+            $attributes['profile_images'] = $newImages;
+        }
         $hospital = Hospital::create($attributes);
         $hospital->insurances()->sync($request->insurance);
 

@@ -173,7 +173,18 @@
                                     @enderror
                                 </div>
                             </div>
-
+                            <!-- Upload new images -->
+                            <div class="form-group row">
+                                <label for="profile_images" class="col-form-label col-md-2">Profile Images</label>
+                                <div class="col-md-10">
+                                    <input id="profile_images" name="profile_images[]" class="form-control" type="file" multiple>
+                                    @error('profile_images')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label for="name"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.hospital_administrator_name') }}</label>
