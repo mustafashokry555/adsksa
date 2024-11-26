@@ -24,6 +24,12 @@
                 <li class="{{ Request::routeIs('patient.*') ? 'active' : '' }}">
                     <a href="{{ route('patient.index') }}"><i class="feather-users"></i> <span>{{ __('admin.sidebar.patients')  }}</span></a>
                 </li>
+                <li class="{{ Request::routeIs('countries.*') ? 'active' : '' }}">
+                    <a href="{{ route('countries.index') }}"><i class="feather-flag"></i> <span>Countries</span></a>
+                </li>
+                <li class="{{ Request::routeIs('cities.*') ? 'active' : '' }}">
+                    <a href="{{ route('cities.index') }}"><i class="feather-map-pin"></i> <span>Cities</span></a>
+                </li>
                 <li class="{{ Request::routeIs('banner.*') ? 'active' : '' }}">
                     <a href="{{ route('banner.index') }}"><i class="feather-bookmark"></i> <span>Banners</span></a>
                 </li>

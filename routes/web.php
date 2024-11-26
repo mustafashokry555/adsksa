@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CommonController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\HospitalController;
 use App\Http\Controllers\Admin\HospitalDoctorsController;
@@ -112,6 +114,16 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('education', EducationController::class);
     Route::resource('experience', ExperienceController::class);
     Route::resource('schedule', ScheduleController::class);
+
+    //cities & countries 
+    Route::resource('countries', CountryController::class);
+    Route::resource('cities', CityController::class);
+
+    // Extra routes for restore and force delete
+    Route::get('countries/restore/{id}', [CountryController::class, 'restore'])->name('countries.restore');
+    Route::delete('countries/force-delete/{id}', [CountryController::class, 'forceDelete'])->name('countries.force-delete');
+    Route::get('cities/restore/{id}', [CityController::class, 'restore'])->name('cities.restore');
+    Route::delete('cities/force-delete/{id}', [CityController::class, 'forceDelete'])->name('cities.force-delete');
 
 
     //Blogs Route
