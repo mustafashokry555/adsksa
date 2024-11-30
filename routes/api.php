@@ -30,6 +30,7 @@ Route::post('verify',[AuthController::class,'VerifyOtp']);
 
 // MainController
 Route::get('specialities',[MainController::class,'allSpecialities']);
+Route::get('countries',[MainController::class,'allCountries']);
 Route::get('cities',[MainController::class,'allCities']);
 Route::get('insurances',[MainController::class,'get_insurances']);
 Route::get('doctors',[MainController::class,'DoctorWithFilter']);
@@ -48,21 +49,6 @@ Route::post('banner/store',[BannerController::class,'store']);
 // Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
-// Route::get('hospitals-by-filter',[CommonController::class,'HospitalsByFilter']);
-
-// Route::get('images/{name}', function ($name) {
-//     $path = public_path('images/' . $name);
-
-//     if (!File::exists($path)) {
-//         return $this->ErrorResponse(404, 'Image not found.');
-//     }
-//     $file = File::get($path);
-//     $type = File::mimeType($path);
-//     $response = Response::make($file, 200);
-//     $response->header("Content-Type", $type);
-
-//     return $response;    
-// });
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
     

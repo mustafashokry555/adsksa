@@ -44,6 +44,7 @@ class User extends Authenticatable
         'linkedin',
         'pinterest',
         'instagram',
+        'city_id',       // New field
         'youtube',
         "status",
         "last_name",
@@ -202,7 +203,15 @@ class User extends Authenticatable
         }
         return null;
     }
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
 
+    public function country()
+    {
+        return $this->hasOneThrough(Country::class, City::class, 'id', 'id', 'city_id', 'country_id');
+    }
     public function getNameAttribute()
     {
         if (app()->getLocale() == 'ar' && $this->name_ar != NULL) {

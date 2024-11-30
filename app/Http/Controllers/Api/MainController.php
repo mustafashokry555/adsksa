@@ -11,17 +11,16 @@ use App\Models\Insurance;
 use App\Models\Hospital;
 use App\Models\Appointment;
 use App\Models\Banner;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\HospitalReview;
 use App\Models\Review;
-use App\Models\Specialization;
 use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
-use App\Models\Unavailability;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -116,18 +115,38 @@ class MainController extends Controller
                 return $this->ErrorResponse(400, $th->getMessage());
             }
         }
+        // API for All Countries (Done with Lang)
+        public function allCountries(Request $request)
+        {
+            try {
+                $query = Country::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("name_en", 'like', '%' . request('search') . '%')
+                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                    });
+                }
+                $countries = $query->orderBy("name_$this->lang", 'ASC')->get();
+                return $this->SuccessResponse(200, 'All Countries reterieved successfully', $countries);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
         // API for All Cities (Done with Lang)
         public function allCities(Request $request)
         {
             try {
-                $query = Hospital::query();
+                $query = City::query();
+                if (request('country_ids')) {
+                    $query->whereIn("country_id", request('country_ids'));
+                }
                 if (request('search')) {
                     $query->where(function ($query) {
-                        $query->where("city", 'like', '%' . request('search') . '%');
+                        $query->where("name_en", 'like', '%' . request('search') . '%')
+                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
-                $cities = $query->select('city', 'hospital_name_en', 'hospital_name_ar')
-                ->groupBy('city', 'hospital_name_en', 'hospital_name_ar')->get();
+                $cities = $query->orderBy("name_$this->lang", 'ASC')->get();
                 return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -138,8 +157,8 @@ class MainController extends Controller
         {
             try {
                 $query = Insurance::query();
-                if (request('city')) {
-                    $hospitals_ids = Hospital::where('city', 'like', '%' . request('city') . '%')
+                if (request('city_ids')) {
+                    $hospitals_ids = Hospital::whereIn('city_id', request('city_ids'))
                         ->pluck('id');
                     $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
                         $query->whereIn('hospital_id', $hospitals_ids);
@@ -175,8 +194,8 @@ class MainController extends Controller
                         $query->whereIn('insurance_id', request('insurance'));
                     });
                 }
-                if (request('city')) {
-                    $hospital_query = $hospital_query->whereIn('city', request('city'));
+                if (request('city_ids')) {
+                    $hospital_query = $hospital_query->whereIn('city_id', request('city_ids'));
                 }
                 $hospital_ids = $hospital_query->pluck('id');
                 $query = User::query();

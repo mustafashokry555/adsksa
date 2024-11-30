@@ -32,6 +32,7 @@ class Hospital extends Model
         'facebook',     // New field
         'instagram',    // New field
         'tiktok',       // New field
+        'city_id',       // New field
     ];
     protected $casts = [
         'profile_images' => 'array', // Ensures profile_images is handled as an array
@@ -105,7 +106,15 @@ class Hospital extends Model
     {
         return $this->hospitalReviews()->avg('star_rated') ?? 0;
     }
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
 
+    public function country()
+    {
+        return $this->hasOneThrough(Country::class, City::class, 'id', 'id', 'city_id', 'country_id');
+    }
     public function getHospitalNameAttribute()
     {
         if (app()->getLocale() == 'ar' && $this->hospital_name_ar != NULL) {

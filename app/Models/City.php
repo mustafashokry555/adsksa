@@ -17,6 +17,10 @@ class City extends Model
     {
         return $this->belongsTo(Country::class);
     }
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
     public function getNameAttribute()
     {
         if (app()->getLocale() == 'ar' && $this->name_ar != NULL) {
