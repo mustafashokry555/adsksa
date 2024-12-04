@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Hospital;
 use App\Models\Speciality;
 use App\Models\User;
@@ -48,7 +50,9 @@ class HospitalController extends Controller
     {
         if (Auth::user()->is_admin()) {
             $insurances = Insurance::where('user_id', Auth::id())->get();
-            return view('admin.hospital.create', compact('insurances'));
+            $countries = Country::all();
+            // $cities = City::all();
+            return view('admin.hospital.create', compact('insurances', 'countries'));
         } else {
             abort(401);
         }
@@ -60,9 +64,9 @@ class HospitalController extends Controller
             'hospital_name_ar' => 'required',
             'image' => 'required|image',
             'address' => 'required',
-            'country' => 'required',
+            'country_id' => 'required',
             'state' => 'required',
-            'city' => 'required',
+            'city_id' => 'required',
             'zip' => 'required',
             'lat' => 'required',
             'long' => 'required',
@@ -79,7 +83,7 @@ class HospitalController extends Controller
             'instagram' => 'string|nullable',
             'tiktok' => 'string|nullable',
             'opening_hours' => 'string|nullable',
-            'admin_email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -105,7 +109,7 @@ class HospitalController extends Controller
         User::create([
             'name_en' => $request->name,
             'name_ar' => $request->name,
-            'email' => $request->admin_email,
+            'email' => $request->email,
             'profile_image' => $profileImg,
             'user_type' => User::HOSPITAL,
             'hospital_id' => $hospital->id,
@@ -207,7 +211,7 @@ class HospitalController extends Controller
                 $data = [
                     'name_en' => $request->hospital_name_en,
                     'name_ar' => $request->hospital_name_ar,
-                    'email' => $request->admin_email,
+                    'email' => $request->email,
                 ];
                 if ($request->password) {
                     $data['password'] = Hash::make($request->password);

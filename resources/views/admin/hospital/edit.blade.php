@@ -82,14 +82,14 @@
                                     @enderror
                                 </div>
                             </div>
-                            <!-- Email -->
+                            <!-- Mail -->
                             <div class="form-group row">
-                                <label for="email" class="col-form-label col-md-2">{{ __('admin.hospital.email') }}</label>
+                                <label for="mail" class="col-form-label col-md-2">Mail</label>
                                 <div class="col-md-10">
-                                    <input id="email" name="email" value="{{ $hospital->email ?? '' }}" 
+                                    <input id="mail" name="mail" value="{{ $hospital->mail ?? '' }}" 
                                         type="email" class="form-control" 
-                                        placeholder="Enter Hospital Email">
-                                    @error('email')
+                                        placeholder="Enter Hospital Mail">
+                                    @error('mail')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -326,13 +326,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="admin_email"
+                                <label for="email"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.hospital_administrator_email') }}</label>
                                 <div class="col-md-10">
-                                    <input id="admin_email" name="admin_email" type="email" class="form-control"
+                                    <input id="email" name="email" type="email" class="form-control"
                                         value="{{ $admin->email }}"
                                         placeholder="{{ __('admin.hospital.enter_hospital_administrator_email') }}">
-                                    @error('admin_email')
+                                    @error('email')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>

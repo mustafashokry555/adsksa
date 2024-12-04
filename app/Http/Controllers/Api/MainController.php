@@ -98,23 +98,6 @@ class MainController extends Controller
     ////////////////////////////////////////////////////////////////////////////////////////
 
     /* Start Search For Doctors APIs*/
-        // API for All Specialities (Done with Lang)
-        public function allSpecialities(Request $request)
-        {
-            try {
-                $query = Speciality::query();
-                if (request('search')) {
-                    $query->where(function ($query) {
-                        $query->where("name_en", 'like', '%' . request('search') . '%')
-                            ->orWhere("name_ar", 'like', '%' . request('search') . '%');
-                    });
-                }
-                $speciality = $query->get();
-                return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
-            } catch (\Throwable $th) {
-                return $this->ErrorResponse(400, $th->getMessage());
-            }
-        }
         // API for All Countries (Done with Lang)
         public function allCountries(Request $request)
         {
@@ -146,7 +129,8 @@ class MainController extends Controller
                         ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
-                $cities = $query->orderBy("name_$this->lang", 'ASC')->get();
+                $cities = $query->whereHas('hospitals.doctors')
+                ->orderBy("name_$this->lang", 'ASC')->get();
                 return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -163,6 +147,7 @@ class MainController extends Controller
                     $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
                         $query->whereIn('hospital_id', $hospitals_ids);
                     });
+                    // return $hospitals_ids;
                 }
                 if (request('search')) {
                     $query->where(function ($query) {
@@ -170,8 +155,42 @@ class MainController extends Controller
                             ->orWhere("name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
-                $insurance = $query->orderBy('id', 'desc')->get();
+                $insurance = $query->whereHas('hospitals.doctors')
+                ->orderBy('id', 'desc')->get();
                 return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+        // API for All Specialities (Done with Lang)
+        public function allSpecialities(Request $request)
+        {
+            try {
+                $hospitals_ids = Hospital::query();
+                $query = Speciality::query();
+                if (request('city_ids')) {
+                    $hospitals_ids = $hospitals_ids->whereIn('city_id', request('city_ids'));
+                }
+                if (request('insurance_ids')) {
+                    $hospitals_ids = $hospitals_ids->whereHas('insurances', function ($query) {
+                        $query->whereIn('insurance_id', request('insurance_ids'));
+                    });
+                }
+                $hospitals_ids = $hospitals_ids->pluck('id');
+                // return $hospitals_ids;
+                if($hospitals_ids){
+                    $query->whereHas('users', function ($query) use ($hospitals_ids){
+                        $query->whereIn('hospital_id', $hospitals_ids);
+                    });
+                }
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("name_en", 'like', '%' . request('search') . '%')
+                            ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                    });
+                }
+                $speciality = $query->get();
+                return $this->SuccessResponse(200, 'All specialities reterieved successfully', $speciality);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }
@@ -189,15 +208,16 @@ class MainController extends Controller
             }
             try {
                 $hospital_query = Hospital::query();
-                if (request('insurance') && !empty(request('insurance'))) {
-                    $hospital_query->whereHas('insurances', function ($query) {
-                        $query->whereIn('insurance_id', request('insurance'));
-                    });
-                }
                 if (request('city_ids')) {
                     $hospital_query = $hospital_query->whereIn('city_id', request('city_ids'));
                 }
+                if (request('insurance_ids')) {
+                    $hospital_query->whereHas('insurances', function ($query) {
+                        $query->whereIn('insurance_id', request('insurance_ids'));
+                    });
+                }
                 $hospital_ids = $hospital_query->pluck('id');
+                // return $hospital_ids;
                 $query = User::query();
                 $query->leftJoin('hospitals', 'users.hospital_id', '=', 'hospitals.id');
                 if (request('search')) {
@@ -208,9 +228,9 @@ class MainController extends Controller
                             ->orWhere("hospitals.hospital_name_ar", 'like', '%' . request('search') . '%');
                     });
                 }
-                if (request('speciality') && !empty(request('speciality'))) {
+                if (request('speciality_ids')) {
                     $query->where(function ($query) {
-                        $query->whereIn("speciality_id", request('speciality'));
+                        $query->whereIn("speciality_id", request('speciality_ids'));
                     });
                 }
 

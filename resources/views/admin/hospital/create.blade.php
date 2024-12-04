@@ -1,10 +1,10 @@
 @extends('layout.mainlayout_admin')
 @section('title', 'Add New Hospital')
 @section('content')
-<link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
-<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
-<script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
-<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
     <style>
         #map {
             height: 400px;
@@ -78,13 +78,13 @@
                                     @enderror
                                 </div>
                             </div>
-                            <!-- Email -->
+                            <!-- mail -->
                             <div class="form-group row">
-                                <label for="email" class="col-form-label col-md-2">Email</label>
+                                <label for="mail" class="col-form-label col-md-2">Mail</label>
                                 <div class="col-md-10">
-                                    <input id="email" name="email" value="{{ old('email') }}"
-                                        type="email" class="form-control" placeholder="Enter Hospital Email">
-                                    @error('email')
+                                    <input id="mail" name="mail" value="{{ old('mail') }}"
+                                        type="email" class="form-control" placeholder="Enter Hospital Mail">
+                                    @error('mail')
                                         <div class="text-danger pt-2">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -163,31 +163,36 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="city"
-                                    class="col-form-label col-md-2">{{ __('admin.hospital.city') }}</label>
+                                <label for="country_id" class="col-form-label col-md-2">{{ __('admin.hospital.country') }}</label>
                                 <div class="col-md-10">
-                                    <input id="city" name="city" type="text" class="form-control"
-                                        placeholder="{{ __('admin.hospital.enter_city') }}" required>
-                                    @error('city')
+                                    <select id="country_id" name="country_id" class="form-control" required>
+                                        <option value="" disabled selected>Select Country</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}">{{ $country->name_en }} < {{ $country->name_ar }} ></option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
                             </div>
+                            
                             <div class="form-group row">
-                                <label for="country"
-                                    class="col-form-label col-md-2">{{ __('admin.hospital.country') }}</label>
+                                <label for="city_id" class="col-form-label col-md-2">{{ __('admin.hospital.city') }}</label>
                                 <div class="col-md-10">
-                                    <input id="country" name="country" type="text" class="form-control"
-                                        placeholder="{{ __('admin.hospital.enter_country') }}" required>
-                                    @error('country')
+                                    <select id="city_id" name="city_id" class="form-control" required>
+                                        <option value="" disabled selected>Select City</option>
+                                    </select>
+                                    @error('city_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
                             </div>
+                            
                             <div class="form-group row">
                                 <label for="state"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.state') }}</label>
@@ -266,11 +271,11 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="admin_email" class="col-form-label col-md-2">Hospital Administrator Email</label>
+                                <label for="email" class="col-form-label col-md-2">Hospital Administrator Email</label>
                                 <div class="col-md-10">
-                                    <input id="admin_email" name="admin_email" type="email" class="form-control"
+                                    <input id="email" name="email" type="email" class="form-control"
                                         placeholder="Enter Hospital Administrator Email" required>
-                                    @error('admin_email')
+                                    @error('email')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -374,10 +379,36 @@
 
 <script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <script>
+    // get cities fun 
+    function getCities(countryId) {
+        $.ajax({
+            url: '{{ route("get.cities") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { country_id: countryId },
+            success: function (data) {
+                $('#city_id').empty(); // Clear the cities dropdown
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+                $.each(data, function (key, city) {
+                    $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Cities');
+            }
+        });
+    }
     $(document).ready(function() {
         $('.js-example-basic-multiple').select2();
+        $('#country_id').on('change', function () {
+            var countryId = $(this).val();
+            if (countryId) {
+                getCities(countryId);
+            } else {
+                $('#city_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+            }
+        });
         mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
         initMap();
     });

@@ -78,4 +78,11 @@ class CityController extends Controller
 
         return redirect()->route('cities.index')->with('flash', ['type', 'success', 'message' => 'City permanently deleted.']);
     }
+
+    public function get_cities(Request $request) {
+        $countryId = $request->country_id;
+        $cities = City::where('country_id', $countryId)->get();
+
+        return response()->json($cities);
+    }
 }

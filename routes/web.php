@@ -118,6 +118,7 @@ Route::middleware(['auth'])->group(function () {
     //cities & countries 
     Route::resource('countries', CountryController::class);
     Route::resource('cities', CityController::class);
+    Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.cities');
 
     // Extra routes for restore and force delete
     Route::get('countries/restore/{id}', [CountryController::class, 'restore'])->name('countries.restore');

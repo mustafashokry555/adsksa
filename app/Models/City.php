@@ -21,6 +21,10 @@ class City extends Model
     {
         return $this->hasMany(User::class);
     }
+    public function hospitals()
+    {
+        return $this->hasMany(Hospital::class);
+    }
     public function getNameAttribute()
     {
         if (app()->getLocale() == 'ar' && $this->name_ar != NULL) {
