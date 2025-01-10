@@ -228,9 +228,9 @@
                                         <a href="/">{{ __('web.home') }}</a>
                                     </li>
                                 @endauth
-                                <li class="{{ Request::routeIs('blog-list') ? 'active' : '' }}">
+                                {{-- <li class="{{ Request::routeIs('blog-list') ? 'active' : '' }}">
                                     <a href="{{ route('blog-list') }}">{{ __('web.blog') }}</a>
-                                </li>
+                                </li> --}}
                                 <li class="{{ Request::routeIs('about-us') ? 'active' : '' }}">
                                     <a href="{{ route('about-us') }}">{{ __('web.aboutUs') }}</a>
                                 </li>

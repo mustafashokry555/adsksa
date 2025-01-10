@@ -3,7 +3,7 @@
 @endphp
 <!-- Footer Four -->
 <footer class="footer footer-four">
-    <div class="news-section-four">
+    {{-- <div class="news-section-four">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center" id="news-letter" >
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Footer Top -->
     <div class="footer-top aos" data-aos="fade-up">

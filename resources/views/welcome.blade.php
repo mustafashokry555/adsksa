@@ -130,23 +130,23 @@
     <!-- /Home Banner -->
 
     <!-- Looking Section Four -->
-    @include('components.patient_search_section')
+    {{-- @include('components.patient_search_section') --}}
     <!-- /Looking Section Four -->
 
     <!-- Clinic Section Four -->
-    @include('components.patient_clinic_section')
+    {{-- @include('components.patient_clinic_section') --}}
     <!-- /Clinic Section Four -->
 
     <!-- Doctor Section Four -->
-    @include('components.patient_doctor_section')
+    {{-- @include('components.patient_doctor_section') --}}
     <!-- /Doctor Section Four -->
 
     <!-- Features Clinic Four -->
-    @include('components.patient_clinic_features_section')
+    {{-- @include('components.patient_clinic_features_section') --}}
     <!-- /Features Clinic Four -->
 
     <!-- Blog Section Four -->
-    <x-patient_blogs_section :blogs="$blogs" />
+    {{-- <x-patient_blogs_section :blogs="$blogs" /> --}}
     <!-- /Blog Section Four -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
