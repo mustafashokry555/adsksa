@@ -14,14 +14,14 @@
 
 		<!-- Feathericon CSS -->
 		<link rel="stylesheet" href="{{asset('assets_pharmacy/libs/feather/feather.css')}}">
-        <link rel="stylesheet" href="{{url('/assets_pharmacy/libs/morris/morris.css')}}">
+        <link rel="stylesheet" href="{{asset('/assets_pharmacy/libs/morris/morris.css')}}">
         <!-- Apecharts CSS -->
-        <link rel="stylesheet" href="{{url('/assets_pharmacy/libs/apex/apexcharts.css')}}">
+        <link rel="stylesheet" href="{{asset('/assets_pharmacy/libs/apex/apexcharts.css')}}">
         <!-- Daterangepicker CSS -->
-        <link rel="stylesheet" href="{{url('/assets_pharmacy/libs/daterangepicker/daterangepicker.css')}}">
+        <link rel="stylesheet" href="{{asset('/assets_pharmacy/libs/daterangepicker/daterangepicker.css')}}">
         <!-- Datatables CSS -->
-        <link rel="stylesheet" href="{{url('/assets_pharmacy/libs/datatables/css/datatables.min.css')}}">
+        <link rel="stylesheet" href="{{asset('/assets_pharmacy/libs/datatables/css/datatables.min.css')}}">
 		<!-- Select2 CSS -->
-        <link rel="stylesheet" href="{{url('/assets_pharmacy/libs/select2/dist/css/select2.min.css')}}">
+        <link rel="stylesheet" href="{{asset('/assets_pharmacy/libs/select2/dist/css/select2.min.css')}}">
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="{{asset('assets_pharmacy/css/app.css')}}">

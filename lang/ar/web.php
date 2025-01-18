@@ -48,5 +48,6 @@ return [
     'Subject' => 'الموضوع',
     'Comments' => 'التعليقات',
     'Send Message' => 'إرسال الرسالة',
-
+    'Enter_country' => 'أدخل الدولة',
+    'All' => 'الكل',
 ];

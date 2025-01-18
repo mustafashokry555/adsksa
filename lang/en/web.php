@@ -48,5 +48,7 @@ return [
     'Subject' => 'Subject',
     'Comments' => 'Comments',
     'Send Message' => 'Send Message',
+    'Enter_country' => 'Enter Country',
+    'All' => 'All',
 ];
 ?>
