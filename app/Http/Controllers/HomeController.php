@@ -8,16 +8,19 @@ use App\Models\Settings;
 use App\Models\Speciality;
 use App\Models\RegularAvailability;
 use App\Models\User;
-use App\Models\Blog;
+use App\Models\City;
 use App\Models\ContactUs;
+use App\Models\Country;
+use App\Models\Hospital;
+use App\Models\HospitalReview;
 use App\Models\Insurance;
+use App\Models\ScheduleSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\RegulationList;
 
 class HomeController extends Controller
 {
@@ -25,11 +28,11 @@ class HomeController extends Controller
     {
 
         return view('welcome', [
-            'blogs' => Blog::with('user')->inRandomOrder()->latest()->take(3)->get(),
-            'doctors' => User::query()->where('user_type', 'D')->take('8')->latest()->get(),
-            'setting' => Settings::query()->first(),
-            'specialities' => Speciality::orderByDesc('id')->get(),
+            // 'blogs' => Blog::with('user')->inRandomOrder()->latest()->take(3)->get(),
+            // 'setting' => Settings::query()->first(),
             'insurances' => Insurance::orderByDesc('id')->get(),
+            'specialities' => Speciality::orderByDesc('id')->get(),
+            'countries' => Country::orderByDesc('id')->get(),
 
         ]);
     }
@@ -154,11 +157,12 @@ class HomeController extends Controller
     // Patient functions
     public function search_doctor()
     {
+        // return request();
         // dd(request()->all());
-        //        $doctor = User::query()->where('user_type', 'D')->filter(request(['search', 'gender', 'speciality_id']))->get();
+        // $doctor = User::query()->where('user_type', 'D')->filter(request(['search', 'gender', 'speciality_id']))->get();
         // $doctors = User::latest()->where('user_type', 'D')->filter(request(['search', 'gender', 'speciality_id']))->get();
         $query = User::query()
-            ->where('user_type', '=', 'D');
+        ->where('user_type', '=', 'D');
         // dd($query);
         if (request('search')) {
             $query->where(function ($query) {
@@ -166,30 +170,32 @@ class HomeController extends Controller
                 ->orWhere('name_ar', 'like', '%' . request('search') . '%');
             });
         }
-        if (request('city')) {
-            $query->where(function ($query) {
-                $query->where('state', 'like', '%' . request('city') . '%');
-                // ->orWhere('name', 'like', '%' . request('name') . '%');
-            });
+        if (request('country')) {
+            if (request('city')) {
+                $query->where('city_id', request('city'));
+            }else{
+                $city_ids = City::where('country_id', request('country'))->pluck('id');
+                $query->whereIn('city_id', $city_ids);
+            }
+        }elseif (request('city')) {
+            $query->where('city_id', request('city'));
         }
         if (request('area')) {
-            $query->where(function ($query) {
-                $query->where('address', 'like', '%' . request('area') . '%');
-                // ->orWhere('name', 'like', '%' . request('name') . '%');
-            });
+            $query->where('address', 'like', '%' . request('area') . '%');
         }
         if (request('gender')) {
-            $query->where(function ($query) {
-                $query->where('gender', request('gender'));
-            });
+            $query->whereIn('gender', request('gender'));
         }
-        if (request('speciality_id')) {
-            $query->where(function ($query) {
-                $query->where('speciality_id', request('speciality_id'));
+        if (request('insurance')) {
+            $hospitals_ids = Hospital::whereHas('insurances', function ($query) {
+                $query->where('insurance_id', request('insurance'));
             });
+            $query->whereIn('hospital_id', $hospitals_ids);
         }
-
-
+        // return request('speciality');
+        if (request('speciality')) {
+            $query->whereIn('speciality_id', request('speciality'));
+        }
         $doctors = $query->paginate(10);
         return view(
             'patient.doctor.search',
@@ -233,6 +239,39 @@ class HomeController extends Controller
             'review_value' => $review_value,
             'regularAvailability' => $regularAvailability,
             'todaysAvailability' => $todaysAvailability,
+        ]);
+    }
+
+    public function hospital_profile($id)
+    {
+        $reviews = HospitalReview::query()->where('hospital_id', $id)->get();
+        $review_sum = HospitalReview::where('hospital_id', $id)->sum('star_rated');
+        if ($reviews->count() > 0) {
+            $review_value = $review_sum / $reviews->count();
+        } else {
+            $review_value = 0;
+        }
+        $todayDay =  strtolower(\Carbon\Carbon::now()->format('l'));
+        // dd($todayDay);
+        $appointments = Appointment::where('doctor_id', $id)->get();
+        // $scheduleSetting =  ScheduleSetting::where('doctor_id', $id)
+        // ->where('week_day', $todayDay)
+        // ->first();
+        // dd($todaysAvailability);
+        // dd($regularAvailability[0]->slots[0]['start_time']);
+        return [
+            'hospital' => Hospital::find($id),
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+            'appointments' => $appointments,
+            // 'scheduleSetting' => $scheduleSetting,
+        ];
+        return view('patient.doctor.hospital', [
+            'hospital' => Hospital::find($id),
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+            'appointments' => $appointments,
+            'scheduleSetting' => $scheduleSetting,
         ]);
     }
 

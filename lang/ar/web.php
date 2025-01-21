@@ -50,4 +50,8 @@ return [
     'Send Message' => 'إرسال الرسالة',
     'Enter_country' => 'أدخل الدولة',
     'All' => 'الكل',
+    'Feedback' => 'التقييمات',
+    'doc_profile' => 'ملف الطبيب',
+    'hospital_profile' => 'ملف المستشفى',
+    'book_appoint' => 'حجز موعد',
 ];

@@ -50,5 +50,9 @@ return [
     'Send Message' => 'Send Message',
     'Enter_country' => 'Enter Country',
     'All' => 'All',
+    'Feedback' => 'Feedback',
+    'doc_profile' => 'Doctor Profile',
+    'hospital_profile' => 'Hospital Profile',
+    'book_appoint' => 'Book Appointment',
 ];
 ?>

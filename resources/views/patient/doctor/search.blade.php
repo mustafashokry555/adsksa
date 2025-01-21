@@ -1,4 +1,4 @@
-<?php $page = "index-13"; ?>
+<?php $page = 'index-13'; ?>
 @extends('layout.mainlayout_index1')
 @section('title', 'Search Doctor')
 @section('content')
@@ -24,40 +24,39 @@
                                 <h4 class="card-title mb-0">Search Filter</h4>
                             </div>
                             <div class="card-body">
-                                {{--                                <div class="filter-widget">--}}
-                                {{--                                    <div class="">--}}
-                                {{--                                        <input type="date" class="form-control "--}}
-                                {{--                                               placeholder="Select Date">--}}
-                                {{--                                    </div>--}}
-                                {{--                                </div>--}}
+                                {{--                                <div class="filter-widget"> --}}
+                                {{--                                    <div class=""> --}}
+                                {{--                                        <input type="date" class="form-control " --}}
+                                {{--                                               placeholder="Select Date"> --}}
+                                {{--                                    </div> --}}
+                                {{--                                </div> --}}
                                 <form method="get" action="">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <input type="text" name="search" class="form-control"
-                                                   value="{{ request('search') }}"
-                                                   placeholder="Search Location">
+                                                value="{{ request('search') }}" placeholder="Search Location">
                                         </div>
                                     </div>
                                     <div class="filter-widget">
                                         <h4>Gender</h4>
                                         <div>
                                             <label class="custom_check">
-                                                <input type="checkbox" name="gender" value="M"
-                                                       @if(request('gender') == 'M') checked @endif>
+                                                <input type="checkbox" name="gender[]" value="M"
+                                                    @if (is_array(request('gender')) && in_array('M', request('gender'))) checked @endif>
                                                 <span class="checkmark"></span> Male Doctor
                                             </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
-                                                <input type="checkbox" name="gender" value="F"
-                                                       @if(request('gender') == 'F') checked @endif>
+                                                <input type="checkbox" name="gender[]" value="F"
+                                                    @if (is_array(request('gender')) && in_array('F', request('gender'))) checked @endif>
                                                 <span class="checkmark"></span> Female Doctor
                                             </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
-                                                <input type="checkbox" name="gender" value="O"
-                                                       @if(request('gender') == 'O') checked @endif>
+                                                <input type="checkbox" name="gender[]" value="O"
+                                                    @if (is_array(request('gender')) && in_array('O', request('gender'))) checked @endif>
                                                 <span class="checkmark"></span> Others
                                             </label>
                                         </div>
@@ -67,9 +66,8 @@
                                         @forelse($specialities as $speciality)
                                             <div>
                                                 <label class="custom_check">
-                                                    <input type="checkbox" name="speciality_id"
-                                                           value="{{ $speciality->id }}"
-                                                           @if(request('speciality_id') == $speciality->id) checked @endif >
+                                                    <input type="checkbox" name="speciality[]" value="{{ $speciality->id }}"
+                                                        @if (is_array(request('speciality')) && in_array($speciality->id, request('speciality'))) checked @endif>
                                                     <span class="checkmark"></span> {{ $speciality->name }}
                                                 </label>
                                             </div>
@@ -102,29 +100,33 @@
                                         <div class="doc-info-left">
                                             <div class="doctor-img">
                                                 <a href="{{ route('doctor_profile', $doctor->id) }}">
-                                                    <img
-                                                        src="{{ asset($doctor->profile_image) }}"
-                                                        class="img-fluid" alt="User Image">
+                                                    <img src="{{ asset($doctor->profile_image) }}" class="img-fluid"
+                                                        alt="User Image">
                                                 </a>
                                             </div>
                                             <div class="doc-info-cont">
                                                 <h4 class="doc-name"><a
-                                                        href="{{ route('doctor_profile', $doctor->id) }}">Dr. {{ $doctor->name }}</a>
+                                                        href="{{ route('doctor_profile', $doctor->id) }}">Dr.
+                                                        {{ $doctor->name }}</a>
                                                 </h4>
-                                                <h5>{{$doctor?->hospital?->hospital_name}}</h5>
-                                                @if($doctor->speciality->name ?? '')
+                                                <h5>{{ $doctor?->hospital?->hospital_name }}</h5>
+                                                @if ($doctor->speciality->name ?? '')
                                                     <!-- <p class="doc-speciality">{{ $doctor->speciality->name }}</p> -->
                                                     <h5 class="doc-department"><img
-                                                            src="{{ asset( $doctor->speciality->image) }}"
-                                                            class="img-fluid"
+                                                            src="{{ asset($doctor->speciality->image) }}" class="img-fluid"
                                                             alt="Speciality">{{ $doctor->speciality->name }}</h5>
                                                 @else
                                                     <p class="doc-speciality">Speciality</p>
                                                 @endif
 
                                                 @php
-                                                $reviews = App\Models\Review::query()->where('doctor_id', $doctor->id)->get();
-                                                $review_sum = App\Models\Review::where('doctor_id',  $doctor->id)->sum('star_rated');
+                                                    $reviews = App\Models\Review::query()
+                                                        ->where('doctor_id', $doctor->id)
+                                                        ->get();
+                                                    $review_sum = App\Models\Review::where(
+                                                        'doctor_id',
+                                                        $doctor->id,
+                                                    )->sum('star_rated');
                                                     if ($reviews->count() > 0) {
                                                         $review_value = $review_sum / $reviews->count();
                                                     } else {
@@ -142,97 +144,109 @@
                                                     @for ($j = $rat_num; $j < 5; $j++)
                                                         <i class="fas fa-star"></i>
                                                     @endfor
-                                                    <span class="d-inline-block average-rating">{{ $reviews->count() }}</span>
-                                                </div> 
+                                                    <span
+                                                        class="d-inline-block average-rating">{{ $reviews->count() }}</span>
+                                                </div>
 
                                                 <!-- <div class="rating">
-                                                    <i class="fas fa-star filled"></i>
-                                                    <i class="fas fa-star filled"></i>
-                                                    <i class="fas fa-star filled"></i>
-                                                    <i class="fas fa-star filled"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <span class="d-inline-block average-rating">(17)</span>
-                                                </div> -->
+                                                            <i class="fas fa-star filled"></i>
+                                                            <i class="fas fa-star filled"></i>
+                                                            <i class="fas fa-star filled"></i>
+                                                            <i class="fas fa-star filled"></i>
+                                                            <i class="fas fa-star"></i>
+                                                            <span class="d-inline-block average-rating">(17)</span>
+                                                        </div> -->
                                                 <div class="clinic-details">
-                                                    @if($doctor->address)
-                                                    <p class="doc-location"><i
-                                                            class="fas fa-map-marker-alt"></i> {{ $doctor->address }}
-                                                        ,
-                                                        {{ $doctor->state }}
-                                                    </p>
+                                                    @if ($doctor->address)
+                                                        <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
+                                                            {{ $doctor->address }}
+                                                            ,
+                                                            {{ $doctor->state }}
+                                                        </p>
                                                     @endif
                                                     <!-- <ul class="clinic-gallery">
-                                                        <li>
-                                                            <a href="{{url('assets/img/features/feature-01.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-01.jpg')}}"
-                                                                    alt="Feature">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{url('assets/img/features/feature-02.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-02.jpg')}}"
-                                                                    alt="Feature">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{url('assets/img/features/feature-03.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-03.jpg')}}"
-                                                                    alt="Feature">
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{url('assets/img/features/feature-04.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-04.jpg')}}"
-                                                                    alt="Feature">
-                                                            </a>
-                                                        </li>
-                                                    </ul> -->
+                                                                <li>
+                                                                    <a href="{{ url('assets/img/features/feature-01.jpg') }}"
+                                                                       data-fancybox="gallery">
+                                                                        <img
+                                                                            src="{{ URL::asset('/assets/img/features/feature-01.jpg') }}"
+                                                                            alt="Feature">
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="{{ url('assets/img/features/feature-02.jpg') }}"
+                                                                       data-fancybox="gallery">
+                                                                        <img
+                                                                            src="{{ URL::asset('/assets/img/features/feature-02.jpg') }}"
+                                                                            alt="Feature">
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="{{ url('assets/img/features/feature-03.jpg') }}"
+                                                                       data-fancybox="gallery">
+                                                                        <img
+                                                                            src="{{ URL::asset('/assets/img/features/feature-03.jpg') }}"
+                                                                            alt="Feature">
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="{{ url('assets/img/features/feature-04.jpg') }}"
+                                                                       data-fancybox="gallery">
+                                                                        <img
+                                                                            src="{{ URL::asset('/assets/img/features/feature-04.jpg') }}"
+                                                                            alt="Feature">
+                                                                    </a>
+                                                                </li>
+                                                            </ul> -->
                                                 </div>
                                                 <!-- <div class="clinic-services">
-                                                    @forelse($doctor->services as $service)
-                                                        <span>{{ $service->service_title }}</span>
+                                                            @forelse($doctor->services as $service)
+    <span>{{ $service->service_title }}</span>
                                                     @empty
-                                                        <span>No Services Found</span>
-                                                    @endforelse
+                                                                <span>No Services Found</span>
+    @endforelse
 
-                                                </div> -->
+                                                        </div> -->
                                             </div>
                                         </div>
                                         <div class="doc-info-right">
                                             <div class="clini-infos">
                                                 <ul>
                                                     <!-- <li><i class="far fa-thumbs-up"></i> 98%</li> -->
-                                                    <li><i class="far fa-comment"></i>{{ $reviews->count()??0 }} Feedback</li>
-                                                    @if($doctor->address)
-                                                    <li>
-                                                        <i class="fas fa-map-marker-alt"></i>  {{ $doctor->address }}
-                                                        ,
-                                                        {{ $doctor->state }}
+                                                    <li><i class="far fa-comment"></i>{{ $reviews->count() ?? 0 }}
+                                                        {{ __('web.Feedback') }}
                                                     </li>
+                                                    @if ($doctor->address)
+                                                        <li>
+                                                            <i class="fas fa-map-marker-alt"></i> {{ $doctor->address }}
+                                                            ,
+                                                            {{ $doctor->state }}
+                                                        </li>
                                                     @endif
-                                                    @if($doctor->pricing)
-                                                    <li><i class="far fa-money-bill-alt"></i> {{ $doctor->pricing=='Free'?'Free':'SAR '.$doctor->pricing }}
-                                                        <i
-                                                            class="fas fa-info-circle" data-bs-toggle="tooltip"
-                                                            title="Lorem Ipsum"></i></li>
-                                                            @endif
+                                                    @if ($doctor->pricing)
+                                                        <li><i class="far fa-money-bill-alt"></i>
+                                                            {{ $doctor->pricing == 'Free' ? 'Free' : 'SAR ' . $doctor->pricing }}
+                                                            <i class="fas fa-info-circle" data-bs-toggle="tooltip"
+                                                                title="Lorem Ipsum"></i>
+                                                        </li>
+                                                    @endif
                                                 </ul>
                                             </div>
+                                        </div>
+                                        <div class="doc-info-right">
                                             <div class="clinic-booking">
                                                 <a class="view-pro-btn"
-                                                   href="{{ route('doctor_profile', $doctor->id) }}">View
-                                                    Profile</a>
+                                                    href="{{ route('doctor_profile', $doctor->id) }}">
+                                                    {{ __('web.doc_profile') }}
+                                                </a>
+                                                {{-- <a class="view-pro-btn"
+                                                    href="{{ route('hospital_profile', $doctor->hospital_id) }}">
+                                                    {{ __('web.hospital_profile') }}
+                                                </a> --}}
                                                 <a class="apt-btn"
-                                                   href="{{ route('create_appointment', $doctor->id) }}">Book
-                                                    Appointment</a>
+                                                    href="{{ route('create_appointment', $doctor->id) }}">
+                                                    {{ __('web.book_appoint') }}
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -246,9 +260,9 @@
                         @endforelse
                         {{ $doctors->appends($queryParams)->links() }}
 
-                        {{--                        <div class="load-more text-center">--}}
-                        {{--                            <a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a>--}}
-                        {{--                        </div>--}}
+                        {{--                        <div class="load-more text-center"> --}}
+                        {{--                            <a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a> --}}
+                        {{--                        </div> --}}
                     </div>
                 </div>
 

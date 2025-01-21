@@ -135,4 +135,30 @@ class InsuranceController extends Controller
         }
         abort(401);
     }
+
+    public function get_insurances(Request $request)
+    {
+        try {
+            $query = Insurance::query();
+            if (request('city_id')) {
+                $hospitals_ids = Hospital::where('city_id', request('city_id'))
+                    ->pluck('id');
+                $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
+                    $query->whereIn('hospital_id', $hospitals_ids);
+                });
+                // return $hospitals_ids;
+            }
+            // if (request('search')) {
+            //     $query->where(function ($query) {
+            //         $query->where("name_en", 'like', '%' . request('search') . '%')
+            //             ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+            //     });
+            // }
+            $insurance = $query->whereHas('hospitals.doctors')
+            ->orderBy('id', 'desc')->get();
+            return response()->json($insurance);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
 }

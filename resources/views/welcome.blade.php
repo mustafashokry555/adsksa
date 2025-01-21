@@ -73,45 +73,48 @@
                 <form method="GET" action="{{ route('search_doctor') }}" class="banner-four-search">
 
                     <div class="search_bar" style="background-color:white">
-
                         <div class="drop_down_wrap">
-                            <label>{{ __('web.Select a specility') }}</label>
+                            <label>{{ __('web.Enter_country') }}</label>
                             <div class="dropdown">
-                                <select name="speciality_id" class="select form-control">
-                                    <option value="">{{ __('web.Select a specility') }}</option>
-                                    @forelse($specialities as $speciality)
-                                        <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
-                                    @empty
-                                    @endforelse
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="drop_down_wrap">
-                            <label>{{ __('web.Select a Insurance') }}</label>
-                            <div class="dropdown">
-                                <select name="insurance" class="select form-control">
-                                    <option value="">{{ __('web.Select a Insurance') }}</option>
-                                    @forelse($insurances as $insurance)
-                                        <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
-                                    @empty
-                                        <!-- <option>No Department Found</option> -->
-                                    @endforelse
+                                <select id="countrySelect" name="country" class="select form-control" >
+                                    <option selected disabled>{{ __('web.Enter_country') }}</option>
+                                    <option value>{{ __('web.All') }}</option>
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="drop_down_wrap">
                             <label>{{ __('web.Enter City') }}</label>
                             <div class="dropdown">
-                                <input name="city" type="text" class="select form-control"
-                                    placeholder="{{ __('web.Enter City') }}">
+                                <select id="citySelect" name="city" class="select form-control" disabled>
+                                    <option selected disabled>{{ __('web.Enter City') }}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="drop_down_wrap">
-                            <label>{{ __('web.Enter Area') }}</label>
+                            <label>{{ __('web.Select a Insurance') }}</label>
                             <div class="dropdown">
-                                <input name="area" type="text" class="select form-control"
-                                    placeholder="{{ __('web.Enter Area') }}">
+                                <select id="insuranceSelect" name="insurance" class="select form-control">
+                                    <option selected disabled>{{ __('web.Select a Insurance') }}</option>
+                                    <option value>{{ __('web.All') }}</option>
+                                    @foreach($insurances as $insurance)
+                                        <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="drop_down_wrap">
+                            <label>{{ __('web.Select a specility') }}</label>
+                            <div class="dropdown">
+                                <select id="specialitySelect" name="speciality" class="select form-control">
+                                    <option selected disabled>{{ __('web.Select a specility') }}</option>
+                                    <option value>{{ __('web.All') }}</option>
+                                    @foreach($specialities as $speciality)
+                                        <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -150,6 +153,63 @@
     <!-- /Blog Section Four -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script>
+        document.getElementById('countrySelect').addEventListener('change', function () {
+            const countryId = this.value;
+            const citySelect = document.getElementById('citySelect');
+
+            // Reset subsequent dropdowns
+            citySelect.innerHTML = '<option selected disabled>{{ __("web.Enter City") }}</option>'+
+            '<option value>{{ __("web.All") }}</option>';
+
+            fetch(`/get-cities?country_id=${countryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    citySelect.disabled = false;
+                    data.forEach(city => {
+                        citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                    });
+                });
+        });
+        /*
+            document.getElementById('citySelect').addEventListener('change', function () {
+                const cityId = this.value;
+                const insuranceSelect = document.getElementById('insuranceSelect');
+
+                // Reset subsequent dropdowns
+                insuranceSelect.innerHTML = '<option value="">{{ __("web.Select a Insurance") }}</option>'+
+                '<option value>{{ __("web.All") }}</option>';
+
+                    fetch(`/get-insurances?cityId=${cityId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            insuranceSelect.disabled = false;
+                            data.forEach(insurance => {
+                                insuranceSelect.innerHTML += `<option value="${insurance.id}">${insurance.name}</option>`;
+                            });
+                        });
+            });
+            document.getElementById('insuranceSelect').addEventListener('change', function () {
+                const citySelect = document.getElementById('citySelect');
+                const specialitySelect = document.getElementById('specialitySelect');
+                const insurance_id = this.value;
+                const city_id = citySelect.value;
+
+                // Reset subsequent dropdowns
+                specialitySelect.innerHTML = '<option value="">{{ __("web.Select a specility") }}</option>'+
+                '<option value>{{ __("web.All") }}</option>';
+
+                fetch(`/get-specialities?insurance_id=${insurance_id}&city_id=${city_id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        specialitySelect.disabled = false;
+                        data.forEach(speciality => {
+                            specialitySelect.innerHTML += `<option value="${speciality.id}">${speciality.name}</option>`;
+                        });
+                    });
+            });
+        */
     </script>
 
 

@@ -1,4 +1,4 @@
-<?php $page = "index-13"; ?>
+<?php $page = 'index-13'; ?>
 @extends('layout.mainlayout_index1')
 @section('title', 'Search Doctor')
 @section('content')
@@ -24,18 +24,17 @@
                                 <h4 class="card-title mb-0">Search Filter</h4>
                             </div>
                             <div class="card-body">
-                                {{--                                <div class="filter-widget">--}}
-                                {{--                                    <div class="">--}}
-                                {{--                                        <input type="date" class="form-control "--}}
-                                {{--                                               placeholder="Select Date">--}}
-                                {{--                                    </div>--}}
-                                {{--                                </div>--}}
+                                {{--                                <div class="filter-widget"> --}}
+                                {{--                                    <div class=""> --}}
+                                {{--                                        <input type="date" class="form-control " --}}
+                                {{--                                               placeholder="Select Date"> --}}
+                                {{--                                    </div> --}}
+                                {{--                                </div> --}}
                                 <form method="get" action="{{ route('search_doctor') }}">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <input type="text" name="search" class="form-control"
-                                                   value="{{ request('search') }}"
-                                                   placeholder="Search Location">
+                                                value="{{ request('search') }}" placeholder="Search Location">
                                         </div>
                                     </div>
                                     <div class="filter-widget">
@@ -43,21 +42,21 @@
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender" value="M"
-                                                       @if(request('gender') == 'M') checked @endif>
+                                                    @if (request('gender') == 'M') checked @endif>
                                                 <span class="checkmark"></span> Male Doctor
                                             </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender" value="F"
-                                                       @if(request('gender') == 'F') checked @endif>
+                                                    @if (request('gender') == 'F') checked @endif>
                                                 <span class="checkmark"></span> Female Doctor
                                             </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender" value="O"
-                                                       @if(request('gender') == 'O') checked @endif>
+                                                    @if (request('gender') == 'O') checked @endif>
                                                 <span class="checkmark"></span> Others
                                             </label>
                                         </div>
@@ -68,8 +67,8 @@
                                             <div>
                                                 <label class="custom_check">
                                                     <input type="checkbox" name="speciality_id"
-                                                           value="{{ $speciality->id }}"
-                                                           @if(request('speciality_id') == $speciality->id) checked @endif >
+                                                        value="{{ $speciality->id }}"
+                                                        @if (request('speciality_id') == $speciality->id) checked @endif>
                                                     <span class="checkmark"></span> {{ $speciality->name }}
                                                 </label>
                                             </div>
@@ -102,16 +101,16 @@
                                         <div class="doc-info-left">
                                             <div class="doctor-img">
                                                 <a href="{{ route('doctor_profile', $doctor->id) }}">
-                                                    <img
-                                                        src="{{ asset($doctor->profile_image) }}"
-                                                        class="img-fluid" alt="User Image">
+                                                    <img src="{{ asset($doctor->profile_image) }}" class="img-fluid"
+                                                        alt="User Image">
                                                 </a>
                                             </div>
                                             <div class="doc-info-cont">
                                                 <h4 class="doc-name"><a
-                                                        href="{{ route('doctor_profile', $doctor->id) }}">Dr. {{ $doctor->name }}</a>
+                                                        href="{{ route('doctor_profile', $doctor->id) }}">Dr.
+                                                        {{ $doctor->name }}</a>
                                                 </h4>
-                                                @if($doctor->speciality->name ?? '')
+                                                @if ($doctor->speciality->name ?? '')
                                                     <p class="doc-speciality">{{ $doctor->speciality->name }}</p>
                                                     <h5 class="doc-department"><img
                                                             src="{{ asset('images/' . $doctor->speciality->image) }}"
@@ -130,41 +129,37 @@
                                                     <span class="d-inline-block average-rating">(17)</span>
                                                 </div>
                                                 <div class="clinic-details">
-                                                    <p class="doc-location"><i
-                                                            class="fas fa-map-marker-alt"></i> {{ $doctor->address }}
+                                                    <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
+                                                        {{ $doctor->address }}
                                                         ,
                                                         {{ $doctor->state }}
                                                     </p>
                                                     <ul class="clinic-gallery">
                                                         <li>
-                                                            <a href="{{url('assets/img/features/feature-01.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-01.jpg')}}"
+                                                            <a href="{{ url('assets/img/features/feature-01.jpg') }}"
+                                                                data-fancybox="gallery">
+                                                                <img src="{{ URL::asset('/assets/img/features/feature-01.jpg') }}"
                                                                     alt="Feature">
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="{{url('assets/img/features/feature-02.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-02.jpg')}}"
+                                                            <a href="{{ url('assets/img/features/feature-02.jpg') }}"
+                                                                data-fancybox="gallery">
+                                                                <img src="{{ URL::asset('/assets/img/features/feature-02.jpg') }}"
                                                                     alt="Feature">
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="{{url('assets/img/features/feature-03.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-03.jpg')}}"
+                                                            <a href="{{ url('assets/img/features/feature-03.jpg') }}"
+                                                                data-fancybox="gallery">
+                                                                <img src="{{ URL::asset('/assets/img/features/feature-03.jpg') }}"
                                                                     alt="Feature">
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="{{url('assets/img/features/feature-04.jpg')}}"
-                                                               data-fancybox="gallery">
-                                                                <img
-                                                                    src="{{ URL::asset('/assets/img/features/feature-04.jpg')}}"
+                                                            <a href="{{ url('assets/img/features/feature-04.jpg') }}"
+                                                                data-fancybox="gallery">
+                                                                <img src="{{ URL::asset('/assets/img/features/feature-04.jpg') }}"
                                                                     alt="Feature">
                                                             </a>
                                                         </li>
@@ -186,20 +181,22 @@
                                                     <li><i class="far fa-thumbs-up"></i> 98%</li>
                                                     <li><i class="far fa-comment"></i> 17 Feedback</li>
                                                     <li>
-                                                        <i class="fas fa-map-marker-alt"></i> {{ $doctor->hospital->name }}
+                                                        <i class="fas fa-map-marker-alt"></i>
+                                                        {{ $doctor->hospital->name }}
                                                     </li>
-                                                    <li><i class="far fa-money-bill-alt"></i> {{ $doctor->pricing=='Free'?'Free':'SAR '.$doctor->pricing }}
-                                                        <i
-                                                            class="fas fa-info-circle" data-bs-toggle="tooltip"
-                                                            title="Lorem Ipsum"></i></li>
+                                                    <li><i class="far fa-money-bill-alt"></i>
+                                                        {{ $doctor->pricing == 'Free' ? 'Free' : 'SAR ' . $doctor->pricing }}
+                                                        <i class="fas fa-info-circle" data-bs-toggle="tooltip"
+                                                            title="Lorem Ipsum"></i>
+                                                    </li>
                                                 </ul>
                                             </div>
                                             <div class="clinic-booking">
                                                 <a class="view-pro-btn"
-                                                   href="{{ route('doctor_profile', $doctor->id) }}">View
+                                                    href="{{ route('doctor_profile', $doctor->id) }}">View
                                                     Profile</a>
                                                 <a class="apt-btn"
-                                                   href="{{ route('create_appointment', $doctor->id) }}">Book
+                                                    href="{{ route('create_appointment', $doctor->id) }}">Book
                                                     Appointment</a>
                                             </div>
                                         </div>
@@ -213,9 +210,9 @@
                             </div>
                         @endforelse
 
-                        {{--                        <div class="load-more text-center">--}}
-                        {{--                            <a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a>--}}
-                        {{--                        </div>--}}
+                        {{--                        <div class="load-more text-center"> --}}
+                        {{--                            <a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a> --}}
+                        {{--                        </div> --}}
                     </div>
                 </div>
 

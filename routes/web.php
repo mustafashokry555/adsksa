@@ -33,9 +33,6 @@ Route::get('/about-us', function () {
     return view('about-us');
 })->name('about-us');
 
-// Route::get('/blog-list', function () {
-//     return view('patient.blog.index');
-// })->name('blog-list');
 Route::get('/blog-list', [HomeBlogController::class, 'index'])->name('blog-list');
 Route::get('/blog/{slug}',  [HomeBlogController::class, 'blogBySlug'])->name('blog');
 
@@ -68,7 +65,13 @@ Route::get('search-doctor', [HomeController::class, 'search_doctor'])->name('sea
 Route::get('search-doctor-index', [HomeController::class, 'search_doctor_index'])->name('search_doctor_index');
 Route::get('search-pharmacy', [HomeController::class, 'search_pharmacy'])->name('search_pharmacy');
 Route::get('doctors/{doctor}/profile', [HomeController::class, 'doctor_profile'])->name('doctor_profile');
+Route::get('hospitals/{hospital}/profile', [HomeController::class, 'hospital_profile'])->name('hospital_profile');
 Route::post('/subscribe_newsletter', [HomeController::class, 'subscribeNewsletter']);
+
+// main search 
+Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.cities');
+Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
+Route::get('get-specialities', [SpecialityController::class, 'get_specialities'])->name('get.specialities');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -118,7 +121,6 @@ Route::middleware(['auth'])->group(function () {
     //cities & countries 
     Route::resource('countries', CountryController::class);
     Route::resource('cities', CityController::class);
-    Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.cities');
 
     // Extra routes for restore and force delete
     Route::get('countries/restore/{id}', [CountryController::class, 'restore'])->name('countries.restore');

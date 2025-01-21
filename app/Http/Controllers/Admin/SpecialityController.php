@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Hospital;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -115,4 +116,38 @@ class SpecialityController extends Controller
             ->route('speciality.index')
             ->with('flash', ['type', 'success', 'message' => 'Speciality deleted Successfully']);
     }
+
+    public function get_specialities(Request $request)
+    {
+        try {
+            $hospitals_ids = Hospital::query();
+            $query = Speciality::query();
+            if (request('city_id')) {
+                $hospitals_ids = $hospitals_ids->where('city_id', request('city_id'));
+            }
+            if (request('insurance_id')) {
+                $hospitals_ids = $hospitals_ids->whereHas('insurances', function ($query) {
+                    $query->where('insurance_id', request('insurance_id'));
+                });
+            }
+            $hospitals_ids = $hospitals_ids->pluck('id');
+            // return $hospitals_ids;
+            if($hospitals_ids){
+                $query->whereHas('users', function ($query) use ($hospitals_ids){
+                    $query->whereIn('hospital_id', $hospitals_ids);
+                });
+            }
+            // if (request('search')) {
+            //     $query->where(function ($query) {
+            //         $query->where("name_en", 'like', '%' . request('search') . '%')
+            //             ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+            //     });
+            // }
+            $speciality = $query->get();
+            return response()->json($speciality);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
+
 }

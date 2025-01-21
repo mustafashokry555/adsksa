@@ -39,7 +39,7 @@
                                 @endif
                                 @if ($doctor?->speciality?->name ?? '')
                                 {{-- <p class="doc-speciality">{{ $doctor->speciality->name }}</p> --}}
-                                <p class="doc-department"><img src="{{ $doctor->speciality->image }}" class="img-fluid" alt="Speciality">{{ $doctor?->speciality?->name??"" }}</p>
+                                <p class="doc-department"><img src="{{ asset('images/' . $doctor->speciality->image) }}" class="img-fluid" alt="Speciality">{{ $doctor?->speciality?->name??"" }}</p>
                                 @else
                                 <p class="doc-speciality">Department</p>
                                 @endif
