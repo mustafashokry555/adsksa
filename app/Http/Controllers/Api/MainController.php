@@ -847,6 +847,8 @@ class MainController extends Controller
                     });
                 }
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
+                ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+                ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
                     ->select(
                         'hospitals.id',
                         'hospitals.hospital_name_ar',
@@ -858,7 +860,9 @@ class MainController extends Controller
                         'hospitals.long',
                         'hospitals.location',
                         'hospitals.profile_images',
-                        DB::raw('NULL as distance')
+                        DB::raw('NULL as distance'),
+                        "cities.name_$this->lang as city_name",
+                        "countries.name_$this->lang as country_name"
                     )
                     ->groupBy(
                         'hospitals.id',
@@ -869,7 +873,9 @@ class MainController extends Controller
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.profile_images',
-                        'hospitals.location'
+                        'hospitals.location',
+                        "cities.name_$this->lang",
+                        "countries.name_$this->lang"
                     );
 
                 if (request('orderBy') == 'recommend') {
@@ -887,7 +893,7 @@ class MainController extends Controller
                             $response = Http::get("https://maps.gomaps.pro/maps/api/distancematrix/json", [
                                 'origins' => "$userLatitude,$userLongitude",
                                 'destinations' => "$hospitalLatitude,$hospitalLongitude",
-                                'key' => "AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m",
+                                'key' => "AlzaSyQRJNv_48gJjWj6huR6T2kqBSVEwg4yyKq",
                             ]);
                             // Parse the response to get the distance in kilometers
                             if ($response->successful()) {

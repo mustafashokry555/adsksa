@@ -196,13 +196,13 @@ class User extends Authenticatable
         return $this->hasMany(Blog::class);
     }
 
-    public function getAvgRatingAttribute()
-    {
-        if ($this->user_type == self::DOCTOR) {
-            return $this->reviews()->avg('star_rated') ?? 0;
-        }
-        return null;
-    }
+    // public function getAvgRatingAttribute()
+    // {
+    //     if ($this->user_type == self::DOCTOR) {
+    //         return $this->reviews()->avg('star_rated') ?? 0;
+    //     }
+    //     return null;
+    // }
     public function city()
     {
         return $this->belongsTo(City::class);
