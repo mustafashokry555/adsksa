@@ -907,7 +907,7 @@ class MainController extends Controller
                         }
                     }
                     if (request('orderBy') == 'distance') {
-                        $hospitals = $hospitals->sortByDesc(function ($hospital) {
+                        $hospitals = $hospitals->sortBy(function ($hospital) {
                             return $hospital->distance;
                         })->values();
                     }
