@@ -59,6 +59,12 @@
                                         <span>My Patients</span>
                                     </a>
                                 </li>
+                                <li class="{{ Request::routeIs('offers.*') ? 'active' : '' }}">
+                                    <a href="{{ route('offers.index') }}">
+                                        <i class="feather-gift"></i>
+                                        <span>My Offers</span>
+                                    </a>
+                                </li>
                                 <li class="{{ Request::routeIs('appointments') ? 'active' : '' }}">
                                     <a href="{{ route('appointments') }}">
                                         <i class="fas fa-calendar-check"></i>
