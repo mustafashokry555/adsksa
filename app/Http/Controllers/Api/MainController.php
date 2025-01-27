@@ -886,15 +886,17 @@ class MainController extends Controller
                 if($request->has("long") && $request->has("lat")){
                     foreach ($hospitals as $hospital) {
                         if($hospital->lat != null && $hospital->long != null){
-                            $hospitalLatitude = $hospital->lat;
+                            $lat = (double)$hospital->lat;
+                            $hospitalLatitude = $lat;
                             $hospitalLongitude = $hospital->long;
                             $userLatitude = $request->lat;
                             $userLongitude = $request->long;
+                            $hospital['lat'] = $lat;
                             // Make a request to Google Distance Matrix API
-                            $response = Http::get("https://maps.gomaps.pro/maps/api/distancematrix/json", [
+                            $response = Http::get("https://maps.googleapis.com/maps/api/distancematrix/json", [
                                 'origins' => "$userLatitude,$userLongitude",
                                 'destinations' => "$hospitalLatitude,$hospitalLongitude",
-                                'key' => "AlzaSyQRJNv_48gJjWj6huR6T2kqBSVEwg4yyKq",
+                                'key' => "AIzaSyB556JrqytIxxt2hT5hkpLBQdUblve3w5U",
                             ]);
                             // Parse the response to get the distance in kilometers
                             if ($response->successful()) {
@@ -971,14 +973,6 @@ class MainController extends Controller
         }
     /* End Banners APIs*/
 
-
-
-
-
-
-
-
-
     public function HospitalsTest(Request $request)
         {
             try {
@@ -989,6 +983,7 @@ class MainController extends Controller
                             ->orWhere("hospital_name_en", 'like', '%' . request('search') . '%');
                     });
                 }
+                
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
                 ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
                 ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
@@ -999,15 +994,14 @@ class MainController extends Controller
                         DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
                         'hospitals.image',
                         'hospitals.state',
+                        DB::raw("NULL AS distance"),
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.location',
                         'hospitals.profile_images',
-                        DB::raw('NULL as distance'),
                         "cities.name_$this->lang as city_name",
                         "countries.name_$this->lang as country_name"
-                    )
-                    ->groupBy(
+                    )->groupBy(
                         'hospitals.id',
                         'hospitals.hospital_name_en',
                         'hospitals.hospital_name_ar',
@@ -1025,39 +1019,17 @@ class MainController extends Controller
                     $query->orderBy('avg_rating', "DESC");
                 }
                 $hospitals = $query->get();
-                // if($request->has("long") && $request->has("lat")){
-                //     foreach ($hospitals as $hospital) {
-                //         if($hospital->lat != null && $hospital->long != null){
-                //             $hospitalLatitude = $hospital->lat;
-                //             $hospitalLongitude = $hospital->long;
-                //             $userLatitude = $request->lat;
-                //             $userLongitude = $request->long;
-                //             // Make a request to Google Distance Matrix API
-                //             $response = Http::get("https://maps.gomaps.pro/maps/api/distancematrix/json", [
-                //                 'origins' => "$userLatitude,$userLongitude",
-                //                 'destinations' => "$hospitalLatitude,$hospitalLongitude",
-                //                 'key' => "AlzaSyQRJNv_48gJjWj6huR6T2kqBSVEwg4yyKq",
-                //             ]);
-                //             // Parse the response to get the distance in kilometers
-                //             if ($response->successful()) {
-                //                 $data = $response->json();
-                //                 $distanceInMeters = $data['rows'][0]['elements'][0]['distance']['value'] ?? null;
-                //                 if ($distanceInMeters) {
-                //                     $distanceInKilometers = $distanceInMeters / 1000; // Convert meters to kilometers
-                //                     $hospital['distance'] = round($distanceInKilometers,2);
-                //                 }
-                //             }
-                //         }
-                //     }
-                //     if (request('orderBy') == 'distance') {
-                //         $hospitals = $hospitals->sortBy(function ($hospital) {
-                //             return $hospital->distance;
-                //         })->values();
-                //     }
-                // }
-
-
-                return $this->SuccessResponse(200, 'Hospitals list', HospitalResource::collection($hospitals));
+                $hospitals = HospitalResource::collection($hospitals);
+                if (request('orderBy') == 'distance') {
+                    $hospitalsArray = $hospitals->toArray(request());
+                    usort($hospitalsArray, function ($a, $b) {
+                        if ($a['distance'] === null) return 1;
+                        if ($b['distance'] === null) return -1;
+                        return $a['distance'] <=> $b['distance'];
+                    });
+                    $hospitals = collect($hospitalsArray);
+                }
+                return $this->SuccessResponse(200, 'Hospitals list', $hospitals);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }

@@ -39,7 +39,7 @@ Route::get('availability/{id}',[MainController::class,'get_availability']);
 Route::get('best-doctors',[MainController::class,'bestsDoctors']);
 Route::post('/makeComplaint', [MainController::class, 'makeComplaint']);
 
-Route::get('hospitals',[MainController::class,'HospitalWithFilter']);
+Route::get('hospitals',[MainController::class,'HospitalsTest']);
 Route::get('HospitalsTest',[MainController::class,'HospitalsTest']);
 Route::get('hospital-profile/{id}',[MainController::class,'hospitalProfile']);
 
