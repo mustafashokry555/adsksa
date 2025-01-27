@@ -73,7 +73,7 @@ class MainController extends Controller
                 'comment' => 'required|string',
             ]);
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
+                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422],422);
             }
             try {
                 // Create a new row in the table
