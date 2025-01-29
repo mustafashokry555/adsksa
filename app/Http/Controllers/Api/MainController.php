@@ -212,6 +212,9 @@ class MainController extends Controller
                 if (request('city_ids')) {
                     $hospital_query = $hospital_query->whereIn('city_id', request('city_ids'));
                 }
+                if (request('hospital_ids')) {
+                    $hospital_query = $hospital_query->whereIn('id', request('hospital_ids'));
+                }
                 if (request('insurance_ids')) {
                     $hospital_query->whereHas('insurances', function ($query) {
                         $query->whereIn('insurance_id', request('insurance_ids'));
