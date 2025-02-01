@@ -33,10 +33,10 @@ class AuthController extends Controller
             ]);
             $user = User::where('email', $request->email)->first();
             if (!$user) {
-                return $this->SuccessResponse(404, trans('auth.email'), null);
+                return $this->ErrorResponse(404, trans('auth.email'), null);
             }
             if (!Hash::check($request->password, $user->password)) {
-                return $this->ErrorResponse(401, trans('auth.password'));
+                return $this->ErrorResponse(401, trans('auth.password_incorrect'));
             }
             $user->status = 'Active';
             $user->save();
