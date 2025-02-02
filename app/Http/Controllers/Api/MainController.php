@@ -290,9 +290,9 @@ class MainController extends Controller
                     );
 
                 if (request('orderBy') == 'low_price') {
-                    $query->orderBy('users.pricing', "DESC");
-                } elseif (request('orderBy') == 'high_price') {
                     $query->orderBy('users.pricing', "ASC");
+                } elseif (request('orderBy') == 'high_price') {
+                    $query->orderBy('users.pricing', "DESC");
                 } elseif (request('orderBy') == 'recommend') {
                     $query->orderBy('avg_rating', "DESC");
                 }
