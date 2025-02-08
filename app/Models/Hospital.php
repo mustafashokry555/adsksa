@@ -46,6 +46,10 @@ class Hospital extends Model
     {   
         return $this->hasMany(Banner::class);
     }
+    public function hospitalType()
+    {
+        return $this->belongsTo(HospitalType::class);
+    }
     public function doctors()
     {
         return $this->hasMany(User::class)
