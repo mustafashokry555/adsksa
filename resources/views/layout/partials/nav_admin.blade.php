@@ -18,6 +18,9 @@
                 <li class="{{ Request::routeIs('hospital.*') ? 'active' : '' }}">
                     <a href="{{ route('hospital.index') }}"><i class="feather-home"></i> <span>{{ __('admin.sidebar.hospitals')  }}</span></a>
                 </li>
+                <li class="{{ Request::routeIs('offers.*') ? 'active' : '' }}">
+                    <a href="{{ route('offers.index') }}"><i class="feather-gift"></i> <span>Offers</span></a>
+                </li>
                 <li class="{{ Request::routeIs('doctor.*') ? 'active' : '' }}">
                     <a href="{{ route('doctor.index') }}"><i class="feather-user-plus"></i> <span>{{ __('admin.sidebar.doctors')  }}</span></a>
                 </li>

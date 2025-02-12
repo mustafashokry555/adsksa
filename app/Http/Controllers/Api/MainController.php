@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\HospitalResource;
 use App\Models\AppSetting;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
@@ -72,7 +73,7 @@ class MainController extends Controller
                 'comment' => 'required|string',
             ]);
             if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors(), 'errorAr' => $validator->errors(), 'status' => 422]);
+                return response()->json(['error' => $validator->errors(), 'status' => 422],422);
             }
             try {
                 // Create a new row in the table
@@ -210,6 +211,9 @@ class MainController extends Controller
                 $hospital_query = Hospital::query();
                 if (request('city_ids')) {
                     $hospital_query = $hospital_query->whereIn('city_id', request('city_ids'));
+                }
+                if (request('hospital_ids')) {
+                    $hospital_query = $hospital_query->whereIn('id', request('hospital_ids'));
                 }
                 if (request('insurance_ids')) {
                     $hospital_query->whereHas('insurances', function ($query) {
@@ -855,6 +859,8 @@ class MainController extends Controller
                     });
                 }
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
+                ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+                ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
                     ->select(
                         'hospitals.id',
                         'hospitals.hospital_name_ar',
@@ -866,7 +872,9 @@ class MainController extends Controller
                         'hospitals.long',
                         'hospitals.location',
                         'hospitals.profile_images',
-                        DB::raw('NULL as distance')
+                        DB::raw('NULL as distance'),
+                        "cities.name_$this->lang as city_name",
+                        "countries.name_$this->lang as country_name"
                     )
                     ->groupBy(
                         'hospitals.id',
@@ -877,7 +885,9 @@ class MainController extends Controller
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.profile_images',
-                        'hospitals.location'
+                        'hospitals.location',
+                        "cities.name_$this->lang",
+                        "countries.name_$this->lang"
                     );
 
                 if (request('orderBy') == 'recommend') {
@@ -887,15 +897,17 @@ class MainController extends Controller
                 if($request->has("long") && $request->has("lat")){
                     foreach ($hospitals as $hospital) {
                         if($hospital->lat != null && $hospital->long != null){
-                            $hospitalLatitude = $hospital->lat;
+                            $lat = (double)$hospital->lat;
+                            $hospitalLatitude = $lat;
                             $hospitalLongitude = $hospital->long;
                             $userLatitude = $request->lat;
                             $userLongitude = $request->long;
+                            $hospital['lat'] = $lat;
                             // Make a request to Google Distance Matrix API
-                            $response = Http::get("https://maps.gomaps.pro/maps/api/distancematrix/json", [
+                            $response = Http::get("https://maps.googleapis.com/maps/api/distancematrix/json", [
                                 'origins' => "$userLatitude,$userLongitude",
                                 'destinations' => "$hospitalLatitude,$hospitalLongitude",
-                                'key' => "AlzaSy-3tB5867_WHmOPY60IqX5tIwWvoyLik0m",
+                                'key' => "AIzaSyB556JrqytIxxt2hT5hkpLBQdUblve3w5U",
                             ]);
                             // Parse the response to get the distance in kilometers
                             if ($response->successful()) {
@@ -909,7 +921,7 @@ class MainController extends Controller
                         }
                     }
                     if (request('orderBy') == 'distance') {
-                        $hospitals = $hospitals->sortByDesc(function ($hospital) {
+                        $hospitals = $hospitals->sortBy(function ($hospital) {
                             return $hospital->distance;
                         })->values();
                     }
@@ -971,5 +983,67 @@ class MainController extends Controller
             }
         }
     /* End Banners APIs*/
+
+    public function HospitalsTest(Request $request)
+        {
+            try {
+                $query = Hospital::query();
+                if (request('search')) {
+                    $query->where(function ($query) {
+                        $query->where("hospital_name_ar", 'like', '%' . request('search') . '%')
+                            ->orWhere("hospital_name_en", 'like', '%' . request('search') . '%');
+                    });
+                }
+                
+                $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
+                ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+                ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
+                    ->select(
+                        'hospitals.id',
+                        'hospitals.hospital_name_ar',
+                        'hospitals.hospital_name_en',
+                        DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
+                        'hospitals.image',
+                        'hospitals.state',
+                        DB::raw("NULL AS distance"),
+                        'hospitals.lat',
+                        'hospitals.long',
+                        'hospitals.location',
+                        'hospitals.profile_images',
+                        "cities.name_$this->lang as city_name",
+                        "countries.name_$this->lang as country_name"
+                    )->groupBy(
+                        'hospitals.id',
+                        'hospitals.hospital_name_en',
+                        'hospitals.hospital_name_ar',
+                        'hospitals.image',
+                        'hospitals.state',
+                        'hospitals.lat',
+                        'hospitals.long',
+                        'hospitals.profile_images',
+                        'hospitals.location',
+                        "cities.name_$this->lang",
+                        "countries.name_$this->lang"
+                    );
+
+                if (request('orderBy') == 'recommend') {
+                    $query->orderBy('avg_rating', "DESC");
+                }
+                $hospitals = $query->get();
+                $hospitals = HospitalResource::collection($hospitals);
+                if (request('orderBy') == 'distance') {
+                    $hospitalsArray = $hospitals->toArray(request());
+                    usort($hospitalsArray, function ($a, $b) {
+                        if ($a['distance'] === null) return 1;
+                        if ($b['distance'] === null) return -1;
+                        return $a['distance'] <=> $b['distance'];
+                    });
+                    $hospitals = collect($hospitalsArray);
+                }
+                return $this->SuccessResponse(200, 'Hospitals list', $hospitals);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
 
 }

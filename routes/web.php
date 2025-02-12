@@ -18,6 +18,7 @@ use App\Http\Controllers\Doctor\ExperienceController;
 use App\Http\Controllers\Doctor\ScheduleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\InsuranceController;
+use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\BlogController as HomeBlogController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Patient\AppointmentController;
@@ -82,6 +83,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('change-password', [CommonController::class, 'change_password'])->name('change_password');
     Route::post('store_new_password', [CommonController::class, 'store_new_password'])->name('store_new_password');
     Route::get('newsletters', [CommonController::class, 'newsletters'])->name('newsletters');
+
+    // Offers
+    Route::resource('offers', OfferController::class);
 
     // notifications
     Route::resource('insurances', InsuranceController::class);
