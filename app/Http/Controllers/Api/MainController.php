@@ -633,6 +633,13 @@ class MainController extends Controller
                 if ($isExist) {
                     return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
                 }
+                $doctor = User::where('id', $request->doctor_id)->first();
+                if (!$doctor) {
+                    return response()->json([
+                        'message' => 'Validation failed',
+                        'errors' => 'Doctor not Exist'
+                    ], 422);
+                }
                 $a = new Appointment();
                 $a->doctor_id = $request->doctor_id;
                 $a->patient_id = $request->user()->id;
@@ -644,6 +651,7 @@ class MainController extends Controller
                 $a->concern = $request->concern;
                 $a->status = "P";
                 $a->description = $request->description;
+                $a->fee = $doctor->pricing;
 
                 $a->save();
 
@@ -922,7 +930,7 @@ class MainController extends Controller
                     'doctors', 'specialities'
                 ])
                 ->first();
-                
+
                 $profile->avg_rating = $profile->avg_rating;
                 $profile->rating_count = $profile->rating_count;
                 $doctorsList = [];
