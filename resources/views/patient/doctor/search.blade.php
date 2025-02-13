@@ -21,7 +21,7 @@
                         <!-- Search Filter -->
                         <div class="card search-filter">
                             <div class="card-header">
-                                <h4 class="card-title mb-0">Search Filter</h4>
+                                <h4 class="card-title mb-0">{{ __('web.search_filter') }}</h4>
                             </div>
                             <div class="card-body">
                                 {{--                                <div class="filter-widget"> --}}
@@ -34,35 +34,35 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <input type="text" name="search" class="form-control"
-                                                value="{{ request('search') }}" placeholder="Search Location">
+                                                value="{{ request('search') }}" placeholder="{{ __('web.search') }}">
                                         </div>
                                     </div>
                                     <div class="filter-widget">
-                                        <h4>Gender</h4>
+                                        <h4>{{ __("web.Gender") }}</h4>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender[]" value="M"
                                                     @if (is_array(request('gender')) && in_array('M', request('gender'))) checked @endif>
-                                                <span class="checkmark"></span> Male Doctor
-                                            </label>
+                                                    <span class="checkmark"></span> {{ __("web.Male") }}
+                                                </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender[]" value="F"
                                                     @if (is_array(request('gender')) && in_array('F', request('gender'))) checked @endif>
-                                                <span class="checkmark"></span> Female Doctor
-                                            </label>
+                                                    <span class="checkmark"></span> {{ __("web.female") }}
+                                                </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender[]" value="O"
                                                     @if (is_array(request('gender')) && in_array('O', request('gender'))) checked @endif>
-                                                <span class="checkmark"></span> Others
-                                            </label>
+                                                    <span class="checkmark"></span> {{ __("web.other") }}
+                                                </label>
                                         </div>
                                     </div>
                                     <div class="filter-widget">
-                                        <h4>Select Specialist</h4>
+                                        <h4>{{ __("web.Select_Specialist") }}</h4>
                                         @forelse($specialities as $speciality)
                                             <div>
                                                 <label class="custom_check">

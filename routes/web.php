@@ -62,6 +62,7 @@ Route::get('/privacy_policy', [PrivacyAndTermsConditionController::class, 'priva
 Route::get('/terms_conditions', [PrivacyAndTermsConditionController::class, 'termsAndconditions'])->name('terms-conditions');
 
 // Patient Routes
+Route::get('single-doctor', [HomeController::class, 'single_search_doctor'])->name('single_search_doctor');
 Route::get('search-doctor', [HomeController::class, 'search_doctor'])->name('search_doctor');
 Route::get('search-doctor-index', [HomeController::class, 'search_doctor_index'])->name('search_doctor_index');
 Route::get('search-pharmacy', [HomeController::class, 'search_pharmacy'])->name('search_pharmacy');

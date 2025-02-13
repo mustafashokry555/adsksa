@@ -21,7 +21,7 @@
                         <!-- Search Filter -->
                         <div class="card search-filter">
                             <div class="card-header">
-                                <h4 class="card-title mb-0">Search Filter</h4>
+                                <h4 class="card-title mb-0">{{ __('web.search_filter') }}</h4>
                             </div>
                             <div class="card-body">
                                 {{--                                <div class="filter-widget"> --}}
@@ -38,31 +38,31 @@
                                         </div>
                                     </div>
                                     <div class="filter-widget">
-                                        <h4>Gender</h4>
+                                        <h4>{{ __("web.Gender") }}</h4>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender" value="M"
                                                     @if (request('gender') == 'M') checked @endif>
-                                                <span class="checkmark"></span> Male Doctor
+                                                <span class="checkmark"></span> {{ __("web.Male") }}
                                             </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender" value="F"
                                                     @if (request('gender') == 'F') checked @endif>
-                                                <span class="checkmark"></span> Female Doctor
+                                                <span class="checkmark"></span> {{ __("web.female") }}
                                             </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender" value="O"
                                                     @if (request('gender') == 'O') checked @endif>
-                                                <span class="checkmark"></span> Others
+                                                <span class="checkmark"></span> {{ __("web.other") }}
                                             </label>
                                         </div>
                                     </div>
                                     <div class="filter-widget">
-                                        <h4>Select Specialist</h4>
+                                        <h4>{{ __("web.Select_Specialist") }}</h4>
                                         @forelse($specialities as $speciality)
                                             <div>
                                                 <label class="custom_check">

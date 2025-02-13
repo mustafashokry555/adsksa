@@ -70,7 +70,7 @@
                     <h2>{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2>
                 </div>
 
-                <form method="GET" action="{{ route('search_doctor') }}" class="banner-four-search">
+                <form method="GET" action="{{ route('single_search_doctor') }}" class="banner-four-search">
 
                     <div class="search_bar" style="background-color:white">
                         <div class="drop_down_wrap">
@@ -78,7 +78,7 @@
                             <div class="dropdown">
                                 <select id="countrySelect" name="country" class="select form-control" >
                                     <option selected disabled>{{ __('web.Enter_country') }}</option>
-                                    <option value>{{ __('web.All') }}</option>
+                                    <option value='all'>{{ __('web.All') }}</option>
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">{{ $country->name }}</option>
                                     @endforeach
@@ -98,7 +98,7 @@
                             <div class="dropdown">
                                 <select id="insuranceSelect" name="insurance" class="select form-control">
                                     <option selected disabled>{{ __('web.Select a Insurance') }}</option>
-                                    <option value>{{ __('web.All') }}</option>
+                                    <option value='all'>{{ __('web.All') }}</option>
                                     @foreach($insurances as $insurance)
                                         <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
                                     @endforeach
@@ -110,7 +110,7 @@
                             <div class="dropdown">
                                 <select id="specialitySelect" name="speciality" class="select form-control">
                                     <option selected disabled>{{ __('web.Select a specility') }}</option>
-                                    <option value>{{ __('web.All') }}</option>
+                                    <option value='all'>{{ __('web.All') }}</option>
                                     @foreach($specialities as $speciality)
                                         <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
                                     @endforeach
@@ -161,7 +161,7 @@
 
             // Reset subsequent dropdowns
             citySelect.innerHTML = '<option selected disabled>{{ __("web.Enter City") }}</option>'+
-            '<option value>{{ __("web.All") }}</option>';
+            '<option value="all">{{ __("web.All") }}</option>';
 
             fetch(`/get-cities?country_id=${countryId}`)
                 .then(response => response.json())

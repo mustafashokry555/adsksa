@@ -39,10 +39,10 @@
                         <div class="footer-contact-info">
                             <div class="footer-address"><span><i class="feather-map-pin"></i></span>
                                 <p>{{ $setting?->address_line_1 ??'' }} {{ $setting?->address_line_2 ?? '' }}</p>
-                                <p>{{ $setting?->city ?? '' }},
+                                {{-- <p>{{ $setting?->city ?? '' }},
                                     <br>{{ $setting?->state ?? '' }}, {{ $setting?->country ?? '' }}
                                     <br>{{ $setting?->zip_code ?? '' }}
-                                </p>
+                                </p> --}}
                             </div>
                             @if ($setting->phone ?? '')
                                 <p><i class="feather-phone"></i>{{ $setting->phone }}</p>

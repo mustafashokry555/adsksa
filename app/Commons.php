@@ -6,12 +6,13 @@ class Commons
 {
 
     public const Days = [
-        0 => 'Monday',
-        1 => 'Tuesday',
-        2 => 'Wednesday',
-        3 => 'Thursday',
-        4 => 'Friday',
-        5 => 'Saturday',
-        6 => 'Sunday',
-        ];
+        0 => 'web.Monday',
+        1 => 'web.Tuesday',
+        2 => 'web.Wednesday',
+        3 => 'web.Thursday',
+        4 => 'web.Friday',
+        5 => 'web.Saturday',
+        6 => 'web.Sunday',
+    
+    ];
 }
