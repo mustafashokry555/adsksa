@@ -89,4 +89,5 @@ return [
     'Thursday' => 'الخميس',
     'Friday' => 'الجمعة',
     'Saturday' => 'السبت',
+    'All_rights_reserved' => 'جميع الحقوق محفوظة',
 ];

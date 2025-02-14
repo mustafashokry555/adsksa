@@ -89,6 +89,6 @@ return [
     'Thursday' => 'Thursday',
     'Friday' => 'Friday',
     'Saturday' => 'Saturday',
-
+    'All_rights_reserved' => 'All rights reserved',
 ];
 ?>

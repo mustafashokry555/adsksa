@@ -2,7 +2,7 @@
     $setting = \App\Models\Settings::query()->first();
 @endphp
 <!-- Footer Four -->
-<footer class="footer footer-four">
+<footer dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="footer footer-four">
     {{-- <div class="news-section-four">
         <div class="container">
             <div class="row">
@@ -37,20 +37,33 @@
                     <div class="footer-widget footer-contact">
                         <h2 class="footer-title">{{ __('patient.Contact Us') }}</h2>
                         <div class="footer-contact-info">
-                            <div class="footer-address"><span><i class="feather-map-pin"></i></span>
-                                <p>{{ $setting?->address_line_1 ??'' }} {{ $setting?->address_line_2 ?? '' }}</p>
+                            <div class="footer-address"><span class="mx-2"><i class="feather-map-pin"></i></span>
+                                <p>
+                                    {{ app()->getLocale() === 'ar' ?  $setting?->address_line_2 :  $setting?->address_line_1 }}
+                                    {{-- {{ $setting?->address_line_1 ??'' }} {{ $setting?->address_line_2 ?? '' }} --}}
+                                </p>
                                 {{-- <p>{{ $setting?->city ?? '' }},
                                     <br>{{ $setting?->state ?? '' }}, {{ $setting?->country ?? '' }}
                                     <br>{{ $setting?->zip_code ?? '' }}
                                 </p> --}}
                             </div>
                             @if ($setting->phone ?? '')
-                                <p><i class="feather-phone"></i>{{ $setting->phone }}</p>
+                                {{-- <p><i class="feather-phone"></i> {{ $setting->phone }}</p> --}}
+                                <div class="footer-address">
+                                    <span class="mx-2"><i class="feather-phone"></i></span>
+                                    <p>{{ $setting?->phone}}</p>
+                                </div>
                             @else
                                 <p><i class="feather-phone"></i></p>
                             @endif
                             @if ($setting->email ?? '')
-                                <p class="mb-0"><i class="feather-mail"></i>{{ $setting->email }}</p>
+                                {{-- <p class="mb-0">
+                                    <i class="feather-mail"></i> <span>{{ $setting->email }}</span>
+                                </p> --}}
+                                <div class="footer-address">
+                                    <span class="mx-2"><i class="feather-mail"></i></span>
+                                    <p>{{ $setting?->email ??'' }}</p>
+                                </div>
                             @else
                                 <p class="mb-0"><i class="feather-mail"></i></p>
                             @endif
@@ -154,15 +167,21 @@
                 <div class="row">
                     <div class="col-md-6 col-lg-6">
                         <div class="copyright-text">
-                            <p class="mb-0">&copy; 2022 {{ $setting->website_name }}. All rights reserved.</p>
+                            <p class="mb-0">&copy; 2022 {{ $setting->website_name }}. {{ __("web.All_rights_reserved") }}.</p>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6">
                         <!-- Copyright Menu -->
                         <div class="copyright-menu">
                             <ul class="policy-menu">
-                                <li><a href="{{ route('terms-conditions') }}">{{ __('patient.Terms and Conditions') }}</a>
+                                <style>
+                                    .disable-after::after{
+                                        content: none !important;
+                                    }
+                                </style>
+                                <li class="disable-after"><a href="{{ route('terms-conditions') }}">{{ __('patient.Terms and Conditions') }}</a>
                                 </li>
+                                <li class="mx-2 disable-after" style="color: white; --after-content: none;">|</li>
                                 <li><a href="{{ route('privacy') }}">{{ __('patient.Policy') }}</a>
                                 </li>
                             </ul>
