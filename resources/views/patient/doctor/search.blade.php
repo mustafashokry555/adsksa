@@ -53,13 +53,13 @@
                                                     <span class="checkmark"></span> {{ __("web.female") }}
                                                 </label>
                                         </div>
-                                        <div>
+                                        {{-- <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender[]" value="O"
                                                     @if (is_array(request('gender')) && in_array('O', request('gender'))) checked @endif>
                                                     <span class="checkmark"></span> {{ __("web.other") }}
                                                 </label>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     <div class="filter-widget">
                                         <h4>{{ __("web.Select_Specialist") }}</h4>
