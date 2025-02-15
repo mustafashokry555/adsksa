@@ -88,7 +88,7 @@
                         <div class="drop_down_wrap">
                             <label>{{ __('web.Enter City') }}</label>
                             <div class="dropdown">
-                                <select id="citySelect" name="city" class="select form-control" disabled>
+                                <select id="citySelect" name="city" class="select form-control" >
                                     <option selected disabled>{{ __('web.Enter City') }}</option>
                                 </select>
                             </div>
@@ -155,23 +155,61 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
     </script>
     <script>
-        document.getElementById('countrySelect').addEventListener('change', function () {
-            const countryId = this.value;
-            const citySelect = document.getElementById('citySelect');
-
-            // Reset subsequent dropdowns
-            citySelect.innerHTML = '<option selected disabled>{{ __("web.Enter City") }}</option>'+
-            '<option value="all">{{ __("web.All") }}</option>';
-
-            fetch(`/get-cities?country_id=${countryId}`)
-                .then(response => response.json())
-                .then(data => {
-                    citySelect.disabled = false;
-                    data.forEach(city => {
-                        citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
-                    });
-                });
+        // Add event listener for country select
+        document.getElementById('countrySelect').addEventListener('change', function() {
+            loadCities(this.value);
         });
+
+        // Load all cities when document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCities(); // Call without countryId to load all cities
+        });
+
+        async function loadCities(countryId = null) {
+            const citySelect = document.getElementById('citySelect');
+            
+            // Reset the city dropdown
+            citySelect.innerHTML = `
+                <option selected disabled>${'{{ __("web.Enter City") }}'}</option>
+                <option value="all">${'{{ __("web.All") }}'}</option>
+            `;
+
+            try {
+                // Build the URL based on whether we have a countryId
+                const url = countryId 
+                    ? `/get-cities?country_id=${countryId}`
+                    : '/get-cities'; // Endpoint for all cities
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                // Enable the city select and add the options
+                citySelect.disabled = false;
+                data.forEach(city => {
+                    citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading cities:', error);
+                citySelect.disabled = true;
+            }
+        }
+        // document.getElementById('countrySelect').addEventListener('change', function () {
+        //     const countryId = this.value;
+        //     const citySelect = document.getElementById('citySelect');
+
+        //     // Reset subsequent dropdowns
+        //     citySelect.innerHTML = '<option selected disabled>{{ __("web.Enter City") }}</option>'+
+        //     '<option value="all">{{ __("web.All") }}</option>';
+
+        //     fetch(`/get-cities?country_id=${countryId}`)
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             citySelect.disabled = false;
+        //             data.forEach(city => {
+        //                 citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+        //             });
+        //         });
+        // });
         /*
             document.getElementById('citySelect').addEventListener('change', function () {
                 const cityId = this.value;

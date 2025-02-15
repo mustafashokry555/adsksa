@@ -81,7 +81,7 @@ class CityController extends Controller
 
     public function get_cities(Request $request) {
         $cities = City::query();
-        if ($request->country_id) {
+        if ($request->country_id && $request->country_id != null && $request->country_id != 'all') {
             $cities = $cities->where('country_id', $request->country_id);
         }
         $cities = $cities->get();
