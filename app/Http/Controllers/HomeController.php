@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -496,4 +497,37 @@ class HomeController extends Controller
         session()->put('locale', $lang);
         return redirect()->back();
     }
+
+
+
+    public function showDeleteAccount()
+{
+    return view('patient.profile.delete-account');
+}
+
+public function deleteAccount(Request $request)
+{
+    $request->validate([
+        'password' => 'required',
+        'confirmation' => 'required|in:DELETE'
+    ], [
+        'confirmation.in' => 'Delete Confirmation Invalid'
+    ]);
+
+    $user = auth()->user();
+
+    if (!Hash::check($request->password, $user->password)) {
+        return back()->withErrors([
+            'password' => __('web.password_incorrect')
+        ]);
+    }
+
+    // Perform any cleanup needed before deletion
+    $user->status = 'Inactive';
+    $user->save();
+    
+    auth()->logout();
+    
+    return redirect()->route('login')->with('success', __('web.account_deleted'));
+}
 }

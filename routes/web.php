@@ -75,6 +75,8 @@ Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.citie
 Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
 Route::get('get-specialities', [SpecialityController::class, 'get_specialities'])->name('get.specialities');
 
+
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
@@ -229,7 +231,11 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/patient-dashboard', function (){
     //     return view('patient.patient-dashboard');
     // })->name('patient_dashboard');
-    Route::get('/patient-dashboard', [HomeController::class, 'patientDashboard'])->name('patient_dashboard');;
+    Route::get('/patient-dashboard', [HomeController::class, 'patientDashboard'])->name('patient_dashboard');
+
+    // delete account routes
+    Route::get('/delete-account', [HomeController::class, 'showDeleteAccount'])->name('show.delete.account');
+    Route::post('/delete-account', [HomeController::class, 'deleteAccount'])->name('delete.account');
 });
 
 require __DIR__ . '/auth.php';

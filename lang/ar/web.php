@@ -120,4 +120,15 @@ return [
     'register' => 'تسجيل',
     'already_have_account' => 'هل لديك حساب؟',
     'enter_password' => 'أدخل كلمة المرور',
+
+    'delete_account' => 'حذف الحساب',
+    'delete_account_warning' => 'تحذير: لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع بياناتك بشكل دائم.',
+    'type_delete_to_confirm' => 'اكتب DELETE للتأكيد',
+    'permanently_delete_account' => 'حذف الحساب نهائياً',
+    'delete_confirmation_invalid' => 'الرجاء كتابة DELETE لتأكيد حذف الحساب',
+    'password_incorrect' => 'كلمة المرور التي أدخلتها غير صحيحة',
+    'account_deleted' => 'تم حذف حسابك بنجاح',
+    'cancel' => 'إلغاء',
+
+    'account_inactive' => 'حسابك غير نشط',
 ];

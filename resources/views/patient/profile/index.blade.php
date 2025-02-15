@@ -66,6 +66,19 @@
                                                         class="feather-edit"></i> Edit</a>
                                             </div>
 
+                                            <style>
+                                                .delete-pro{
+                                                    color: red;
+                                                }
+                                                .delete-pro:hover{
+                                                    color: #a90303bb;
+                                                }
+                                            </style>
+                                            <div class="clini-infos">
+                                                <a href="{{ route('show.delete.account') }}" class="delete-pro"><i
+                                                        class="feather-trash"></i> Delete Account</a>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

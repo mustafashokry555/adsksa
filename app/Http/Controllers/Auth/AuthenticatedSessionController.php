@@ -28,7 +28,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        
+        $user = \App\Models\User::where('email', $request->email)->first();
+    
+        if ($user && $user->status !== 'active') {
+            return back()->withErrors([
+                'email' => __('web.account_inactive'),
+            ])->withInput($request->except('password'));
+        }
         $request->authenticate();
 
         $request->session()->regenerate();

@@ -29,7 +29,7 @@
                                 <form method="POST" action="{{ route('login') }}">
                                     @csrf
                                     <div  class="form-group form-focus">
-                                        <input  type="text" class="form-control floating" name="email" id="Email">
+                                        <input  type="text" class="form-control floating" name="email" value="{{ old('email', request('email')) }}" id="Email">
                                         <label class="focus-label">{{ __('web.email') }}</label>
                                         @error('0')
                                             <div class="text-danger pt-2">

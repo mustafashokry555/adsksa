@@ -120,5 +120,15 @@ return [
     'register' => 'Register',
     'already_have_account' => 'Already have an account?',
     'enter_password' => 'Enter Password',
+
+    'delete_account' => 'Delete Account',
+    'delete_account_warning' => 'Warning: This action cannot be undone. All your data will be permanently deleted.',
+    'type_delete_to_confirm' => 'Type DELETE to confirm',
+    'permanently_delete_account' => 'Permanently Delete Account',
+    'delete_confirmation_invalid' => 'Please type DELETE to confirm account deletion',
+    'password_incorrect' => 'The password you entered is incorrect',
+    'account_deleted' => 'Your account has been successfully deleted',
+    'cancel' => 'Cancel',
+    'account_inactive' => 'Your account is inactive',
 ];
 ?>
