@@ -44,7 +44,10 @@ Route::get('HospitalsTest',[MainController::class,'HospitalsTest']);
 Route::get('hospital-profile/{id}',[MainController::class,'hospitalProfile']);
 
 Route::get('banners',[MainController::class,'banners']);
-Route::post('banner/store',[BannerController::class,'store']);
+// Route::post('banner/store',[BannerController::class,'store']);
+
+Route::get('offers',[MainController::class,'offers']);
+
 
 
 // Route::get('hospitals',[CommonController::class,'Hospitals']);

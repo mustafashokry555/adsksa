@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\HospitalResource;
+use App\Http\Resources\Api\OfferResource;
 use App\Models\AppSetting;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
@@ -15,6 +16,7 @@ use App\Models\Banner;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\HospitalReview;
+use App\Models\Offer;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -983,6 +985,22 @@ class MainController extends Controller
             }
         }
     /* End Banners APIs*/
+
+    /* Start Offers APIs*/
+        // All Offers
+        public function offers(Request $request)
+        {
+            try {
+                $offers = Offer::where('is_active', 1)
+                ->where('hospital_id', $request->hospital_id)
+                ->get();
+                $offers = OfferResource::collection($offers);
+                return $this->SuccessResponse(200, null, $offers);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+    /* End Offers APIs*/
 
     public function HospitalsTest(Request $request)
         {

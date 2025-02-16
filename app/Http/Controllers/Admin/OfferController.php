@@ -62,6 +62,7 @@ class OfferController extends Controller
             $images = [];
             foreach ($request->file('images') as $image) {
                 $filename = time() . '-' . $image->getClientOriginalName();
+                $filename = preg_replace('/\s+/', '-', $filename);
                 $image->move(public_path('images'), $filename);
                 $images[] = $filename;
             }
@@ -69,7 +70,7 @@ class OfferController extends Controller
         }
         $offer = Offer::create($attributes);
         return redirect()->route('offers.index')
-            ->with('flash', ['type', 'success', 'message' => 'Offer created Successfully']);
+            ->with('flash', ['type' => 'success', 'message' => 'Offer created Successfully']);
     }
 
     public function edit(Offer $offer)
@@ -111,34 +112,34 @@ class OfferController extends Controller
             $attributes['hospital_id'] = auth()->user()->hospital_id;
         }
 
+        $newImages =  json_decode($offer->getRawOriginal('images'), true) ?? [];
         // Handle image deletion
         if ($request->deletedImages) {
             $deletedKeys = explode(',', rtrim($request->deletedImages, ','));
-            $images = $offer->images;
+            $deletedKeys = array_map(function($url) {
+                return basename($url);
+            }, $deletedKeys);
             foreach ($deletedKeys as $key) {
-                $images = array_values(array_diff($images, [$key]));
+                $newImages = array_values(array_diff($newImages, [$key]));
                 $imageToDelete = $key;
                 $imagePath = public_path('images/' . $imageToDelete);
                 if (file_exists($imagePath)) {
                     unlink($imagePath);
                 }
             }
-            $offer->images = array_values($images); // Re-index the array
+            $newImages = array_values($newImages); // Re-index the array
         }
 
         // Handle new image uploads
         if ($request->hasFile('images')) {
-            $newImages = [];
-            $existingImages = $offer->images ?? [];
             foreach ($request->file('images') as $file) {
                 $filename = time() . '-' . $file->getClientOriginalName();
+                $filename = preg_replace('/\s+/', '-', $filename);
                 $file->move(public_path('images'), $filename);
                 $newImages[] = $filename;
             }
-            $allImages = array_merge($existingImages, $newImages);
-            $offer->images = $allImages;
-            $attributes['images'] = $offer->images;
         }
+        $attributes['images'] = $newImages;
         $offer->update($attributes);
 
         return redirect()->route('offers.index')
