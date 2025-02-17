@@ -237,17 +237,19 @@ class AuthController extends Controller
         }
 
         try {
-            if ($request->hasFile('profile_image')) {
+            $patient = User::find($request->user()->id);
 
-                $file = $request->file('profile_image');
-                $imageName = time() . '.' . $file->extension();
-                $request->profile_image->move(public_path('images'), $imageName);
+            if ($request->profile_image) {
+                $image = $request->profile_image;
+                $publicPath = public_path("images/");
+                $filename = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
+                $image->move($publicPath, $filename);
+                $patient->profile_image = $filename;
+                $patient->save();
             }
 
-            $patient = User::find($request->user()->id);
             $patient->name_en = $request->name_en;
             $patient->name_ar = $request->name_ar;
-            $patient->profile_image = $imageName ?? explode(env('BASE_URL'), $patient->profile_image)[1];
             $patient->address = $request->address;
             $patient->email = $request->email ?? $patient->email;
             $patient->country = $request->country;
