@@ -242,7 +242,6 @@ class AuthController extends Controller
                 $file = $request->file('profile_image');
                 $imageName = time() . '.' . $file->extension();
                 $request->profile_image->move(public_path('images'), $imageName);
-                return $imageName;
             }
 
             $patient = User::find($request->user()->id);
