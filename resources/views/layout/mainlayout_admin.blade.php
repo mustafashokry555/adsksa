@@ -5,10 +5,10 @@
     @include('layout.partials.head_admin')
 </head>
 
-{{-- 
+{{--
 @if (session()->get('locale') == 'ar')
-  <body dir="rtl" lang="ar">
-@else 
+    <body dir="rtl" lang="ar">
+@else
 @endif
 --}}
 

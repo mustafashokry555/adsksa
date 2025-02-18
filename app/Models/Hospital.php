@@ -39,11 +39,11 @@ class Hospital extends Model
     ];
     protected $appends = ['hospital_name', 'images_links'];
     public function users()
-    {   
+    {
         return $this->hasMany(User::class);
     }
     public function banners()
-    {   
+    {
         return $this->hasMany(Banner::class);
     }
     public function hospitalType()
@@ -60,11 +60,12 @@ class Hospital extends Model
         return $this->hasMany(User::class)
             ->where('user_type', User::PATIENT); // Assuming 'D' is for doctors
     }
-    // public function hospitalAdmin()
-    // {
-    //     return $this->hasOne(User::class,'hospital_id')->where('user_type','H');
-    // }
-    
+    public function hospitalAdmin()
+    {
+        return $this->hasOne(User::class,'hospital_id')
+        ->where('user_type','H');
+    }
+
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
@@ -105,7 +106,7 @@ class Hospital extends Model
         }
         return [];
     }
-    
+
     public function getAvgRatingAttribute()
     {
         return $this->hospitalReviews()->avg('star_rated') ?? 0;

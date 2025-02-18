@@ -95,33 +95,30 @@
                                                 <td>{{ $hospital->id }}</td>
                                                 <td>
                                                     <h2 class="table-avatar">
-                                                        <a href="#" class="spl-img"><img
-                                                                src="{{ asset($hospital->image) }}" class="img-fluid"
-                                                                alt="User Image"></a>
+                                                        <a href="{{ route('hospital.edit', $hospital) }}" class="spl-img">
+                                                            <img src="{{ asset($hospital->image) }}" class="img-fluid" alt="User Image">
+                                                            </a>
                                                     </h2>
                                                 </td>
                                                 <td>
                                                     <h2 class="table-avatar">
-                                                        <a
-                                                            href="#"><span>{{ $hospital->hospital_name_en }}</span></a>
+                                                        <a href="{{ route('hospital.edit', $hospital) }}">
+                                                            <span>{{ $hospital->hospital_name_en }}</span>
+                                                        </a>
                                                     </h2>
                                                 </td>
                                                 <td>
                                                     <h2 class="table-avatar">
-                                                        <a
-                                                            href="#"><span>{{ $hospital->hospital_name_ar }}</span></a>
+                                                        <a href="{{ route('hospital.edit', $hospital) }}">
+                                                            <span>{{ $hospital->hospital_name_ar }}</span>
+                                                        </a>
                                                     </h2>
                                                 </td>
-                                                @foreach ($hospital->users as $user)
-                                                    <td>{{ $user->email }}</td>
-                                                @endforeach
-                                                {{-- <td>{{$hospital->users[$loop]->email}}</td> --}}
-                                                {{-- <ul>
-                                                @foreach ($hospital->users as $user)
-                                                    <li>{{ $user->email }}</li>
-                                                    <!-- Display other user attributes -->
-                                                @endforeach
-                                            </ul> --}}
+                                                @if ($hospital->hospitalAdmin)
+                                                    <td>{{ $hospital->hospitalAdmin->email }}</td>
+                                                @else
+                                                    <td> No Admin </td>
+                                                @endif
                                                 <td><span class="user-name">{{ $hospital->address }} </span>
                                                     <span class="d-block">{{ $hospital->city }}</span>
                                                     <span class="d-block">{{ $hospital->state }}</span>

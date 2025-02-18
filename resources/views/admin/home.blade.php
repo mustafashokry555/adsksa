@@ -109,7 +109,7 @@
                                 <div class="dash-count">
                                     <h5 class="dash-title">{{ __('admin.dashboard.revenue') }}</h5>
                                     <div class="dash-counts">
-                                        <p>{{ __('admin.dashboard.specialities') }}{{ $totalIncome }}</p>
+                                        <p>{{ $totalIncome }}</p>
                                     </div>
                                 </div>
                             </div>
