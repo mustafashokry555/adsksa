@@ -43,6 +43,7 @@ class OfferController extends Controller
                 'hospital_id' => ['required', 'exists:hospitals,id'],
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
+                'images' => ['required'],
                 'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
             ]);
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
@@ -53,7 +54,8 @@ class OfferController extends Controller
                 'content_en' => ['required', 'string'],
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
-                'images.*' => ['required_if:type,image', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
+                'images' => ['required'],
+                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
             ]);
             $attributes['hospital_id'] = auth()->user()->hospital_id;
         }
@@ -97,7 +99,8 @@ class OfferController extends Controller
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
                 'is_active' => ['boolean'],
-                'images.*' => ['required_if:type,image', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
+                'images' => ['required'],
+                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
             ]);
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
             $attributes = $request->validate([
@@ -107,7 +110,8 @@ class OfferController extends Controller
                 'content_en' => ['required', 'string'],
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
-                'images.*' => ['required_if:type,image', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
+                'images' => ['required'],
+                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
             ]);
             $attributes['hospital_id'] = auth()->user()->hospital_id;
         }
