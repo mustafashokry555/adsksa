@@ -43,7 +43,7 @@ class OfferController extends Controller
                 'hospital_id' => ['required', 'exists:hospitals,id'],
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
-                'images.*' => ['required_if:type,image', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
+                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
             ]);
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
             $attributes = $request->validate([
