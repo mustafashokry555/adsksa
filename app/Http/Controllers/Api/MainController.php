@@ -941,7 +941,7 @@ class MainController extends Controller
             try {
                 $profile = Hospital::where('hospitals.id', $id)
                 ->with([
-                    'doctors', 'specialities'
+                    'doctors', 'specialities', 'offers'
                 ])
                 ->first();
 
@@ -962,6 +962,10 @@ class MainController extends Controller
                 }
                 unset($profile->doctors);
                 $profile->doctors = $doctorsList;
+                $offers = OfferResource::collection($profile->offers);
+                unset($profile->offers);
+                $profile->offers = $offers;
+
                 return $this->SuccessResponse(200, 'Hospital Profile', $profile);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
