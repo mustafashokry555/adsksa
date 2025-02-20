@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CommonController;
 use App\Http\Controllers\Api\MainController;
+use App\Http\Controllers\Api\NotificationController;
 
 // use Illuminate\Support\Facades\File;
 // use Illuminate\Support\Facades\Response;
@@ -55,6 +56,12 @@ Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        // Route::get('/{notification}', [NotificationController::class, 'show']);
+        Route::post('/read/{id}', [NotificationController::class, 'markAsRead']);
+    });
     
     Route::post('app-setting',[MainController::class,'updateOrCreateAppSetting']);
     Route::post('add-to-wishlist',[MainController::class,'AddToWishlist']);
