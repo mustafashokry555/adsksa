@@ -60,7 +60,7 @@ class OfferController extends Controller
             $attributes['hospital_id'] = auth()->user()->hospital_id;
         }
 
-        if ($request->hasFile('images') && $request->type === 'image') {
+        if ($request->hasFile('images') ) {
             $images = [];
             foreach ($request->file('images') as $image) {
                 $filename = time() . '-' . $image->getClientOriginalName();
@@ -89,34 +89,46 @@ class OfferController extends Controller
     public function update(Request $request, $id)
     {
         $offer = Offer::find($id);
-        if( auth()->user()->user_type == User::ADMIN ) {
-            $attributes = $request->validate([
-                'title_ar' => ['required', 'string', 'max:255'],
-                'title_en' => ['required', 'string', 'max:255'],
-                'content_ar' => ['required', 'string'],
-                'content_en' => ['required', 'string'],
+        $currentImages = json_decode($offer->getRawOriginal('images'), true) ?? [];
+        
+        // Calculate how many images would remain after deletion
+        $remainingImagesCount = count($currentImages);
+        if ($request->deletedImages) {
+            $deletedKeys = explode(',', rtrim($request->deletedImages, ','));
+            $remainingImagesCount -= count($deletedKeys);
+        }
+        // Base validation rules
+        $baseRules = [
+            'title_ar' => ['required', 'string', 'max:255'],
+            'title_en' => ['required', 'string', 'max:255'],
+            'content_ar' => ['required', 'string'],
+            'content_en' => ['required', 'string'],
+            'type' => ['required', 'in:image,video'],
+            'video_link' => ['nullable', 'required_if:type,video', 'url'],
+        ];
+
+        // Image validation rules
+        $imageRules = [
+            'images' => [
+                // Images are required only if there would be no images left after deletion
+                $remainingImagesCount <= 0 ? 'required' : 'nullable',
+                'array'
+            ],
+            'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
+        ];
+
+        if (auth()->user()->user_type == User::ADMIN) {
+            $attributes = $request->validate(array_merge($baseRules, $imageRules, [
                 'hospital_id' => ['required', 'exists:hospitals,id'],
-                'type' => ['required', 'in:image,video'],
-                'video_link' => ['nullable', 'required_if:type,video', 'url'],
                 'is_active' => ['boolean'],
-                'images' => ['required'],
-                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
-            ]);
-        }elseif( auth()->user()->user_type == User::HOSPITAL ) {
-            $attributes = $request->validate([
-                'title_ar' => ['required', 'string', 'max:255'],
-                'title_en' => ['required', 'string', 'max:255'],
-                'content_ar' => ['required', 'string'],
-                'content_en' => ['required', 'string'],
-                'type' => ['required', 'in:image,video'],
-                'video_link' => ['nullable', 'required_if:type,video', 'url'],
-                'images' => ['required'],
-                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
-            ]);
+            ]));
+        } elseif (auth()->user()->user_type == User::HOSPITAL) {
+            $attributes = $request->validate(array_merge($baseRules, $imageRules));
             $attributes['hospital_id'] = auth()->user()->hospital_id;
         }
 
-        $newImages =  json_decode($offer->getRawOriginal('images'), true) ?? [];
+        $newImages = $currentImages;
+        
         // Handle image deletion
         if ($request->deletedImages) {
             $deletedKeys = explode(',', rtrim($request->deletedImages, ','));
@@ -143,11 +155,12 @@ class OfferController extends Controller
                 $newImages[] = $filename;
             }
         }
+
         $attributes['images'] = $newImages;
         $offer->update($attributes);
 
         return redirect()->route('offers.index')
-        ->with('flash', ['type', 'success', 'message' => 'Offer Updated Successfully']);
+            ->with('flash', ['type' => 'success', 'message' => 'Offer Updated Successfully']);
     }
 
     public function destroy($id)
