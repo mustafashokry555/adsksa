@@ -33,11 +33,13 @@
                                                 <tr>
                                                     <th>{{ __('admin.hospital.id') }}</th>
                                                     {{-- <th>Hospital</th> --}}
+                                                    <th>ID</th>
                                                     <th>Title AR</th>
                                                     <th>Title EN</th>
                                                     <th>Media Type</th>
                                                     <th>Status</th>
-                                                    <th>{{ __('admin.hospital.created_at') }}</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
                                                     <th>{{ __('admin.hospital.action') }}</th>
                                                 </tr>
                                             </thead>
@@ -47,29 +49,43 @@
                                                         <td>{{ $offer->id }}</td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a
-                                                                    href="#"><span>{{ $offer->title_ar }}</span></a>
+                                                                <a href="#"><span>{{ $offer->title_ar }}</span></a>
                                                             </h2>
                                                         </td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a
-                                                                    href="#"><span>{{ $offer->title_en }}</span></a>
+                                                                <a href="#"><span>{{ $offer->title_en }}</span></a>
                                                             </h2>
                                                         </td>
                                                         <td>{{ $offer->type }}</td>
-                                                        <td>{{ $offer->is_active }}</td>
-                                                        <td>{{ $offer->created_at->format('Y-m-d') }}</td>
+                                                        @if ($offer->is_active)
+                                                            <td>
+                                                                <span class="badge rounded-pill bg-success-light">
+                                                                    Avtive
+                                                                </span>
+                                                            </td>
+                                                        @else
+                                                            <td>
+                                                                <span class="badge rounded-pill bg-danger-light">
+                                                                    Not Avtive
+                                                                </span>
+                                                            </td>
+                                                        @endif
+                                                        {{-- <td>{{ $offer->is_active }}</td> --}}
+                                                        <td>{{ $offer->start_date }}</td>
+                                                        <td>{{ $offer->end_date }}</td>
                                                         <td class="text-end">
                                                             <div class="table-action">
                                                                 <a href="{{ route('offers.edit', $offer->id) }}"
                                                                     class="btn btn-sm bg-success-light">
-                                                                    <i class="fas fa-edit"></i> {{ __('hospital.doctor.edit')  }}
+                                                                    <i class="fas fa-edit"></i>
+                                                                    {{ __('hospital.doctor.edit') }}
                                                                 </a>
                                                                 <a href="javascript:void(0);"
                                                                     onclick="if (window.confirm('Are you sure you want to delete this offer <{{ $offer->title }} >')){ document.getElementById( 'delete{{ $offer->id }}').submit(); }"
                                                                     class="btn btn-sm bg-danger-light">
-                                                                    <i class="fas fa-trash"></i> {{ __('hospital.doctor.delete')  }}
+                                                                    <i class="fas fa-trash"></i>
+                                                                    {{ __('hospital.doctor.delete') }}
                                                                 </a>
                                                             </div>
                                                         </td>

@@ -25,6 +25,8 @@ class OfferResource extends JsonResource
             'hospital_id' => $this->hospital_id,
             'hospital_name' => $this->hospital->hospital_name ?? '',
             'is_active' => $this->is_active,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];

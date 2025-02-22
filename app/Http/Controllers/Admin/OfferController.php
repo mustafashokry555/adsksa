@@ -44,7 +44,14 @@ class OfferController extends Controller
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
                 'images' => ['required'],
-                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096']
+                'images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096'],
+                'start_date' => ['required', 'date', 'date_format:Y-m-d'],
+                'end_date' => [
+                    'required',
+                    'date',
+                    'date_format:Y-m-d',
+                    'after_or_equal:start_date'
+                ],
             ]);
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
             $attributes = $request->validate([
@@ -105,6 +112,13 @@ class OfferController extends Controller
             'content_en' => ['required', 'string'],
             'type' => ['required', 'in:image,video'],
             'video_link' => ['nullable', 'required_if:type,video', 'url'],
+            'start_date' => ['required', 'date', 'date_format:Y-m-d'],
+            'end_date' => [
+                'required',
+                'date',
+                'date_format:Y-m-d',
+                'after_or_equal:start_date'
+            ],
         ];
 
         // Image validation rules

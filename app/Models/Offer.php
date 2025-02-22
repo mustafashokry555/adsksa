@@ -17,7 +17,9 @@ class Offer extends Model
         'video_link',
         'hospital_id',
         'is_active',
-        'images'
+        'images',
+        'start_date',
+        'end_date'
     ];
 
     protected $casts = [

@@ -68,6 +68,32 @@
                                 </div>
                             </div>
 
+                            {{-- start and end date --}}
+                            <div class="row">
+                                <div class="form-group col-md-6 row">
+                                    <label for="start_date" class="col-form-label col-md-4">Sart Date</label>
+                                    <div class="col-md-8">
+                                        <input id="start_date" value="{{ old('start_date', $offer->start_date) }}" name="start_date" type="date" class="form-control" required>
+                                        @error('start_date')
+                                            <div class="text-danger pt-2">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6 row">
+                                    <label for="end_date" class="col-form-label col-md-4">End Date</label>
+                                    <div class="col-md-8">
+                                        <input id="end_date" value="{{ old('end_date', $offer->end_date) }}" name="end_date" type="date" class="form-control" required>
+                                        @error('end_date')
+                                            <div class="text-danger pt-2">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             {{-- hospital --}}
                             @if ($hospitals)    
                                 <div class="form-group row">

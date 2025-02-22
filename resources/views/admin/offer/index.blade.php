@@ -78,13 +78,14 @@
                                 <table class="datatable table table-borderless hover-table" id="data-table">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th>{{ __('admin.hospital.id') }}</th>
+                                            <th>ID</th>
                                             <th>Hospital</th>
                                             <th>Title AR</th>
                                             <th>Title EN</th>
                                             <th>Media Type</th>
                                             <th>Status</th>
-                                            <th>{{ __('admin.hospital.created_at') }}</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
                                             <th>{{ __('admin.hospital.action') }}</th>
                                         </tr>
                                     </thead>
@@ -112,8 +113,22 @@
                                                     </h2>
                                                 </td>
                                                 <td>{{ $offer->type }}</td>
-                                                <td>{{ $offer->is_active }}</td>
-                                                <td>{{ $offer->created_at->format('Y-m-d') }}</td>
+                                                @if ($offer->is_active)
+                                                    <td>
+                                                        <span class="badge rounded-pill bg-success-light">
+                                                            Avtive
+                                                        </span>
+                                                    </td>
+                                                @else
+                                                    <td>
+                                                        <span class="badge rounded-pill bg-danger-light">
+                                                            Not Avtive
+                                                        </span>
+                                                    </td>
+                                                @endif
+                                                {{-- <td>{{ $offer->is_active }}</td> --}}
+                                                <td>{{ $offer->start_date }}</td>
+                                                <td>{{ $offer->end_date }}</td>
                                                 <td class="text-end">
                                                     <div class="actions">
                                                         <a class="text-black"

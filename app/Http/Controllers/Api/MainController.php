@@ -46,7 +46,8 @@ class MainController extends Controller
                 ->where('expired_at', '>', now())
                 ->get();
                 $offers = Offer::where('is_active', 1)
-                ->where('hospital_id', $request->hospital_id)
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
                 ->get();
                 $offers = OfferResource::collection($offers);
 
@@ -981,7 +982,12 @@ class MainController extends Controller
             try {
                 $profile = Hospital::where('hospitals.id', $id)
                 ->with([
-                    'doctors', 'specialities', 'offers'
+                    'doctors', 'specialities', 
+                    'offers' => function($query) {
+                        $query->where('is_active', 1)
+                            ->where('start_date', '<=', now())
+                            ->where('end_date', '>=', now());
+                    }
                 ])
                 ->first();
 
@@ -1036,8 +1042,12 @@ class MainController extends Controller
         {
             try {
                 $offers = Offer::where('is_active', 1)
-                ->where('hospital_id', $request->hospital_id)
-                ->get();
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now());
+                if($request->hospital_id){
+                    $offers = $offers->where('hospital_id', $request->hospital_id);
+                }
+                $offers = $offers->get();
                 $offers = OfferResource::collection($offers);
                 return $this->SuccessResponse(200, null, $offers);
             } catch (\Throwable $th) {
