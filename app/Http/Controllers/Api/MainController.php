@@ -16,6 +16,7 @@ use App\Models\Banner;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\HospitalReview;
+use App\Models\Notification;
 use App\Models\Offer;
 use App\Models\Review;
 use App\Models\User;
@@ -35,6 +36,45 @@ class MainController extends Controller
     {
         $this->lang = $request->header('lang', 'en');
     }
+
+    /* Start Home APIs*/
+        public function home(Request $request)
+        {
+            try {
+                $data = [];
+                $banners = Banner::where('is_active', 1)
+                ->where('expired_at', '>', now())
+                ->get();
+                $offers = Offer::where('is_active', 1)
+                ->where('hospital_id', $request->hospital_id)
+                ->get();
+                $offers = OfferResource::collection($offers);
+
+                $unread_notification = 0;
+                $token = request()->bearerToken();
+                $patient_id = null;
+                if ($token) {
+                    $tokenModel = PersonalAccessToken::findToken($token);
+                    if ($tokenModel) {
+                        $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                        $unreadCount = Notification::where('to_id', $patient_id)
+                        ->where('isRead', 0)
+                        ->count();
+                        $unread_notification = $unreadCount;
+                    }
+                }
+                $data [] = [
+                    'banners' => $banners,
+                    'offers' => $offers,
+                    'unread_notification' => $unread_notification,
+                ];
+                
+                return $this->SuccessResponse(200, null, $data);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+    /* End Home APIs*/
 
     /* Start Setting APIs*/
         // API for Update Or Create App Setting (Done)

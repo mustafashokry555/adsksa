@@ -12,16 +12,10 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $notifications = Notification::where(function($query) use ($user) {
-            $query->where('to_id', $user->id)
-                ->orWhereNull('to_id');
-        })
+        $notifications = Notification::where('to_id', $user->id)
         ->latest()
         ->get();
-        $unreadCount = Notification::where(function($query) use ($user) {
-            $query->where('to_id', $user->id)
-                ->orWhereNull('to_id');
-        })
+        $unreadCount = Notification::where('to_id', $user->id)
         ->where('isRead', 0)
         ->count();
 
