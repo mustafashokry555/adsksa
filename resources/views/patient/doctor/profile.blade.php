@@ -41,7 +41,8 @@
                                     @if ($doctor?->speciality?->name ?? '')
                                         {{-- <p class="doc-speciality">{{ $doctor->speciality->name }}</p> --}}
                                         <p class="doc-department"><img src="{{ $doctor->speciality->image }}"
-                                                class="img-fluid" alt="Speciality">{{ $doctor?->speciality?->name ?? '' }}</p>
+                                                class="img-fluid" alt="Speciality">{{ $doctor?->speciality?->name ?? '' }}
+                                        </p>
                                     @else
                                         <p class="doc-speciality">Department</p>
                                     @endif
@@ -88,12 +89,12 @@
                                         {{-- </ul> --}}
                                     </div>
                                     <!-- <div class="clinic-services">
-                                            @forelse($doctor?->services as $service)
+                                                @forelse($doctor?->services as $service)
     <span>{{ $service?->service_title ?? '' }}</span>
                                         @empty
-                                                <span>No Record Found</span>
+                                                    <span>No Record Found</span>
     @endforelse
-                                        </div> -->
+                                            </div> -->
                                 </div>
                             </div>
                             <div class="doc-info-right">
@@ -172,9 +173,9 @@
                                         data-bs-toggle="tab">{{ __('web.Overview') }}</a>
                                 </li>
                                 <!-- <li class="nav-item">
-                                        <a class="nav-link" href="{{ url('#doc_locations') }}"
-                                            data-bs-toggle="tab">Locations</a>
-                                    </li> -->
+                                            <a class="nav-link" href="{{ url('#doc_locations') }}"
+                                                data-bs-toggle="tab">Locations</a>
+                                        </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ url('#doc_reviews') }}"
                                         data-bs-toggle="tab">{{ __('web.Reviews') }}</a>
@@ -436,10 +437,10 @@
 
                                     <!-- Show All -->
                                     <!-- <div class="all-feedback text-center">
-                                                                       <a href="#" class="btn btn-primary btn-sm">
-                                                                           Show all feedback <strong>(167)</strong>
-                                                                      </a>
-                                                                  </div> -->
+                                                                           <a href="#" class="btn btn-primary btn-sm">
+                                                                               Show all feedback <strong>(167)</strong>
+                                                                          </a>
+                                                                      </div> -->
                                     <!-- /Show All -->
 
                                 </div>
@@ -523,8 +524,9 @@
                                             <div class="widget-content">
                                                 <div class="listing-hours">
                                                     <div class="listing-day current">
-                                                        <div class="day">{{ __("web.Today") }}
-                                                            <span>{{ \Carbon\Carbon::now()->locale(app()->getLocale())->translatedFormat('j M Y') }}</span></div>
+                                                        <div class="day">{{ __('web.Today') }}
+                                                            <span>{{ \Carbon\Carbon::now()->locale(app()->getLocale())->translatedFormat('j M Y') }}</span>
+                                                        </div>
                                                         <div class="time-items">
                                                             @if ($todaysAvailability)
                                                                 <span class="open-status"><span
@@ -559,7 +561,7 @@
                                                                             $open = true; // Set open to true if an open availability is found
                                                                         @endphp
                                                                         <span class="open-status"><span
-                                                                                class="badge bg-success-light">{{ __("web.Open") }}</span></span>
+                                                                                class="badge bg-success-light">{{ __('web.Open') }}</span></span>
                                                                         <span
                                                                             class="time badge badge-warning">{{ @Carbon::parse(@$availability->slots[0]['start_time'])->format('h:i A') }}
                                                                             -

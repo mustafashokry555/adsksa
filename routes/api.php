@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CommonController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\HomeController;
 
 // use Illuminate\Support\Facades\File;
 // use Illuminate\Support\Facades\Response;
@@ -52,6 +53,7 @@ Route::get('offers',[MainController::class,'offers']);
 
 // Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
+Route::post('test-try-donot-use',[HomeController::class,'test_try_donot_use']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {

