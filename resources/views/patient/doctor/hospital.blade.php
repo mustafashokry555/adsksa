@@ -34,7 +34,7 @@
                                 @if ($doctor?->username ?? '')
                                 <p class="doc-speciality">{{ $doctor?->username??"" }}</p>
                                 @else
-                                <h5>{{$doctor?->hospital?->hospital_name}}</h5>
+                                {{-- <h5>{{$doctor?->hospital?->hospital_name}}</h5> --}}
                                 <p class="doc-speciality">N/A</p>
                                 @endif
                                 @if ($doctor?->speciality?->name ?? '')
@@ -82,13 +82,14 @@
                                     {{-- </li> --}}
                                     {{-- </ul> --}}
                                 </div>
-                                <!-- <div class="clinic-services">
-                                        @forelse($doctor?->services as $service)
-                                            <span>{{ $service?->service_title??"" }}</span>
-                                        @empty
-                                            <span>No Record Found</span>
-                                        @endforelse
-                                    </div> -->
+                                {{--
+                                <div class="clinic-services">
+                                    @forelse($doctor?->services as $service)
+                                        <span>{{ $service?->service_title??"" }}</span>
+                                    @empty
+                                        <span>No Record Found</span>
+                                    @endforelse
+                                </div> --}}
                             </div>
                         </div>
                         <div class="doc-info-right">
@@ -96,14 +97,14 @@
                                 <ul>
                                     <!-- <li><i class="far fa-thumbs-up"></i> 99%</li> -->
                                     <li><i class="far fa-comment"></i> {{ $reviews->count() }} Feedback</li>
-                                    @if( $doctor?->address)
+                                    @if( $doctor->address ?? '')
                                     <li>
                                         <i class="fas fa-map-marker-alt"></i>{{ $doctor?->address??"" }}
                                         ,
-                                        {{ $doctor?->state??"" }}
+                                        {{ $doctor->state??"" }}
                                     </li>
                                     @endif
-                                    @if( $doctor?->pricing)
+                                    @if( $doctor->pricing ?? '')
                                     <li><i class="far fa-money-bill-alt"></i> SAR {{ $doctor?->pricing??"" }}
                                     </li>
                                     @endif
@@ -124,7 +125,7 @@
                                 </a>
                             </div>
                             <div class="clinic-booking">
-                                <a class="apt-btn" href="{{ route('create_appointment', $doctor->id) }}">Book
+                                <a class="apt-btn" href="{{ route('create_appointment', $doctor->id ?? 0) }}">Book
                                     Appointment</a>
                             </div>
                         </div>
@@ -144,7 +145,7 @@
                     @endif
                     @if (Session::has('error'))
     <div class="alert alert-warning alert-dismissible" role="alert">
-       
+
         <strong>Warning !</strong> {{ session('error') }}
     </div>
 @endif
@@ -356,7 +357,7 @@
                         <!-- /Overview Content -->
 
                         <!-- Locations Content -->
-                  
+
                         <!-- /Locations Content -->
 
                         <!-- Reviews Content -->
@@ -412,14 +413,14 @@
                                 <hr>
 
                                 <!-- Show All -->
-                                <!-- <div class="all-feedback text-center"> 
-                                                                   <a href="#" class="btn btn-primary btn-sm"> 
+                                <!-- <div class="all-feedback text-center">
+                                                                   <a href="#" class="btn btn-primary btn-sm">
                                                                        Show all feedback <strong>(167)</strong>
-                                                                  </a> 
+                                                                  </a>
                                                               </div> -->
                                 <!-- /Show All -->
 
-                                </div> 
+                                </div>
                                 <!-- /Review Listing -->
 
                                 <!-- Write Review -->
@@ -477,11 +478,11 @@
                                 </div>
                                 <!-- /Write Review -->
 
-                            
+
                             <!-- /Reviews Content -->
 
                             <!-- Business Hours Content -->
-                            
+
                         </div>
                         <!-- /Business Hours Content -->
                         <div role="tabpanel" id="doc_business_hours" class="tab-pane fade">
@@ -506,7 +507,7 @@ use Carbon\Carbon;
                                                             @endif
                                                         </div>
                                                     </div>
-    
+
                                                     @for ($i = 0; $i <= 6; $i++)
     <div class="listing-day">
         <div class="day">{{ \App\Commons::Days[$i] }}</div>
@@ -523,7 +524,7 @@ use Carbon\Carbon;
                     <span class="open-status"><span class="badge bg-success-light">Open</span></span>
                     <span class="time badge badge-warning">{{ @Carbon::parse(@$availability->slots[0]['start_time'])->format('h:i A');  }} - {{ @Carbon::parse(@$availability->slots[0]['end_time'])->format('h:i A');  }}</span>
                         @if(@$availability->slots[1])
-                        <span class="time badge badge-warning">{{ @Carbon::parse(@$availability->slots[1]['start_time'])->format('h:i A'); }} - {{ @Carbon::parse(@$availability->slots[1]['end_time'])->format('h:i A'); }} 
+                        <span class="time badge badge-warning">{{ @Carbon::parse(@$availability->slots[1]['start_time'])->format('h:i A'); }} - {{ @Carbon::parse(@$availability->slots[1]['end_time'])->format('h:i A'); }}
                         @endif
                     </span>
                 @endif

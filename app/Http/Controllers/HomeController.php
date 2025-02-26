@@ -60,8 +60,8 @@ class HomeController extends Controller
         }
         if (Auth::user()->is_admin()) {
             $totalIncome = DB::table('appointments')->where('status', 'C')->sum('fee');
-            // dd( $totalIncome); 
-            // dd( Appointment::query()->with('doctor', 'patient')->whereDate('appointment_date', $todayFormatted)->get());          
+            // dd( $totalIncome);
+            // dd( Appointment::query()->with('doctor', 'patient')->whereDate('appointment_date', $todayFormatted)->get());
             $data = [];
             $monthReport = $this->monthlyReport();
             $data['totalIncome'] = $totalIncome;
@@ -71,8 +71,8 @@ class HomeController extends Controller
             $data['patients'] =  User::where('user_type', 'U')->get();
             $data['specialities'] = Speciality::query()->get();
             $data['appointments'] = Appointment::query()->get();
-            $data['yearlyReport'] =  $this->getYearlyReport(); //for chart 1 using 
-            $data['monthlyReport'] = $monthReport[0]; // weekly and monthly both in same code 
+            $data['yearlyReport'] =  $this->getYearlyReport(); //for chart 1 using
+            $data['monthlyReport'] = $monthReport[0]; // weekly and monthly both in same code
             $data['totalRevanue'] =  $monthReport[1];
             $data['distinctYears'] = DB::table('appointments')->select(DB::raw('YEAR(appointment_date) as year'))->distinct()->pluck('year');
             $data['hospitals'] = DB::table('hospitals')->select('id', DB::raw("IFNULL(hospital_name_{$this->getLang()}, hospital_name_en) as hospital_name"))->get();
@@ -102,9 +102,9 @@ class HomeController extends Controller
                 ->distinct()->get();
             // ->count();
             $data['months'] = $months;
-            $data['monthlyReport'] = $monthReport[0]; // weekly and monthly both in same code 
+            $data['monthlyReport'] = $monthReport[0]; // weekly and monthly both in same code
             $data['totalRevanue'] =  $monthReport[1];
-            $data['yearlyReport'] =  $this->getYearlyReport(); //for chart 1 using 
+            $data['yearlyReport'] =  $this->getYearlyReport(); //for chart 1 using
             $data['total_appointments'] = Appointment::query()->where('hospital_id', Auth::user()->hospital_id)->count();
             $data['appointments'] = Appointment::query()->where('hospital_id', Auth::user()->hospital_id)->where('appointment_date', '>', $todayFormatted)->orderByDesc('id')->get();
             $data['today_appointments'] = Appointment::query()->where('hospital_id', Auth::user()->hospital_id)->where('appointment_date', '=', $todayFormatted)->get();
@@ -282,8 +282,8 @@ class HomeController extends Controller
         if (request('gender')) {
             $query->whereIn('gender', request('gender'));
         }
-        
-        
+
+
         $doctors = $query->paginate(10);
         return view(
             'patient.doctor.search',
@@ -340,27 +340,25 @@ class HomeController extends Controller
         } else {
             $review_value = 0;
         }
-        $todayDay =  strtolower(\Carbon\Carbon::now()->format('l'));
-        // dd($todayDay);
-        $appointments = Appointment::where('doctor_id', $id)->get();
-        // $scheduleSetting =  ScheduleSetting::where('doctor_id', $id)
-        // ->where('week_day', $todayDay)
-        // ->first();
-        // dd($todaysAvailability);
-        // dd($regularAvailability[0]->slots[0]['start_time']);
-        return [
-            'hospital' => Hospital::find($id),
-            'reviews' => $reviews,
-            'review_value' => $review_value,
-            'appointments' => $appointments,
-            // 'scheduleSetting' => $scheduleSetting,
-        ];
+        $hospital = Hospital::where('hospitals.id', $id)
+        ->with([
+            'doctors', 'specialities',
+            'offers' => function($query) {
+                $query->where('is_active', 1)
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now());
+            }
+        ])
+        ->first();
+        // return [
+        //     'hospital' => $hospital,
+        //     'reviews' => $reviews,
+        //     'review_value' => $review_value,
+        // ];
         return view('patient.doctor.hospital', [
-            'hospital' => Hospital::find($id),
+            'hospital' => $hospital,
             'reviews' => $reviews,
             'review_value' => $review_value,
-            'appointments' => $appointments,
-            'scheduleSetting' => $scheduleSetting,
         ]);
     }
 
@@ -553,9 +551,9 @@ public function deleteAccount(Request $request)
     // Perform any cleanup needed before deletion
     $user->status = 'Inactive';
     $user->save();
-    
+
     auth()->logout();
-    
+
     return redirect()->route('login')->with('success', __('web.account_deleted'));
 }
 }
