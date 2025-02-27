@@ -38,20 +38,20 @@
                                         </div>
                                     </div>
                                     <div class="filter-widget">
-                                        <h4>{{ __("web.Gender") }}</h4>
+                                        <h4>{{ __('web.Gender') }}</h4>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender[]" value="M"
                                                     @if (is_array(request('gender')) && in_array('M', request('gender'))) checked @endif>
-                                                    <span class="checkmark"></span> {{ __("web.Male") }}
-                                                </label>
+                                                <span class="checkmark"></span> {{ __('web.Male') }}
+                                            </label>
                                         </div>
                                         <div>
                                             <label class="custom_check">
                                                 <input type="checkbox" name="gender[]" value="F"
                                                     @if (is_array(request('gender')) && in_array('F', request('gender'))) checked @endif>
-                                                    <span class="checkmark"></span> {{ __("web.female") }}
-                                                </label>
+                                                <span class="checkmark"></span> {{ __('web.female') }}
+                                            </label>
                                         </div>
                                         {{-- <div>
                                             <label class="custom_check">
@@ -62,7 +62,7 @@
                                         </div> --}}
                                     </div>
                                     <div class="filter-widget">
-                                        <h4>{{ __("web.Select_Specialist") }}</h4>
+                                        <h4>{{ __('web.Select_Specialist') }}</h4>
                                         @forelse($specialities as $speciality)
                                             <div>
                                                 <label class="custom_check">
@@ -147,15 +147,6 @@
                                                     <span
                                                         class="d-inline-block average-rating">{{ $reviews->count() }}</span>
                                                 </div>
-
-                                                <!-- <div class="rating">
-                                                            <i class="fas fa-star filled"></i>
-                                                            <i class="fas fa-star filled"></i>
-                                                            <i class="fas fa-star filled"></i>
-                                                            <i class="fas fa-star filled"></i>
-                                                            <i class="fas fa-star"></i>
-                                                            <span class="d-inline-block average-rating">(17)</span>
-                                                        </div> -->
                                                 <div class="clinic-details">
                                                     @if ($doctor->address)
                                                         <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
@@ -164,49 +155,7 @@
                                                             {{ $doctor->state }}
                                                         </p>
                                                     @endif
-                                                    <!-- <ul class="clinic-gallery">
-                                                                <li>
-                                                                    <a href="{{ url('assets/img/features/feature-01.jpg') }}"
-                                                                       data-fancybox="gallery">
-                                                                        <img
-                                                                            src="{{ URL::asset('/assets/img/features/feature-01.jpg') }}"
-                                                                            alt="Feature">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="{{ url('assets/img/features/feature-02.jpg') }}"
-                                                                       data-fancybox="gallery">
-                                                                        <img
-                                                                            src="{{ URL::asset('/assets/img/features/feature-02.jpg') }}"
-                                                                            alt="Feature">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="{{ url('assets/img/features/feature-03.jpg') }}"
-                                                                       data-fancybox="gallery">
-                                                                        <img
-                                                                            src="{{ URL::asset('/assets/img/features/feature-03.jpg') }}"
-                                                                            alt="Feature">
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="{{ url('assets/img/features/feature-04.jpg') }}"
-                                                                       data-fancybox="gallery">
-                                                                        <img
-                                                                            src="{{ URL::asset('/assets/img/features/feature-04.jpg') }}"
-                                                                            alt="Feature">
-                                                                    </a>
-                                                                </li>
-                                                            </ul> -->
                                                 </div>
-                                                <!-- <div class="clinic-services">
-                                                            @forelse($doctor->services as $service)
-    <span>{{ $service->service_title }}</span>
-                                                    @empty
-                                                                <span>No Services Found</span>
-    @endforelse
-
-                                                        </div> -->
                                             </div>
                                         </div>
                                         <div class="doc-info-right">
@@ -235,16 +184,14 @@
                                         </div>
                                         <div class="doc-info-right">
                                             <div class="clinic-booking">
-                                                <a class="view-pro-btn"
-                                                    href="{{ route('doctor_profile', $doctor->id) }}">
+                                                <a class="view-pro-btn" href="{{ route('doctor_profile', $doctor->id) }}">
                                                     {{ __('web.doc_profile') }}
                                                 </a>
-                                                {{-- <a class="view-pro-btn"
+                                                <a class="view-pro-btn"
                                                     href="{{ route('hospital_profile', $doctor->hospital_id) }}">
                                                     {{ __('web.hospital_profile') }}
-                                                </a> --}}
-                                                <a class="apt-btn"
-                                                    href="{{ route('create_appointment', $doctor->id) }}">
+                                                </a>
+                                                <a class="apt-btn" href="{{ route('create_appointment', $doctor->id) }}">
                                                     {{ __('web.book_appoint') }}
                                                 </a>
                                             </div>

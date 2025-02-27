@@ -342,7 +342,7 @@ class HomeController extends Controller
         }
         $hospital = Hospital::where('hospitals.id', $id)
         ->with([
-            'doctors', 'specialities',
+            'doctors', 'specialities', 'city', 'country',
             'offers' => function($query) {
                 $query->where('is_active', 1)
                     ->where('start_date', '<=', now())

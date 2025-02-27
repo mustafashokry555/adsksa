@@ -1,563 +1,399 @@
 <?php $page = 'index-13'; ?>
 @extends('layout.mainlayout_index1')
-@section('title', 'Doctor Profile')
+@section('title', 'Hospital Profile')
 @section('content')
-<!-- Header -->
-@include('components.patient_header')
-<!-- /Header -->
+    <!-- Header -->
+    @include('components.patient_header')
+    <!-- /Header -->
 
-<div class="row align-items-center mt-4">
+    <div class="row align-items-center mt-4">
 
-</div>
-</div>
-</section>
-<!-- /Home Banner -->
-<section class="doctor-profile">
-    <!-- Page Content -->
-    <div class="content">
-        <div class="container">
+    </div>
+    </div>
+    </section>
+    <!-- /Home Banner -->
+    <section class="hospital-profile">
+        <!-- Page Content -->
+        <div class="content">
+            <div class="container">
+                <style>
+                    .owl-nav button.owl-next span,
+                    .owl-nav button.owl-prev span {
+                        transform: none;
+                    }
 
-            <!-- Doctor Widget -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="doctor-widget">
-                        <div class="doc-info-left">
-                            <div class="doctor-img">
-                                @if ($doctor?->profile_image ?? '')
-                                <img src="{{ asset( $doctor->profile_image) }}" class="img-fluid" alt="User Image">
-                                @else
-                                <img src="{{ URL::asset('/assets/img/doctors/doctor-thumb-02.jpg') }}" class="img-fluid" alt="User Image">
-                                @endif
+                    .owl-nav {
+                        text-align: center;
+                        display: block !important;
+                    }
+
+                    .owl-nav .owl-prev,
+                    .owl-nav .owl-next {
+                        background: #f4f4f4;
+                        padding: 10px 20px;
+                        border-radius: 30px;
+                        margin: 5px;
+                    }
+
+                    .owl-nav .owl-prev:hover,
+                    .owl-nav .owl-next:hover {
+                        background: #7c7a7a;
+                    }
+
+                    .owl-dots {
+                        display: none;
+                    }
+
+                    .item img {
+                        display: block;
+                        width: 100%;
+                        height: 350px;
+                    }
+                </style>
+                <!-- hospital Widget -->
+                <div class="card">
+                    <div class="card-body py-2">
+                        <div class="hospital-widget row">
+                            <div class=" col-md-8">
+                                <div class="owl-carousel">
+                                    @if (count($hospital->images_links) > 0)
+                                        @foreach ($hospital->images_links as $img)
+                                            <div class="item"><img src="{{ $img }}" alt="Hospital Image 1"></div>
+                                        @endforeach
+                                    @else
+                                        <div class="item"><img src="{{ $hospital->image }}" alt="Hospital Image 1"></div>
+                                    @endif
+                                </div>
                             </div>
-                            <div class="doc-info-cont">
-                                <h4 class="doc-name">{{ $doctor?->name??"" }}</h4>
-                                @if ($doctor?->username ?? '')
-                                <p class="doc-speciality">{{ $doctor?->username??"" }}</p>
-                                @else
-                                {{-- <h5>{{$doctor?->hospital?->hospital_name}}</h5> --}}
-                                <p class="doc-speciality">N/A</p>
-                                @endif
-                                @if ($doctor?->speciality?->name ?? '')
-                                {{-- <p class="doc-speciality">{{ $doctor->speciality->name }}</p> --}}
-                                <p class="doc-department"><img src="{{ asset('images/' . $doctor->speciality->image) }}" class="img-fluid" alt="Speciality">{{ $doctor?->speciality?->name??"" }}</p>
-                                @else
-                                <p class="doc-speciality">Department</p>
-                                @endif
-                                <div class="rating">
-                                    @php
-                                    $rat_num = number_format($review_value);
-                                    @endphp
-                                    @for ($i = 1; $i <= $rat_num; $i++) <i class="fas fa-star filled"></i>
+                            <div class=" col-md-4">
+                                <div class="doc-info-cont">
+                                    <h4 class="doc-name">{{ $hospital?->hospital_name ?? '' }}</h4>
+                                    <div class="rating">
+                                        @php
+                                            $rat_num = number_format($review_value);
+                                        @endphp
+                                        @for ($i = 1; $i <= $rat_num; $i++)
+                                            <i class="fas fa-star filled"></i>
                                         @endfor
-                                        @for ($j = $rat_num; $j < 5; $j++) <i class="fas fa-star"></i>
-                                            @endfor
-                                            <span class="d-inline-block average-rating">{{ $reviews->count() }}</span>
+                                        @for ($j = $rat_num; $j < 5; $j++)
+                                            <i class="fas fa-star"></i>
+                                        @endfor
+                                        <span class="d-inline-block average-rating">{{ $reviews->count() }}</span>
+                                    </div>
+                                    <div class="clinic-details">
+                                        <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
+                                            {{ $hospital->location ?? '' }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="clinic-details">
-                                    <p class="doc-location"><i class="fas fa-map-marker-alt"></i> {{ $doctor?->address??"" }}
-                                        ,
-                                        {{ $doctor?->state??"" }}
-                                        {{-- - <a href="javascript:void(0);">Get Directions</a> --}}
-                                    </p>
-                                    {{-- <ul class="clinic-gallery"> --}}
-                                    {{-- <li> --}}
-                                    {{-- <a href="{{url('assets/img/features/feature-01.jpg')}}" data-fancybox="gallery"> --}}
-                                    {{-- <img src="{{ URL::asset('/assets/img/features/feature-01.jpg')}}" alt="Feature"> --}}
-                                    {{-- </a> --}}
-                                    {{-- </li> --}}
-                                    {{-- <li> --}}
-                                    {{-- <a href="{{url('assets/img/features/feature-02.jpg')}}" data-fancybox="gallery"> --}}
-                                    {{-- <img  src="{{ URL::asset('/assets/img/features/feature-02.jpg')}}" alt="Feature Image"> --}}
-                                    {{-- </a> --}}
-                                    {{-- </li> --}}
-                                    {{-- <li> --}}
-                                    {{-- <a href="{{url('assets/img/features/feature-03.jpg')}}" data-fancybox="gallery"> --}}
-                                    {{-- <img src="{{ URL::asset('/assets/img/features/feature-03.jpg')}}" alt="Feature"> --}}
-                                    {{-- </a> --}}
-                                    {{-- </li> --}}
-                                    {{-- <li> --}}
-                                    {{-- <a href="{{url('assets/img/features/feature-04.jpg')}}" data-fancybox="gallery"> --}}
-                                    {{-- <img src="{{ URL::asset('/assets/img/features/feature-04.jpg')}}" alt="Feature"> --}}
-                                    {{-- </a> --}}
-                                    {{-- </li> --}}
-                                    {{-- </ul> --}}
+                                <div class="clini-infos">
+                                    <ul>
+                                        <li><i class="fas fa-user-md"></i> {{ $hospital->doctors->count() }}
+                                            {{ __('web.doctors') }}</li>
+                                        <li><i class="fas fa-stethoscope"></i> {{ $hospital->specialities->count() }}
+                                            {{ __('web.specilities') }}</li>
+                                    </ul>
                                 </div>
-                                {{--
-                                <div class="clinic-services">
-                                    @forelse($doctor?->services as $service)
-                                        <span>{{ $service?->service_title??"" }}</span>
-                                    @empty
-                                        <span>No Record Found</span>
-                                    @endforelse
-                                </div> --}}
+                                {{-- <h4 class="doc-name">{{ __('web.aboutUs') }}</h4>
+                                <p>
+                                    {{ $hospital->about2 ?? '' }}</p>
+                                </p> --}}
                             </div>
                         </div>
-                        <div class="doc-info-right">
-                            <div class="clini-infos">
+                        @if ($errors->any())
+                            <br>
+                            <div class="alert alert-danger">
                                 <ul>
-                                    <!-- <li><i class="far fa-thumbs-up"></i> 99%</li> -->
-                                    <li><i class="far fa-comment"></i> {{ $reviews->count() }} Feedback</li>
-                                    @if( $doctor->address ?? '')
-                                    <li>
-                                        <i class="fas fa-map-marker-alt"></i>{{ $doctor?->address??"" }}
-                                        ,
-                                        {{ $doctor->state??"" }}
-                                    </li>
-                                    @endif
-                                    @if( $doctor->pricing ?? '')
-                                    <li><i class="far fa-money-bill-alt"></i> SAR {{ $doctor?->pricing??"" }}
-                                    </li>
-                                    @endif
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
                                 </ul>
                             </div>
-                            <div class="doctor-action">
-                                <!-- <a href="javascript:void(0)" class="btn btn-white fav-btn"> -->
-                                <!-- <i class="far fa-bookmark"></i> -->
-                                <!-- </a> -->
-                                <a href="chat" class="btn btn-white msg-btn">
-                                    <i class="far fa-comment-alt"></i>
-                                </a>
-                                <a href="javascript:void(0)" class="btn btn-white call-btn" data-bs-toggle="modal" data-bs-target="#voice_call">
-                                    <i class="fas fa-phone"></i>
-                                </a>
-                                <a href="javascript:void(0)" class="btn btn-white call-btn" data-bs-toggle="modal" data-bs-target="#video_call">
-                                    <i class="fas fa-video"></i>
-                                </a>
+                        @endif
+                        @if (session()->has('flash'))
+                            <x-alert>{{ session('flash')['message'] }}</x-alert>
+                        @endif
+                        @if (Session::has('error'))
+                            <div class="alert alert-warning alert-dismissible" role="alert">
+
+                                <strong>Warning !</strong> {{ session('error') }}
                             </div>
-                            <div class="clinic-booking">
-                                <a class="apt-btn" href="{{ route('create_appointment', $doctor->id ?? 0) }}">Book
-                                    Appointment</a>
-                            </div>
-                        </div>
+                        @endif
                     </div>
-                    @if($errors->any())
-                    <br>
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-                    @if (session()->has('flash'))
-                    <x-alert>{{ session('flash')['message'] }}</x-alert>
-                    @endif
-                    @if (Session::has('error'))
-    <div class="alert alert-warning alert-dismissible" role="alert">
-
-        <strong>Warning !</strong> {{ session('error') }}
-    </div>
-@endif
                 </div>
-            </div>
-            <!-- /Doctor Widget -->
+                <!-- /hospital Widget -->
+                
+                <style>
+                    .amenities-container ul {
+                        list-style-type: none;
+                        padding: 0;
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: space-around;
+                    }
 
-            <!-- Doctor Details Tab -->
-            <div class="card">
-                <div class="card-body pt-0">
+                    .amenities-container li {
+                        background: #ffffff;
+                        border: 1px solid #cccccc;
+                        border-radius: 10px;
+                        padding: 10px 20px;
+                        margin: 10px;
+                        display: flex;
+                        align-items: center;
+                        font-size: 16px;
+                        color: #333;
+                    }
 
-                    <!-- Tab Menu -->
-                    <nav class="user-tabs mb-4">
-                        <ul class="nav nav-tabs nav-tabs-bottom nav-justified">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="{{ url('#doc_overview') }}" data-bs-toggle="tab">Overview</a>
-                            </li>
-                            <!-- <li class="nav-item">
-                                    <a class="nav-link" href="{{ url('#doc_locations') }}"
-                                        data-bs-toggle="tab">Locations</a>
-                                </li> -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url('#doc_reviews') }}" data-bs-toggle="tab">Reviews</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url('#doc_business_hours') }}" data-bs-toggle="tab">Business
-                                    Hours</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- /Tab Menu -->
+                    .amenities-container img {
+                        margin-right: 10px;
+                        color: #666666;
+                    }
 
-                    <!-- Tab Content -->
-                    <div class="tab-content pt-0">
+                    /* Hover effect */
+                    .amenities-container li:hover {
+                        background: #e9e9e9;
+                        cursor: pointer;
+                    }
 
-                        <!-- Overview Content -->
-                        <div role="tabpanel" id="doc_overview" class="tab-pane fade show active">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-9">
+                    .amenities-container ul {
+                        list-style-type: none;
+                        padding: 0;
+                        margin: 0;
+                    }
 
-                                    <!-- About Details -->
-                                    <div class="widget about-widget">
-                                        <h4 class="widget-title">About Me</h4>
-                                        <p>{{ $doctor?->description }}</p>
-                                    </div>
-                                    <!-- /About Details -->
+                    .amenities-container li {
+                        background: #ffffff;
+                        border: 1px solid #cccccc;
+                        border-radius: 10px;
+                        padding: 10px 20px;
+                        margin: 10px;
+                        display: flex;
+                        align-items: center;
+                        font-size: 16px;
+                        color: #333;
+                    }
 
-                                    <!-- Education Details -->
-                                    <div class="widget education-widget">
-                                        <h4 class="widget-title">Education</h4>
-                                        <div class="experience-box">
-                                            <ul class="experience-list">
-                                                @forelse($doctor?->education as $edu)
-                                                <li>
-                                                    <div class="experience-user">
-                                                        <div class="before-circle"></div>
-                                                    </div>
-                                                    <div class="experience-content">
-                                                        <div class="timeline-content">
-                                                            <h4 class="name">{{ $edu?->college_name??"" }}</h4>
-                                                            <div>{{ $edu->area }}</div>
-                                                            <span class="time">{{ date('Y', strtotime($edu?->start_date)) }}
-                                                                @if ($edu->end_date ?? '')
-                                                                - {{ date('Y', strtotime($edu?->end_date)) }}
+                    .amenities-container li img {
+                        margin-right: 10px;
+                        height: 30px;
+                        /* Adjust based on your design */
+                        width: auto;
+                    }
+
+                    .no-specialty {
+                        color: #888888;
+                        background: #f0f0f0;
+                        border: 1px solid #cccccc;
+                        border-radius: 10px;
+                        padding: 15px 20px;
+                        margin: 10px;
+                        text-align: center;
+                        font-size: 16px;
+                    }
+
+                    /* Optional: hover effect for list items */
+                    .amenities-container li:hover {
+                        background-color: #e9e9e9;
+                        cursor: pointer;
+                    }
+                </style>
+
+                {{-- Doctors --}}
+                <div class="card">
+                    <div class="card-body py-2">
+                        <h4 class="text-center p-3 pb-0">{{ __('web.doctors') }}</h4>
+                        <div class="amenities-container">
+                            @if ($hospital->doctors->count() > 0)
+                                <div class="row">
+                                    @foreach ($hospital->doctors as $doctor)
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="doctor-widget">
+                                                        <div class="doc-info-left">
+                                                            <div class="doctor-img">
+                                                                <a href="{{ route('doctor_profile', $doctor->id) }}">
+                                                                    <img src="{{ asset($doctor->profile_image) }}" style="height: 185px" class="img-fluid"
+                                                                        alt="User Image">
+                                                                </a>
+                                                            </div>
+                                                            <div class="doc-info-cont">
+                                                                <h4 class="doc-name"><a
+                                                                        href="{{ route('doctor_profile', $doctor->id) }}">Dr.
+                                                                        {{ $doctor->name }}</a>
+                                                                </h4>
+                                                                @if ($doctor->speciality->name ?? '')
+                                                                    <!-- <p class="doc-speciality">{{ $doctor->speciality->name }}</p> -->
+                                                                    <h5 class="doc-department"><img
+                                                                            src="{{ asset($doctor->speciality->image) }}" class="img-fluid"
+                                                                            alt="Speciality">{{ $doctor->speciality->name }}</h5>
                                                                 @else
-                                                                - Present
+                                                                    <p class="doc-speciality">Speciality</p>
                                                                 @endif
-                                                            </span>
+                
+                                                                @php
+                                                                    $reviews = App\Models\Review::query()
+                                                                        ->where('doctor_id', $doctor->id)
+                                                                        ->get();
+                                                                    $review_sum = App\Models\Review::where(
+                                                                        'doctor_id',
+                                                                        $doctor->id,
+                                                                    )->sum('star_rated');
+                                                                    if ($reviews->count() > 0) {
+                                                                        $review_value = $review_sum / $reviews->count();
+                                                                    } else {
+                                                                        $review_value = 0;
+                                                                    }
+                                                                @endphp
+                
+                                                                <div class="rating">
+                                                                    @php
+                                                                        $rat_num = number_format($review_value);
+                                                                    @endphp
+                                                                    @for ($i = 1; $i <= $rat_num; $i++)
+                                                                        <i class="fas fa-star filled"></i>
+                                                                    @endfor
+                                                                    @for ($j = $rat_num; $j < 5; $j++)
+                                                                        <i class="fas fa-star"></i>
+                                                                    @endfor
+                                                                    <span
+                                                                        class="d-inline-block average-rating">{{ $reviews->count() }}</span>
+                                                                </div>
+                                                                <div class="doc-info-right">
+                                                                    <div class="clinic-booking">
+                                                                        <a class="view-pro-btn " style="width: 180px !important" href="{{ route('doctor_profile', $doctor->id) }}">
+                                                                            {{ __('web.doc_profile') }}
+                                                                        </a>
+                                                                        <a class="apt-btn" style="width: 180px !important" href="{{ route('create_appointment', $doctor->id) }}">
+                                                                            {{ __('web.book_appoint') }}
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </li>
-                                                @empty
-                                                <li>
-                                                    <div class="experience-user">
-                                                        <div class="before-circle"></div>
-                                                    </div>
-                                                    <div class="experience-content">
-                                                        <div class="timeline-content">
-                                                            <h4 class="name">No Record Found</h4>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                @endforelse
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- /Education Details -->
-
-                                    <!-- Experience Details -->
-                                    <div class="widget experience-widget">
-                                        <h4 class="widget-title">Work & Experience</h4>
-                                        <div class="experience-box">
-                                            <ul class="experience-list">
-                                                @forelse($doctor?->experiences as $experience)
-                                                <li>
-                                                    <div class="experience-user">
-                                                        <div class="before-circle"></div>
-                                                    </div>
-                                                    <div class="experience-content">
-                                                        <div class="timeline-content">
-                                                            <h4 class="name">{{ $experience?->experience_title??"" }}
-                                                            </h4>
-                                                            <h5 class="name">{{ $experience?->company_name??"" }}
-                                                            </h5>
-                                                            <span class="time">2010 - Present (5 years)</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                @empty
-                                                <li>
-                                                    <div class="experience-user">
-                                                        <div class="before-circle"></div>
-                                                    </div>
-                                                    <div class="experience-content">
-                                                        <div class="timeline-content">
-                                                            <h4 class="name">No Record Found</h4>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                @endforelse
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- /Experience Details -->
-
-                                    <!-- Awards Details -->
-                                    {{-- <div class="widget awards-widget"> --}}
-                                    {{-- <h4 class="widget-title">Awards</h4> --}}
-                                    {{-- <div class="experience-box"> --}}
-                                    {{-- <ul class="experience-list"> --}}
-                                    {{-- <li> --}}
-                                    {{-- <div class="experience-user"> --}}
-                                    {{-- <div class="before-circle"></div> --}}
-                                    {{-- </div> --}}
-                                    {{-- <div class="experience-content"> --}}
-                                    {{-- <div class="timeline-content"> --}}
-                                    {{-- <p class="exp-year">July 2019</p> --}}
-                                    {{-- <h4 class="exp-title">Humanitarian Award</h4> --}}
-                                    {{-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. --}}
-                                    {{-- Proin a ipsum tellus. Interdum et malesuada fames ac --}}
-                                    {{-- ante ipsum primis in faucibus.</p> --}}
-                                    {{-- </div> --}}
-                                    {{-- </div> --}}
-                                    {{-- </li> --}}
-                                    {{-- <li> --}}
-                                    {{-- <div class="experience-user"> --}}
-                                    {{-- <div class="before-circle"></div> --}}
-                                    {{-- </div> --}}
-                                    {{-- <div class="experience-content"> --}}
-                                    {{-- <div class="timeline-content"> --}}
-                                    {{-- <p class="exp-year">March 2011</p> --}}
-                                    {{-- <h4 class="exp-title">Certificate for International --}}
-                                    {{-- Volunteer Service</h4> --}}
-                                    {{-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. --}}
-                                    {{-- Proin a ipsum tellus. Interdum et malesuada fames ac --}}
-                                    {{-- ante ipsum primis in faucibus.</p> --}}
-                                    {{-- </div> --}}
-                                    {{-- </div> --}}
-                                    {{-- </li> --}}
-                                    {{-- <li> --}}
-                                    {{-- <div class="experience-user"> --}}
-                                    {{-- <div class="before-circle"></div> --}}
-                                    {{-- </div> --}}
-                                    {{-- <div class="experience-content"> --}}
-                                    {{-- <div class="timeline-content"> --}}
-                                    {{-- <p class="exp-year">May 2008</p> --}}
-                                    {{-- <h4 class="exp-title">The Dental Professional of The Year --}}
-                                    {{-- Award</h4> --}}
-                                    {{-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. --}}
-                                    {{-- Proin a ipsum tellus. Interdum et malesuada fames ac --}}
-                                    {{-- ante ipsum primis in faucibus.</p> --}}
-                                    {{-- </div> --}}
-                                    {{-- </div> --}}
-                                    {{-- </li> --}}
-                                    {{-- </ul> --}}
-                                    {{-- </div> --}}
-                                    {{-- </div> --}}
-                                    <!-- /Awards Details -->
-
-                                    <!-- Services List -->
-                                    <div class="service-list">
-                                        <h4>Services</h4>
-                                        <ul class="clearfix">
-                                            @forelse($doctor?->services as $service)
-                                            <li>{{ $service?->service_title??"" }}</li>
-                                            @empty
-                                            <li>No Services Found</li>
-                                            @endforelse
-                                        </ul>
-                                    </div>
-                                    <!-- /Services List -->
-
-                                    <!-- Specializations List -->
-                                    <div class="service-list">
-                                        <h4>Specializations</h4>
-                                        <ul class="clearfix">
-                                            @forelse($doctor?->specializations as $specialization)
-                                            <li>{{ $specialization?->specialization_title??"" }}</li>
-                                            @empty
-                                            <li>No Specialization Found</li>
-                                            @endforelse
-                                        </ul>
-                                    </div>
-                                    <!-- /Specializations List -->
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /Overview Content -->
-
-                        <!-- Locations Content -->
-
-                        <!-- /Locations Content -->
-
-                        <!-- Reviews Content -->
-                        <div role="tabpanel" id="doc_reviews" class="tab-pane fade">
-
-                            <!-- Review Listing -->
-                            <div class="widget review-listing">
-                                <ul class="comments-list">
-
-                                    <!-- Comment List -->
-                                    @forelse($reviews as $review)
-                                    @php
-                                    $patient = \App\Models\User::query()->where('id', $review->user_id)->first();
-                                    @endphp
-                                    <li>
-                                        <div class="comment">
-                                            @if ($patient->profile_image ?? '')
-                                            <img class="avatar avatar-sm rounded-circle" alt="User Image" src="{{ asset($patient->profile_image) }}">
-                                            @else
-                                            <img class="avatar avatar-sm rounded-circle" alt="User Image" src="{{ URL::asset('/assets/img/patients/patients.jfif')}}">
-                                            @endif
-                                            <div class="comment-body">
-                                                <div class="meta-data">
-                                                    <span class="comment-author">{{ $patient->name }}</span>
-                                                    <span class="comment-date">Reviewed {{ $review->created_at->diffForHumans() }}</span>
-                                                    <div class="review-count rating">
-                                                        @php
-                                                        $rat_num = number_format($review_value);
-                                                        @endphp
-                                                        @for ($i = 1; $i <= $review->star_rated; $i++)
-                                                            <i class="fas fa-star filled"></i>
-                                                            @endfor
-                                                            @for ($j = $review->star_rated; $j < 5; $j++) <i class="fas fa-star"></i>
-                                                                @endfor
+                                                        
                                                     </div>
                                                 </div>
-                                                <p class="recommended"><i class="far fa-thumbs-up"></i> {{ $review->review_title }}</p>
-                                                <p class="comment-content">
-                                                    {{ $review->review_body }}
-                                                </p>
                                             </div>
                                         </div>
-
-                                        <!-- Comment Reply -->
-
-                                        <!-- /Comment Reply -->
-                                    </li>
-                                    @empty
-                                    @endforelse
-                                    <!-- /Comment List -->
-
-                                </ul>
-                                <hr>
-
-                                <!-- Show All -->
-                                <!-- <div class="all-feedback text-center">
-                                                                   <a href="#" class="btn btn-primary btn-sm">
-                                                                       Show all feedback <strong>(167)</strong>
-                                                                  </a>
-                                                              </div> -->
-                                <!-- /Show All -->
-
+                                    @endforeach
                                 </div>
-                                <!-- /Review Listing -->
-
-                                <!-- Write Review -->
-                                <div class="write-review">
-                                    <h4>Write a review for <strong>Dr. {{$doctor->name}}</strong></h4>
-
-                                    <!-- Write Review Form -->
-                                    <form method="POST" action="{{ route('add_review') }}">
-                                        @csrf
-                                        <input type="hidden" name="user_id" value="{{ auth()->id() }}">
-                                        <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
-                                        <input type="hidden" name="hospital_id" value="{{ $doctor->hospital_id }}">
-                                        <div class="form-group">
-                                            <label>Review</label>
-                                            <div class="star-rating">
-                                                <input id="star-5" type="radio" name="star_rated" value="5">
-                                                <label for="star-5" title="5 stars">
-                                                    <i class="active fa fa-star"></i>
-                                                </label>
-                                                <input id="star-4" type="radio" name="star_rated" value="4">
-                                                <label for="star-4" title="4 stars">
-                                                    <i class="active fa fa-star"></i>
-                                                </label>
-                                                <input id="star-3" type="radio" name="star_rated" value="3">
-                                                <label for="star-3" title="3 stars">
-                                                    <i class="active fa fa-star"></i>
-                                                </label>
-                                                <input id="star-2" type="radio" name="star_rated" value="2">
-                                                <label for="star-2" title="2 stars">
-                                                    <i class="active fa fa-star"></i>
-                                                </label>
-                                                <input id="star-1" type="radio" name="star_rated" value="1">
-                                                <label for="star-1" title="1 star">
-                                                    <i class="active fa fa-star"></i>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Title of your review</label>
-                                            <input class="form-control" type="text" name="review_title" placeholder="If you could say it in one sentence, what would you say?">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Your review</label>
-                                            <textarea id="review_desc" maxlength="100" name="review_body" class="form-control"></textarea>
-
-                                            <div class="d-flex justify-content-between mt-3"><small class="text-muted"><span id="chars">100</span> characters remaining</small></div>
-                                        </div>
-                                        <div class="submit-section">
-                                            <button type="submit" class="btn btn-primary submit-btn">Add Review
-                                            </button>
-                                        </div>
-                                    </form>
-                                    <!-- /Write Review Form -->
-
-                                </div>
-                                <!-- /Write Review -->
-
-
-                            <!-- /Reviews Content -->
-
-                            <!-- Business Hours Content -->
-
+                            @else
+                                <p class="no-specialty">{{ __('web.no_doctors_for_hospital') }}</p>
+                            @endif
                         </div>
-                        <!-- /Business Hours Content -->
-                        <div role="tabpanel" id="doc_business_hours" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col-md-6 offset-md-3">
-                                    @php
-use Carbon\Carbon;
-@endphp
-                                        <!-- Business Hours Widget -->
-                                        <div class="widget business-widget">
-                                            <div class="widget-content">
-                                                <div class="listing-hours">
-                                                    <div class="listing-day current">
-                                                        <div class="day">Today <span>{{ \Carbon\Carbon::now()->format('j M Y') }}</span></div>
-                                                        <div class="time-items">
-                                                            @if($todaysAvailability)
-                                                            <span class="open-status"><span class="badge bg-success-light">Open Now</span></span>
-                                                            <span class="time badge badge-warning">{{ @Carbon::parse(@$todaysAvailability->slots[0]['start_time'])->format('h:i A');  }} - {{ @Carbon::parse(@$todaysAvailability->slots[0]['end_time'])->format('h:i A');  }}</span>
-
-                                                            @else
-                                                            <span class="open-status"><span class="badge bg-danger-light">Closed</span></span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-
-                                                    @for ($i = 0; $i <= 6; $i++)
-    <div class="listing-day">
-        <div class="day">{{ \App\Commons::Days[$i] }}</div>
-        <div class="time-items">
-            @php
-                $open = false; // Initialize a variable to track if it's open
-            @endphp
-
-            @forelse ($regularAvailability as $availability)
-                @if ($availability->week_day == strtolower(\App\Commons::Days[$i]))
-                    @php
-                        $open = true; // Set open to true if an open availability is found
-                    @endphp
-                    <span class="open-status"><span class="badge bg-success-light">Open</span></span>
-                    <span class="time badge badge-warning">{{ @Carbon::parse(@$availability->slots[0]['start_time'])->format('h:i A');  }} - {{ @Carbon::parse(@$availability->slots[0]['end_time'])->format('h:i A');  }}</span>
-                        @if(@$availability->slots[1])
-                        <span class="time badge badge-warning">{{ @Carbon::parse(@$availability->slots[1]['start_time'])->format('h:i A'); }} - {{ @Carbon::parse(@$availability->slots[1]['end_time'])->format('h:i A'); }}
-                        @endif
-                    </span>
-                @endif
-            @empty
-                @php
-                    $open = false; // No availability found, set open to false
-                @endphp
-            @endforelse
-
-            @if (!$open) <!-- Check the open status after the loop -->
-                <span class="open-status"><span class="badge bg-danger-light">Closed</span></span>
-            @endif
-        </div>
-    </div>
-@endfor
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /Business Hours Widget -->
-
-                                </div>
-                            </div>
-
                     </div>
                 </div>
-            </div>
-            <!-- /Doctor Details Tab -->
+                {{-- Doctors --}}
+                {{-- Specialities --}}
+                <div class="card">
+                    <div class="card-body py-2">
+                        <h4 class="text-center p-3 pb-0">{{ __('web.specilities') }}</h4>
+                        <div class="amenities-container">
+                            @if ($hospital->specialities->count() > 0)
+                                <ul>
+                                    @foreach ($hospital->specialities as $speciality)
+                                        <li><img class="" src="{{ $speciality->image }}"> {{ $speciality->name }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="no-specialty">{{ __('web.no_specialties_for_hospital') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                {{-- Specialities --}}
 
-        </div>
-    </div>
+                {{-- Offers --}}
+                <div class="card">
+                    <div class="card-body py-2">
+                        <h4 class="text-center p-3 pb-0">{{ __('web.offers') }}</h4>
+                        <div class="amenities-container">
+                            @if ($hospital->offers->count() > 0)
+                                <div class="row">
+                                    @foreach ($hospital->offers as $offer)
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="doctor-widget">
+                                                        <div class="doc-info-left">
+                                                            <div class="doctor-img">
+                                                                <div class="owl-carousel">
+                                                                    @foreach ($offer->images as $img)
+                                                                        <div class="item"><img src="{{ $img }}" style="height: 185px" alt="Hospital Image 1"></div>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                            <div class="doc-info-cont" style="position: relative">
+                                                                <h4 class="doc-name text-info">
+                                                                    {{ $offer->title }}
+                                                                </h4>
+                                                                <h5 class="doc-department">
+                                                                    {{ $offer->content }}
+                                                                </h5>
+                                                                <div class="doc-info-right" style="position: absolute; bottom: 0; ">
+                                                                    <div class="clinic-booking">
+                                                                        @if ($offer->type == 'video')    
+                                                                            <a class="view-pro-btn" style="width: 180px !important; " target="blank" href="{{ $offer->video_link }}">
+                                                                                {{ __('web.show_offer') }}
+                                                                            </a>
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="no-specialty">{{ __('web.no_offers_for_hospital') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                {{-- Offers --}}
+                <!-- hospital Details Tab -->
+                {{--  --}}
+            </div>
+            <!-- /Page Content -->
+    </section>
     <!-- /Page Content -->
-</section>
-<!-- /Page Content -->
+    <script>
+        $(document).ready(function() {
+            $(".owl-carousel").owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    }
+                }
+            });
+
+            // $(".owl-carousel2").owlCarousel({
+            //     loop: true,
+            //     margin: 10,
+            //     nav: true,
+            //     autoplay: true,
+            //     autoplayTimeout: 3000,
+            //     autoplayHoverPause: true,
+            //     responsive: {
+            //         0: {
+            //             items: 1
+            //         }
+            //     }
+            // });
+
+        });
+    </script>
 
 @endsection
