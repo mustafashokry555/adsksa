@@ -64,6 +64,7 @@ return [
     'Select_Specialist' => 'حدد المتخصص',
     'other' => 'آخر',
     'female' => 'أنثى',
+    'show_more' => 'عرض الكل',
     'Male' => 'ذكر',
     'search' => 'بحث',
     'make_appoint' => 'حجز موعد',

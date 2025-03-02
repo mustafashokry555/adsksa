@@ -64,68 +64,82 @@
     <!-- /Header -->
     <div class="row align-items-center">
         <!-- <div class="col-lg-12 col-md-12"></div> -->
-        <div class="col-lg-12 col-md-12">
-            <div class="home-four-doctor">
-                <div class="home-four-header">
-                    <h2>{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2>
-                </div>
+        
+    </div>
+    </div>
+    </section>
 
-                <form method="GET" action="{{ route('single_search_doctor') }}" class="banner-four-search">
-
-                    <div class="search_bar" style="background-color:white">
-                        <div class="drop_down_wrap">
-                            <label>{{ __('web.Enter_country') }}</label>
-                            <div class="dropdown">
-                                <select id="countrySelect" name="country" class="select form-control" >
-                                    <option selected disabled>{{ __('web.Enter_country') }}</option>
-                                    <option value='all'>{{ __('web.All') }}</option>
-                                    @foreach($countries as $country)
-                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
-                                    @endforeach
-                                </select>
+    <section class="login">
+        <div class="content" style="min-height: 273.9px;">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="account-content">
+                            <div class="row align-items-center justify-content-center">
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="home-four-doctor">
+                                        <div class="home-four-header">
+                                            <h2 style="color: #272b41">{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2>
+                                        </div>
+                                        <form method="GET" action="{{ route('single_search_doctor') }}" class="banner-four-search">
+                                            <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="search_bar" style="background-color:white">
+                                                <div class="drop_down_wrap">
+                                                    <label>{{ __('web.Enter_country') }}</label>
+                                                    <div class="dropdown">
+                                                        <select id="countrySelect" name="country" class="select form-control" >
+                                                            <option selected disabled>{{ __('web.Enter_country') }}</option>
+                                                            <option value='all'>{{ __('web.All') }}</option>
+                                                            @foreach($countries as $country)
+                                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="drop_down_wrap">
+                                                    <label>{{ __('web.Enter City') }}</label>
+                                                    <div class="dropdown">
+                                                        <select id="citySelect" name="city" class="select form-control" >
+                                                            <option selected disabled>{{ __('web.Enter City') }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="drop_down_wrap">
+                                                    <label>{{ __('web.Select a Insurance') }}</label>
+                                                    <div class="dropdown">
+                                                        <select id="insuranceSelect" name="insurance" class="select form-control">
+                                                            <option selected disabled>{{ __('web.Select a Insurance') }}</option>
+                                                            <option value='all'>{{ __('web.All') }}</option>
+                                                            @foreach($insurances as $insurance)
+                                                                <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="drop_down_wrap">
+                                                    <label>{{ __('web.Select a specility') }}</label>
+                                                    <div class="dropdown">
+                                                        <select id="specialitySelect" name="speciality" class="select form-control">
+                                                            <option selected disabled>{{ __('web.Select a specility') }}</option>
+                                                            <option value='all'>{{ __('web.All') }}</option>
+                                                            @foreach($specialities as $speciality)
+                                                                <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                        
+                                                <button class="btn_search">{{ __('web.Search') }}</button>
+                                            </div>
+                                        </form>
+                        
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="drop_down_wrap">
-                            <label>{{ __('web.Enter City') }}</label>
-                            <div class="dropdown">
-                                <select id="citySelect" name="city" class="select form-control" >
-                                    <option selected disabled>{{ __('web.Enter City') }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="drop_down_wrap">
-                            <label>{{ __('web.Select a Insurance') }}</label>
-                            <div class="dropdown">
-                                <select id="insuranceSelect" name="insurance" class="select form-control">
-                                    <option selected disabled>{{ __('web.Select a Insurance') }}</option>
-                                    <option value='all'>{{ __('web.All') }}</option>
-                                    @foreach($insurances as $insurance)
-                                        <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="drop_down_wrap">
-                            <label>{{ __('web.Select a specility') }}</label>
-                            <div class="dropdown">
-                                <select id="specialitySelect" name="speciality" class="select form-control">
-                                    <option selected disabled>{{ __('web.Select a specility') }}</option>
-                                    <option value='all'>{{ __('web.All') }}</option>
-                                    @foreach($specialities as $speciality)
-                                        <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <button class="btn_search">{{ __('web.Search') }}</button>
                     </div>
-                </form>
-
+                </div>
             </div>
         </div>
-    </div>
-    </div>
     </section>
     @if (session()->has('flash'))
         <x-alert>{{ session('flash')['message'] }}</x-alert>

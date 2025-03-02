@@ -122,7 +122,7 @@
                     </div>
                 </div>
                 <!-- /hospital Widget -->
-                
+
                 <style>
                     .amenities-container ul {
                         list-style-type: none;
@@ -198,123 +198,6 @@
                     }
                 </style>
 
-                {{-- Doctors --}}
-                <div class="card">
-                    <div class="card-body py-2">
-                        <h4 class="text-center p-3 pb-0">{{ __('web.doctors') }}</h4>
-                        <div class="amenities-container">
-                            @if ($hospital->doctors->count() > 0)
-                                <div class="row">
-                                    @foreach ($hospital->doctors->take(6) as $doctor)
-                                        <div class="col-md-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="doctor-widget">
-                                                        <div class="doc-info-left">
-                                                            <div class="doctor-img">
-                                                                <a href="{{ route('doctor_profile', $doctor->id) }}">
-                                                                    <img src="{{ asset($doctor->profile_image) }}" style="height: 185px" class="img-fluid"
-                                                                        alt="User Image">
-                                                                </a>
-                                                            </div>
-                                                            <div class="doc-info-cont">
-                                                                <h4 class="doc-name"><a
-                                                                        href="{{ route('doctor_profile', $doctor->id) }}">Dr.
-                                                                        {{ $doctor->name }}</a>
-                                                                </h4>
-                                                                @if ($doctor->speciality->name ?? '')
-                                                                    <!-- <p class="doc-speciality">{{ $doctor->speciality->name }}</p> -->
-                                                                    <h5 class="doc-department"><img
-                                                                            src="{{ asset($doctor->speciality->image) }}" class="img-fluid"
-                                                                            alt="Speciality">{{ $doctor->speciality->name }}</h5>
-                                                                @else
-                                                                    <p class="doc-speciality">Speciality</p>
-                                                                @endif
-                
-                                                                @php
-                                                                    $reviews = App\Models\Review::query()
-                                                                        ->where('doctor_id', $doctor->id)
-                                                                        ->get();
-                                                                    $review_sum = App\Models\Review::where(
-                                                                        'doctor_id',
-                                                                        $doctor->id,
-                                                                    )->sum('star_rated');
-                                                                    if ($reviews->count() > 0) {
-                                                                        $review_value = $review_sum / $reviews->count();
-                                                                    } else {
-                                                                        $review_value = 0;
-                                                                    }
-                                                                @endphp
-                
-                                                                <div class="rating">
-                                                                    @php
-                                                                        $rat_num = number_format($review_value);
-                                                                    @endphp
-                                                                    @for ($i = 1; $i <= $rat_num; $i++)
-                                                                        <i class="fas fa-star filled"></i>
-                                                                    @endfor
-                                                                    @for ($j = $rat_num; $j < 5; $j++)
-                                                                        <i class="fas fa-star"></i>
-                                                                    @endfor
-                                                                    <span
-                                                                        class="d-inline-block average-rating">{{ $reviews->count() }}</span>
-                                                                </div>
-                                                                <div class="doc-info-right">
-                                                                    <div class="clinic-booking">
-                                                                        <a class="view-pro-btn " style="width: 180px !important" href="{{ route('doctor_profile', $doctor->id) }}">
-                                                                            {{ __('web.doc_profile') }}
-                                                                        </a>
-                                                                        <a class="apt-btn" style="width: 180px !important" href="{{ route('create_appointment', $doctor->id) }}">
-                                                                            {{ __('web.book_appoint') }}
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    @if ($hospital->doctors->count() > 6)
-                                        <div class="col-12 text-center">
-                                            <a href="{{ route('hospital_doctors', $hospital->id) }}" class="btn btn-primary" >{{ __('web.show_more') }}</a>
-                                        </div>
-                                    @endif
-                                </div>
-                            @else
-                                <p class="no-specialty">{{ __('web.no_doctors_for_hospital') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                {{-- Doctors --}}
-                {{-- Specialities --}}
-                <div class="card">
-                    <div class="card-body py-2">
-                        <h4 class="text-center p-3 pb-0">{{ __('web.specilities') }}</h4>
-                        <div class="amenities-container">
-                            @if ($hospital->specialities->count() > 0)
-                                <ul>
-                                    @foreach ($hospital->specialities->take(14) as $speciality)
-                                        <li><img class="" src="{{ $speciality->image }}"> {{ $speciality->name }}
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                @if ($hospital->specialities->count() > 14)
-                                    <div class="col-12 text-center">
-                                        <a href="{{ route('hospital_specialties', $hospital->id) }}" class="btn btn-primary" >{{ __('web.show_more') }}</a>
-                                    </div>
-                                @endif
-                            @else
-                                <p class="no-specialty">{{ __('web.no_specialties_for_hospital') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                {{-- Specialities --}}
-
                 {{-- Offers --}}
                 <div class="card">
                     <div class="card-body py-2">
@@ -322,7 +205,7 @@
                         <div class="amenities-container">
                             @if ($hospital->offers->count() > 0)
                                 <div class="row">
-                                    @foreach ($hospital->offers->take(6) as $offer)
+                                    @foreach ($hospital->offers as $offer)
                                         <div class="col-md-4">
                                             <div class="card">
                                                 <div class="card-body">
@@ -371,11 +254,6 @@
                                             </div>
                                         </div>
                                     @endforeach
-                                    @if ($hospital->offers->count() > 6)
-                                        <div class="col-12 text-center">
-                                            <a href="{{ route('hospital_offers', $hospital->id) }}" class="btn btn-primary" >{{ __('web.show_more') }}</a>
-                                        </div>
-                                    @endif
                                 </div>
                             @else
                                 <p class="no-specialty">{{ __('web.no_offers_for_hospital') }}</p>
@@ -385,7 +263,6 @@
                 </div>
                 {{-- Offers --}}
                 <!-- hospital Details Tab -->
-                {{--  --}}
             </div>
             <!-- /Page Content -->
     </section>
@@ -405,21 +282,6 @@
                     }
                 }
             });
-
-            // $(".owl-carousel2").owlCarousel({
-            //     loop: true,
-            //     margin: 10,
-            //     nav: true,
-            //     autoplay: true,
-            //     autoplayTimeout: 3000,
-            //     autoplayHoverPause: true,
-            //     responsive: {
-            //         0: {
-            //             items: 1
-            //         }
-            //     }
-            // });
-
         });
     </script>
 

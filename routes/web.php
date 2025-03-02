@@ -68,6 +68,9 @@ Route::get('search-doctor-index', [HomeController::class, 'search_doctor_index']
 Route::get('search-pharmacy', [HomeController::class, 'search_pharmacy'])->name('search_pharmacy');
 Route::get('doctors/{doctor}/profile', [HomeController::class, 'doctor_profile'])->name('doctor_profile');
 Route::get('hospitals/{hospital}/profile', [HomeController::class, 'hospital_profile'])->name('hospital_profile');
+Route::get('hospitals/{hospital}/doctors', [HomeController::class, 'hospital_doctors'])->name('hospital_doctors');
+Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital_specialties'])->name('hospital_specialties');
+Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
 Route::post('/subscribe_newsletter', [HomeController::class, 'subscribeNewsletter']);
 
 // main search 

@@ -77,6 +77,7 @@ return [
     'Specializations' => 'Specializations',
     'Dr' => 'Dr',
     'Write_review' => 'Write a review for',
+    'show_more' => 'Show More',
     'Reviews' => 'Reviews',
     'work_Hours' => 'Work Hours',
     'Review' => 'Review',

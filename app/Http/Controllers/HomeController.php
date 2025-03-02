@@ -362,6 +362,73 @@ class HomeController extends Controller
         ]);
     }
 
+    public function hospital_doctors($id)
+    {
+        $reviews = HospitalReview::query()->where('hospital_id', $id)->get();
+        $review_sum = HospitalReview::where('hospital_id', $id)->sum('star_rated');
+        if ($reviews->count() > 0) {
+            $review_value = $review_sum / $reviews->count();
+        } else {
+            $review_value = 0;
+        }
+        $hospital = Hospital::where('hospitals.id', $id)
+        ->with([
+            'doctors', 'city', 'country',
+        ])
+        ->first();
+        return view('patient.doctor.hospital_doctors', [
+            'hospital' => $hospital,
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+        ]);
+    }
+
+    public function hospital_specialties($id)
+    {
+        $reviews = HospitalReview::query()->where('hospital_id', $id)->get();
+        $review_sum = HospitalReview::where('hospital_id', $id)->sum('star_rated');
+        if ($reviews->count() > 0) {
+            $review_value = $review_sum / $reviews->count();
+        } else {
+            $review_value = 0;
+        }
+        $hospital = Hospital::where('hospitals.id', $id)
+        ->with([
+            'specialities', 'city', 'country',
+        ])
+        ->first();
+        return view('patient.doctor.hospital_specialities', [
+            'hospital' => $hospital,
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+        ]);
+    }
+
+    public function hospital_offers($id)
+    {
+        $reviews = HospitalReview::query()->where('hospital_id', $id)->get();
+        $review_sum = HospitalReview::where('hospital_id', $id)->sum('star_rated');
+        if ($reviews->count() > 0) {
+            $review_value = $review_sum / $reviews->count();
+        } else {
+            $review_value = 0;
+        }
+        $hospital = Hospital::where('hospitals.id', $id)
+        ->with([
+            'offers' => function($query) {
+                $query->where('is_active', 1)
+                    ->where('start_date', '<=', now())
+                    ->where('end_date', '>=', now());
+            }, 'city', 'country',
+        ])
+        ->first();
+        return view('patient.doctor.hospital_offers', [
+            'hospital' => $hospital,
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+        ]);
+    }
+
     public function getYearlyReport()
     {
         $currentYear = request()->year ? request()->year : Carbon::now()->year;

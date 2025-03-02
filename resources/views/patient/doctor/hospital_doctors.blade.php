@@ -205,7 +205,7 @@
                         <div class="amenities-container">
                             @if ($hospital->doctors->count() > 0)
                                 <div class="row">
-                                    @foreach ($hospital->doctors->take(6) as $doctor)
+                                    @foreach ($hospital->doctors as $doctor)
                                         <div class="col-md-4">
                                             <div class="card">
                                                 <div class="card-body">
@@ -277,11 +277,6 @@
                                             </div>
                                         </div>
                                     @endforeach
-                                    @if ($hospital->doctors->count() > 6)
-                                        <div class="col-12 text-center">
-                                            <a href="{{ route('hospital_doctors', $hospital->id) }}" class="btn btn-primary" >{{ __('web.show_more') }}</a>
-                                        </div>
-                                    @endif
                                 </div>
                             @else
                                 <p class="no-specialty">{{ __('web.no_doctors_for_hospital') }}</p>
@@ -290,102 +285,7 @@
                     </div>
                 </div>
                 {{-- Doctors --}}
-                {{-- Specialities --}}
-                <div class="card">
-                    <div class="card-body py-2">
-                        <h4 class="text-center p-3 pb-0">{{ __('web.specilities') }}</h4>
-                        <div class="amenities-container">
-                            @if ($hospital->specialities->count() > 0)
-                                <ul>
-                                    @foreach ($hospital->specialities->take(14) as $speciality)
-                                        <li><img class="" src="{{ $speciality->image }}"> {{ $speciality->name }}
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                @if ($hospital->specialities->count() > 14)
-                                    <div class="col-12 text-center">
-                                        <a href="{{ route('hospital_specialties', $hospital->id) }}" class="btn btn-primary" >{{ __('web.show_more') }}</a>
-                                    </div>
-                                @endif
-                            @else
-                                <p class="no-specialty">{{ __('web.no_specialties_for_hospital') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                {{-- Specialities --}}
-
-                {{-- Offers --}}
-                <div class="card">
-                    <div class="card-body py-2">
-                        <h4 class="text-center p-3 pb-0">{{ __('web.offers') }}</h4>
-                        <div class="amenities-container">
-                            @if ($hospital->offers->count() > 0)
-                                <div class="row">
-                                    @foreach ($hospital->offers->take(6) as $offer)
-                                        <div class="col-md-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="doctor-widget">
-                                                        <div class="doc-info-left">
-                                                            <div class="doctor-img">
-                                                                <div class="owl-carousel">
-                                                                    @foreach ($offer->images as $img)
-                                                                        <div class="item">
-                                                                            @if ($offer->type == 'video') 
-                                                                                <a  target="blank" href="{{ $offer->video_link }}">
-                                                                                    <img src="{{ $img }}" style="height: 185px" alt="Hospital Image 1">
-                                                                                </a>
-                                                                            @else
-                                                                                <img src="{{ $img }}" style="height: 185px" alt="Hospital Image 1">
-                                                                            @endif
-                                                                        </div>
-                                                                    @endforeach
-                                                                </div>
-                                                            </div>
-                                                            <div class="doc-info-cont" style="position: relative">
-                                                                <h4 class="doc-name text-info">
-                                                                    @if ($offer->type == 'video') 
-                                                                        <a  target="blank" href="{{ $offer->video_link }}">{{ $offer->title }}</a>
-                                                                    @else
-                                                                        {{ $offer->title }}
-                                                                    @endif
-                                                                </h4>
-                                                                <h5 class="doc-department">
-                                                                    {{ $offer->content }}
-                                                                </h5>
-                                                                {{-- <div class="doc-info-right" style="position: absolute; bottom: 0; ">
-                                                                    <div class="clinic-booking">
-                                                                        @if ($offer->type == 'video')    
-                                                                            <a class="view-pro-btn" style="width: 180px !important; " target="blank" href="{{ $offer->video_link }}">
-                                                                                {{ __('web.show_offer') }}
-                                                                            </a>
-                                                                        @endif
-                                                                    </div>
-                                                                </div> --}}
-                                                            </div>
-                                                        </div>
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                    @if ($hospital->offers->count() > 6)
-                                        <div class="col-12 text-center">
-                                            <a href="{{ route('hospital_offers', $hospital->id) }}" class="btn btn-primary" >{{ __('web.show_more') }}</a>
-                                        </div>
-                                    @endif
-                                </div>
-                            @else
-                                <p class="no-specialty">{{ __('web.no_offers_for_hospital') }}</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                {{-- Offers --}}
                 <!-- hospital Details Tab -->
-                {{--  --}}
             </div>
             <!-- /Page Content -->
     </section>
