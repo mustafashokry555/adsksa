@@ -31,13 +31,13 @@
                                             <thead>
                                                 <tr>
                                                     <th>{{ __('hospital.insurance.id') }}</th>
-                                                    <th>{{ __('hospital.insurance.name_en') }}</th>
-                                                    <th>{{ __('hospital.insurance.name_ar') }}</th>
+                                                    <th>{{ __('admin.insurance.name_en') }}</th>
+                                                    <th>{{ __('admin.insurance.name_ar') }}</th>
                                                     <th>{{ __('hospital.insurance.email') }}</th>
                                                     <th>{{ __('hospital.insurance.phone1') }}</th>
                                                     <th>{{ __('hospital.insurance.phone2') }}</th>
-                                                    <th>{{ __('hospital.insurance.city') }},{{ __('hospital.insurance.state') }},{{ __('hospital.insurance.address') }}
-                                                    </th>
+                                                    {{-- <th>{{ __('hospital.insurance.address') }}
+                                                    </th> --}}
                                                     <th>{{ __('hospital.insurance.created_at') }}</th>
                                                     <th>{{ __('hospital.insurance.action') }}</th>
 
@@ -60,10 +60,9 @@
                                                         <td>{{ $item->email }}</td>
                                                         <td>{{ $item->phone1 }}</td>
                                                         <td>{{ $item->phone2 }}</td>
-                                                        <td>{{ $item->city }},{{ $item->state }},{{ $item->address }}
-                                                        </td>
+                                                        {{-- <td>{{ $item->address }}
+                                                        </td> --}}
                                                         <td>{{ $item->created_at->diffForHumans() }}</td>
-                                                        <!-- <td>{{ $item->updated_at->diffForHumans() }}</td> -->
                                                         <td class="text-end">
                                                             @if ($item->user_id == auth()->user()->hospital_id)
                                                                 <div class="table-action">
