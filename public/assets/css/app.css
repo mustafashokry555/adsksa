@@ -19034,8 +19034,14 @@ body.home-four {
 -----------------------*/
 
 .footer-four {
-    background: linear-gradient(to left, #14558D, #40B0D6)
-}
+    background: linear-gradient(to right, 
+    #009EFF, 
+    #0DA9D9, 
+    #12B3AB, 
+    #00C598, 
+    #2BE0B7, 
+    #1AEEBE
+);}
 
 .news-section-four {
     padding: 40px 0 40px;

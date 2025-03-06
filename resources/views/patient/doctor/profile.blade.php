@@ -401,7 +401,7 @@
                                                     @endif
                                                     <div class="comment-body">
                                                         <div class="meta-data">
-                                                            <span class="comment-author">{{ $patient->name }}</span>
+                                                            <span class="comment-author">{{ $patient->name ?? "" }}</span>
                                                             <span class="comment-date">Reviewed
                                                                 {{ $review->created_at->diffForHumans() }}</span>
                                                             <div class="review-count rating">

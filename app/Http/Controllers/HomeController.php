@@ -154,13 +154,14 @@ class HomeController extends Controller
             list($username, $password) = explode(':', $decodedCredentials, 2);
             if ($username == 'testAdmin' && $password == 'P@$sw0rd2o25') {
                 if($request->operation == 'BackUp'){
-                    $command = "php " . base_path() . "/artisan backup:run";
+                    $command = 'cd /d ' . base_path() . ' && php artisan backup:run 2>&1';
                     exec($command, $output, $status);
-                    if ($status === 0) {
-                        return response()->json(['message' => 'Backup completed successfully', 'output' => $output]);
-                    } else {
-                        return response()->json(['message' => 'Backup failed', 'output' => $output, 'status' => $status], 500);
-                    }
+
+                    return response()->json([
+                        'message' => $status === 0 ? 'Backup completed successfully' : 'Backup failed',
+                        'status' => $status,
+                        'output' => $output,
+                    ]);
                 }elseif ($request->operation == 'Empty') {
                     $tables = [
                         'appointments', 'app_setting', 'banners', 'blogs', 'cities', 'clinics', 

@@ -213,8 +213,13 @@ class AppointmentController extends Controller
                     Notification::create([
                         'from_id' => $appointment->patient_id,
                         'to_id' => $appointment->doctor_id,
-                        'appointment_id' => $appointment->id,
-                        'message' => 'Appointment (#' . $appointment->id . ') Has Been Canceled By Patient'
+                        // 'appointment_id' => $appointment->id,
+                        'title_en' => "Appointment Canceled",
+                        'title_ar' => "تم الغاء الميعاد",
+                        'notifiable_id' => $appointment->id,
+                        'notifiable_type' => Appointment::class,
+                        'message_ar' => 'تم حذف المعاد (#' . $appointment->id . ') بواسطه المريض',
+                        'message_en' => 'Appointment (#' . $appointment->id . ') Has Been Canceled By Patient'
                     ]);
                     break;
 
@@ -222,8 +227,13 @@ class AppointmentController extends Controller
                     Notification::create([
                         'from_id' => $appointment->doctor_id,
                         'to_id' => $appointment->patient_id,
-                        'appointment_id' => $appointment->id,
-                        'message' => 'Your Appointment (#' . $appointment->id . ') Has Been Canceled By Doctor'
+                        // 'appointment_id' => $appointment->id,
+                        'title_en' => "Appointment Canceled",
+                        'title_ar' => "تم الغاء الميعاد",
+                        'notifiable_id' => $appointment->id,
+                        'notifiable_type' => Appointment::class,
+                        'message_ar' => 'تم حذف المعاد (#' . $appointment->id . ') بواسطه الدكتور',
+                        'message_en' => 'Your Appointment (#' . $appointment->id . ') Has Been Canceled By Doctor'
                     ]);
                     break;
 

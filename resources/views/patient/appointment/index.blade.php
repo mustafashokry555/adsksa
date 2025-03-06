@@ -57,14 +57,14 @@
                                                                 <td>{{$appointment->id}}</td>
                                                                 <td>
                                                                     <h2 class="table-avatar">
-                                                                        <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}"
+                                                                        <a href="{{ route('doctor_profile', $doctor->id) }}"
                                                                             class="avatar avatar-sm me-2">
                                                                             <img class="avatar-img rounded-circle"
                                                                                 src="{{ asset( $doctor->profile_image) }}"
                                                                                 alt="User Image">
                                                                         </a>
                                                                         <a
-                                                                            href="{{ route('profile.show', ['profile' => $doctor->id]) }}">Dr.
+                                                                            href="{{ route('doctor_profile', $doctor->id) }}">Dr.
                                                                             {{ @$doctor->name }}
                                                                             <span>{{ @$doctor->speciality->name }}</span></a>
                                                                     </h2>
