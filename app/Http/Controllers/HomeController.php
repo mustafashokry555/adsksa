@@ -23,6 +23,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class HomeController extends Controller
 {
@@ -162,6 +164,39 @@ class HomeController extends Controller
                         'status' => $status,
                         'output' => $output,
                     ]);
+                } elseif($request->operation == 'gitPull'){
+                    try {
+                        // Get the base path of the Laravel project
+                        $projectPath = base_path();
+            
+                        // Create and execute the process
+                        $process = new Process(['git', 'pull']);
+                        $process->setWorkingDirectory($projectPath);
+                        $process->run();
+            
+                        // Check if the process was successful
+                        if (!$process->isSuccessful()) {
+                            throw new ProcessFailedException($process);
+                        }
+            
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'Git pull executed successfully',
+                            'output' => $process->getOutput(),
+                        ]);
+                    } catch (ProcessFailedException $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Git pull failed',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'An unexpected error occurred',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    }
                 }elseif ($request->operation == 'Empty') {
                     $tables = [
                         'appointments', 'app_setting', 'banners', 'blogs', 'cities', 'clinics', 
