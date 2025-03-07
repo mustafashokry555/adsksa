@@ -138,11 +138,22 @@ class AppointmentController extends Controller
             "appointment_date" => $dateTime->format("Y-m-d"),
             "appointment_time" => $dateTime->format("H:i:s"),
             "fee" => $doctor->pricing,
-            "status"=>'C'
+            "status"=>'P'
             // "insurance_id"=> $insurance
             // "vat" => $invoiceSettings->get("vat", 0.0),
         ]);
-        Appointment::create($request->except("selected_slot"));
+        $appointment = Appointment::create($request->except("selected_slot"));
+        Notification::create([
+            'from_id' => $appointment->patient_id,
+            'to_id' => $appointment->doctor_id,
+            // 'appointment_id' => $appointment->id,
+            'title_en' => "New Appointment",
+            'title_ar' => "ميعاد جديد",
+            'notifiable_id' => $appointment->id,
+            'notifiable_type' => Appointment::class,
+            'message_ar' => 'تم اضافه ميعاد (#' . $appointment->id . ') في انتظار الموافقة',
+            'message_en' => 'New Appointment (#' . $appointment->id . ') is waiting for approval',
+        ]);
 
         return redirect()
             ->route('appointments')
@@ -204,6 +215,17 @@ class AppointmentController extends Controller
             $appointment->update($attributes);
         }
         if (request('status') == 'C') {
+            Notification::create([
+                'from_id' => $appointment->doctor_id,
+                'to_id' => $appointment->patient_id,
+                // 'appointment_id' => $appointment->id,
+                'title_en' => "Appointment Confirmed",
+                'title_ar' => "تم تأكيد الميعاد",
+                'notifiable_id' => $appointment->id,
+                'notifiable_type' => Appointment::class,
+                'message_ar' => 'تم تأكيد المعاد (#' . $appointment->id . ')',
+                'message_en' => 'Appointment (#' . $appointment->id . ') Has Been Confirmed'
+            ]);
             return redirect()
                 ->route('appointments')
                 ->with('flash', ['type', 'success', 'message' => 'Appointment Confirmed']);

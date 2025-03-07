@@ -701,6 +701,17 @@ class MainController extends Controller
                 $a->fee = $doctor->pricing;
 
                 $a->save();
+                Notification::create([
+                    'from_id' => $a->patient_id,
+                    'to_id' => $a->doctor_id,
+                    // 'appointment_id' => $appointment->id,
+                    'title_en' => "New Appointment",
+                    'title_ar' => "ميعاد جديد",
+                    'notifiable_id' => $a->id,
+                    'notifiable_type' => Appointment::class,
+                    'message_ar' => 'تم اضافه ميعاد (#' . $a->id . ') في انتظار الموافقة',
+                    'message_en' => 'New Appointment (#' . $a->id . ') is waiting for approval',
+                ]);
 
                 // $user = User::find($request->user()->id);
                 // $user->name = $request->name;
@@ -846,8 +857,22 @@ class MainController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->update(['status' => 'U']);
+            
+            $appointment = Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->first();
+            $appointment->status = 'U';
+            $appointment->save();
 
+            Notification::create([
+                'from_id' => $appointment->patient_id,
+                'to_id' => $appointment->doctor_id,
+                // 'appointment_id' => $appointment->id,
+                'title_en' => "Appointment Canceled",
+                'title_ar' => "تم الغاء الميعاد",
+                'notifiable_id' => $appointment->id,
+                'notifiable_type' => Appointment::class,
+                'message_ar' => 'تم حذف المعاد (#' . $appointment->id . ') بواسطه المريض',
+                'message_en' => 'Appointment (#' . $appointment->id . ') Has Been Canceled By Patient'
+            ]);
             return $this->SuccessResponse(200, "Appointment cancelled", null);
         }
     /* End Appointment API's */
