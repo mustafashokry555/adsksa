@@ -23,6 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -164,7 +165,29 @@ class HomeController extends Controller
                         'status' => $status,
                         'output' => $output,
                     ]);
-                } elseif($request->operation == 'gitPull'){
+                } elseif ($request->operation == 'composer_update'){ 
+                    $process = new Process(['composer', 'update']);
+                    $process->setWorkingDirectory(base_path());
+                    try {
+                        $process->run();
+                
+                        // Check if the process was successful
+                        if (!$process->isSuccessful()) {
+                            throw new ProcessFailedException($process);
+                        }
+                
+                        return response()->json([
+                            'success' => true,
+                            'output' => $process->getOutput()
+                        ]);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => $e->getMessage(),
+                            'output' => $process->getErrorOutput()
+                        ], 500);
+                    }
+                }elseif($request->operation == 'gitPull'){
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
