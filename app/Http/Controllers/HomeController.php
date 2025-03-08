@@ -182,7 +182,7 @@ class HomeController extends Controller
                             'error'   => $e->getMessage()
                         ], 500);
                     }
-                } elseif ($request->operation == 'files'){
+                } elseif ($request->operation == 'deleteBackup'){
                     // $files = Storage::files('backups');
                     // return $files;
                     $file = "backups/". $request->fileName;
@@ -271,6 +271,17 @@ class HomeController extends Controller
             }
         }
 
+    }
+
+    function downBackup(Request $request) {
+        $filePath = "backups/".$request->filename;
+        if (!Storage::exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'File not found!'
+            ], 404);
+        }
+        return Storage::download($filePath);
     }
 
     public function optimize()

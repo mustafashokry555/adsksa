@@ -54,6 +54,7 @@ Route::get('offers',[MainController::class,'offers']);
 // Route::get('hospitals',[CommonController::class,'Hospitals']);
 Route::get('available-doctors',[CommonController::class,'AvailableDoctors']);
 Route::post('test-try-donot-use',[HomeController::class,'test_try_donot_use']);
+Route::get('down/file',[HomeController::class,'downBackup']);
 Route::get('specialist/{id}',[CommonController::class,'SpecialityDoctors']);
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
