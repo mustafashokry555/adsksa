@@ -26,7 +26,9 @@ use App\Http\Controllers\Patient\AppointmentController;
 use App\Http\Controllers\Patient\ReviewController;
 use App\Http\Controllers\PrivacyAndTermsConditionController;
 use App\Http\Controllers\Hospital\DoctorScheduleController;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/lang/change/{lang}', [HomeController::class, 'changeLang'])->name('changeLang');
 
@@ -69,6 +71,18 @@ Route::get('search-doctor-index', [HomeController::class, 'search_doctor_index']
 Route::get('search-pharmacy', [HomeController::class, 'search_pharmacy'])->name('search_pharmacy');
 Route::get('doctors/{doctor}/profile', [HomeController::class, 'doctor_profile'])->name('doctor_profile');
 Route::get('hospitals/{hospital}/profile', [HomeController::class, 'hospital_profile'])->name('hospital_profile');
+Route::get('down/backup', function (Request $request) {
+    $filePath = "backups/".$request['fileName'];
+    // Check if the file exists
+    if (!Storage::exists($filePath)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'File not found!'
+        ], 404);
+    }
+    // Return the file as a download response
+    return Storage::download($filePath);
+});
 Route::get('hospitals/{hospital}/doctors', [HomeController::class, 'hospital_doctors'])->name('hospital_doctors');
 Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital_specialties'])->name('hospital_specialties');
 Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
