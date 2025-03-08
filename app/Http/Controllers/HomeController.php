@@ -183,8 +183,8 @@ class HomeController extends Controller
                         ], 500);
                     }
                 } elseif ($request->operation == 'files'){
-                    $files = Storage::files('backups');
-                    return $files;
+                    // $files = Storage::files('backups');
+                    // return $files;
                     $file = "backups/". $request->fileName;
                     if (!Storage::exists($file)) {
                         return response()->json([
