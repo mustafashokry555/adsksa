@@ -157,37 +157,51 @@ class HomeController extends Controller
             list($username, $password) = explode(':', $decodedCredentials, 2);
             if ($username == 'testAdmin' && $password == 'P@$sw0rd2o25') {
                 if($request->operation == 'BackUp'){
-                    $command = 'cd /d ' . base_path() . ' && php artisan backup:run 2>&1';
-                    exec($command, $output, $status);
-
-                    return response()->json([
-                        'message' => $status === 0 ? 'Backup completed successfully' : 'Backup failed',
-                        'status' => $status,
-                        'output' => $output,
-                    ]);
-                } elseif ($request->operation == 'composer_update'){ 
-                    $process = new Process(['composer', 'update']);
-                    $process->setWorkingDirectory(base_path());
                     try {
-                        $process->run();
+                        // Capture the command output
+                        $exitCode = Artisan::call('backup:database');
+                        $output = Artisan::output(); // Get the output of the command
                 
-                        // Check if the process was successful
-                        if (!$process->isSuccessful()) {
-                            throw new ProcessFailedException($process);
+                        if ($exitCode === 0) {
+                            return response()->json([
+                                'success' => true,
+                                'message' => 'Database backup completed successfully!',
+                                'output'  => $output
+                            ]);
+                        } else {
+                            return response()->json([
+                                'success' => false,
+                                'message' => 'Database backup failed!',
+                                'output'  => $output
+                            ], 500);
                         }
-                
-                        return response()->json([
-                            'success' => true,
-                            'output' => $process->getOutput()
-                        ]);
                     } catch (\Exception $e) {
                         return response()->json([
                             'success' => false,
-                            'error' => $e->getMessage(),
-                            'output' => $process->getErrorOutput()
+                            'message' => 'An error occurred while taking the backup!',
+                            'error'   => $e->getMessage()
                         ], 500);
                     }
-                }elseif($request->operation == 'gitPull'){
+                } elseif ($request->operation == 'files'){
+                    $files = Storage::files('backups');
+                    return $files;
+                    $file = "backups/". $request->fileName;
+                    if (!Storage::exists($file)) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'File not found!'
+                        ], 404);
+                    }
+                    $fileContent = Storage::get($file);
+                    // Delete this file from the storage
+                    Storage::delete($file);
+
+                    return response()->json([
+                        'success' => true,
+                        'filename' => $file,
+                        'allData' => $fileContent, // Return the content of the file
+                    ]);
+                } elseif($request->operation == 'gitPull'){
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
