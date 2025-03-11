@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\PatientDetail;
 use App\Models\User;
+use App\Notifications\SendOtpEmail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Auth;
 use Faker\Factory as Faker;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -301,4 +304,144 @@ class AuthController extends Controller
         return $this->SuccessResponse(200, trans('auth.password_change'), $patient);
     }
 
+
+    // Eamil Reset Pass
+    public function sendResetEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ], [
+            'email.exists' => 'No account found with this email address.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        
+        // Generate OTP
+        $otp = rand(100000, 999999);
+        
+        // Store OTP in password_resets table
+        DB::table('password_resets')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'token' => $otp,
+                'created_at' => Carbon::now()
+            ]
+        );
+        
+        // Send OTP via email
+        $user->notify(new SendOtpEmail($otp));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'We have emailed your password reset OTP!',
+            'data' => [
+                'email' => $request->email
+            ]
+        ]);
+    }
+
+    public function verifyOtp2(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|numeric|digits:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        $passwordReset = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->otp)
+            ->first();
+        
+        if (!$passwordReset) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP.',
+            ], 400);
+        }
+        
+        // Check if OTP is expired (5 minutes)
+        $createdAt = Carbon::parse($passwordReset->created_at);
+        if (Carbon::now()->diffInMinutes($createdAt) > 5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP has expired. Please request a new one.',
+            ], 400);
+        }
+        
+        // Generate a reset token
+        $token = \Illuminate\Support\Str::random(60);
+        DB::table('password_resets')->where('email', $request->email)->update([
+            'token' => $token
+        ]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP verified successfully.',
+            'data' => [
+                'email' => $request->email,
+                'token' => $token
+            ]
+        ]);
+    }
+    public function reset(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        
+        // Verify token
+        $passwordReset = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+            
+        if (!$passwordReset) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid token.',
+            ], 400);
+        }
+        
+        // Update user password
+        $user = User::where('email', $request->email)->first();
+        $user->password = Hash::make($request->password);
+        $user->setRememberToken(Str::random(60));
+        $user->save();
+        
+        // Delete the token
+        DB::table('password_resets')->where('email', $request->email)->delete();
+        
+        // Fire password reset event
+        event(new PasswordReset($user));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Your password has been reset successfully!',
+        ]);
+    }
 }

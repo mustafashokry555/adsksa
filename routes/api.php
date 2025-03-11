@@ -21,6 +21,9 @@ use App\Http\Controllers\HomeController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('password/email', [AuthController::class, 'sendResetEmail']);
+Route::post('password/verify-otp', [AuthController::class, 'verifyOtp2']);
+Route::post('password/reset', [AuthController::class, 'reset']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
