@@ -54,7 +54,9 @@ class User extends Authenticatable
         "nationality",
         "address_line_1",
         "address_line_2",
-        "timezone"
+        "timezone",
+        'religion_id',
+        'id_number',
 
     ];
     protected $appends = ['name'];
@@ -121,6 +123,11 @@ class User extends Authenticatable
     public function is_pharmacy()
     {
         return $this->user_type == User::PHARMACY;
+    }
+
+    public function religion()
+    {
+        return $this->belongsTo(Religion::class);
     }
 
     public function scopeFilter($query, array $filters)

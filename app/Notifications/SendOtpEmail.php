@@ -44,7 +44,7 @@ class SendOtpEmail extends Notification implements ShouldQueue
             ->subject('Password Reset OTP')
             ->line('You are receiving this email because we received a password reset request for your account.')
             ->line('Your OTP is: ' . $this->otp)
-            ->line('This OTP will expire in 15 minutes.')
+            ->line('This OTP will expire in 5 minutes.')
             ->line('If you did not request a password reset, no further action is required.');
     }
 
