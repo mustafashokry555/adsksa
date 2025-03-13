@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\HospitalResource;
+use App\Http\Resources\Api\HospitalTypeResource;
 use App\Http\Resources\Api\OfferResource;
+use App\Http\Resources\Api\SpecialityResource;
 use App\Models\AppSetting;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
@@ -16,6 +18,7 @@ use App\Models\Banner;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\HospitalReview;
+use App\Models\HospitalType;
 use App\Models\Notification;
 use App\Models\Offer;
 use App\Models\Review;
@@ -41,16 +44,116 @@ class MainController extends Controller
         public function home(Request $request)
         {
             try {
+                $token = request()->bearerToken();
+                $patient_id = null;
+                if ($token) {
+                    $tokenModel = PersonalAccessToken::findToken($token);
+                    if ($tokenModel) {
+                        $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                    }
+                }
+
                 $data = [];
+                // Banners
                 $banners = Banner::where('is_active', 1)
                 ->where('expired_at', '>', now())
                 ->get();
+                // Services
+                $hospital_types  = HospitalType::all();
+                $hospital_types = HospitalTypeResource::collection($hospital_types);
+                // Hospitals
+                $hospitals = Hospital::leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
+                ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+                ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
+                ->select(
+                    'hospitals.id',
+                    'hospitals.hospital_name_ar',
+                    'hospitals.hospital_name_en',
+                    DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
+                    'hospitals.image',
+                    'hospitals.state',
+                    DB::raw("NULL AS distance"),
+                    'hospitals.lat',
+                    'hospitals.long',
+                    'hospitals.location',
+                    'hospitals.profile_images',
+                    "cities.name_$this->lang as city_name",
+                    "countries.name_$this->lang as country_name"
+                )->groupBy(
+                    'hospitals.id',
+                    'hospitals.hospital_name_en',
+                    'hospitals.hospital_name_ar',
+                    'hospitals.image',
+                    'hospitals.state',
+                    'hospitals.lat',
+                    'hospitals.long',
+                    'hospitals.profile_images',
+                    'hospitals.location',
+                    "cities.name_$this->lang",
+                    "countries.name_$this->lang"
+                )->orderBy('avg_rating', "DESC")->limit(8)->get();
+                $hospitals = HospitalResource::collection($hospitals);
+                // Offers
                 $offers = Offer::where('is_active', 1)
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())
                 ->get();
                 $offers = OfferResource::collection($offers);
-
+                // Cats
+                $specialities = Speciality::limit(8)->get();
+                $specialities = SpecialityResource::collection($specialities);
+                // Doctors
+                $doctors = User::leftJoin('hospitals', 'users.hospital_id', '=', 'hospitals.id')
+                ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
+                ->leftJoin('wishlists', function ($join) use ($patient_id) {
+                    $join->on('users.id', '=', 'wishlists.doctor_id')
+                        ->where('wishlists.patient_id', '=', $patient_id);
+                })
+                ->where('user_type', 'D')
+                ->select(
+                    'users.id',
+                    'users.name_en',
+                    'users.name_ar',
+                    DB::raw('AVG(reviews.star_rated) as avg_rating'),
+                    DB::raw('COUNT(reviews.id) as reviews_count'),
+                    'users.profile_image',
+                    DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                    'users.gender',
+                    'users.pricing',
+                    'users.hospital_id',
+                    'users.speciality_id',
+                )
+                ->with([
+                    'hospital' => function ($query) {
+                        $query->select([
+                            'id',
+                            'hospital_name_en',
+                            'hospital_name_ar',
+                            'lat',
+                            'long',
+                        ]);
+                    },
+                    'speciality' => function ($query) {
+                        $query->select([
+                            'id',
+                            'name_en',
+                            'name_ar',
+                        ]);
+                    }
+                ])
+                ->groupBy(
+                    'wishlists.id',
+                    'users.id',
+                    'users.hospital_id',
+                    'users.speciality_id',
+                    'users.name_en',
+                    'users.pricing',
+                    'users.gender',
+                    'users.name_ar',
+                    'users.profile_image'
+                )
+                ->orderBy('avg_rating', "DESC")->limit(8)->get();
+                // UnRead Notification
                 $unread_notification = 0;
                 $token = request()->bearerToken();
                 $patient_id = null;
@@ -64,9 +167,15 @@ class MainController extends Controller
                         $unread_notification = $unreadCount;
                     }
                 }
+
+                // Data
                 $data [] = [
                     'banners' => $banners,
+                    'hospital_types' => $hospital_types,
+                    'hospitals' => $hospitals,
                     'offers' => $offers,
+                    'specialities' => $specialities,
+                    'doctors' => $doctors,
                     'unread_notification' => $unread_notification,
                 ];
                 
