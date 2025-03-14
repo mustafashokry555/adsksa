@@ -84,7 +84,7 @@ class HospitalController extends Controller
             'tiktok' => 'string|nullable',
             'opening_hours' => 'string|nullable',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
             'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if ($file = $request->file('image')) {
@@ -195,7 +195,7 @@ class HospitalController extends Controller
                     'location' => 'required',
                     'insurance' => 'required',
                     'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+                    'password' => ['nullable', 'string', 'min:6', 'confirmed'],
                     'email' => 'string|nullable',
                     'phone' => 'string|nullable',
                     'whatsapp' => 'string|nullable',
