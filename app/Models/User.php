@@ -106,6 +106,11 @@ class User extends Authenticatable
         return $this->hasOne(PatientDetail::class, 'user_id');
     }
 
+    public function insurances()
+    {
+        return $this->hasMany(PatientInsurance::class, 'patient_id')->where('type', User::PATIENT);
+    }
+
     public function appSetting()
     {
         return $this->hasOne(AppSetting::class, 'user_id');

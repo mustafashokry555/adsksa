@@ -15,6 +15,12 @@ class Insurance extends Model
     {
         return $this->belongsToMany(Hospital::class);
     }
+
+    public function patients()
+    {
+        return $this->hasManyThrough(User::class, PatientInsurance::class, 'insurance_id', 'id', 'id', 'patient_id')
+            ->where('users.type', User::PATIENT);
+    }
     public function getNameAttribute()
     {
         if (app()->getLocale() == 'ar' && $this->name_ar != NULL) {

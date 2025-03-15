@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CommonController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PatientInsuranceController;
 use App\Http\Controllers\HomeController;
 
 // use Illuminate\Support\Facades\File;
@@ -80,5 +81,9 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::get('profile',[AuthController::class,'PatientProfile']);
     Route::post('update-profile',[AuthController::class,'UpdatePatientProfile']);
     Route::post('change-password',[AuthController::class,'changePassword']);
+
+    // patient insurance
+    Route::get('/patient-insurances', [PatientInsuranceController::class, 'show']);
+    Route::post('/patient-insurances', [PatientInsuranceController::class, 'update']);
 
 });

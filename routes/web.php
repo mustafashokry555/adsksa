@@ -20,6 +20,7 @@ use App\Http\Controllers\Doctor\ScheduleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\OfferController;
+use App\Http\Controllers\Admin\PatientInsuranceController;
 use App\Http\Controllers\BlogController as HomeBlogController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Patient\AppointmentController;
@@ -213,7 +214,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('reviews', [ReviewController::class, 'index'])->name('reviews');
 
     //ADMIN REVIEWS
-    
+
+    // Patient Insurance Details
+    Route::get('patient/insurance-details/{patient_id}', [PatientInsuranceController::class, 'show'])->name('patient_insurance.show');
+    Route::patch('patient/insurance-details/{patient_id}', [PatientInsuranceController::class, 'update'])->name('patient_insurance.update');
+
 
     // Patient Appointments
     Route::get('appointment/{doctor}/create', [AppointmentController::class, 'create_appointment'])->name('create_appointment');

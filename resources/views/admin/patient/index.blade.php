@@ -157,6 +157,8 @@
                                                 {{--                                </td> --}}
                                                 <td class="text-end">
                                                     <div class="actions">
+                                                        <a class="text-black"
+                                                            href="{{ route('patient_insurance.show', $patient->id) }}">Insurance Details</a>
                                                         <a class="text-black" href="{{ route('patient.edit', $patient) }}">
                                                             <i class="feather-edit-3 me-1"></i> Edit
                                                         </a>
