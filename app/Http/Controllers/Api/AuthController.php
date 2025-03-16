@@ -72,10 +72,9 @@ class AuthController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name_en' => ['required', 'string', 'max:255'],
-                // 'name_ar' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'min:6'],
-                'mobile' => 'required|numeric|digits:9',//unique:users,mobile
+                'mobile' => 'required|numeric|digits:9',
                 'date_of_birth' => 'nullable|date|before:today',
                 'gender' => 'nullable|string|in:male,female',
                 'height' => 'nullable|numeric|min:30|max:300',
@@ -85,8 +84,9 @@ class AuthController extends Controller
                 'disability' => 'nullable|boolean',
                 'medical_history' => 'nullable|boolean',
                 'address' => 'nullable|string|max:255',
-                // 'otp'=>    'required|integer',
-                // 'country_code' => 'required'
+                'id_number' => ['required', 'string', 'max:50', 'unique:users'],
+                'religion_id' => ['required', 'exists:religions,id'],
+                'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
             ]);
 
             if ($validator->fails()) {
@@ -113,7 +113,10 @@ class AuthController extends Controller
                 'country' => $request->country,
                 'state' => $request->state,
                 'zip_code' => $request->zip_code,
-                'code'  => 'Mobile App',//we need to add this to migration
+                'code'  => 'Mobile App',
+                'id_number' => $request->id_number,
+                'religion_id' => $request->religion_id,
+                'marital_status' => $request->marital_status,
             ]);
             // create patient detials
             $patientDetail = PatientDetail::create([

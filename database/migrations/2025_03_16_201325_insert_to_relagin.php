@@ -14,12 +14,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('religions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name_ar'); // Arabic name
-            $table->string('name_en'); // English name
-            $table->timestamps();
-        });
+        $religions = [
+            ['name_ar' => 'الإسلام', 'name_en' => 'Islam', 'created_at' => now(), 'updated_at' => now()],
+            ['name_ar' => 'المسيحية', 'name_en' => 'Christianity', 'created_at' => now(), 'updated_at' => now()],
+            ['name_ar' => 'أخرى', 'name_en' => 'Other', 'created_at' => now(), 'updated_at' => now()],
+        ];
+
+        DB::table('religions')->insert($religions);
     }
 
     /**
@@ -29,13 +30,5 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('religions');
     }
-    
-    /**
-     * Seed the religions table with common religions.
-     *
-     * @return void
-     */
-    
 };
