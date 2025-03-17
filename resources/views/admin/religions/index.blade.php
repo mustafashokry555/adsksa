@@ -6,11 +6,11 @@
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col-md-12 d-flex justify-content-end">
-                        <div class="doc-badge me-3">{{ __('admin.patient.patients') }} <span
-                                class="ms-1">{{ count($patients) }}</span>
+                        <div class="doc-badge me-3">Religions<span
+                                class="ms-1">{{ count($religions) }}</span>
                             {{-- <span class="ms-1">{{ count(\App\Models\User::query()->where('user_type', 'U')->get()) }}</span> --}}
                         </div>
-                        <a href="{{ route('patient.create') }}" class="btn btn-primary btn-add"><i
+                        <a href="{{ route('religions.create') }}" class="btn btn-primary btn-add"><i
                                 class="feather-plus-square me-1"></i> {{ __('admin.speciality.add_new') }}</a>
                     </div>
                 </div>
@@ -18,20 +18,20 @@
             @if (session()->has('flash'))
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
-            <!-- Patients List -->
+            <!-- religions List -->
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-header">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h5 class="card-title">{{ __('admin.patient.patients') }}</h5>
+                                    <h5 class="card-title">Hospital Types</h5>
                                 </div>
                                 <div class="col-auto custom-list d-flex">
                                     <div class="form-custom me-2">
                                         <div id="tableSearch" class="dataTables_wrapper"></div>
                                     </div>
-                                    <div class="multipleSelection">
+                                    {{-- <div class="multipleSelection">
                                         <div class="selectBox">
                                             <p class="mb-0"><i class="feather-filter me-1"></i> Filter </p>
                                             <span class="down-icon"><i class="feather-chevron-down"></i></span>
@@ -97,7 +97,7 @@
                                                 <button type="submit" class="btn w-100 btn-primary">Apply</button>
                                             </form>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -107,67 +107,32 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>{{ __('admin.patient.id') }}</th>
-                                            <th>{{ __('admin.patient.patient') }}</th>
-                                            <th>{{ __('admin.patient.mobile') }}</th>
-                                            <!-- <th>Status</th> -->
-                                            {{-- <th>Last Visit</th> --}}
-                                            <th>{{ __('admin.patient.blood_group') }}</th>
-                                            <!-- <th>Total Income</th> -->
-                                            {{-- <th>Account Status</th> --}}
+                                            <th>Name (AR)</th>
+                                            <th>Name (EN)</th>
+                                            <th>Created At</th>
                                             <th>{{ __('admin.patient.action') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($patients as $patient)
+                                        @foreach ($religions as $type)
                                             <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
-
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="#" data-bs-target="#patientlist"
-                                                            data-bs-toggle="modal"><img class="avatar avatar-img"
-                                                                src="{{ $patient->profile_image }}" alt="User Image"></a>
-                                                        <a href="#"><span
-                                                                class="user-name">{{ $patient->name }}</span>
-                                                            <!-- <span class="text-muted">Male, 40 Years Old</span></a> -->
-                                                    </h2>
-                                                </td>
-                                                <td>{{ $patient->mobile ?? 'N/A' }}</td>
-                                                <!-- <td>{{ $patient->status }}</td> -->
-                                                {{--                                <td><span class="user-name">26 November 2022 </span><span class="d-block">12/20/2022</span></td> --}}
-                                                @if ($patient->blood_group ?? '')
-                                                    <td>{{ $patient->blood_group }}</td>
-                                                @else
-                                                    <td>N\A</td>
-                                                @endif
-
-                                                <!-- @if ($patient->pricing ?? '')
-    <td>${{ $patient->pricing }}</td>
-@else
-    <td>N\A</td>
-    @endif -->
-
-                                                {{--                                <td> --}}
-                                                {{--                                    <label class="toggle-switch" for="status1"> --}}
-                                                {{--                                        <input type="checkbox" class="toggle-switch-input" id="status1"> --}}
-                                                {{--                                        <span class="toggle-switch-label"> --}}
-                                                {{--																<span class="toggle-switch-indicator"></span> --}}
-                                                {{--															</span> --}}
-                                                {{--                                    </label> --}}
-                                                {{--                                </td> --}}
+                                                <td>{{ $type->id }}</td>
+                                                <td>{{ $type->name_ar ?? '' }}</td>
+                                                <td>{{ $type->name_en }}</td>
+                                                <td>{{ $type->created_at->format('Y-m-d H:i A') }}</td>
                                                 <td class="text-end">
                                                     <div class="actions">
-                                                        <a class="text-black" href="{{ route('patient.edit', $patient) }}">
+                                                        <a class="text-black" href="{{ route('religions.edit', $type) }}">
                                                             <i class="feather-edit-3 me-1"></i> Edit
                                                         </a>
                                                         <a class="text-danger" href="javascript:void(0);"
-                                                            onclick="if (window.confirm('Are you sure you want to delete this hospital <{{ $patient->name }} >')){ document.getElementById( 'delete{{ $patient->id }}').submit(); }">
+                                                            onclick="if (window.confirm('Are you sure you want to delete this hospital <{{ $type->name }} >')){ document.getElementById( 'delete{{ $type->id }}').submit(); }">
                                                             <i class="feather-trash-2 me-1"></i> Delete
                                                         </a>
                                                     </div>
                                                 </td>
-                                                <form method="POST" id="delete{{ $patient->id }}"
-                                                    action="{{ route('patient.destroy', $patient) }}">
+                                                <form method="POST" id="delete{{ $type->id }}"
+                                                    action="{{ route('religions.destroy', $type) }}">
                                                     @csrf
                                                     @method('delete')
                                                 </form>
@@ -182,7 +147,6 @@
                     <div id="tablepagination" class="dataTables_wrapper"></div>
                 </div>
             </div>
-            <!-- /Patient List -->
         </div>
     </div>
     <!-- /Page Wrapper -->

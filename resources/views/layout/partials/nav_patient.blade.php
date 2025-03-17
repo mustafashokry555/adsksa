@@ -87,6 +87,12 @@
                             <span>Profile Settings</span>
                         </a>
                     </li>
+                    <li class="{{ Request::routeIs('patient_dashboard.insurance_details') ? 'active' : '' }}">
+                        <a href="{{ route('patient_dashboard.insurance_details') }}">
+                            <i class="feather-shield"></i>
+                            <span>Insurance Details </span>
+                        </a>
+                    </li>
                     <li class="{{ Request::routeIs('change_password') ? 'active' : '' }}">
                         <a href="{{ route('change_password') }}">
                             <i class="fas fa-lock"></i>

@@ -21,6 +21,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\PatientInsuranceController;
+use App\Http\Controllers\Admin\ReligionsController;
 use App\Http\Controllers\BlogController as HomeBlogController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Patient\AppointmentController;
@@ -116,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('banner', BannerController::class);
     Route::resource('patient', PatientController::class);
     Route::resource('hospital-types', HospitalTypesController::class);
+    Route::resource('religions', ReligionsController::class);
     Route::get('hospital-patients/{hospital}/list', [CommonController::class, 'hospital_patients'])->name('hospital_patients');
     Route::get('doctor-patients/{doctor}/list', [CommonController::class, 'doctor_patients'])->name('doctor_patients');
     Route::resource('profile', ProfileController::class);
@@ -242,6 +244,8 @@ Route::middleware(['auth'])->group(function () {
     //     return view('patient.patient-dashboard');
     // })->name('patient_dashboard');
     Route::get('/patient-dashboard', [HomeController::class, 'patientDashboard'])->name('patient_dashboard');
+    Route::get('/patient-dashboard/insurance-details', [PatientInsuranceController::class, 'showForPatient'])->name('patient_dashboard.insurance_details');
+
 
     // delete account routes
     Route::get('/delete-account', [HomeController::class, 'showDeleteAccount'])->name('show.delete.account');

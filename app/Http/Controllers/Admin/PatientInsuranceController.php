@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class PatientInsuranceController extends Controller
 {
-    // Show patient insurance details
+    // Show patient insurance details in hospital
     public function show($patient_id, Request $request)
     {
         $patient = User::find($patient_id);
@@ -18,7 +18,18 @@ class PatientInsuranceController extends Controller
         ->where('patient_id', $patient->id)->first();
         $insurances = Insurance::all();
 
-        return view('admin.patient.insurace_update', compact('insurance_details', 'patient', 'insurances'));
+        return view('hospital.patient.insurance_update', compact('insurance_details', 'patient', 'insurances'));
+    }
+
+    // Show patient insurance details in patient
+    public function showForPatient( Request $request)
+    {
+        $patient = auth()->user();
+        $insurance_details = PatientInsurance::with(['patient', 'insurance'])
+        ->where('patient_id', $patient->id)->first();
+        $insurances = Insurance::all();
+
+        return view('patient.insurance_details', compact('insurance_details', 'patient', 'insurances'));
     }
 
     // Update patient insurance details
@@ -54,6 +65,6 @@ class PatientInsuranceController extends Controller
             ]
         );
         return redirect()
-        ->route('patient.index')
+        ->back()
         ->with('flash', ['type', 'success', 'message' => 'Insurance Details Updated Successfuly']);    }
 }

@@ -40,6 +40,13 @@
                                     <li>{{ __('hospital.patient.mobile')  }} <span>{{ $patient->mobile }}</span></li>
                                     <li>{{ __('hospital.patient.age')  }}  <span>{{$patient->age? $patient->age.' Years, Male':'N/A' }} </span></li>
                                     <li>{{ __('hospital.patient.blood_group')  }}  <span>{{ $patient->blood_group }}</span></li>
+                                    <li>
+                                        <a href="{{ route('patient_insurance.show', $patient->id) }}">
+                                            Insurance Details
+                                            <span class="right">Edit >></span>
+                                        </a>
+                                    </li>
+                                    
                                 </ul>
                             </div>
                         </div>

@@ -29,6 +29,9 @@
                     <li class="{{ Request::routeIs('hospital-types.*') ? 'active' : '' }}">
                         <a href="{{ route('hospital-types.index') }}"><i class="feather-list"></i> <span>Hospital Types</span></a>
                     </li>
+                    <li class="{{ Request::routeIs('religions.*') ? 'active' : '' }}">
+                        <a href="{{ route('religions.index') }}"><i class="feather-book"></i> <span>Religions</span></a>
+                    </li>
                 @endif
                 <li class="{{ Request::routeIs('doctor.*') ? 'active' : '' }}">
                     <a href="{{ route('doctor.index') }}"><i class="feather-user-plus"></i>
