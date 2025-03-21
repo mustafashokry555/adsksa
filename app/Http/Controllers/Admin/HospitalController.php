@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Hospital;
+use App\Models\HospitalType;
 use App\Models\Speciality;
 use App\Models\User;
 use App\Models\Insurance;
@@ -51,8 +52,9 @@ class HospitalController extends Controller
         if (Auth::user()->is_admin()) {
             $insurances = Insurance::where('user_id', Auth::id())->get();
             $countries = Country::all();
+            $hospital_types = HospitalType::all();
             // $cities = City::all();
-            return view('admin.hospital.create', compact('insurances', 'countries'));
+            return view('admin.hospital.create', compact('insurances', 'countries', 'hospital_types'));
         } else {
             abort(401);
         }
@@ -67,6 +69,7 @@ class HospitalController extends Controller
             'country_id' => 'required',
             'state' => 'required',
             'city_id' => 'required',
+            'hospital_type_id' => 'required',
             'zip' => 'required',
             'lat' => 'required',
             'long' => 'required',
@@ -146,6 +149,7 @@ class HospitalController extends Controller
 
     public function edit($id)
     {
+        $hospital_types = HospitalType::all();
         if (Auth::user()->user_type == 'A') {
             $hospital = Hospital::find($id);
             return view('admin.hospital.edit', [
@@ -153,6 +157,7 @@ class HospitalController extends Controller
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
                 'insurances'    =>   Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
+                'hospital_types' => $hospital_types,
             ]);
         }elseif (Auth::user()->user_type == 'H') {
             $hospital = Hospital::find($id);
@@ -162,6 +167,7 @@ class HospitalController extends Controller
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
                 'insurances'    =>   Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
+                'hospital_types' => $hospital_types,
             ]);
         } else {
             abort(401);
@@ -190,6 +196,7 @@ class HospitalController extends Controller
                     'state' => 'required',
                     'city' => 'required',
                     'zip' => 'required',
+                    'hospital_type_id' => 'required',
                     'lat' => 'required',
                     'long' => 'required',
                     'location' => 'required',

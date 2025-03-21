@@ -24,7 +24,7 @@
                         <div class="container">
                             <!-- Profile Information -->
                             <div class="card-body">
-                                
+
 
                                 <div class="row m-3">
                                     <div class="col-lg-12">
@@ -33,7 +33,9 @@
                                                 <h5 class="card-title">Insurance Details</h5>
                                             </div>
                                             <div class="card-body">
-                                                <form method="POST" action="{{ route('patient_insurance.update', $patient->id) }}" enctype="multipart/form-data">
+                                                <form method="POST"
+                                                    action="{{ route('patient_insurance.update', $patient->id) }}"
+                                                    enctype="multipart/form-data">
                                                     @csrf
                                                     @method('patch')
                                                     {{-- <!-- Patient Details -->
@@ -63,17 +65,21 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                         --}}
+                                                    --}}
                                                     <!-- insurance -->
                                                     <div class="form-group row">
-                                                        <label for="insurance_id" class="col-form-label col-md-2">Insurance</label>
+                                                        <label for="insurance_id"
+                                                            class="col-form-label col-md-2">Insurance</label>
                                                         <div class="col-md-10">
-                                                            <select id="insurance_id" name="insurance_id" class="form-control" required>
-                                                                <option value="" disabled selected>Select Insurance</option>
+                                                            <select id="insurance_id" name="insurance_id"
+                                                                class="form-control" required>
+                                                                <option value="" disabled selected>Select Insurance
+                                                                </option>
                                                                 @foreach ($insurances as $one)
                                                                     <option value="{{ $one->id }}"
                                                                         {{ old('insurance_id', optional($insurance_details)->insurance_id) == $one->id ? 'selected' : '' }}>
-                                                                        {{ $one->name_en }} < {{ $one->name_ar }} ></option>
+                                                                        {{ $one->name_en }} < {{ $one->name_ar }}>
+                                                                    </option>
                                                                 @endforeach
                                                             </select>
                                                             @error('insurance_id')
@@ -85,12 +91,13 @@
                                                     </div>
                                                     {{-- medical_network --}}
                                                     <div class="form-group row">
-                                                        <label for="medical_network"
-                                                            class="col-form-label col-md-2">Medical Network</label>
+                                                        <label for="medical_network" class="col-form-label col-md-2">Medical
+                                                            Network</label>
                                                         <div class="col-md-10">
-                                                            <input id="medical_network" name="medical_network" type="text" value="{{ old('end_date', optional($insurance_details)->medical_network) }}"
-                                                                class="form-control" placeholder="Medical Network"
-                                                                required>
+                                                            <input id="medical_network" name="medical_network"
+                                                                type="text"
+                                                                value="{{ old('end_date', optional($insurance_details)->medical_network) }}"
+                                                                class="form-control" placeholder="Medical Network" required>
                                                             @error('medical_network')
                                                                 <div class="text-danger pt-2">
                                                                     {{ $message }}
@@ -100,9 +107,11 @@
                                                     </div>
                                                     {{-- Category --}}
                                                     <div class="form-group row">
-                                                        <label for="category" class="col-form-label col-md-2">Category</label>
+                                                        <label for="category"
+                                                            class="col-form-label col-md-2">Category</label>
                                                         <div class="col-md-10">
-                                                            <input id="category" name="category" type="text" value="{{ old('category', optional($insurance_details)->category) }}"
+                                                            <input id="category" name="category" type="text"
+                                                                value="{{ old('category', optional($insurance_details)->category) }}"
                                                                 class="form-control" placeholder="Category" required>
                                                             @error('category')
                                                                 <div class="text-danger pt-2">
@@ -113,11 +122,14 @@
                                                     </div>
                                                     {{-- Co-Payment Percentage --}}
                                                     <div class="form-group row">
-                                                        <label for="co_payment_percentage" class="col-form-label col-md-2">Co-Payment Percentage</label>
+                                                        <label for="co_payment_percentage"
+                                                            class="col-form-label col-md-2">Co-Payment Percentage</label>
                                                         <div class="col-md-10">
-                                                            <input id="co_payment_percentage" name="co_payment_percentage" type="number" step="0.01" 
+                                                            <input id="co_payment_percentage" name="co_payment_percentage"
+                                                                type="number" step="0.01"
                                                                 value="{{ old('co_payment_percentage', optional($insurance_details)->co_payment_percentage) }}"
-                                                                class="form-control" placeholder="Co-Payment Percentage" required>
+                                                                class="form-control" placeholder="Co-Payment Percentage"
+                                                                required>
                                                             @error('co_payment_percentage')
                                                                 <div class="text-danger pt-2">
                                                                     {{ $message }}
@@ -127,9 +139,11 @@
                                                     </div>
                                                     {{-- Submission Date --}}
                                                     <div class="form-group row">
-                                                        <label for="submission_date" class="col-form-label col-md-2">Submission Date</label>
+                                                        <label for="submission_date"
+                                                            class="col-form-label col-md-2">Submission Date</label>
                                                         <div class="col-md-10">
-                                                            <input id="submission_date" name="submission_date" type="date"
+                                                            <input id="submission_date" name="submission_date"
+                                                                type="date"
                                                                 value="{{ old('submission_date', optional($insurance_details)->submission_date) }}"
                                                                 class="form-control" required>
                                                             @error('submission_date')
@@ -141,9 +155,11 @@
                                                     </div>
                                                     {{-- Subscriber Type --}}
                                                     <div class="form-group row">
-                                                        <label for="subscriber_type" class="col-form-label col-md-2">Subscriber Type</label>
+                                                        <label for="subscriber_type"
+                                                            class="col-form-label col-md-2">Subscriber Type</label>
                                                         <div class="col-md-10">
-                                                            <input id="subscriber_type" name="subscriber_type" type="text"
+                                                            <input id="subscriber_type" name="subscriber_type"
+                                                                type="text"
                                                                 value="{{ old('subscriber_type', optional($insurance_details)->subscriber_type) }}"
                                                                 class="form-control" placeholder="Subscriber Type" required>
                                                             @error('subscriber_type')
@@ -155,9 +171,11 @@
                                                     </div>
                                                     {{-- Insurance Policy Number --}}
                                                     <div class="form-group row">
-                                                        <label for="insurance_policy_number" class="col-form-label col-md-2">Insurance Policy Number</label>
+                                                        <label for="insurance_policy_number"
+                                                            class="col-form-label col-md-2">Insurance Policy Number</label>
                                                         <div class="col-md-10">
-                                                            <input id="insurance_policy_number" name="insurance_policy_number" type="text"
+                                                            <input id="insurance_policy_number"
+                                                                name="insurance_policy_number" type="text"
                                                                 value="{{ old('insurance_policy_number', optional($insurance_details)->insurance_policy_number) }}"
                                                                 class="form-control" placeholder="Policy Number" required>
                                                             @error('insurance_policy_number')
@@ -169,11 +187,14 @@
                                                     </div>
                                                     {{-- Coverage Limits --}}
                                                     <div class="form-group row">
-                                                        <label for="coverage_limits" class="col-form-label col-md-2">Coverage Limits</label>
+                                                        <label for="coverage_limits"
+                                                            class="col-form-label col-md-2">Coverage Limits</label>
                                                         <div class="col-md-10">
-                                                            <input id="coverage_limits" name="coverage_limits" type="text"
+                                                            <input id="coverage_limits" name="coverage_limits"
+                                                                type="text"
                                                                 value="{{ old('coverage_limits', optional($insurance_details)->coverage_limits) }}"
-                                                                class="form-control" placeholder="Coverage Limits" required>
+                                                                class="form-control" placeholder="Coverage Limits"
+                                                                required>
                                                             @error('coverage_limits')
                                                                 <div class="text-danger pt-2">
                                                                     {{ $message }}
@@ -183,9 +204,11 @@
                                                     </div>
                                                     {{-- Insurance Expiry Date --}}
                                                     <div class="form-group row">
-                                                        <label for="insurance_expiry_date" class="col-form-label col-md-2">Insurance Expiry Date</label>
+                                                        <label for="insurance_expiry_date"
+                                                            class="col-form-label col-md-2">Insurance Expiry Date</label>
                                                         <div class="col-md-10">
-                                                            <input id="insurance_expiry_date" name="insurance_expiry_date" type="date"
+                                                            <input id="insurance_expiry_date" name="insurance_expiry_date"
+                                                                type="date"
                                                                 value="{{ old('insurance_expiry_date', optional($insurance_details)->insurance_expiry_date) }}"
                                                                 class="form-control" required>
                                                             @error('insurance_expiry_date')
@@ -197,11 +220,14 @@
                                                     </div>
                                                     {{-- Subscriber Number --}}
                                                     <div class="form-group row">
-                                                        <label for="subscriber_number" class="col-form-label col-md-2">Subscriber Number</label>
+                                                        <label for="subscriber_number"
+                                                            class="col-form-label col-md-2">Subscriber Number</label>
                                                         <div class="col-md-10">
-                                                            <input id="subscriber_number" name="subscriber_number" type="text"
+                                                            <input id="subscriber_number" name="subscriber_number"
+                                                                type="text"
                                                                 value="{{ old('subscriber_number', optional($insurance_details)->subscriber_number) }}"
-                                                                class="form-control" placeholder="Subscriber Number" required>
+                                                                class="form-control" placeholder="Subscriber Number"
+                                                                required>
                                                             @error('subscriber_number')
                                                                 <div class="text-danger pt-2">
                                                                     {{ $message }}
@@ -209,9 +235,10 @@
                                                             @enderror
                                                         </div>
                                                     </div>
-                        
-                        
-                                                    <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
+
+
+                                                    <button class="btn btn-primary btn-add"><i
+                                                            class="feather-plus-square me-1"></i>
                                                         Update Insurance Details
                                                     </button>
                                                 </form>

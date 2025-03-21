@@ -149,6 +149,24 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <label for="hospital_type_id" class="col-form-label col-md-2">Hospital Type</label>
+                                <div class="col-md-10">
+                                    <select id="hospital_type_id" name="hospital_type_id" class="form-control" required>
+                                        <option value="" disabled selected>Select Hospital Types</option>
+                                        @foreach ($hospital_types as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name_en }} < {{ $type->name_ar }} ></option>
+                                        @endforeach
+                                    </select>
+                                    @error('hospital_type_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <label for="address"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.address') }}</label>

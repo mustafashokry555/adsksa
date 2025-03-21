@@ -699,7 +699,10 @@ class MainController extends Controller
         // Start Avail Slot API
         public function get_availability(Request $request, $id)
         {
-            $doctor = User::find($id);
+            $doctor = User::where('id', $id)->where('user_type', User::DOCTOR)->first();
+            if(!$doctor){
+                return $this->ErrorResponse(404, 'Doctor not found', null);
+            }
             $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
             // return $doctor;
             $time_interval = 15;

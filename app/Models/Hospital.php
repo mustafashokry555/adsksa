@@ -26,6 +26,7 @@ class Hospital extends Model
         'about2',
         'opening_hours',
         'profile_images',
+        'hospital_type_id',
         'mail',        // New field
         'phone',        // New field
         'whatsapp',     // New field
