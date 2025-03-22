@@ -39,7 +39,13 @@ class HospitalTypesController extends Controller
             $attributes = $request->validate([
                 'name_en' => 'required',
                 'name_ar' => 'required',
+                'image' => 'required|image',
             ]);
+            if ($file = $request->file('image')) {
+                $filename = time() . '-' . $file->getClientOriginalName();
+                $file->move(public_path('images/hospital_types'), $filename);
+                $attributes['image'] = $filename;
+            }
             HospitalType::create($attributes);
             return redirect()
                 ->route('hospital-types.index')
@@ -69,7 +75,15 @@ class HospitalTypesController extends Controller
                 $attributes = $request->validate([
                     'name_ar' => 'required',
                     'name_en' => 'required',
+                    'image' => 'nullable|image',
                 ]);
+                if ($attributes['image']) {
+                    if ($file = $request->file('image')) {
+                        $filename = time() . '-' . $file->getClientOriginalName();
+                        $file->move(public_path('images/hospital_types'), $filename);
+                    }
+                    $attributes['image'] = $filename;
+                }
                 $hospital_type->update($attributes);
 
                 return redirect()

@@ -40,6 +40,18 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="image"
+                                    class="col-form-label col-md-2">{{ __('admin.hospital.image') }}</label>
+                                <div class="col-md-10">
+                                    <input id="image" name="image" class="form-control" type="file" required>
+                                    @error('image')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
                                 Add Type
                             </button>

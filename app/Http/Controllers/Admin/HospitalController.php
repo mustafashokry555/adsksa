@@ -152,22 +152,29 @@ class HospitalController extends Controller
         $hospital_types = HospitalType::all();
         if (Auth::user()->user_type == 'A') {
             $hospital = Hospital::find($id);
+            $countries = Country::all();
+            $cities = City::where('country_id', $hospital->country->id)->get();
             return view('admin.hospital.edit', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
                 'insurances'    =>   Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
                 'hospital_types' => $hospital_types,
+                'countries' => $countries,
+                'cities' => $cities,
             ]);
         }elseif (Auth::user()->user_type == 'H') {
             $hospital = Hospital::find($id);
-            // return $hospital;
+            $countries = Country::all();
+            $cities = City::where('country_id', $hospital->country->id)->get();
             return view('hospital.profile.editHospital', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
                 'insurances'    =>   Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
                 'hospital_types' => $hospital_types,
+                'countries' => $countries,
+                'cities' => $cities,
             ]);
         } else {
             abort(401);

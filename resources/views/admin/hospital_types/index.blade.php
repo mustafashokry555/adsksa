@@ -1,5 +1,5 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Patient')
+@section('title', 'Hospital Types')
 @section('content')
     <div class="page-wrapper">
         <div class="content container-fluid">
@@ -107,6 +107,7 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>{{ __('admin.patient.id') }}</th>
+                                            <th>{{ __('admin.hospital.image') }}</th>
                                             <th>Name (AR)</th>
                                             <th>Name (EN)</th>
                                             <th>Created At</th>
@@ -117,6 +118,13 @@
                                         @foreach ($hospital_types as $type)
                                             <tr>
                                                 <td>{{ $type->id }}</td>
+                                                <td>
+                                                    <h2 class="table-avatar">
+                                                        <a href="{{ route('hospital-types.edit', $type) }}" class="spl-img">
+                                                            <img src="{{ asset('images/hospital_types/'.$type->image) }}" class="img-fluid" alt="User Image">
+                                                            </a>
+                                                    </h2>
+                                                </td>
                                                 <td>{{ $type->name_ar ?? '' }}</td>
                                                 <td>{{ $type->name_en }}</td>
                                                 <td>{{ $type->created_at->format('Y-m-d H:i A') }}</td>

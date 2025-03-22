@@ -18,6 +18,7 @@ class HospitalTypeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name ?? '',
+            'image' => $this->image ? asset('images/hospital_types/'. rawurlencode($this->image) ) : '',
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
