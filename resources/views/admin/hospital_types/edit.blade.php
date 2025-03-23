@@ -1,5 +1,5 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Edit Patient')
+@section('title', 'Edit Hospital Type')
 @section('content')
     <div class="page-wrapper">
 
@@ -37,6 +37,18 @@
                                         class="form-control" placeholder="Name AR"
                                         required>
                                     @error('name_ar')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="image"
+                                    class="col-form-label col-md-2">{{ __('admin.hospital.image') }}</label>
+                                <div class="col-md-10">
+                                    <input id="image" name="image" class="form-control" type="file">
+                                    @error('image')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>

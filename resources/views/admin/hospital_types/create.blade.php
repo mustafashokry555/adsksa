@@ -1,5 +1,5 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Add New Patient')
+@section('title', 'Add Hospital Type')
 @section('content')
     <div class="page-wrapper">
 
