@@ -197,7 +197,7 @@
                                     class="col-form-label col-md-2">{{ __('admin.hospital.location') }}</label>
                                 <div class="col-md-10">
                                     <input id="address" name="address" value="{{ $hospital->address }}" type="text"
-                                        class="form-control" placeholder="{{ __('admin.hospital.enter_location') }}"
+                                        class="form-control" placeholder="{{ __('admin.hospital.address') }}"
                                         required>
                                     @error('address')
                                         <div class="text-danger pt-2">

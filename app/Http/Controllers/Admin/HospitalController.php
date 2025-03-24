@@ -153,7 +153,11 @@ class HospitalController extends Controller
         if (Auth::user()->user_type == 'A') {
             $hospital = Hospital::find($id);
             $countries = Country::all();
-            $cities = City::where('country_id', $hospital->country->id)->get();
+            if($hospital->country){
+                $cities = City::where('country_id', $hospital->country->id)->get();
+            }else{
+                $cities = City::all();
+            }
             return view('admin.hospital.edit', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
@@ -199,9 +203,9 @@ class HospitalController extends Controller
                     'hospital_name_ar' => 'required',
                     'image' => 'image',
                     'address' => 'required',
-                    'country' => 'required',
-                    'state' => 'required',
-                    'city' => 'required',
+                    // 'country_id' => 'required',
+                    // 'state' => 'required',
+                    // 'city_id' => 'required',
                     'zip' => 'required',
                     'hospital_type_id' => 'required',
                     'lat' => 'required',
@@ -221,16 +225,28 @@ class HospitalController extends Controller
                     'about2' => 'string|nullable',
                     'opening_hours' => 'string|nullable',
                 ]);
-                if ($admin = User::query()->where('hospital_id', $id)->where('user_type', 'H')->first())
-                $data = [
-                    'name_en' => $request->hospital_name_en,
-                    'name_ar' => $request->hospital_name_ar,
-                    'email' => $request->email,
-                ];
-                if ($request->password) {
-                    $data['password'] = Hash::make($request->password);
+                $admin = User::where('hospital_id', $id)->where('user_type', 'H')->first();
+                if ($admin){
+                    $data = [
+                        'name_en' => $request->name,
+                        'name_ar' => $request->name,
+                        'email' => $request->email,
+                    ];
+                    if ($request->password) {
+                        $data['password'] = Hash::make($request->password);
+                    }
+                    $admin->update($data);
+                }else{
+                    $data['user_type'] = 'H';
+                    $data['hospital_id'] = $id;
+                    $data['name_en'] = $request->name;
+                    $data['name_ar'] = $request->name;
+                    $data['email'] = $request->email;
+                    if ($request->password) {
+                        $data['password'] = Hash::make($request->password);
+                    }
+                    $admin = User::create($data);
                 }
-                $admin->update($data);
             }elseif(Auth::user()->user_type == 'H'){
                 $attributes = $request->validate([
                     'hospital_name_en' => 'required',
