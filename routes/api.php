@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\api\CommonController;
+use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PatientInsuranceController;
@@ -53,6 +54,9 @@ Route::get('banners',[MainController::class,'banners']);
 Route::get('home',[MainController::class,'home']);
 
 Route::get('offers',[MainController::class,'offers']);
+// new Apis
+Route::get('filter-data',[FilterController::class,'filter_data']);
+
 
 
 

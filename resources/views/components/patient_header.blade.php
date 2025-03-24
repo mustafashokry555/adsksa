@@ -191,12 +191,12 @@
                             </a>
                             @auth
                                 <a href="{{ url('/') }}" class="navbar-brand logo">
-                                    <img src="{{ asset('/assets/img/logo.jpg') }}" class="img-fluid" alt="Logo"
+                                    <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
                                         style="height: 3rem">
                                 </a>
                             @else
                                 <a href="/" class="navbar-brand logo">
-                                    <img src="{{ asset('/assets/img/logo.jpg') }}" class="img-fluid" alt="Logo"
+                                    <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
                                         style="height: 3rem">
                                 </a>
                             @endauth
@@ -205,12 +205,12 @@
                             <div class="menu-header">
                                 @auth
                                     <a href="{{ url('/') }}" class="menu-logo">
-                                        <img src="{{ asset('/assets/img/logo.jpg') }}" class="img-fluid" alt="Logo"
+                                        <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
                                             style="height: 3rem">
                                     </a>
                                 @else
                                     <a href="{{ url('/') }}" class="menu-logo">
-                                        <img src="{{ asset('/assets/img/logo.jpg') }}" class="img-fluid" alt="Logo"
+                                        <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
                                             style="height: 3rem">
                                     </a>
                                 @endauth

@@ -26,6 +26,8 @@ class HospitalResource extends JsonResource
         return [
             'id' => $this->id,
             'hospital_name' => $this->hospital_name,
+            'hospital_type_id' => $this->hospital_type_id,
+            'hospital_type_name' => $this->hospital_type_name,
             'avg_rating' =>  $this->avg_rating,
             'image' => $this->image,
             'state' => $this->state,

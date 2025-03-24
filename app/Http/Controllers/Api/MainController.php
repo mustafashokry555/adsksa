@@ -1205,9 +1205,13 @@ class MainController extends Controller
                         ->orWhere("hospital_name_en", 'like', '%' . request('search') . '%');
                 });
             }
+            if (request('hospital_type_id')) {
+                $query->where('hospital_type_id', request('hospital_type_id'));
+            }
             
             $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
             ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+            ->leftJoin('hospital_types', 'hospitals.hospital_type_id', '=', 'hospital_types.id')
             ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
                 ->select(
                     'hospitals.id',
@@ -1222,7 +1226,9 @@ class MainController extends Controller
                     'hospitals.location',
                     'hospitals.profile_images',
                     "cities.name_$this->lang as city_name",
-                    "countries.name_$this->lang as country_name"
+                    "countries.name_$this->lang as country_name",
+                    "hospital_types.id as hospital_type_id",
+                    "hospital_types.name_$this->lang as hospital_type_name",
                 )->groupBy(
                     'hospitals.id',
                     'hospitals.hospital_name_en',
@@ -1234,7 +1240,9 @@ class MainController extends Controller
                     'hospitals.profile_images',
                     'hospitals.location',
                     "cities.name_$this->lang",
-                    "countries.name_$this->lang"
+                    "countries.name_$this->lang",
+                    "hospital_types.id",
+                    "hospital_types.name_$this->lang"
                 );
 
             if (request('orderBy') == 'recommend') {
