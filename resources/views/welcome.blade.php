@@ -46,7 +46,7 @@
 
         .btn_search {
             flex: 1;
-            background-color: #0071DC;
+            background-color: #1aeebe;
             border: 0px;
             padding: 10px;
             color: #fff;
@@ -79,7 +79,8 @@
                                 <div class="col-lg-12 col-md-12">
                                     <div class="home-four-doctor">
                                         <div class="home-four-header">
-                                            <h2 style="color: #272b41">{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2>
+                                            <!-- <h2 style="color: #272b41">{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2> -->
+                                            <h2 style="color: #009eff">{{__('Find Doctor') }} <span style="color: #12b3ab">{{ __('make an ') }}<span style="color: #1aeebe">{{ __('web.Appointment') }}</span></h2>
                                         </div>
                                         <form method="GET" action="{{ route('single_search_doctor') }}" class="banner-four-search">
                                             <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="search_bar" style="background-color:white">
