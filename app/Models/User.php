@@ -219,6 +219,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(City::class);
     }
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 
     public function country()
     {
