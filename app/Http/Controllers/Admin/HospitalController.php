@@ -170,7 +170,11 @@ class HospitalController extends Controller
         }elseif (Auth::user()->user_type == 'H') {
             $hospital = Hospital::find($id);
             $countries = Country::all();
-            $cities = City::where('country_id', $hospital->country->id)->get();
+            if($hospital->country){
+                $cities = City::where('country_id', $hospital->country->id)->get();
+            }else{
+                $cities = City::all();
+            }
             return view('hospital.profile.editHospital', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
