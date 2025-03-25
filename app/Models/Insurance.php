@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Insurance extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_en', 'name_ar', 'email', 'user_id', 'address', 'phone1', 'city', 'phone2', 'state', 'fax'];
+    protected $fillable = ['name_en', 'name_ar', 'email', 'user_id', 'address', 'phone1', 'phone2', 'fax', 'country_id', 'city_id', 'area_id'];
     protected $appends = ['name'];
 
     public function hospitals()
@@ -20,6 +20,18 @@ class Insurance extends Model
     {
         return $this->hasManyThrough(User::class, PatientInsurance::class, 'insurance_id', 'id', 'id', 'patient_id')
             ->where('users.type', User::PATIENT);
+    }
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+    public function state()
+    {
+        return $this->belongsTo(City::class);
+    }
+    public function city()
+    {
+        return $this->belongsTo(Area::class);
     }
     public function getNameAttribute()
     {

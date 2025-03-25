@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Area;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Hospital;
@@ -52,9 +53,11 @@ class HospitalController extends Controller
         if (Auth::user()->is_admin()) {
             $insurances = Insurance::where('user_id', Auth::id())->get();
             $countries = Country::all();
+            $cities = City::all();
+            $areas = Area::all();
             $hospital_types = HospitalType::all();
             // $cities = City::all();
-            return view('admin.hospital.create', compact('insurances', 'countries', 'hospital_types'));
+            return view('admin.hospital.create', compact('insurances', 'countries', 'cities', 'areas', 'hospital_types'));
         } else {
             abort(401);
         }
@@ -317,7 +320,7 @@ class HospitalController extends Controller
             }
 
             $hospital->update($attributes);
-            
+
             $hospital->insurances()->sync($request->insurance);
             if(Auth::user()->user_type == 'A'){
                 return redirect()

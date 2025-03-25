@@ -26,9 +26,9 @@ class User extends Authenticatable
         'profile_image',
         'description',
         'address',
-        'country',
+        'city_id',
+        'area_id',
         'code',
-        'state',
         'zip_code',
         'date_of_birth',
         'gender',
@@ -43,8 +43,7 @@ class User extends Authenticatable
         'facebook',
         'linkedin',
         'pinterest',
-        'instagram',
-        'city_id',       // New field
+        'instagram',       // New field
         'youtube',
         "status",
         "last_name",
@@ -215,18 +214,18 @@ class User extends Authenticatable
     //     }
     //     return null;
     // }
-    public function city()
-    {
-        return $this->belongsTo(City::class);
-    }
-    public function area()
-    {
-        return $this->belongsTo(Area::class);
-    }
 
     public function country()
     {
         return $this->hasOneThrough(Country::class, City::class, 'id', 'id', 'city_id', 'country_id');
+    }
+    public function state()
+    {
+        return $this->belongsTo(City::class);
+    }
+    public function city()
+    {
+        return $this->belongsTo(Area::class);
     }
     public function getNameAttribute()
     {
@@ -275,6 +274,6 @@ class User extends Authenticatable
 
     public function getProfileImageAttribute($value){
         if($value !=null) return env('BASE_URL').'images/'.$value ;
-        return asset('images/user.png'); 
+        return asset('images/user.png');
     }
 }
