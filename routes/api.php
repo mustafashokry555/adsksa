@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PatientInsuranceController;
+use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\HomeController;
 
 // use Illuminate\Support\Facades\File;
@@ -74,9 +75,13 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
         Route::post('/read/{id}', [NotificationController::class, 'markAsRead']);
     });
     
+    // wishlist
+    Route::post('doctor-to-wishlist',[WishlistController::class,'addDoctorToWishlist']);
+    Route::post('hospital-to-wishlist',[WishlistController::class,'addHospitalToWishlist']);
+    Route::get('doctor-wishlist',[WishlistController::class,'doctor_wishlist']);
+    Route::get('hospital-wishlist',[WishlistController::class,'hospital_wishlist']);
+
     Route::post('app-setting',[MainController::class,'updateOrCreateAppSetting']);
-    Route::post('add-to-wishlist',[MainController::class,'AddToWishlist']);
-    Route::get('wishlist',[MainController::class,'Wishlist']);
     Route::post('book-appointment',[MainController::class,'BookAppointment']);
     Route::get('patient-appointments',[MainController::class,'PatientAppointments']);
     Route::post('cancel-appointment',[MainController::class,'CancelAppointment']);

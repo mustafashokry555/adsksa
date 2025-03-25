@@ -91,6 +91,32 @@ class User extends Authenticatable
     public const PATIENT = 'U';
     public const PHARMACY = 'P';
 
+
+    // Favorite doctors for patients
+    public function favoriteDoctors()
+    {
+        return $this->hasMany(Wishlist::class, 'patient_id')->whereNotNull('doctor_id');
+    }
+
+    // Favorite hospitals for patients
+    public function favoriteHospitals()
+    {
+        return $this->hasMany(Wishlist::class, 'patient_id')->whereNotNull('hospital_id');
+    }
+
+    // Check if doctor is favorited by patient
+    public function isFavoriteDoctor($doctorId)
+    {
+        return $this->favoriteDoctors()->where('doctor_id', $doctorId)->exists();
+    }
+
+    // Check if hospital is favorited by patient
+    public function isFavoriteHospital($hospitalId)
+    {
+        return $this->favoriteHospitals()->where('hospital_id', $hospitalId)->exists();
+    }
+
+
     public function is_admin()
     {
         return $this->user_type == User::ADMIN;
@@ -273,7 +299,7 @@ class User extends Authenticatable
     }
 
     public function getProfileImageAttribute($value){
-        if($value !=null) return env('BASE_URL').'images/'.$value ;
+        if($value !=null) return env('BASE_URL').'images/'.rawurlencode($value) ;
         return asset('images/user.png');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Http;
 
-class HospitalResource extends JsonResource
+class DoctorResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,28 +18,20 @@ class HospitalResource extends JsonResource
     {
         $distance = null;
         if(request()->has("long") && request()->has("lat")){
-            if($this->lat != null && $this->long != null){
-                $distance = $this->getDistance($this->lat, $this->long) ?? null;
+            if($this->hospital->lat != null && $this->hospital->long != null){
+                $distance = $this->getDistance($this->hospital->lat, $this->hospital->long) ?? null;
             }
         }        
         
         return [
             'id' => $this->id,
-            'hospital_name' => $this->hospital_name,
-            'hospital_type_id' => $this->hospitalType ? $this->hospitalType->id : null,
-            'hospital_type_name' => $this->hospitalType ? $this->hospitalType->name : null,
-            'avg_rating' =>  $this->avg_rating,
-            'rating_count' =>  $this->rating_count,
-            'image' => $this->image,
-            'state' => $this->state,
-            'lat' => $this->lat,
-            'long' => $this->long,
-            'location' => $this->location,
+            'profile_image' => $this->profile_image,
+            'name' => $this->name,
+            'speciality_name' => $this->speciality->name,
+            'avg_rating' => round($this->reviews()->avg('star_rated'), 2) ?? 0,
             'distance' => $distance,
-            'city_name' => $this->city_name ?? '',
-            'country_name' => $this->country_name ?? '',
-            'images_links' => $this->images_links,
-            'is_favorite' => $request->user()->isFavoriteHospital($this->id)
+            'hospital_name' => $this->hospital->hospital_name,
+            'is_favorite' => $request->user()->isFavoriteDoctor($this->id)
         ];
     }
 

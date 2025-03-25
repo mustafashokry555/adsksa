@@ -90,7 +90,7 @@ class Hospital extends Model
     }
 
     public function getImageAttribute($value){
-        if($value !=null) return env('BASE_URL').'images/'.$value ;
+        if($value !=null) return env('BASE_URL').'images/'.rawurlencode($value) ;
     }
 
     public function getImagesLinksAttribute($value)
@@ -99,7 +99,7 @@ class Hospital extends Model
             $images = $this->profile_images;
             if (is_array($images)) {
                 return array_map(function ($image) {
-                    return env('BASE_URL') . 'images/' . $image;
+                    return env('BASE_URL') . 'images/' . rawurlencode($image);
                 }, $images);
             }
         }

@@ -639,62 +639,6 @@ class MainController extends Controller
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
-    /* Start wish List Part*/
-        public function AddToWishlist(Request $request)
-        {
-            $validator = Validator::make($request->all(), [
-                'doctor_id' => 'required',
-                'integer',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-            $isExist = DB::table('wishlists')->Where('patient_id', '=', $request->user()->id)
-                ->where(function ($query) use ($request) {
-                    $query->where('doctor_id', '=', $request->doctor_id);
-                });
-            if ($isExist->first() != null) {
-                DB::table('wishlists')->where('id', $isExist->first()->id)->delete();
-
-                return $this->SuccessResponse(200, 'Removed from wishlist!', null);
-            }
-            DB::table('wishlists')->insert(
-                [
-                    'doctor_id' => $request->doctor_id,
-                    'patient_id' => $request->user()->id
-                ]
-            );
-            return $this->SuccessResponse(200, 'Added to wishlist!', null);
-        }
-        public function Wishlist(Request $request)
-        {
-
-            $baseUrl = getenv('BASE_URL') . 'images/';
-
-            $doctors = Wishlist::join('users', 'users.id', 'wishlists.doctor_id')
-                ->join('specialities', 'specialities.id', 'users.speciality_id')
-                ->join('hospitals', 'hospitals.id', 'users.hospital_id')
-                ->where('wishlists.patient_id', $request->user()->id)
-                ->select(
-                    'users.id',
-                    DB::raw("IFNULL(users.name_{$this->getLang()}, users.name_en) as name"),
-                    DB::raw("CONCAT('$baseUrl', users.profile_image) as profile_image"),
-                    DB::raw("IFNULL(specialities.name_{$this->getLang()}, specialities.name_en) as speciality_name"),
-                    DB::raw("CONCAT('$baseUrl', specialities.image) as speciality_image"),
-                    DB::raw("IFNULL(hospitals.hospital_name_{$this->getLang()}, hospitals.hospital_name_en) as hospital_name"),
-                )
-                ->get();
-            return $this->SuccessResponse(200, 'wishlist  Data', $doctors);
-        }
-    /* End wish List Part*/
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-
-
     /* Stert Appointment API's */
         // Start Avail Slot API
         public function get_availability(Request $request, $id)
