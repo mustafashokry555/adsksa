@@ -98,4 +98,23 @@ class WishlistController extends Controller
         return $this->SuccessResponse(200, 'Hospitals Wishlist Data', $hospitals);
     }
 
+    public function wishlist(Request $request){
+        // Doctors
+        $doctorsIds = $request->user()->favoriteDoctors->pluck('doctor_id');
+        $doctors = User::whereIn('id', $doctorsIds)->where('user_type', User::DOCTOR)
+        ->get();
+        $doctors = DoctorResource::collection($doctors);
+        
+        // Hospitals
+        $hospitalsIds = $request->user()->favoriteHospitals->pluck('hospital_id');
+        $hospitals = Hospital::whereIn('id', $hospitalsIds)->get();
+        $hospitals = HospitalResource::collection($hospitals);
+
+        $data = [
+            'doctors' => $doctors,
+            'hospitals' => $hospitals
+        ];
+        return $this->SuccessResponse(200, 'Wishlist Data', $data);
+    }
+
 }

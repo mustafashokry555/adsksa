@@ -78,6 +78,7 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     // wishlist
     Route::post('doctor-to-wishlist',[WishlistController::class,'addDoctorToWishlist']);
     Route::post('hospital-to-wishlist',[WishlistController::class,'addHospitalToWishlist']);
+    Route::get('wishlist',[WishlistController::class,'wishlist']);
     Route::get('doctor-wishlist',[WishlistController::class,'doctor_wishlist']);
     Route::get('hospital-wishlist',[WishlistController::class,'hospital_wishlist']);
 
