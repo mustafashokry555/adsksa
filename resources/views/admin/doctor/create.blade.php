@@ -118,45 +118,81 @@
                                 </div>
                             </div>
                             <!-- Address -->
-                            <div class="form-row row">
-                                <div class="form-group row">
-                                    <label class="col-form-label col-md-2"
-                                        for="address">{{ __('admin.doctor.address') }}</label>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" id="address" name="address"
-                                            placeholder="{{ __('admin.doctor.enter_doctor_address') }}" required>
-                                        @error('address')
-                                            <div class="text-danger pt-2">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="country">{{ __('admin.doctor.country') }}</label>
-                                    <input type="text" class="form-control" id="country"
-                                        placeholder="{{ __('admin.doctor.enter_country') }}" name="country" required>
-                                    @error('country')
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-2"
+                                    for="address">{{ __('admin.doctor.address') }}</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" id="address" name="address"
+                                        placeholder="{{ __('admin.doctor.enter_doctor_address') }}" required>
+                                    @error('address')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="state">{{ __('admin.doctor.state') }}</label>
-                                    <input type="text" class="form-control" id="state" name="state"
-                                        placeholder="{{ __('admin.doctor.enter_state') }}" required>
-                                    @error('state')
+                            </div>
+
+                            {{-- Country --}}
+                            <div class="form-group row">
+                                <label for="country_id" class="col-form-label col-md-2">{{ __('admin.hospital.country') }}</label>
+                                <div class="col-md-10">
+                                    <select id="country_id" name="country_id" class="form-control" required>
+                                        <option value="" disabled selected>Select Country</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}">{{ $country->name_en }} < {{ $country->name_ar }} ></option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="zip_code">{{ __('admin.doctor.zip_code') }}</label>
+                            </div>
+                            {{-- State --}}
+                            <div class="form-group row">
+                                <label for="city_id"
+                                    class="col-form-label col-md-2">State</label>
+                                <div class="col-md-10">
+                                    <select id="city_id" name="city_id" class="form-select select" required>
+                                        <option value="">-- Select State --</option>
+                                        @foreach ($states as $state)
+                                            <option value="{{ $state->id }}">{{ $state->name_en }} < {{ $state->name_ar }} ></option>
+                                        @endforeach
+                                    </select>
+                                    @error('city_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            {{-- City --}}
+                            <div class="form-group row">
+                                <label for="area_id"
+                                    class="col-form-label col-md-2">City</label>
+                                <div class="col-md-10">
+                                    <select id="area_id" name="area_id" class="form-select select" required>
+                                        <option value="">-- Select City --</option>
+                                        @foreach ($cities as $city)
+                                            <option value="{{ $city->id }}">{{ $city->name_en }} < {{ $city->name_ar }} ></option>
+                                        @endforeach
+                                    </select>
+                                    @error('area_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-2"
+                                    for="address">{{ __('admin.doctor.zip_code') }}</label>
+                                <div class="col-md-10">
                                     <input type="text" class="form-control" id="zip_code" name="zip_code"
                                         placeholder="{{ __('admin.doctor.enter_zip_code') }}" required>
-                                    @error('zip_code')
+                                        @error('zip_code')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -216,47 +252,6 @@
                                 </div>
                             </div>
                             <!-- Basic -->
-                            <!-- <div class="col-md-12">
-                                    <div class="pro-title d-flex justify-content-between">
-                                        <h4>Add Doctor Schedule</h4>
-                                    </div>
-                                </div>
-                                @for ($i = 0; $i <= 6; $i++)
-    <div class="form-row row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="from">Day</label>
-                                            <input type="text" class="form-control" value="{{ \App\Commons::Days[$i] }}"
-                                                   readonly>
-                                        </div>
-                                        <input type="hidden" name="user_id"
-                                               value="{{ auth()->id() }}">
-                                        @if ($schedules[$i]->from ?? '')
-    <div class="col-md-3 mb-3">
-                                                <label for="from">From</label>
-                                                <input type="time" class="form-control" id="from" name="from[]"
-                                                       value="{{ $schedules[$i]->from }}">
-                                            </div>
-@else
-    <div class="col-md-3 mb-3">
-                                                <label for="from">From</label>
-                                                <input type="time" class="form-control" id="from" name="from[]">
-                                            </div>
-    @endif
-                                        @if ($schedules[$i]->to ?? '')
-    <div class="col-md-3 mb-3">
-                                                <label for="to">To</label>
-                                                <input type="time" class="form-control" id="to" name="to[]"
-                                                       value="{{ $schedules[$i]->to }}">
-                                            </div>
-@else
-    <div class="col-md-3 mb-3">
-                                                <label for="to">To</label>
-                                                <input type="time" class="form-control" id="to" name="to[]">
-                                            </div>
-    @endif
-                                    </div>
-                                    <input type="hidden" name="days[]" value="{{ \App\Commons::Days[$i] }}">
-    @endfor -->
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
                                 {{ __('admin.doctor.add_doctor') }}
                             </button>
@@ -273,3 +268,82 @@
     <!-- /Main Wrapper -->
 
 @endsection
+<script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
+<script>
+    // get states fun 
+    function getStatesAndCities(countryId) {
+        // States
+        $.ajax({
+            url: '{{ route("get.states") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { country_id: countryId },
+            success: function (data) {
+                $('#city_id').empty(); // Clear the cities dropdown
+                $('#city_id').append('<option value="" disabled selected>Select State</option>');
+                $.each(data, function (key, state) {
+                    $('#city_id').append('<option value="' + state.id + '">' + state.name_en +' < '+ state.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading States');
+            }
+        });
+
+        // Cities
+        $.ajax({
+            url: '{{ route("get.cities") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { country_id: countryId },
+            success: function (data) {
+                $('#area_id').empty(); // Clear the cities dropdown
+                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+                $.each(data, function (key, city) {
+                    $('#area_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Cities');
+            }
+        });
+    }
+    function getCities(stateId) {
+        // Cities
+        $.ajax({
+            url: '{{ route("get.cities") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { city_id: stateId },
+            success: function (data) {
+                $('#area_id').empty(); // Clear the cities dropdown
+                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+                $.each(data, function (key, city) {
+                    $('#area_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Cities');
+            }
+        });
+    }
+    $(document).ready(function() {
+        $('#country_id').on('change', function () {
+            var countryId = $(this).val();
+            if (countryId) {
+                getStatesAndCities(countryId);
+            } else {
+                $('#city_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#city_id').append('<option value="" disabled selected>Select State</option>');
+                $('#area_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+            }
+        });
+        $('#city_id').on('change', function () {
+            var stateId = $(this).val();
+            if (stateId) {
+                getCities(stateId);
+            } else {
+                $('#area_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+            }
+        });
+    });
+</script>

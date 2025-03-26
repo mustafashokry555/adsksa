@@ -53,11 +53,11 @@ class HospitalController extends Controller
         if (Auth::user()->is_admin()) {
             $insurances = Insurance::where('user_id', Auth::id())->get();
             $countries = Country::all();
-            $cities = City::all();
-            $areas = Area::all();
+            $states = City::all();
+            $cities = Area::all();
             $hospital_types = HospitalType::all();
             // $cities = City::all();
-            return view('admin.hospital.create', compact('insurances', 'countries', 'cities', 'areas', 'hospital_types'));
+            return view('admin.hospital.create', compact('insurances', 'countries', 'cities', 'states', 'hospital_types'));
         } else {
             abort(401);
         }
@@ -69,9 +69,8 @@ class HospitalController extends Controller
             'hospital_name_ar' => 'required',
             'image' => 'required|image',
             'address' => 'required',
-            'country_id' => 'required',
-            'state' => 'required',
             'city_id' => 'required',
+            'area_id' => 'required',
             'hospital_type_id' => 'required',
             'zip' => 'required',
             'lat' => 'required',
@@ -152,39 +151,43 @@ class HospitalController extends Controller
 
     public function edit($id)
     {
+        $hospital = Hospital::find($id);
         $hospital_types = HospitalType::all();
+        $countries = Country::all();
+        if($hospital->country){
+            $states = City::where('country_id', $hospital->country->id)->get();
+        }else{
+            $states = City::all();
+        }
+        if($hospital->state){
+            $cities = Area::where('city_id', $hospital->state->id)->get();
+        }elseif($hospital->country){
+            $cities = Area::whereHas('country', function ($query) use($hospital) {
+                $query->where('countries.id', $hospital->country->id);
+            })->get();
+        }else{
+            $cities = Area::all();
+        }
         if (Auth::user()->user_type == 'A') {
-            $hospital = Hospital::find($id);
-            $countries = Country::all();
-            if($hospital->country){
-                $cities = City::where('country_id', $hospital->country->id)->get();
-            }else{
-                $cities = City::all();
-            }
             return view('admin.hospital.edit', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
-                'insurances'    =>   Insurance::get(),
+                'insurances' => Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
                 'hospital_types' => $hospital_types,
                 'countries' => $countries,
+                'states' => $states,
                 'cities' => $cities,
             ]);
         }elseif (Auth::user()->user_type == 'H') {
-            $hospital = Hospital::find($id);
-            $countries = Country::all();
-            if($hospital->country){
-                $cities = City::where('country_id', $hospital->country->id)->get();
-            }else{
-                $cities = City::all();
-            }
             return view('hospital.profile.editHospital', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
-                'insurances'    =>   Insurance::get(),
+                'insurances' => Insurance::get(),
                 'selectedInsuranceIds' => $hospital->insurances->pluck('id')->toArray(),
                 'hospital_types' => $hospital_types,
                 'countries' => $countries,
+                'states' => $states,
                 'cities' => $cities,
             ]);
         } else {
@@ -210,11 +213,10 @@ class HospitalController extends Controller
                     'hospital_name_ar' => 'required',
                     'image' => 'image',
                     'address' => 'required',
-                    // 'country_id' => 'required',
-                    // 'state' => 'required',
-                    // 'city_id' => 'required',
-                    'zip' => 'required',
+                    'area_id' => 'required',
+                    'city_id' => 'required',
                     'hospital_type_id' => 'required',
+                    'zip' => 'required',
                     'lat' => 'required',
                     'long' => 'required',
                     'location' => 'required',
@@ -260,9 +262,9 @@ class HospitalController extends Controller
                     'hospital_name_ar' => 'required',
                     'image' => 'image',
                     'address' => 'required',
-                    'country' => 'required',
-                    'state' => 'required',
-                    'city' => 'required',
+                    'area_id' => 'required',
+                    'city_id' => 'required',
+                    'hospital_type_id' => 'required',
                     'zip' => 'required',
                     'lat' => 'required',
                     'long' => 'required',

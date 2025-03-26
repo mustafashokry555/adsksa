@@ -57,6 +57,7 @@ Route::get('home',[MainController::class,'home']);
 Route::get('offers',[MainController::class,'offers']);
 // new Apis
 Route::get('filter-data',[FilterController::class,'filter_data']);
+Route::get('search',[FilterController::class,'search']);
 
 
 

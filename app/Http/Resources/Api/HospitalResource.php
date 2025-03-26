@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\Api;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Http;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class HospitalResource extends JsonResource
 {
@@ -16,6 +18,19 @@ class HospitalResource extends JsonResource
      */
     public function toArray($request)
     {
+        $user = null;
+        if ($request->user()) {
+            $user = $request->user();
+        }else{
+            $token = request()->bearerToken();
+            if ($token) {
+                $tokenModel = PersonalAccessToken::findToken($token);
+                if ($tokenModel) {
+                    $user_id = $tokenModel->tokenable->id;
+                    $user = User::find($user_id);
+                }
+            }
+        }
         $distance = null;
         if(request()->has("long") && request()->has("lat")){
             if($this->lat != null && $this->long != null){
@@ -31,15 +46,15 @@ class HospitalResource extends JsonResource
             'avg_rating' =>  $this->avg_rating,
             'rating_count' =>  $this->rating_count,
             'image' => $this->image,
-            'state' => $this->state,
+            'country' => $this->country ? $this->country->name : null,
+            'state' => $this->state ? $this->state->name : null,
+            'city' => $this->city ? $this->city->name : null,
             'lat' => $this->lat,
             'long' => $this->long,
             'location' => $this->location,
             'distance' => $distance,
-            'city_name' => $this->city_name ?? '',
-            'country_name' => $this->country_name ?? '',
             'images_links' => $this->images_links,
-            'is_favorite' => $request->user() ? $request->user()->isFavoriteHospital($this->id) : false,
+            'is_favorite' => $user ? $user->isFavoriteHospital($this->id) : false,
         ];
     }
 

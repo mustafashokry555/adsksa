@@ -119,7 +119,8 @@
                                                 @else
                                                     <td> No Admin </td>
                                                 @endif
-                                                <td><span class="user-name">{{ $hospital->address }} </span>
+                                                <td>
+                                                    <span class="user-name">{{ $hospital->address }} </span>
                                                     <span class="d-block">{{ $hospital->country ? $hospital->country->name : null }}</span>
                                                     <span class="d-block">{{ $hospital->state ? $hospital->state->name : null  }}</span>
                                                     <span class="d-block">{{ $hospital->city ? $hospital->city->name : null   }}</span>

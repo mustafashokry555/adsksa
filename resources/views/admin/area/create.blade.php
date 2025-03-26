@@ -108,7 +108,7 @@
             data: { country_id: countryId },    
             success: function (data) {
                 $('#city_id').empty(); // Clear the cities dropdown
-                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').append('<option value="" disabled selected>Select State</option>');
                 $.each(data, function (key, city) {
                     $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
                 });

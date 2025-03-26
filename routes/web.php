@@ -78,7 +78,8 @@ Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offe
 Route::post('/subscribe_newsletter', [HomeController::class, 'subscribeNewsletter']);
 
 // main search 
-Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.cities');
+Route::get('get-states', [CityController::class, 'get_states'])->name('get.states');
+Route::get('get-cities', [AreaController::class, 'get_cities'])->name('get.cities');
 Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
 Route::get('get-specialities', [SpecialityController::class, 'get_specialities'])->name('get.specialities');
 

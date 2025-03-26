@@ -84,10 +84,15 @@ class AreaController extends Controller
         return redirect()->route('areas.index')->with('flash', ['type', 'success', 'message' => 'Area permanently deleted.']);
     }
 
-    public function get_areas(Request $request) {
-        $cities = City::query();
-        if ($request->country_id && $request->country_id != null && $request->country_id != 'all') {
-            $cities = $cities->where('country_id', $request->country_id);
+    public function get_cities(Request $request) {
+        $cities = Area::query();
+        
+        if ($request->city_id && $request->city_id != null && $request->city_id != 'all') {
+            $cities = $cities->where('city_id', $request->city_id);
+        }elseif ($request->country_id && $request->country_id != null && $request->country_id != 'all') {
+            $cities = $cities->whereHas('country', function ($query) use($request) {
+                $query->where('countries.id', $request->country_id);
+            });
         }
         $cities = $cities->get();
 

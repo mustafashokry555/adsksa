@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\Api;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Http;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class DoctorResource extends JsonResource
 {
@@ -16,6 +18,19 @@ class DoctorResource extends JsonResource
      */
     public function toArray($request)
     {
+        $user = null;
+        if ($request->user()) {
+            $user = $request->user();
+        }else{
+            $token = request()->bearerToken();
+            if ($token) {
+                $tokenModel = PersonalAccessToken::findToken($token);
+                if ($tokenModel) {
+                    $user_id = $tokenModel->tokenable->id;
+                    $user = User::find($user_id);
+                }
+            }
+        }
         $distance = null;
         if(request()->has("long") && request()->has("lat")){
             if($this->hospital->lat != null && $this->hospital->long != null){
@@ -28,10 +43,11 @@ class DoctorResource extends JsonResource
             'profile_image' => $this->profile_image,
             'name' => $this->name,
             'speciality_name' => $this->speciality->name,
-            'avg_rating' => round($this->reviews()->avg('star_rated'), 2) ?? 0,
+            'avg_rate' => $this->avg_rate,
             'distance' => $distance,
             'hospital_name' => $this->hospital->hospital_name,
-            'is_favorite' => $request->user()->isFavoriteDoctor($this->id)
+            'pricing' => $this->pricing,
+            'is_favorite' => $user ? $user->isFavoriteDoctor($this->id) : false
         ];
     }
 

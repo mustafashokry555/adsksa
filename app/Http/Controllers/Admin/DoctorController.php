@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Area;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Hospital;
 use App\Models\Schedule;
 use App\Models\Speciality;
@@ -45,18 +48,27 @@ class DoctorController extends Controller
 
     public function create()
     {
+        $countries = Country::all();
+        $states = City::all();
+        $cities = Area::all();
         if (Auth::user()->is_admin()) {
             return view(
                 'admin.doctor.create',
                 [
                     'specialities' => Speciality::query()->orderByDesc('id')->get(),
                     'hospitals' => Hospital::query()->orderByDesc('id')->get(),
+                    'countries' => $countries,
+                    'cities' => $cities,
+                    'states' => $states,
                 ]
             );
         } elseif (Auth::user()->is_hospital()) {
             return view('hospital.doctor.create', [
                 'specialities' => Speciality::query()->orderByDesc('id')->get(),
                 'hospitals' => Hospital::query()->orderByDesc('id')->get(),
+                'countries' => $countries,
+                'cities' => $cities,
+                'states' => $states,
             ]);
         } else {
             abort(401);
@@ -76,8 +88,8 @@ class DoctorController extends Controller
                 'user_type' => 'required',
                 'gender' => 'required',
                 'address' => 'required',
-                'country' => 'nullable',
-                'state' => 'nullable',
+                'city_id' => 'nullable',
+                'area_id' => 'nullable',
                 'zip_code' => 'nullable',
                 'hospital_id' => 'required',
                 'speciality_id' => 'required',
@@ -127,22 +139,44 @@ class DoctorController extends Controller
 
     public function edit($id)
     {
+        $doctor = User::find($id);
+        $countries = Country::all();
+        if($doctor->country){
+            $states = City::where('country_id', $doctor->country->id)->get();
+        }else{
+            $states = City::all();
+        }
+        if($doctor->state){
+            $cities = Area::where('city_id', $doctor->state->id)->get();
+        }elseif($doctor->country){
+            $cities = Area::whereHas('country', function ($query) use($doctor) {
+                $query->where('countries.id', $doctor->country->id);
+            })->get();
+        }else{
+            $cities = Area::all();
+        }
         if (Auth::user()->is_admin()) {
             return view(
                 'admin.doctor.edit',
                 [
-                    'doctor' => User::find($id),
+                    'doctor' => $doctor,
                     'specialities' => Speciality::query()->orderByDesc('id')->get(),
                     'hospitals' => Hospital::query()->orderByDesc('id')->get(),
+                    'countries' => $countries,
+                    'cities' => $cities,
+                    'states' => $states,
                 ]
             );
         } elseif (Auth::user()->is_hospital()) {
             return view(
                 'hospital.doctor.edit',
                 [
-                    'doctor' => User::find($id),
+                    'doctor' => $doctor,
                     'specialities' => Speciality::query()->orderByDesc('id')->get(),
                     'hospitals' => Hospital::query()->orderByDesc('id')->get(),
+                    'countries' => $countries,
+                    'cities' => $cities,
+                    'states' => $states,
                 ]
             );
         } else {
@@ -162,8 +196,8 @@ class DoctorController extends Controller
                     'profile_image' => 'image',
                     'gender' => 'required',
                     'address' => 'required',
-                    'country' => 'nullable',
-                    'state' => 'nullable',
+                    'city_id' => 'nullable',
+                    'area_id' => 'nullable',
                     'zip_code' => 'nullable',
                     'user_type' => 'required',
                     'hospital_id' => 'required',

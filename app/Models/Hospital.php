@@ -117,11 +117,11 @@ class Hospital extends Model
     }
     public function state()
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class, 'city_id', 'id');
     }
     public function city()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Area::class, 'area_id', 'id');
     }
 
 

@@ -79,13 +79,10 @@
                                                             <td>N/A</td>
                                                         @endif
                                                         <td>
-                                                            @if ($doctor?->address ?? '')
-                                                                <span class="user-name">{{ $doctor?->address }} </span>
-                                                                <span class="d-block">{{ $doctor?->state }}</span>
-                                                                <span class="d-block">{{ $doctor?->country }}</span>
-                                                            @else
-                                                                <span class="d-block">{{ __('hospital.doctor.no_address_found')  }}</span>
-                                                            @endif
+                                                            <span class="user-name">{{ $doctor->address }} </span>
+                                                            <span class="d-block">{{ $doctor->country ? $doctor->country->name : null }}</span>
+                                                            <span class="d-block">{{ $doctor->state ? $doctor->state->name : null  }}</span>
+                                                            <span class="d-block">{{ $doctor->city ? $doctor->city->name : null   }}</span>
                                                         </td>
                                                         <td>11 Nov 2019 <span class="d-block text-info">10.00 AM</span></td>
                                                         <td class="text-center">

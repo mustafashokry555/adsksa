@@ -107,29 +107,16 @@
                                                 @else
                                                     <td>N/A</td>
                                                 @endif
-                                                @if ($doctor->address ?? '')
-                                                    <td><span class="user-name">{{ $doctor->address }} </span>
-                                                        <span class="d-block">{{ $doctor->state }}</span>
-                                                        <span class="d-block">{{ $doctor->country }}</span>
-                                                    </td>
-                                                @else
-                                                    <td>
-                                                        <span class="user-name">No Address Found </span>
-                                                    </td>
-                                                @endif
-                                                <td><span
-                                                        class="user-name">{{ $doctor->created_at->format('l, F jS Y') }}</span>
+                                                <td>
+                                                    {{-- <span class="user-name">{{ $doctor->address }} </span> --}}
+                                                    <span class="d-block">{{ $doctor->country ? $doctor->country->name : null }}</span>
+                                                    <span class="d-block">{{ $doctor->state ? $doctor->state->name : null  }}</span>
+                                                    <span class="d-block">{{ $doctor->city ? $doctor->city->name : null   }}</span>
                                                 </td>
-                                                {{--													<td>545</td> --}}
+                                                <td>
+                                                    <span class="user-name">{{ $doctor->created_at->format('l, F jS Y') }}</span>
+                                                </td>
                                                 <td> {{ $doctor->pricing !== 'Free' ? 'SAR ' . $doctor->pricing : 'FREE' }}</td>
-                                                {{--													<td> --}}
-                                                {{--														<label class="toggle-switch" for="status1"> --}}
-                                                {{--															<input type="checkbox" class="toggle-switch-input" id="status1"> --}}
-                                                {{--															<span class="toggle-switch-label"> --}}
-                                                {{--																<span class="toggle-switch-indicator"></span> --}}
-                                                {{--															</span> --}}
-                                                {{--														</label> --}}
-                                                {{--													</td> --}}
                                                 <td class="text-end">
                                                     <div class="actions">
                                                         <a class="text-black"

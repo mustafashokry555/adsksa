@@ -232,14 +232,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Blog::class);
     }
-
-    // public function getAvgRatingAttribute()
-    // {
-    //     if ($this->user_type == self::DOCTOR) {
-    //         return $this->reviews()->avg('star_rated') ?? 0;
-    //     }
-    //     return null;
-    // }
+    
+    public function getAvgRateAttribute()
+    {
+        if ($this->user_type == self::DOCTOR) {
+            return $this->reviews()->avg('star_rated') ?? 0;
+        }
+        return null;
+    }
 
     public function country()
     {
@@ -247,11 +247,11 @@ class User extends Authenticatable
     }
     public function state()
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class, 'city_id', 'id');
     }
     public function city()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Area::class, 'area_id', 'id');
     }
     public function getNameAttribute()
     {
