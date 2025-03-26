@@ -649,38 +649,37 @@ class MainController extends Controller
             }
             $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
             // return $doctor;
-            $time_interval = 15;
+            // $time_interval = 15;
             // Create selected CarbonDate instance
             $selectedDate = CarbonImmutable::parse($request->date);
             // create date
             $date = $selectedDate->format("Y-m-d");
             // day of the week
             $day_name = strtolower($selectedDate->format("l"));
-
+            
             // Doctor set unavailabilty on a specific date
             $unavailability = $doctor->unavailailities()->where("date", $date)->first();
             // return Not available
             if ($unavailability) {
-
+                
                 return $this->SuccessResponse(200, "Not Available", []);
             }
-
             // Check if doctor set One time appointment on a specific date
             $availability = null;
             $oneTimeAvailability = $doctor->oneTimeailabilities()->where("date", $date)->first();
             if ($oneTimeAvailability) {
                 // Get time intervals to create slots
-                $time_interval = $oneTimeAvailability->time_interval ? $oneTimeAvailability->time_interval : 15;
+                // $time_interval = $oneTimeAvailability->time_interval ? $oneTimeAvailability->time_interval : 15;
                 $availability = $oneTimeAvailability;
             } else {
                 $regularAvailability = $doctor->regularAvailabilities()->where("week_day", $day_name)->first();
                 if ($regularAvailability) {
                     // Get time intervals to create slots
-                    $time_interval = $regularAvailability->time_interval ? $regularAvailability->time_interval : 15;
+                    // $time_interval = $regularAvailability->time_interval ? $regularAvailability->time_interval : 15;
                     $availability = $regularAvailability;
                 }
             }
-
+                // return $availability;
             // if availability is null
             if (!$availability) {
 
@@ -694,25 +693,27 @@ class MainController extends Controller
             $slots = [];
             $filteredSlots = collect([]);
             $intervals = collect($availability->slots);
-
+            
+            
             // Fliter slots
             foreach ($intervals as  $interval) {
                 $start_dt = $date . $interval["start_time"];
                 $end_dt = $date . $interval["end_time"];
-
+                
                 // Create Slots
                 $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
-
                 foreach ($slots as $slot) {
-                    if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
+                    if ($slot->greaterThan(Carbon::now()->addMinutes(20)) && $slot->lessThan($end_dt)) {
                         if (!$appointments->contains($slot->format("H:i:s"))) {
                             $filteredSlots->push($slot->format("H:i"));
                         }
                     }
                 }
             }
-            return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->slice(0, -1)->all());
+            // return $filteredSlots;
+            return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->all());
         }
+
         // Book New Appointmentneed need alot of updates
         public function BookAppointment(Request $request)
         {

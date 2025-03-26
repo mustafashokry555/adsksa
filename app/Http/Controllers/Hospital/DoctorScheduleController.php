@@ -69,7 +69,11 @@ class DoctorScheduleController extends Controller
             }
             $doctor = $hospital->doctors->first();
         }
-        $doctor->regularAvailabilities()->updateOrCreate(['week_day' => $request->weekDay, 'doctor_id' => $doctor->id],
+        $doctor->regularAvailabilities()->updateOrCreate([
+            'week_day' => $request->weekDay,
+            'doctor_id' => $doctor->id,
+            'hospital_id' => $doctor->hospital->id
+        ],
         $request->except("weekDay"));
         return redirect()->route("doctor.edit", $doctor->id)->with('flash', ['type', 'success', 'message' => 'Regular Schedule has been created']);
     }
@@ -119,6 +123,7 @@ class DoctorScheduleController extends Controller
         ]);
         $request->merge([
             "week_day" => $request->weekDay,
+            'hospital_id' => $doctor->hospital->id,
         ]);
         // if admin
         if(Auth::user()->is_admin()){
