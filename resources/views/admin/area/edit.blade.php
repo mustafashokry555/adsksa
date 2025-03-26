@@ -108,14 +108,14 @@
     // get cities fun 
     function getCities(countryId) {
         $.ajax({
-            url: '{{ route("get.cities") }}', // Define this route in Laravel
+            url: '{{ route("get.states") }}', // Define this route in Laravel
             type: 'GET',
             data: { country_id: countryId },    
             success: function (data) {
                 $('#city_id').empty(); // Clear the cities dropdown
                 $('#city_id').append('<option value="" disabled selected>Select State</option>');
-                $.each(data, function (key, city) {
-                    $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                $.each(data, function (key, state) {
+                    $('#city_id').append('<option value="' + state.id + '">' + state.name_en +' < '+ state.name_ar +' > '+'</option>');
                 });
             },
             error: function () {
