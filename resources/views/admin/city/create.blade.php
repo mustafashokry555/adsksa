@@ -1,14 +1,14 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Add New City')
+@section('title', 'Add New State')
 @section('content')
     <div class="page-wrapper">
 
-        <!-- City -->
+        <!-- State -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Add New City</h5>
+                        <h5 class="card-title">Add New State</h5>
                     </div>
                     <div class="card-body">
                         @if (session()->has('flash'))
@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                             <button class="btn btn-primary btn-add"><i
-                                    class="feather-plus-square me-1"></i>Add New City</button>
+                                    class="feather-plus-square me-1"></i>Add New State</button>
                         </form>
                     </div>
                 </div>

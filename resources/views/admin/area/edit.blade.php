@@ -1,5 +1,5 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Add New Area')
+@section('title', 'Edit City')
 @section('content')
     <div class="page-wrapper">
 
@@ -8,7 +8,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Add New Area</h5>
+                        <h5 class="card-title">Edit City</h5>
                     </div>
                     <div class="card-body">
                         @if (session()->has('flash'))
@@ -69,10 +69,10 @@
                             </div>
                             <div class="form-group row">
                                 <label for="city_id"
-                                    class="col-form-label col-md-2">City</label>
+                                    class="col-form-label col-md-2">State</label>
                                 <div class="col-md-10">
                                     <select id="city_id" name="city_id" class="form-select select" required>
-                                        <option value="">-- Select City --</option>
+                                        <option value="">-- Select State --</option>
                                         @foreach ($cities as $city)
                                             <option value="{{ $city->id }}"
                                                 {{ old('city_id', $area->city_id) == $city->id ? 'selected' : '' }}>
@@ -88,7 +88,7 @@
                                 </div>
                             </div>
                             <button class="btn btn-primary btn-add"><i
-                                    class="feather-plus-square me-1"></i>Update Area Detailes</button>
+                                    class="feather-plus-square me-1"></i>Update City Detailes</button>
                         </form>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
             data: { country_id: countryId },    
             success: function (data) {
                 $('#city_id').empty(); // Clear the cities dropdown
-                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').append('<option value="" disabled selected>Select State</option>');
                 $.each(data, function (key, city) {
                     $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
                 });
@@ -130,7 +130,7 @@
                 getCities(countryId);
             } else {
                 $('#city_id').empty(); // Clear the cities dropdown if no country is selected
-                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').append('<option value="" disabled selected>Select State</option>');
             }
         });
     });

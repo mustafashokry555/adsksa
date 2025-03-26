@@ -37,30 +37,30 @@ class FilterController extends Controller
             // get Countries
             $countries = Country::orderBy("name_$this->lang", 'ASC')->get();
 
-            // get Cities
-            $cities = City::query();
+            // get states
+            $states = City::query();
             if (request('country_ids')) {
-                $cities = $cities->whereIn("country_id", request('country_ids'));
+                $states = $states->whereIn("country_id", request('country_ids'));
             }
-            $cities = $cities->orderBy("name_$this->lang", 'ASC')->get();
+            $states = $states->orderBy("name_$this->lang", 'ASC')->get();
 
-            // get Areas
-            $areas = Area::query();
-            if (request('city_ids')) {
-                $areas = $areas->whereIn("city_id", request('city_ids'));
+            // get cities
+            $cities = Area::query();
+            if (request('state_ids')) {
+                $cities = $cities->whereIn("city_id", request('state_ids'));
             } elseif (request('country_ids')) {
-                $areas = $areas->whereHas('country', function ($query) {
+                $cities = $cities->whereHas('country', function ($query) {
                     $query->whereIn('countries.id', request('country_ids'));
                 });
             }
-            $areas = $areas->orderBy("name_$this->lang", 'ASC')->get();
+            $cities = $cities->orderBy("name_$this->lang", 'ASC')->get();
 
             $data = [
                 'specialities' => $specialities,
                 'insurance' => $insurance,
                 'countries' => $countries,
+                'states' => $states,
                 'cities' => $cities,
-                'areas' => $areas,
             ];
             
             return $this->SuccessResponse(200, 'All Data for the Filter reterieved successfully', $data);

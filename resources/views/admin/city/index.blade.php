@@ -1,12 +1,12 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Cities')
+@section('title', 'States')
 @section('content')
     <div class="page-wrapper">
         <div class="content container-fluid">
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col-md-12 d-flex justify-content-end">
-                        <div class="doc-badge me-3">Cities <span class="ms-1">{{ count($cities) }}</span></div>
+                        <div class="doc-badge me-3">States <span class="ms-1">{{ count($cities) }}</span></div>
                         <a href="{{ route('cities.create') }}" class="btn btn-primary btn-add">
                             <i class="feather-plus-square me-1"></i>Add New
                         </a>
@@ -18,14 +18,14 @@
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
 
-            <!-- City List -->
+            <!-- State List -->
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-header">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h5 class="card-title">Cities</h5>
+                                    <h5 class="card-title">States</h5>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                                                                 <i class="feather-refresh-cw me-1"></i> Restore
                                                             </a>
                                                             <a class="text-danger" href="javascript:void(0);"
-                                                                onclick="if (window.confirm('Are you sure you want to permanently delete this city <{{ $city->name_en }}>?')){ 
+                                                                onclick="if (window.confirm('Are you sure you want to permanently delete this State <{{ $city->name_en }}>?')){ 
                                                                     document.getElementById('force-delete{{ $city->id }}').submit(); 
                                                                 }">
                                                                 <i class="feather-trash-2 me-1"></i> Hard Delete
@@ -75,7 +75,7 @@
                                                         @else
                                                             <!-- Show the Delete button only if not deleted -->
                                                             <a class="text-danger" href="javascript:void(0);"
-                                                                onclick="if (window.confirm('Are you sure you want to delete this city <{{ $city->name_en }}>?')){ 
+                                                                onclick="if (window.confirm('Are you sure you want to delete this State <{{ $city->name_en }}>?')){ 
                                                                     document.getElementById('delete{{ $city->id }}').submit(); 
                                                                 }">
                                                                 <i class="feather-trash-2 me-1"></i> Delete
@@ -93,7 +93,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5">No Cities available</td>
+                                                <td colspan="5">No States available</td>
                                             </tr>
                                         @endforelse
                                     </tbody>

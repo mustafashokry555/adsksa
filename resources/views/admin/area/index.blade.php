@@ -1,14 +1,14 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Areas')
+@section('title', 'Cities')
 @section('content')
     <div class="page-wrapper">
         <div class="content container-fluid">
             <div class="page-header">
                 <div class="row align-items-center">
                     <div class="col-md-12 d-flex justify-content-end">
-                        <div class="doc-badge me-3">Areas <span class="ms-1">{{ count($areas) }}</span></div>
+                        <div class="doc-badge me-3">Cities <span class="ms-1">{{ count($areas) }}</span></div>
                         <a href="{{ route('areas.create') }}" class="btn btn-primary btn-add">
-                            <i class="feather-plus-square me-1"></i>Add New
+                            <i class="feather-plus-square me-1"></i>Add New City
                         </a>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                         <div class="card-header">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h5 class="card-title">Areas</h5>
+                                    <h5 class="card-title">Cities</h5>
                                 </div>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                                             <th>ID</th>
                                             <th>Name EN</th>
                                             <th>Name AR</th>
-                                            <th>City</th>
+                                            <th>State</th>
                                             <th>Country</th>
                                             <th>Action</th>
                                         </tr>
@@ -63,7 +63,7 @@
                                                                 <i class="feather-refresh-cw me-1"></i> Restore
                                                             </a>
                                                             <a class="text-danger" href="javascript:void(0);"
-                                                                onclick="if (window.confirm('Are you sure you want to permanently delete this area <{{ $area->name_en }}>?')){ 
+                                                                onclick="if (window.confirm('Are you sure you want to permanently delete this City <{{ $area->name_en }}>?')){ 
                                                                     document.getElementById('force-delete{{ $area->id }}').submit(); 
                                                                 }">
                                                                 <i class="feather-trash-2 me-1"></i> Hard Delete
@@ -77,7 +77,7 @@
                                                         @else
                                                             <!-- Show the Delete button only if not deleted -->
                                                             <a class="text-danger" href="javascript:void(0);"
-                                                                onclick="if (window.confirm('Are you sure you want to delete this area <{{ $area->name_en }}>?')){ 
+                                                                onclick="if (window.confirm('Are you sure you want to delete this City <{{ $area->name_en }}>?')){ 
                                                                     document.getElementById('delete{{ $area->id }}').submit(); 
                                                                 }">
                                                                 <i class="feather-trash-2 me-1"></i> Delete

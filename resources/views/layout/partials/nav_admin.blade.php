@@ -45,10 +45,10 @@
                     <a href="{{ route('countries.index') }}"><i class="feather-flag"></i> <span>Countries</span></a>
                 </li>
                 <li class="{{ Request::routeIs('cities.*') ? 'active' : '' }}">
-                    <a href="{{ route('cities.index') }}"><i class="feather-map"></i> <span>Cities</span></a>
+                    <a href="{{ route('cities.index') }}"><i class="feather-map"></i> <span>States</span></a>
                 </li>
                 <li class="{{ Request::routeIs('areas.*') ? 'active' : '' }}">
-                    <a href="{{ route('areas.index') }}"><i class="feather-map-pin"></i> <span>Areas</span></a>
+                    <a href="{{ route('areas.index') }}"><i class="feather-map-pin"></i> <span>Cities</span></a>
                 </li>
                 <li class="{{ Request::routeIs('banner.*') ? 'active' : '' }}">
                     <a href="{{ route('banner.index') }}"><i class="feather-bookmark"></i> <span>Banners</span></a>
