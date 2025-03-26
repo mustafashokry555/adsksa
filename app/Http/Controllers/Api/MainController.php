@@ -719,7 +719,7 @@ class MainController extends Controller
             $validator = Validator::make($request->all(), [
                 'doctor_id' => 'required',
                 'integer',
-                'hospital_id' => 'required',
+                // 'hospital_id' => 'required',
                 'integer',
                 'appointment_date' => 'required|date_format:Y-m-d',
                 'appointment_time' => 'required|date_format:H:i',
@@ -748,7 +748,7 @@ class MainController extends Controller
                 $a = new Appointment();
                 $a->doctor_id = $request->doctor_id;
                 $a->patient_id = $request->user()->id;
-                $a->hospital_id = $request->hospital_id;
+                $a->hospital_id = $doctor->hospital_id;
                 $a->appointment_date = $request->appointment_date;
                 $a->appointment_time = $request->appointment_time;
                 $a->appointment_type = $request->appointment_type;

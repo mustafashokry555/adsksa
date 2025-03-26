@@ -62,8 +62,11 @@
                                         <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
                                             {{ $doctor?->address ?? '' }}
                                             ,
-                                            {{ $doctor?->state ?? '' }}
-                                            {{-- - <a href="javascript:void(0);">Get Directions</a> --}}
+                                            {{ $doctor->country ? $doctor->country->name : '' }}
+                                            ,
+                                            {{ $doctor->state ? $doctor->state->name : '' }}
+                                            ,
+                                            {{ $doctor->city ? $doctor->city->name : '' }}
                                         </p>
                                         {{-- <ul class="clinic-gallery"> --}}
                                         {{-- <li> --}}
@@ -106,7 +109,11 @@
                                             <li>
                                                 <i class="fas fa-map-marker-alt"></i>{{ $doctor?->address ?? '' }}
                                                 ,
-                                                {{ $doctor?->state ?? '' }}
+                                                {{ $doctor->country ? $doctor->country->name : '' }}
+                                                ,
+                                                {{ $doctor->state ? $doctor->state->name : '' }}
+                                                ,
+                                                {{ $doctor->city ? $doctor->city->name : '' }}
                                             </li>
                                         @endif
                                         @if ($doctor?->pricing)

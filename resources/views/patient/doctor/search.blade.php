@@ -150,9 +150,13 @@
                                                 <div class="clinic-details">
                                                     @if ($doctor->address)
                                                         <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
-                                                            {{ $doctor->address }}
+                                                            {{-- {{ $doctor->address }}
+                                                            , --}}
+                                                            {{ $doctor->country ? $doctor->country->name : '' }}
                                                             ,
-                                                            {{ $doctor->state }}
+                                                            {{ $doctor->state ? $doctor->state->name : '' }}
+                                                            ,
+                                                            {{ $doctor->city ? $doctor->city->name : '' }}
                                                         </p>
                                                     @endif
                                                 </div>
@@ -169,7 +173,11 @@
                                                         <li>
                                                             <i class="fas fa-map-marker-alt"></i> {{ $doctor->address }}
                                                             ,
-                                                            {{ $doctor->state }}
+                                                            {{ $doctor->country ? $doctor->country->name : '' }}
+                                                            ,
+                                                            {{ $doctor->state ? $doctor->state->name : '' }}
+                                                            ,
+                                                            {{ $doctor->city ? $doctor->city->name : '' }}
                                                         </li>
                                                     @endif
                                                     @if ($doctor->pricing)

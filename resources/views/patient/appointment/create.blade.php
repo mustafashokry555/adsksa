@@ -61,7 +61,11 @@
                                     @if($doctor->address)
                                     <p class="text-muted mb-0"><i class="fas fa-map-marker-alt"></i>
                                         {{ $doctor->address }},
-                                        {{ $doctor->state }}
+                                        {{ $doctor->country ? $doctor->country->name : '' }}
+                                        ,
+                                        {{ $doctor->state ? $doctor->state->name : '' }}
+                                        ,
+                                        {{ $doctor->city ? $doctor->city->name : '' }}
                                     </p>
                                     @endif
                                 </div>
