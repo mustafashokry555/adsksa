@@ -71,12 +71,13 @@ class FilterController extends Controller
 
     public function search(Request $request){
         // Get filters
+        // return $request->state_ids;
         $keyword = $request->input('keyword');
-        $specialityIds = $request->input('speciality_ids', []);
-        $insuranceIds = $request->input('insurance_ids', []);
-        $countryIds = $request->input('country_ids', []);
-        $cityIds = $request->input('state_ids', []);
-        $areaIds = $request->input('city_ids', []);
+        $specialityIds = json_decode($request->input('speciality_ids', []));
+        $insuranceIds = json_decode($request->input('insurance_ids', []));
+        $countryIds = json_decode($request->input('country_ids', []));
+        $cityIds = json_decode($request->input('state_ids', []));
+        $areaIds = json_decode($request->input('city_ids', []));
         $orderBy = $request->input('orderBy');
 
         /*** 1. Search & Filter Doctors ***/
