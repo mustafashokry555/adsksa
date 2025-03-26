@@ -39,7 +39,7 @@ class HospitalResource extends JsonResource
             'city_name' => $this->city_name ?? '',
             'country_name' => $this->country_name ?? '',
             'images_links' => $this->images_links,
-            'is_favorite' => $request->user()->isFavoriteHospital($this->id)
+            'is_favorite' => $request->user() ? $request->user()->isFavoriteHospital($this->id) : false,
         ];
     }
 
