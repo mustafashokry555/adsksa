@@ -469,7 +469,8 @@ class AppointmentController extends Controller
         }
         // Appointments of selected date
         $appointments = Appointment::where('appointment_date', $date)
-            ->where('doctor_id', $doctor->id)->pluck("appointment_time");
+        ->where('doctor_id', $doctor->id)
+        ->whereIn('status', ['P', 'C'])->pluck("appointment_time");
 
         // Creating Slots
         $slots = [];
