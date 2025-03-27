@@ -93,36 +93,45 @@
                                                 <td>{{ $review->id }}</td>
                                                 <td>
                                                     <h2 class="table-avatar gap-2">
-                                                        @if ($patient->profile_image ?? '')
-                                                            <img class="avatar avatar-img"
-                                                                src="{{ asset($patient->profile_image) }}"
-                                                                alt="User Image">
+                                                        @if ($patient)
+                                                            @if ($patient->profile_image ?? '')
+                                                                <img class="avatar avatar-img"
+                                                                    src="{{ asset($patient->profile_image) }}"
+                                                                    alt="User Image">
+                                                            @else
+                                                                <img class="avatar avatar-img"
+                                                                    src="{{ URL::asset('/assets_admin/img/profiles/avatar-07.jpg') }}"
+                                                                    alt="User Image">
+                                                            @endif
+                                                            <a href="javascript:void(0)">
+                                                                <span class="user-name">{{ $patient->name }}</span>
+                                                            </a>
                                                         @else
-                                                            <img class="avatar avatar-img"
-                                                                src="{{ URL::asset('/assets_admin/img/profiles/avatar-07.jpg') }}"
-                                                                alt="User Image">
+                                                            <span>Not Found</span>
                                                         @endif
-                                                        <a href="javascript:void(0)"><span
-                                                                class="user-name">{{ $patient->name }}</span></a>
                                                     </h2>
                                                 </td>
 
                                                 <td>
                                                     <h2 class="table-avatar gap-2">
-                                                        @if ($doctor->profile_image ?? '')
-                                                            <img class="avatar avatar-img"
-                                                                src="{{ asset($doctor->profile_image) }}"
-                                                                alt="User Image">
-                                                        @else
-                                                            <img class="avatar avatar-img"
-                                                                src="{{ URL::asset('/assets_admin/img/profiles/avatar-02.jpg') }}"
-                                                                alt="User Image">
-                                                        @endif
-                                                        <a href="javascript:void(0)" class="user-name">
-                                                            <span class="text-muted"> {{ $doctor?->name }}</span>
-                                                            <span class="text-muted">{{ __('admin.reviews.dr') }}.{{ $doctor?->name }}</span>
-                                                            <span class="tab-subtext">{{ $doctor?->speciality?->name }}</span>
+                                                        @if ($doctor)
+                                                            @if ($doctor->profile_image ?? '')
+                                                                <img class="avatar avatar-img"
+                                                                    src="{{ asset($doctor->profile_image) }}"
+                                                                    alt="User Image">
+                                                            @else
+                                                                <img class="avatar avatar-img"
+                                                                    src="{{ URL::asset('/assets_admin/img/profiles/avatar-02.jpg') }}"
+                                                                    alt="User Image">
+                                                            @endif
+                                                            <a href="javascript:void(0)" class="user-name">
+                                                                <span class="text-muted"> {{ $doctor?->name }}</span>
+                                                                <span class="text-muted">{{ __('admin.reviews.dr') }}.{{ $doctor?->name }}</span>
+                                                                <span class="tab-subtext">{{ $doctor?->speciality?->name }}</span>
                                                             </a>
+                                                        @else
+                                                            <span>Not Found</span>
+                                                        @endif
                                                     </h2>
                                                 </td>
                                                 <td>{{ $doctor?->hospital?->hospital_name ?? 'N/A' }}</td>

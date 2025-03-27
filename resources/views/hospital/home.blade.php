@@ -206,41 +206,49 @@
                                                         <td>{{$appointment->id}}</td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}"
-                                                                    class="avatar avatar-sm me-2">
-                                                                    @if (@$doctor->profile_image)
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ asset($doctor->profile_image) }}"
-                                                                            alt="Patient Image">
-                                                                    @else
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
-                                                                            alt="Patient Image">
-                                                                    @endif
-                                                                </a>
-                                                                <a
-                                                                    href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
+                                                                @if ($doctor)
+                                                                    <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}"
+                                                                        class="avatar avatar-sm me-2">
+                                                                        @if (@$doctor->profile_image)
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ asset($doctor->profile_image) }}"
+                                                                                alt="Patient Image">
+                                                                        @else
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
+                                                                                alt="Patient Image">
+                                                                        @endif
+                                                                    </a>
+                                                                    <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
+                                                                @else
+                                                                    <span>Deleted Doctor</span>
+                                                                @endif
                                                             </h2>
                                                         </td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a href="{{ route('profile.show', ['profile' => $patient->id]) }}"
-                                                                    class="avatar avatar-sm me-2">
-                                                                    @if ($patient->profile_image)
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ asset( $patient->profile_image) }}"
-                                                                            alt="Patient Image">
-                                                                    @else
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
-                                                                            alt="Patient Image">
-                                                                    @endif
-                                                                </a>
-                                                                <a
-                                                                    href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+                                                                @if ($patient)
+                                                                    <a href="{{ route('profile.show', ['profile' => $patient->id]) }}"
+                                                                        class="avatar avatar-sm me-2">
+                                                                        @if ($patient->profile_image)
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ asset( $patient->profile_image) }}"
+                                                                                alt="Patient Image">
+                                                                        @else
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
+                                                                                alt="Patient Image">
+                                                                        @endif
+                                                                    </a>
+                                                                    
+                                                                    <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+                                                                @else
+                                                                    {{-- deleted patient --}}
+                                                                    <span>Deleted Patient</span>
+                                                                @endif
                                                             </h2>
                                                         </td>
-                                                       <td> {{ $appointment->insurance?->name??'N/A' }}</td>
+                                                        <td> {{ $appointment->insurance?->name??'N/A' }}</td>
                                                         <td>{{ date('d M Y', strtotime($appointment->appointment_date)) }}
                                                             <span
                                                                 class="d-block text-info">{{ date('H:i A', strtotime($appointment->appointment_time)) }}</span>
@@ -386,37 +394,44 @@
                                                         <td>{{$today_appointment->id}}</td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}"
-                                                                    class="avatar avatar-sm me-2">
-                                                                    @if (@$doctor->profile_image)
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ asset($doctor->profile_image) }}"
-                                                                            alt="Patient Image">
-                                                                    @else
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
-                                                                            alt="Patient Image">
-                                                                    @endif
-                                                                </a>
-                                                                <a
-                                                                    href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
+                                                                @if ($doctor)
+                                                                    <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}"
+                                                                        class="avatar avatar-sm me-2">
+                                                                        @if (@$doctor->profile_image)
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ asset($doctor->profile_image) }}"
+                                                                                alt="Patient Image">
+                                                                        @else
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
+                                                                                alt="Patient Image">
+                                                                        @endif
+                                                                    </a>
+                                                                    <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
+                                                                @else
+                                                                    <span>Doctor Not Found</span>
+                                                                @endif
                                                             </h2>
                                                         </td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                <a href="{{ route('profile.show', ['profile' => $patient->id]) }}"
-                                                                    class="avatar avatar-sm me-2">
-                                                                    @if ($patient->profile_image)
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ asset($patient->profile_image) }}"
-                                                                            alt="Patient Image">
-                                                                    @else
-                                                                        <img class="avatar-img rounded-circle"
-                                                                            src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
-                                                                            alt="Patient Image">
-                                                                    @endif
-                                                                </a>
-                                                                <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+                                                                @if ($patient)
+                                                                    <a href="{{ route('profile.show', ['profile' => $patient->id]) }}"
+                                                                        class="avatar avatar-sm me-2">
+                                                                        @if ($patient->profile_image)
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ asset($patient->profile_image) }}"
+                                                                                alt="Patient Image">
+                                                                        @else
+                                                                            <img class="avatar-img rounded-circle"
+                                                                                src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
+                                                                                alt="Patient Image">
+                                                                        @endif
+                                                                    </a>
+                                                                    <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+                                                                @else
+                                                                    <span>Not Found</span>
+                                                                @endif
                                                             </h2>
                                                         </td>
                                                         <td> {{ $today_appointment->insurance?->name??'N/A' }}</td>
