@@ -98,4 +98,6 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::get('/patient-insurances', [PatientInsuranceController::class, 'show']);
     Route::post('/patient-insurances', [PatientInsuranceController::class, 'update']);
 
+    Route::post('/profile-image', [AuthController::class, 'profile_image']);
+
 });

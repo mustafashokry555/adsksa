@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\PatientInsuranceResource;
 use App\Models\PatientInsurance;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,7 @@ class PatientInsuranceController extends Controller
         if (!$insurance) {
             return $this->ErrorResponse(404, 'Patient Insurance not found');
         }
+        $insurance = PatientInsuranceResource::make($insurance);
         return $this->SuccessResponse(200, "Insurance Details.", $insurance);
     }
 

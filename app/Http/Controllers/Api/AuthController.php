@@ -50,6 +50,35 @@ class AuthController extends Controller
             return $this->ErrorResponse(422, $th->getMessage());
         }
     }
+
+    // Done
+    public function profile_image(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'profile_image' => 'required|image|mimes:jpeg,png,gif|max:2048',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        try {
+            $patient = User::find($request->user()->id);
+            $image = $request->profile_image;
+            $publicPath = public_path("images/");
+            $filename = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
+            $image->move($publicPath, $filename);
+            $patient->profile_image = $filename;
+            $patient->save();
+
+            return $this->SuccessResponse(200, 'Profile upadated successfully!', $patient);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
     // Done
     public function PatientProfile(Request $request)
     {
@@ -65,6 +94,7 @@ class AuthController extends Controller
         }
         return $this->SuccessResponse(200, 'Patient profile!', $patient);
     }
+
     // Done
     public function register(Request $request)
     {

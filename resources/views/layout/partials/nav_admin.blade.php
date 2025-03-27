@@ -6,76 +6,125 @@
                 <li class="menu-title">
                     <span>{{ __('admin.sidebar.main') }}</span>
                 </li>
+
+
                 <li class="{{ Request::routeIs('home') ? 'active' : '' }}">
                     <a href="{{ route('home') }}"><i class="feather-grid"></i>
                         <span>{{ __('admin.sidebar.dashboard') }}</span></a>
                 </li>
-                <li class="{{ Request::routeIs('speciality.*') ? 'active' : '' }}">
-                    <a href="{{ route('speciality.index') }}"><i class="feather-package"></i>
-                        <span>{{ __('admin.sidebar.specialities') }}</span></a>
-                </li>
-                <li class="{{ Request::routeIs('insurances.*') ? 'active' : '' }}">
-                    <a href="{{ route('insurances.index') }}"><i class="feather-package"></i>
-                        <span>{{ __('admin.sidebar.insurances') }}</span></a>
-                </li>
+
+<!-- /************************************************ hospital ********************************************************/ -->
                 <li class="{{ Request::routeIs('hospital.*') ? 'active' : '' }}">
                     <a href="{{ route('hospital.index') }}"><i class="feather-home"></i>
                         <span>{{ __('admin.sidebar.hospitals') }}</span></a>
                 </li>
-                <li class="{{ Request::routeIs('offers.*') ? 'active' : '' }}">
-                    <a href="{{ route('offers.index') }}"><i class="feather-gift"></i> <span>Offers</span></a>
-                </li>
-                @if (auth()->user()->is_admin())
-                    <li class="{{ Request::routeIs('hospital-types.*') ? 'active' : '' }}">
-                        <a href="{{ route('hospital-types.index') }}"><i class="feather-list"></i> <span>Hospital Types</span></a>
-                    </li>
-                    <li class="{{ Request::routeIs('religions.*') ? 'active' : '' }}">
-                        <a href="{{ route('religions.index') }}"><i class="feather-book"></i> <span>Religions</span></a>
-                    </li>
-                @endif
+<!-- /************************************************ Hospital Types ********************************************************/ -->
+@if (auth()->user()->is_admin())
+
+<li class="{{ Request::routeIs('hospital-types.*') ? 'active' : '' }}">
+    <a href="{{ route('hospital-types.index') }}"><i class="feather-list"></i> <span>Hospital Types</span></a>
+</li>
+
+@endif
+
+<!-- /************************************************ doctor ********************************************************/ -->
                 <li class="{{ Request::routeIs('doctor.*') ? 'active' : '' }}">
                     <a href="{{ route('doctor.index') }}"><i class="feather-user-plus"></i>
                         <span>{{ __('admin.sidebar.doctors') }}</span></a>
                 </li>
+
+<!-- /************************************************ speciality ********************************************************/ -->
+
+                <li class="{{ Request::routeIs('speciality.*') ? 'active' : '' }}">
+                    <a href="{{ route('speciality.index') }}"><i class="feather-package"></i>
+                        <span>{{ __('admin.sidebar.specialities') }}</span></a>
+                </li>
+
+<!-- /************************************************ patient ********************************************************/ -->
+
                 <li class="{{ Request::routeIs('patient.*') ? 'active' : '' }}">
                     <a href="{{ route('patient.index') }}"><i class="feather-users"></i>
                         <span>{{ __('admin.sidebar.patients') }}</span></a>
                 </li>
-                <li class="{{ Request::routeIs('countries.*') ? 'active' : '' }}">
-                    <a href="{{ route('countries.index') }}"><i class="feather-flag"></i> <span>Countries</span></a>
+
+                
+<!-- /************************************************ insurances ********************************************************/ -->
+
+                <li class="{{ Request::routeIs('insurances.*') ? 'active' : '' }}">
+                    <a href="{{ route('insurances.index') }}"><i class="feather-package"></i>
+                        <span>{{ __('admin.sidebar.insurances') }}</span></a>
                 </li>
-                <li class="{{ Request::routeIs('cities.*') ? 'active' : '' }}">
-                    <a href="{{ route('cities.index') }}"><i class="feather-map"></i> <span>States</span></a>
-                </li>
-                <li class="{{ Request::routeIs('areas.*') ? 'active' : '' }}">
-                    <a href="{{ route('areas.index') }}"><i class="feather-map-pin"></i> <span>Cities</span></a>
-                </li>
-                <li class="{{ Request::routeIs('banner.*') ? 'active' : '' }}">
-                    <a href="{{ route('banner.index') }}"><i class="feather-bookmark"></i> <span>Banners</span></a>
-                </li>
-                <li class="{{ Request::routeIs('appointments') ? 'active' : '' }}">
-                    <a href="{{ route('appointments') }}"><i class="feather-calendar"></i>
-                        <span>{{ __('admin.sidebar.appointments') }}</span></a>
-                </li>
-                {{-- <li class="{{ Request::routeIs('blogs') ? 'active' : '' }}">
+
+ <!-- /************************************************ appointments ********************************************************/ -->
+
+ {{-- <li class="{{ Request::routeIs('blogs') ? 'active' : '' }}">
                     <a href="{{ route('blogs') }}"><i class="feather-grid"></i> <span>{{ __('admin.sidebar.blogs')  }}</span></a>
                 </li> --}}
+
+<!-- /************************************************ invoices ********************************************************/ -->
+
                 <li class="{{ Request::routeIs('invoices') ? 'active' : '' }}">
                     <a href="{{ route('invoices') }}"><i class="feather-users"></i>
                         <span>{{ __('admin.sidebar.invoices') }}</span></a>
                 </li>
+                              
+<!-- /************************************************ offers ********************************************************/ -->
+                <li class="{{ Request::routeIs('offers.*') ? 'active' : '' }}">
+                    <a href="{{ route('offers.index') }}"><i class="feather-gift"></i> <span>Offers</span></a>
+                </li>
+
+<!-- /************************************************ religions ********************************************************/ -->
+
+                @if (auth()->user()->is_admin())
+                    <li class="{{ Request::routeIs('religions.*') ? 'active' : '' }}">
+                        <a href="{{ route('religions.index') }}"><i class="feather-book"></i> <span>Religions</span></a>
+                    </li>
+
+                @endif
+
+<!-- /************************************************ countries ********************************************************/ -->
+
+                <li class="{{ Request::routeIs('countries.*') ? 'active' : '' }}">
+                    <a href="{{ route('countries.index') }}"><i class="feather-flag"></i> <span>Countries</span></a>
+                </li>
+<!-- /************************************************ cities ********************************************************/ -->
+
+                <li class="{{ Request::routeIs('cities.*') ? 'active' : '' }}">
+                    <a href="{{ route('cities.index') }}"><i class="feather-map"></i> <span>States</span></a>
+                </li>
+<!-- /************************************************ areas ********************************************************/ -->
+                <li class="{{ Request::routeIs('areas.*') ? 'active' : '' }}">
+                    <a href="{{ route('areas.index') }}"><i class="feather-map-pin"></i> <span>Cities</span></a>
+                </li>
+<!-- /************************************************ banner ********************************************************/ -->
+                <li class="{{ Request::routeIs('banner.*') ? 'active' : '' }}">
+                    <a href="{{ route('banner.index') }}"><i class="feather-bookmark"></i> <span>Banners</span></a>
+                </li>
+<!-- /************************************************ appointments ********************************************************/ -->
+                <li class="{{ Request::routeIs('appointments') ? 'active' : '' }}">
+                    <a href="{{ route('appointments') }}"><i class="feather-calendar"></i>
+                        <span>{{ __('admin.sidebar.appointments') }}</span></a>
+                </li>
+
+
+<!-- /************************************************  ********************************************************/ -->
+
+
                 <li class="{{ Request::routeIs('settings') ? 'active' : '' }}">
                     <a href="{{ route('settings') }}"><i class="feather-users"></i>
                         <span>{{ __('admin.sidebar.settings') }}</span></a>
                 </li>
+
                 <li class="{{ Request::routeIs('newsletters') ? 'active' : '' }}">
                     <a href="{{ route('newsletters') }}"><i class="feather-users"></i>
                         <span>{{ __('admin.sidebar.newsletters') }}</span></a>
                 </li>
+
                 <li class="{{ Request::routeIs('reviews') ? 'active' : '' }}">
                     <a href="{{ route('reviews') }}"><i class="feather-star"></i>
                         <span>{{ __('admin.sidebar.reviews') }}</span></a>
                 </li>
+
                 {{--                            <li class="{{ Request::is('admin/appointment-list','admin/past-appointments','admin/upcoming-appointments') ? 'active' : '' }}"> --}}
                 {{--                                <a href="{{url('admin/upcoming-appointments')}}"><i class="feather-calendar"></i> <span>Appointments</span></a> --}}
                 {{--                            </li> --}}
