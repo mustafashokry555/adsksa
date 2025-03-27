@@ -735,7 +735,12 @@ class MainController extends Controller
 
             try {
                 $baseUrl = getenv('BASE_URL') . 'images/';
-                $isExist = Appointment::where(['appointment_date' => $request->appointment_date, 'appointment_time' => $request->appointment_time])->first();
+                $isExist = Appointment::where([
+                    'appointment_date' => $request->appointment_date,
+                    'appointment_time' => $request->appointment_time,
+                    'doctor_id' => $request->doctor_id,
+                    'patient_id' => $request->user()->id,
+                ])->first();
                 if ($isExist) {
                     return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
                 }

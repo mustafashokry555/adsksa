@@ -106,21 +106,19 @@ class FilterController extends Controller
         }
         // Location
         if (!empty($areaIds)) {
-            $doctors = $doctors->whereIn('area_id', $areaIds);
-
             $hospitals = $hospitals->whereIn('area_id', $areaIds);
+
+            $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
         }elseif (!empty($cityIds)) {
-            $doctors = $doctors->whereIn('city_id', $cityIds);
-
             $hospitals = $hospitals->whereIn('city_id', $cityIds);
-        }elseif (!empty($countryIds)){
-            $doctors = $doctors->whereHas('country', function ($query) use ($countryIds) {
-                $query->whereIn('countries.id', $countryIds);
-            });
 
+            $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
+        }elseif (!empty($countryIds)){
             $hospitals = $hospitals->whereHas('country', function ($query) use ($countryIds) {
                 $query->whereIn('countries.id', $countryIds);
             });
+
+            $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
         }
         // Insurance Ids
         if (!empty($insuranceIds)) {
