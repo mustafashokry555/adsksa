@@ -687,7 +687,8 @@ class MainController extends Controller
             }
             // Appointments of selected date
             $appointments = Appointment::where('appointment_date', $date)
-                ->where('doctor_id', $doctor->id)->pluck("appointment_time");
+                ->where('doctor_id', $doctor->id)
+                ->whereIn('status', ['P', 'C'])->pluck("appointment_time");
 
             // Creating Slots
             $slots = [];
@@ -739,8 +740,7 @@ class MainController extends Controller
                     'appointment_date' => $request->appointment_date,
                     'appointment_time' => $request->appointment_time,
                     'doctor_id' => $request->doctor_id,
-                    'patient_id' => $request->user()->id,
-                ])->first();
+                ])->whereIn('status', ['P', 'C'])->first();
                 if ($isExist) {
                     return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
                 }
