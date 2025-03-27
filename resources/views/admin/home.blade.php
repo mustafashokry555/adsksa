@@ -243,7 +243,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="app-img justify-content-sm-end">
-                                                    <img src="{{ $appointment->patient->profile_image }}" alt=""
+                                                    <img src="{{ $appointment?->patient?->profile_image }}" alt=""
                                                         class="img-fluid">
 
                                                     <div class="app-name">
@@ -724,7 +724,7 @@
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="app-img">
-                                                            <img src="{{ $appt->patient->profile_image }}" alt=""
+                                                            <img src="{{ $appt?->patient?->profile_image }}" alt=""
                                                                 class="img-fluid">
                                                             <div class="app-name">
                                                                 <h6>{{ $appt?->patient?->name ?? '' }}</h6>
