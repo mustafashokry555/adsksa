@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -260,9 +260,27 @@ class AuthController extends Controller
     public function UpdatePatientProfile(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name_en' => ['required', 'string', 'max:255'],
-            // 'name_ar' => ['required', 'string', 'max:255'],
-            'profile_image' => 'nullable|file|mimes:jpeg,png,gif|max:2048',
+            'name' => ['required', 'string', 'max:255'],
+            'gender' => 'nullable|string|in:male,female',
+            'date_of_birth' => 'nullable|date|before:today',
+            'id_number' => [
+                'required', 
+                'numeric', 
+                'digits:10', 
+                Rule::unique('users')->ignore($request->user()->id)
+            ],
+            'religion_id' => ['required', 'exists:religions,id'],
+            'mobile' => 'required|numeric|digits:9',
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
+            'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
+            // 'password' => ['nullable', 'min:6'],
+            // 'height' => 'nullable|numeric|min:30|max:300',
+            // 'weight' => 'nullable|numeric|min:1|max:500',
+            // 'diabetes' => 'nullable|boolean',
+            // 'pressure' => 'nullable|boolean',
+            // 'disability' => 'nullable|boolean',
+            // 'medical_history' => 'nullable|boolean',
+            // 'address' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -275,34 +293,35 @@ class AuthController extends Controller
         try {
             $patient = User::find($request->user()->id);
 
-            if ($request->profile_image) {
-                $image = $request->profile_image;
-                $publicPath = public_path("images/");
-                $filename = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
-                $image->move($publicPath, $filename);
-                $patient->profile_image = $filename;
-                $patient->save();
-            }
+            // if ($request->profile_image) {
+            //     $image = $request->profile_image;
+            //     $publicPath = public_path("images/");
+            //     $filename = time() . '_' . preg_replace('/\s+/', '_', $image->getClientOriginalName());
+            //     $image->move($publicPath, $filename);
+            //     $patient->profile_image = $filename;
+            //     $patient->save();
+            // }
 
-            $patient->name_en = $request->name_en;
-            $patient->name_ar = $request->name_ar;
-            $patient->address = $request->address;
-            $patient->email = $request->email ?? $patient->email;
-            $patient->country = $request->country;
-            $patient->state = $request->state;
-            $patient->zip_code = $request->zip_code;
-            $patient->date_of_birth = $request->date_of_birth;
+            $patient->name_en = $request->name;
+            $patient->name_ar = $request->name;
             $patient->gender = $request->gender;
-            $patient->age = $request->age;
-            $patient->blood_group = $request->blood_group;
+            $patient->date_of_birth = Carbon::parse($request->date_of_birth)->format('Y-m-d');
+            $patient->id_number = $request->id_number;
+            $patient->religion_id = $request->religion_id;
+            $patient->email = $request->email;
             $patient->mobile = $request->mobile;
-            $patient->last_name = $request->last_name;
             $patient->marital_status = $request->marital_status;
-            $patient->emergency_contact_name = $request->emergency_contact_name;
-            $patient->emergency_contact_number = $request->emergency_contact_number;
-            $patient->nationality = $request->nationality;
-            $patient->address_line_1 = $request->address_line_1;
-            $patient->address_line_2 = $request->address_line_2;
+            // $patient->address = $request->address;
+            // $patient->country = $request->country;
+            // $patient->state = $request->state;
+            // $patient->zip_code = $request->zip_code;
+            // $patient->age = $request->age;
+            // $patient->blood_group = $request->blood_group;
+            // $patient->last_name = $request->last_name;
+            // $patient->emergency_contact_name = $request->emergency_contact_name;
+            // $patient->emergency_contact_number = $request->emergency_contact_number;
+            // $patient->address_line_1 = $request->address_line_1;
+            // $patient->address_line_2 = $request->address_line_2;
             $patient->save();
 
             return $this->SuccessResponse(200, 'Profile upadated successfully!', $patient);
