@@ -73,6 +73,14 @@
                                                     value="{{ $setting->email }}" placeholder="{{ __('admin.settings.enter_administrator_email')  }} ">
                                             </div>
                                             <div class="form-group">
+                                                <label for="email">Privacy Policy(En) <span class="star-red">*</span></label>
+                                                <textarea type="text" name="privacy_policy_en" class="form-control">{{ $setting->privacy_policy_en }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="email">Privacy Policy(AR) <span class="star-red">*</span></label>
+                                                <textarea type="text" name="privacy_policy_ar" class="form-control">{{ $setting->privacy_policy_ar }}</textarea>
+                                            </div>
+                                            <div class="form-group">
                                                 <p class="settings-label">{{ __('admin.settings.logo')  }}  <span class="star-red">*</span></p>
                                                 <div class="settings-btn">
                                                     <input type="file" accept="image/*" name="logo" id="logo"

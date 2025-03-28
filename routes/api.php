@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PatientInsuranceController;
+use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\HomeController;
 
@@ -59,6 +60,8 @@ Route::get('offers',[MainController::class,'offers']);
 Route::get('filter-data',[FilterController::class,'filter_data']);
 Route::get('search',[FilterController::class,'search']);
 
+Route::get('privacy-policy',[SettingController::class,'privacy_policy']);
+Route::get('help',[SettingController::class,'help']);
 
 
 

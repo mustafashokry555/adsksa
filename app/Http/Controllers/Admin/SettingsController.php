@@ -31,6 +31,8 @@ class SettingsController extends Controller
                 'website_name' => 'nullable',
                 'phone' => 'nullable',
                 'email' => 'nullable',
+                'privacy_policy_en' => 'nullable',
+                'privacy_policy_ar' => 'nullable',
                 'logo' => 'nullable',
                 'favicon' => 'nullable',
                 'address_line_1' => 'nullable',
