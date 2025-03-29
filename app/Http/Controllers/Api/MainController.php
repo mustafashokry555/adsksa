@@ -1032,7 +1032,7 @@ class MainController extends Controller
                         'hospitals.hospital_name_en',
                         DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
                         'hospitals.image',
-                        'hospitals.state',
+                        'hospitals.state_id',
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.location',
@@ -1046,7 +1046,7 @@ class MainController extends Controller
                         'hospitals.hospital_name_en',
                         'hospitals.hospital_name_ar',
                         'hospitals.image',
-                        'hospitals.state',
+                        'hospitals.state_id',
                         'hospitals.lat',
                         'hospitals.long',
                         'hospitals.profile_images',
@@ -1193,22 +1193,22 @@ class MainController extends Controller
             }
             
             $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-            ->leftJoin('cities', 'hospitals.state_id', '=', 'cities.id')
+            ->leftJoin('states', 'hospitals.state_id', '=', 'states.id')
             ->leftJoin('hospital_types', 'hospitals.hospital_type_id', '=', 'hospital_types.id')
-            ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
+            ->leftJoin('countries', 'states.country_id', '=', 'countries.id')
                 ->select(
                     'hospitals.id',
                     'hospitals.hospital_name_ar',
                     'hospitals.hospital_name_en',
                     DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
                     'hospitals.image',
-                    'hospitals.state',
+                    // 'hospitals.state',
                     DB::raw("NULL AS distance"),
                     'hospitals.lat',
                     'hospitals.long',
                     'hospitals.location',
                     'hospitals.profile_images',
-                    "cities.name_$this->lang as city_name",
+                    "states.name_$this->lang as city_name",
                     "countries.name_$this->lang as country_name",
                     "hospital_types.id as hospital_type_id",
                     "hospital_types.name_$this->lang as hospital_type_name",
@@ -1217,12 +1217,12 @@ class MainController extends Controller
                     'hospitals.hospital_name_en',
                     'hospitals.hospital_name_ar',
                     'hospitals.image',
-                    'hospitals.state',
+                    // 'hospitals.state',
                     'hospitals.lat',
                     'hospitals.long',
                     'hospitals.profile_images',
                     'hospitals.location',
-                    "cities.name_$this->lang",
+                    "states.name_$this->lang",
                     "countries.name_$this->lang",
                     "hospital_types.id",
                     "hospital_types.name_$this->lang"
