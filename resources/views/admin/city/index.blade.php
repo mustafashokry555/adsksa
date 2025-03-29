@@ -48,8 +48,8 @@
                                                 <td>{{ $city->id }}</td>
                                                 <td>{{ $city->name_en }}</td>
                                                 <td>{{ $city->name_ar }}</td>
-                                                <td>{{ $city->state->name_en }} < {{ $city->state->name_ar }} ></td>
-                                                <td>{{ $city->country->name_en }} < {{ $city->country->name_ar }} ></td>
+                                                <td>{{ $city->state?->name_en }} < {{ $city->state?->name_ar }} ></td>
+                                                <td>{{ $city->country?->name_en }} < {{ $city->country?->name_ar }} ></td>
                                                 <td class="text-end">
                                                     <div class="actions">
                                                         <a class="text-black"

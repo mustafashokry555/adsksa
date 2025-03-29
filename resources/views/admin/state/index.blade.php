@@ -47,7 +47,7 @@
                                                 <td>{{ $states->id }}</td>
                                                 <td>{{ $states->name_en }}</td>
                                                 <td>{{ $states->name_ar }}</td>
-                                                <td>{{ $states->country->name_en }} < {{ $states->country->name_ar }} ></td>
+                                                <td>{{ $states->country?->name_en }} < {{ $states->country?->name_ar }} ></td>
                                                 <td class="text-end">
                                                     <div class="actions">
                                                         <a class="text-black"

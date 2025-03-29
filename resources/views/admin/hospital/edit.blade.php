@@ -200,7 +200,7 @@
                                         <option value="" disabled selected>Select Country</option>
                                         @foreach ($countries as $country)
                                             <option value="{{ $country->id }}"
-                                                {{ old('country_id', $hospital->country->id) == $country->id ? 'selected' : '' }}>
+                                                {{ old('country_id', $hospital->country?->id) == $country->id ? 'selected' : '' }}>
                                                 {{ $country->name_en }} < {{ $country->name_ar }} >
                                             </option>
                                         @endforeach
