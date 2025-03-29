@@ -1024,8 +1024,8 @@ class MainController extends Controller
                     });
                 }
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-                ->leftJoin('cities', 'hospitals.state_id', '=', 'cities.id')
-                ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
+                ->leftJoin('states', 'hospitals.state_id', '=', 'states.id')
+                ->leftJoin('countries', 'states.country_id', '=', 'countries.id')
                     ->select(
                         'hospitals.id',
                         'hospitals.hospital_name_ar',
@@ -1038,7 +1038,7 @@ class MainController extends Controller
                         'hospitals.location',
                         'hospitals.profile_images',
                         DB::raw('NULL as distance'),
-                        "cities.name_$this->lang as city_name",
+                        "states.name_$this->lang as state_name",
                         "countries.name_$this->lang as country_name"
                     )
                     ->groupBy(
@@ -1051,7 +1051,7 @@ class MainController extends Controller
                         'hospitals.long',
                         'hospitals.profile_images',
                         'hospitals.location',
-                        "cities.name_$this->lang",
+                        "states.name_$this->lang",
                         "countries.name_$this->lang"
                     );
 
