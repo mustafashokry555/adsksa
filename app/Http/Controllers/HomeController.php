@@ -8,7 +8,7 @@ use App\Models\Settings;
 use App\Models\Speciality;
 use App\Models\RegularAvailability;
 use App\Models\User;
-use App\Models\City;
+use App\Models\State;
 use App\Models\ContactUs;
 use App\Models\Country;
 use App\Models\Hospital;
@@ -313,13 +313,13 @@ class HomeController extends Controller
         }
         if (request('country')) {
             if (request('city')) {
-                $query->where('city_id', request('city'));
+                $query->where('state_id', request('city'));
             }else{
-                $city_ids = City::where('country_id', request('country'))->pluck('id');
-                $query->whereIn('city_id', $city_ids);
+                $state_ids = State::where('country_id', request('country'))->pluck('id');
+                $query->whereIn('state_id', $state_ids);
             }
         }elseif (request('city')) {
-            $query->where('city_id', request('city'));
+            $query->where('state_id', request('city'));
         }
         if (request('area')) {
             $query->where('address', 'like', '%' . request('area') . '%');
@@ -358,13 +358,13 @@ class HomeController extends Controller
         // City and Country
         if (request('country') && request('country') != 'all') {
             if (request('city') && request('city') != 'all') {
-                $hospital_query->where('city_id', request('city'));
+                $hospital_query->where('state_id', request('city'));
             }else{
-                $city_ids = City::where('country_id', request('country'))->pluck('id');
-                $hospital_query->whereIn('city_id', $city_ids);
+                $state_ids = State::where('country_id', request('country'))->pluck('id');
+                $hospital_query->whereIn('state_id', $state_ids);
             }
         }elseif (request('city') && request('city') != 'all') {
-            $hospital_query->where('city_id', request('city'));
+            $hospital_query->where('state_id', request('city'));
         }
 
         // Insurance

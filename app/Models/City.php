@@ -10,12 +10,16 @@ class City extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name_en', 'name_ar', 'country_id'];
+    protected $fillable = ['name_en', 'name_ar', 'state_id'];
     protected $appends = ['name'];
 
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
     public function country()
     {
-        return $this->belongsTo(Country::class);
+        return $this->hasOneThrough(Country::class, State::class, 'id', 'id', 'state_id', 'country_id');
     }
     public function users()
     {

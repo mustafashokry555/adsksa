@@ -39,6 +39,7 @@ Route::post('verify',[AuthController::class,'VerifyOtp']);
 // MainController
 Route::get('specialities',[MainController::class,'allSpecialities']);
 Route::get('countries',[MainController::class,'allCountries']);
+Route::get('states',[MainController::class,'allStates']);
 Route::get('cities',[MainController::class,'allCities']);
 Route::get('insurances',[MainController::class,'get_insurances']);
 Route::get('doctors',[MainController::class,'DoctorWithFilter']);

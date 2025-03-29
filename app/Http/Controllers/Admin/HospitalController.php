@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Area;
 use App\Models\City;
+use App\Models\State;
 use App\Models\Country;
 use App\Models\Hospital;
 use App\Models\HospitalType;
@@ -53,10 +53,10 @@ class HospitalController extends Controller
         if (Auth::user()->is_admin()) {
             $insurances = Insurance::where('user_id', Auth::id())->get();
             $countries = Country::all();
-            $states = City::all();
-            $cities = Area::all();
+            $states = State::all();
+            $cities = City::all();
             $hospital_types = HospitalType::all();
-            // $cities = City::all();
+            // $cities = State::all();
             return view('admin.hospital.create', compact('insurances', 'countries', 'cities', 'states', 'hospital_types'));
         } else {
             abort(401);
@@ -69,8 +69,8 @@ class HospitalController extends Controller
             'hospital_name_ar' => 'required',
             'image' => 'required|image',
             'address' => 'required',
+            'state_id' => 'required',
             'city_id' => 'required',
-            'area_id' => 'required',
             'hospital_type_id' => 'required',
             'zip' => 'required',
             'lat' => 'required',
@@ -155,18 +155,18 @@ class HospitalController extends Controller
         $hospital_types = HospitalType::all();
         $countries = Country::all();
         if($hospital->country){
-            $states = City::where('country_id', $hospital->country->id)->get();
+            $states = State::where('country_id', $hospital->country->id)->get();
         }else{
-            $states = City::all();
+            $states = State::all();
         }
         if($hospital->state){
-            $cities = Area::where('city_id', $hospital->state->id)->get();
+            $cities = City::where('state_id', $hospital->state->id)->get();
         }elseif($hospital->country){
-            $cities = Area::whereHas('country', function ($query) use($hospital) {
+            $cities = City::whereHas('country', function ($query) use($hospital) {
                 $query->where('countries.id', $hospital->country->id);
             })->get();
         }else{
-            $cities = Area::all();
+            $cities = City::all();
         }
         if (Auth::user()->user_type == 'A') {
             return view('admin.hospital.edit', [
@@ -213,8 +213,8 @@ class HospitalController extends Controller
                     'hospital_name_ar' => 'required',
                     'image' => 'image',
                     'address' => 'required',
-                    'area_id' => 'required',
                     'city_id' => 'required',
+                    'state_id' => 'required',
                     'hospital_type_id' => 'required',
                     'zip' => 'required',
                     'lat' => 'required',
@@ -262,8 +262,8 @@ class HospitalController extends Controller
                     'hospital_name_ar' => 'required',
                     'image' => 'image',
                     'address' => 'required',
-                    'area_id' => 'required',
                     'city_id' => 'required',
+                    'state_id' => 'required',
                     'hospital_type_id' => 'required',
                     'zip' => 'required',
                     'lat' => 'required',

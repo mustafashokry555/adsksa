@@ -6,20 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Area extends Model
+class State extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name_en', 'name_ar', 'city_id'];
+    protected $fillable = ['name_en', 'name_ar', 'country_id'];
     protected $appends = ['name'];
 
-    public function city()
-    {
-        return $this->belongsTo(City::class);
-    }
     public function country()
     {
-        return $this->hasOneThrough(Country::class, City::class, 'id', 'id', 'city_id', 'country_id');
+        return $this->belongsTo(Country::class);
     }
     public function users()
     {

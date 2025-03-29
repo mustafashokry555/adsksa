@@ -215,18 +215,18 @@
 
                             {{-- State --}}
                             <div class="form-group row">
-                                <label for="city_id" class="col-form-label col-md-2">State</label>
+                                <label for="state_id" class="col-form-label col-md-2">State</label>
                                 <div class="col-md-10">
-                                    <select id="city_id" name="city_id" class="form-select select" required>
+                                    <select id="state_id" name="state_id" class="form-select select" required>
                                         <option disabled selected>-- Select State --</option>
                                         @foreach ($states as $state)
                                             <option value="{{ $state->id }}"
-                                                {{ old('city_id', $hospital->city_id) == $state->id ? 'selected' : '' }}>
+                                                {{ old('state_id', $hospital->state_id) == $state->id ? 'selected' : '' }}>
                                                 {{ $state->name_en }} < {{ $state->name_ar }} >
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('city_id')
+                                    @error('state_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -236,18 +236,18 @@
 
                             {{-- City --}}
                             <div class="form-group row">
-                                <label for="area_id" class="col-form-label col-md-2">City</label>
+                                <label for="city_id" class="col-form-label col-md-2">City</label>
                                 <div class="col-md-10">
-                                    <select id="area_id" name="area_id" class="form-select select" required>
+                                    <select id="city_id" name="city_id" class="form-select select" required>
                                         <option disabled selected>-- Select City --</option>
                                         @foreach ($cities as $city)
                                             <option value="{{ $city->id }}"
-                                                {{ old('area_id', $hospital->area_id) == $city->id ? 'selected' : '' }}>
+                                                {{ old('city_id', $hospital->city_id) == $city->id ? 'selected' : '' }}>
                                                 {{ $city->name_en }} < {{ $city->name_ar }} >
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('area_id')
+                                    @error('city_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -484,10 +484,10 @@
             type: 'GET',
             data: { country_id: countryId },
             success: function (data) {
-                $('#city_id').empty(); // Clear the cities dropdown
-                $('#city_id').append('<option value="" disabled selected>Select State</option>');
+                $('#state_id').empty(); // Clear the cities dropdown
+                $('#state_id').append('<option value="" disabled selected>Select State</option>');
                 $.each(data, function (key, state) {
-                    $('#city_id').append('<option value="' + state.id + '">' + state.name_en +' < '+ state.name_ar +' > '+'</option>');
+                    $('#state_id').append('<option value="' + state.id + '">' + state.name_en +' < '+ state.name_ar +' > '+'</option>');
                 });
             },
             error: function () {
@@ -501,10 +501,10 @@
             type: 'GET',
             data: { country_id: countryId },
             success: function (data) {
-                $('#area_id').empty(); // Clear the cities dropdown
-                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').empty(); // Clear the cities dropdown
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
                 $.each(data, function (key, city) {
-                    $('#area_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                    $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
                 });
             },
             error: function () {
@@ -517,12 +517,12 @@
         $.ajax({
             url: '{{ route("get.cities") }}', // Define this route in Laravel
             type: 'GET',
-            data: { city_id: stateId },
+            data: { state_id: stateId },
             success: function (data) {
-                $('#area_id').empty(); // Clear the cities dropdown
-                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').empty(); // Clear the cities dropdown
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
                 $.each(data, function (key, city) {
-                    $('#area_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                    $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
                 });
             },
             error: function () {
@@ -537,19 +537,19 @@
             if (countryId) {
                 getStatesAndCities(countryId);
             } else {
+                $('#state_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#state_id').append('<option value="" disabled selected>Select State</option>');
                 $('#city_id').empty(); // Clear the cities dropdown if no country is selected
-                $('#city_id').append('<option value="" disabled selected>Select State</option>');
-                $('#area_id').empty(); // Clear the cities dropdown if no country is selected
-                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
             }
         });
-        $('#city_id').on('change', function () {
+        $('#state_id').on('change', function () {
             var stateId = $(this).val();
             if (stateId) {
                 getCities(stateId);
             } else {
-                $('#area_id').empty(); // Clear the cities dropdown if no country is selected
-                $('#area_id').append('<option value="" disabled selected>Select City</option>');
+                $('#city_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
             }
         });
         mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';

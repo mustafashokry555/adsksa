@@ -1,20 +1,20 @@
 @extends('layout.mainlayout_admin')
-@section('title', 'Add New City')
+@section('title', 'Add New State')
 @section('content')
     <div class="page-wrapper">
 
-        <!-- Area -->
+        <!-- State -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Add New City</h5>
+                        <h5 class="card-title">Add New State</h5>
                     </div>
                     <div class="card-body">
                         @if (session()->has('flash'))
                             <x-alert>{{ session('flash')['message'] }}</x-alert>
                         @endif
-                        <form method="POST" action="{{ route('areas.store') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('states.store') }}" enctype="multipart/form-data">
                             @csrf
                             <!-- Name -->
                             <div class="form-group row">
@@ -63,33 +63,14 @@
                                     @enderror
                                 </div>
                             </div>
-                            <!-- City -->
-                            <div class="form-group row">
-                                <label for="city_id"
-                                    class="col-form-label col-md-2">State</label>
-                                <div class="col-md-10">
-                                    <select id="city_id" name="city_id" class="form-select select" required>
-                                        <option value="">-- Select State --</option>
-                                        @foreach ($cities as $city)
-                                            <option value="{{ $city->id }}">{{ $city->name_en }} < {{ $city->name_ar }} ></option>
-                                        @endforeach
-                                    </select>
-                                    @error('city_id')
-                                        <div class="text-danger pt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <button class="btn btn-primary btn-add">
-                                <i class="feather-plus-square me-1"></i>Add New City
-                            </button>
+                            <button class="btn btn-primary btn-add"><i
+                                    class="feather-plus-square me-1"></i>Add New State</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- /Area -->
+        <!-- /City -->
     </div>
     </div>
     <!-- /Page Wrapper -->
@@ -97,36 +78,3 @@
     <!-- /Main Wrapper -->
 
 @endsection
-<script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
-
-<script>
-    // get cities fun 
-    function getCities(countryId) {
-        $.ajax({
-            url: '{{ route("get.states") }}', // Define this route in Laravel
-            type: 'GET',
-            data: { country_id: countryId },    
-            success: function (data) {
-                $('#city_id').empty(); // Clear the cities dropdown
-                $('#city_id').append('<option value="" disabled selected>Select State</option>');
-                $.each(data, function (key, state) {
-                    $('#city_id').append('<option value="' + state.id + '">' + state.name_en +' < '+ state.name_ar +' > '+'</option>');
-                });
-            },
-            error: function () {
-                alert('Error Loading Cities');
-            }
-        });
-    }
-    $(document).ready(function() {
-        $('#country_id').on('change', function () {
-            var countryId = $(this).val();
-            if (countryId) {
-                getCities(countryId);
-            } else {
-                $('#city_id').empty(); // Clear the cities dropdown if no country is selected
-                $('#city_id').append('<option value="" disabled selected>Select State</option>');
-            }
-        });
-    });
-</script>

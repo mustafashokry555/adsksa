@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
-use App\Models\Area;
 use App\Models\City;
+use App\Models\State;
 use App\Models\Country;
 use App\Models\Hospital;
 use App\Models\Schedule;
@@ -49,8 +49,8 @@ class DoctorController extends Controller
     public function create()
     {
         $countries = Country::all();
-        $states = City::all();
-        $cities = Area::all();
+        $states = State::all();
+        $cities = City::all();
         if (Auth::user()->is_admin()) {
             return view(
                 'admin.doctor.create',
@@ -88,8 +88,8 @@ class DoctorController extends Controller
                 'user_type' => 'required',
                 'gender' => 'required',
                 'address' => 'required',
+                'state_id' => 'nullable',
                 'city_id' => 'nullable',
-                'area_id' => 'nullable',
                 'zip_code' => 'nullable',
                 'hospital_id' => 'required',
                 'speciality_id' => 'required',
@@ -142,18 +142,18 @@ class DoctorController extends Controller
         $doctor = User::find($id);
         $countries = Country::all();
         if($doctor->country){
-            $states = City::where('country_id', $doctor->country->id)->get();
+            $states = State::where('country_id', $doctor->country->id)->get();
         }else{
-            $states = City::all();
+            $states = State::all();
         }
         if($doctor->state){
-            $cities = Area::where('city_id', $doctor->state->id)->get();
+            $cities = City::where('state_id', $doctor->state->id)->get();
         }elseif($doctor->country){
-            $cities = Area::whereHas('country', function ($query) use($doctor) {
+            $cities = City::whereHas('country', function ($query) use($doctor) {
                 $query->where('countries.id', $doctor->country->id);
             })->get();
         }else{
-            $cities = Area::all();
+            $cities = City::all();
         }
         if (Auth::user()->is_admin()) {
             return view(
@@ -196,8 +196,8 @@ class DoctorController extends Controller
                     'profile_image' => 'image',
                     'gender' => 'required',
                     'address' => 'required',
+                    'state_id' => 'nullable',
                     'city_id' => 'nullable',
-                    'area_id' => 'nullable',
                     'zip_code' => 'nullable',
                     'user_type' => 'required',
                     'hospital_id' => 'required',

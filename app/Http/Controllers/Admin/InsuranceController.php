@@ -140,8 +140,8 @@ class InsuranceController extends Controller
     {
         try {
             $query = Insurance::query();
-            if (request('city_id')) {
-                $hospitals_ids = Hospital::where('city_id', request('city_id'))
+            if (request('state_id')) {
+                $hospitals_ids = Hospital::where('state_id', request('state_id'))
                     ->pluck('id');
                 $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
                     $query->whereIn('hospital_id', $hospitals_ids);

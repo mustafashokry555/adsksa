@@ -122,8 +122,8 @@ class SpecialityController extends Controller
         try {
             $hospitals_ids = Hospital::query();
             $query = Speciality::query();
-            if (request('city_id')) {
-                $hospitals_ids = $hospitals_ids->where('city_id', request('city_id'));
+            if (request('state_id')) {
+                $hospitals_ids = $hospitals_ids->where('state_id', request('state_id'));
             }
             if (request('insurance_id')) {
                 $hospitals_ids = $hospitals_ids->whereHas('insurances', function ($query) {

@@ -97,10 +97,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="drop_down_wrap">
-                                                    <label>{{ __('web.Enter City') }}</label>
+                                                    <label>{{ __('web.Enter State') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="citySelect" name="city" class="select form-control" >
-                                                            <option selected disabled>{{ __('web.Enter City') }}</option>
+                                                        <select id="stateSelect" name="state" class="select form-control" >
+                                                            <option selected disabled>{{ __('web.Enter State') }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -181,88 +181,34 @@
         });
 
         async function loadCities(countryId = null) {
-            const citySelect = document.getElementById('citySelect');
+            const stateSelect = document.getElementById('stateSelect');
             
-            // Reset the city dropdown
-            citySelect.innerHTML = `
-                <option selected disabled>${'{{ __("web.Enter City") }}'}</option>
+            // Reset the state dropdown
+            stateSelect.innerHTML = `
+                <option selected disabled>${'{{ __("web.Enter State") }}'}</option>
                 <option value="all">${'{{ __("web.All") }}'}</option>
             `;
 
             try {
                 // Build the URL based on whether we have a countryId
                 const url = countryId 
-                    ? `/get-cities?country_id=${countryId}`
-                    : '/get-cities'; // Endpoint for all cities
+                    ? `/get-states?country_id=${countryId}`
+                    : '/get-states'; // Endpoint for all cities
 
                 const response = await fetch(url);
                 const data = await response.json();
 
-                // Enable the city select and add the options
-                citySelect.disabled = false;
-                data.forEach(city => {
-                    citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                // Enable the state select and add the options
+                stateSelect.disabled = false;
+                data.forEach(state => {
+                    stateSelect.innerHTML += `<option value="${state.id}">${state.name}</option>`;
                 });
             } catch (error) {
                 console.error('Error loading cities:', error);
-                citySelect.disabled = true;
+                stateSelect.disabled = true;
             }
         }
-        // document.getElementById('countrySelect').addEventListener('change', function () {
-        //     const countryId = this.value;
-        //     const citySelect = document.getElementById('citySelect');
-
-        //     // Reset subsequent dropdowns
-        //     citySelect.innerHTML = '<option selected disabled>{{ __("web.Enter City") }}</option>'+
-        //     '<option value="all">{{ __("web.All") }}</option>';
-
-        //     fetch(`/get-cities?country_id=${countryId}`)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             citySelect.disabled = false;
-        //             data.forEach(city => {
-        //                 citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
-        //             });
-        //         });
-        // });
-        /*
-            document.getElementById('citySelect').addEventListener('change', function () {
-                const cityId = this.value;
-                const insuranceSelect = document.getElementById('insuranceSelect');
-
-                // Reset subsequent dropdowns
-                insuranceSelect.innerHTML = '<option value="">{{ __("web.Select a Insurance") }}</option>'+
-                '<option value>{{ __("web.All") }}</option>';
-
-                    fetch(`/get-insurances?cityId=${cityId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            insuranceSelect.disabled = false;
-                            data.forEach(insurance => {
-                                insuranceSelect.innerHTML += `<option value="${insurance.id}">${insurance.name}</option>`;
-                            });
-                        });
-            });
-            document.getElementById('insuranceSelect').addEventListener('change', function () {
-                const citySelect = document.getElementById('citySelect');
-                const specialitySelect = document.getElementById('specialitySelect');
-                const insurance_id = this.value;
-                const city_id = citySelect.value;
-
-                // Reset subsequent dropdowns
-                specialitySelect.innerHTML = '<option value="">{{ __("web.Select a specility") }}</option>'+
-                '<option value>{{ __("web.All") }}</option>';
-
-                fetch(`/get-specialities?insurance_id=${insurance_id}&city_id=${city_id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        specialitySelect.disabled = false;
-                        data.forEach(speciality => {
-                            specialitySelect.innerHTML += `<option value="${speciality.id}">${speciality.name}</option>`;
-                        });
-                    });
-            });
-        */
+        
     </script>
 
 

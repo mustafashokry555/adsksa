@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Insurance extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_en', 'name_ar', 'email', 'user_id', 'address', 'phone1', 'phone2', 'fax', 'country_id', 'city_id', 'area_id'];
+    protected $fillable = ['name_en', 'name_ar', 'email', 'user_id', 'address', 'phone1', 'phone2', 'fax', 'country_id', 'state_id', 'city_id'];
     protected $appends = ['name'];
 
     public function hospitals()
@@ -27,11 +27,11 @@ class Insurance extends Model
     }
     public function state()
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(State::class);
     }
     public function city()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(City::class);
     }
     public function getNameAttribute()
     {

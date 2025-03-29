@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\SpecialityResource;
-use App\Models\Area;
 use App\Models\City;
+use App\Models\State;
 use App\Models\Country;
 use App\Models\Hospital;
 use App\Models\Insurance;
@@ -26,6 +26,8 @@ class FilterController extends Controller
 
     function filter_data(Request $request) {
         try {
+            $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
+            $stateIds = $request->input('state_ids') ? json_decode($request->input('state_ids')) : [];
             $data = [];
             // get specialities
             $specialities = Speciality::orderBy("name_$this->lang", 'ASC')->get();
@@ -38,19 +40,19 @@ class FilterController extends Controller
             $countries = Country::orderBy("name_$this->lang", 'ASC')->get();
 
             // get states
-            $states = City::query();
-            if (request('country_ids')) {
-                $states = $states->whereIn("country_id", request('country_ids'));
+            $states = State::query();
+            if (!empty($countryIds)) {
+                $states = $states->whereIn('country_id', $countryIds);
             }
             $states = $states->orderBy("name_$this->lang", 'ASC')->get();
 
             // get cities
-            $cities = Area::query();
-            if (request('state_ids')) {
-                $cities = $cities->whereIn("city_id", request('state_ids'));
-            } elseif (request('country_ids')) {
-                $cities = $cities->whereHas('country', function ($query) {
-                    $query->whereIn('countries.id', request('country_ids'));
+            $cities = City::query();
+            if (!empty($stateIds)) {
+                $cities = $cities->whereIn('state_id', $stateIds);
+            }elseif (!empty($countryIds)) {
+                $cities = $cities->whereHas('country', function ($query) use ($countryIds) {
+                    $query->whereIn('countries.id', $countryIds);
                 });
             }
             $cities = $cities->orderBy("name_$this->lang", 'ASC')->get();
@@ -76,8 +78,8 @@ class FilterController extends Controller
         $specialityIds = $request->input('speciality_ids') ? json_decode($request->input('speciality_ids')) : [];
         $insuranceIds = $request->input('insurance_ids') ? json_decode($request->input('insurance_ids')) : [];
         $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
-        $cityIds = $request->input('state_ids') ? json_decode($request->input('state_ids')) : [];
-        $areaIds = $request->input('city_ids') ? json_decode($request->input('city_ids')) : [];
+        $stateIds = $request->input('state_ids') ? json_decode($request->input('state_ids')) : [];
+        $cityIds = $request->input('city_ids') ? json_decode($request->input('city_ids')) : [];
         $orderBy = $request->input('orderBy');
 
         /*** 1. Search & Filter Doctors ***/
@@ -106,11 +108,11 @@ class FilterController extends Controller
         }
         // Location
         if (!empty($areaIds)) {
-            $hospitals = $hospitals->whereIn('area_id', $areaIds);
+            $hospitals = $hospitals->whereIn('city_id', $areaIds);
 
             $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
-        }elseif (!empty($cityIds)) {
-            $hospitals = $hospitals->whereIn('city_id', $cityIds);
+        }elseif (!empty($stateIds)) {
+            $hospitals = $hospitals->whereIn('state_id', $stateIds);
 
             $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
         }elseif (!empty($countryIds)){

@@ -26,8 +26,8 @@ class User extends Authenticatable
         'profile_image',
         'description',
         'address',
+        'state_id',
         'city_id',
-        'area_id',
         'code',
         'zip_code',
         'date_of_birth',
@@ -243,15 +243,15 @@ class User extends Authenticatable
 
     public function country()
     {
-        return $this->hasOneThrough(Country::class, City::class, 'id', 'id', 'city_id', 'country_id');
+        return $this->hasOneThrough(Country::class, State::class, 'id', 'id', 'state_id', 'country_id');
     }
     public function state()
     {
-        return $this->belongsTo(City::class, 'city_id', 'id');
+        return $this->belongsTo(State::class, 'state_id', 'id');
     }
     public function city()
     {
-        return $this->belongsTo(Area::class, 'area_id', 'id');
+        return $this->belongsTo(City::class, 'city_id', 'id');
     }
     public function getNameAttribute()
     {

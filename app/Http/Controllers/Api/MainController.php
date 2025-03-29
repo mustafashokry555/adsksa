@@ -17,6 +17,7 @@ use App\Models\Hospital;
 use App\Models\Appointment;
 use App\Models\Banner;
 use App\Models\City;
+use App\Models\State;
 use App\Models\Country;
 use App\Models\HospitalReview;
 use App\Models\HospitalType;
@@ -65,7 +66,7 @@ class MainController extends Controller
                 $hospital_types = HospitalTypeResource::collection($hospital_types);
                 // Hospitals
                 $hospitals = Hospital::leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-                ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+                ->leftJoin('cities', 'hospitals.state_id', '=', 'cities.id')
                 ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
                 ->select(
                     'hospitals.id',
@@ -271,21 +272,52 @@ class MainController extends Controller
             }
         }
         // API for All Cities (Done with Lang)
+        public function allStates(Request $request)
+        {
+            try {
+                $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
+                $keyword = $request->input('keyword');
+                
+                $states = State::query();
+                if (!empty($countryIds)) {
+                    $states = $states->whereIn('country_id', $countryIds);
+                }
+                if ($keyword) {
+                    $states = $states->where(function ($q) use ($keyword) {
+                        $q->where('name_en', 'LIKE', "%$keyword%")
+                        ->orWhere('name_ar', 'LIKE', "%$keyword%");
+                    });
+                }
+                $states = $states->orderBy("name_$this->lang", 'ASC')->get();
+                // ->whereHas('hospitals.doctors')
+                return $this->SuccessResponse(200, 'All States reterieved successfully', $states);
+            } catch (\Throwable $th) {
+                return $this->ErrorResponse(400, $th->getMessage());
+            }
+        }
+        // API for All Cities (Done with Lang)
         public function allCities(Request $request)
         {
             try {
-                $query = City::query();
-                if (request('country_ids')) {
-                    $query->whereIn("country_id", request('country_ids'));
-                }
-                if (request('search')) {
-                    $query->where(function ($query) {
-                        $query->where("name_en", 'like', '%' . request('search') . '%')
-                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
+                $stateIds = $request->input('state_ids') ? json_decode($request->input('state_ids')) : [];
+                $keyword = $request->input('keyword');
+
+                $cities = City::query();
+                if (!empty($stateIds)) {
+                    $cities = $cities->whereIn('state_id', $stateIds);
+                }elseif (!empty($countryIds)) {
+                    $cities = $cities->whereHas('country', function ($query) use ($countryIds) {
+                        $query->whereIn('countries.id', $countryIds);
                     });
                 }
-                $cities = $query->whereHas('hospitals.doctors')
-                ->orderBy("name_$this->lang", 'ASC')->get();
+                if ($keyword) {
+                    $cities = $cities->where(function ($q) use ($keyword) {
+                        $q->where('name_en', 'LIKE', "%$keyword%")
+                        ->orWhere('name_ar', 'LIKE', "%$keyword%");
+                    });
+                }
+                $cities = $cities->orderBy("name_$this->lang", 'ASC')->get();
                 return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -296,8 +328,8 @@ class MainController extends Controller
         {
             try {
                 $query = Insurance::query();
-                if (request('city_ids')) {
-                    $hospitals_ids = Hospital::whereIn('city_id', request('city_ids'))
+                if (request('state_ids')) {
+                    $hospitals_ids = Hospital::whereIn('state_id', request('state_ids'))
                         ->pluck('id');
                     $query->whereHas('hospitals', function ($query) use ($hospitals_ids) {
                         $query->whereIn('hospital_id', $hospitals_ids);
@@ -323,8 +355,8 @@ class MainController extends Controller
             try {
                 $hospitals_ids = Hospital::query();
                 $query = Speciality::query();
-                if (request('city_ids')) {
-                    $hospitals_ids = $hospitals_ids->whereIn('city_id', request('city_ids'));
+                if (request('state_ids')) {
+                    $hospitals_ids = $hospitals_ids->whereIn('state_id', request('state_ids'));
                 }
                 if (request('insurance_ids')) {
                     $hospitals_ids = $hospitals_ids->whereHas('insurances', function ($query) {
@@ -363,8 +395,8 @@ class MainController extends Controller
             }
             try {
                 $hospital_query = Hospital::query();
-                if (request('city_ids')) {
-                    $hospital_query = $hospital_query->whereIn('city_id', request('city_ids'));
+                if (request('state_ids')) {
+                    $hospital_query = $hospital_query->whereIn('state_id', request('state_ids'));
                 }
                 if (request('hospital_ids')) {
                     $hospital_query = $hospital_query->whereIn('id', request('hospital_ids'));
@@ -991,7 +1023,7 @@ class MainController extends Controller
                     });
                 }
                 $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-                ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+                ->leftJoin('cities', 'hospitals.state_id', '=', 'cities.id')
                 ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
                     ->select(
                         'hospitals.id',
@@ -1160,7 +1192,7 @@ class MainController extends Controller
             }
             
             $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-            ->leftJoin('cities', 'hospitals.city_id', '=', 'cities.id')
+            ->leftJoin('cities', 'hospitals.state_id', '=', 'cities.id')
             ->leftJoin('hospital_types', 'hospitals.hospital_type_id', '=', 'hospital_types.id')
             ->leftJoin('countries', 'cities.country_id', '=', 'countries.id')
                 ->select(

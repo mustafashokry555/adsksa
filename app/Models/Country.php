@@ -15,7 +15,7 @@ class Country extends Model
 
     public function cities()
     {
-        return $this->hasMany(City::class);
+        return $this->hasMany(State::class);
     }
     public function getNameAttribute()
     {
