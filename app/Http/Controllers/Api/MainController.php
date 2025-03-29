@@ -258,11 +258,12 @@ class MainController extends Controller
         public function allCountries(Request $request)
         {
             try {
+                $keyword = $request->input('keyword');
                 $query = Country::query();
-                if (request('search')) {
-                    $query->where(function ($query) {
-                        $query->where("name_en", 'like', '%' . request('search') . '%')
-                        ->orWhere("name_ar", 'like', '%' . request('search') . '%');
+                if ($keyword) {
+                    $query->where(function ($query) use ($keyword) {
+                        $query->where("name_en", 'like', '%' . $keyword . '%')
+                        ->orWhere("name_ar", 'like', '%' . $keyword . '%');
                     });
                 }
                 $countries = $query->orderBy("name_$this->lang", 'ASC')->get();
