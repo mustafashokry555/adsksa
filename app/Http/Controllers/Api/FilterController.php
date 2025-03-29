@@ -107,8 +107,8 @@ class FilterController extends Controller
             });
         }
         // Location
-        if (!empty($areaIds)) {
-            $hospitals = $hospitals->whereIn('city_id', $areaIds);
+        if (!empty($cityIds)) {
+            $hospitals = $hospitals->whereIn('city_id', $cityIds);
 
             $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
         }elseif (!empty($stateIds)) {
