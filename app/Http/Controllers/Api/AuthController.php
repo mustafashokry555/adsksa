@@ -8,9 +8,7 @@ use App\Models\User;
 use App\Notifications\SendOtpEmail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Auth;
-use Faker\Factory as Faker;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -34,15 +32,15 @@ class AuthController extends Controller
                 'email' => 'required|email',
                 'password' => 'required',
             ]);
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->where('status', 'Active')->first();
             if (!$user) {
                 return $this->ErrorResponse(404, trans('auth.email'), null);
             }
             if (!Hash::check($request->password, $user->password)) {
                 return $this->ErrorResponse(401, trans('auth.password_incorrect'));
             }
-            $user->status = 'Active';
-            $user->save();
+            // $user->status = 'Active';
+            // $user->save();
             $token = $user->createToken('MyApp')->plainTextToken;
             return $this->SuccessResponse(200, trans('auth.loginGood'), $token);
         } catch (\Throwable $th) {
@@ -496,4 +494,36 @@ class AuthController extends Controller
             'message' => 'Your password has been reset successfully!',
         ]);
     }
+
+    public function delete_account(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|string',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            // Check if the provided password matches the user's password
+            if (!Hash::check($request->password, Auth::user()->password)) {
+                return $this->ErrorResponse(422, "The provided password is incorrect.");
+            }
+            // Get the authenticated user
+            $user = Auth::user();
+
+            // Revoke all tokens if using Laravel Sanctum
+            if (method_exists($user, 'tokens')) {
+                $user->tokens()->delete();
+            }
+            // Perform any cleanup needed before deletion
+            $user->status = 'Inactive';
+            $user->save();
+            return $this->SuccessResponse(200, 'Account successfully deleted', NULL);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
 }

@@ -144,7 +144,6 @@ class PatientController extends Controller
                     'gender' => 'required',
                     'user_type' => 'required',
                     'status' => 'required',
-                    // 'pricing' => 'required',
                     'profile_image' => 'image',
                     'password' => ['nullable', 'string', 'min:8', 'confirmed'],
                     

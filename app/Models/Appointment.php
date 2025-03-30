@@ -34,7 +34,7 @@ class Appointment extends Model
         return $this->belongsTo(Insurance::class);
     }
 
-    public function appointment(){
-        return $this->hasOne(Notification::class);
+    public function notifications(){
+        return $this->hasMany(Notification::class);
     }
 }
