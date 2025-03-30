@@ -108,7 +108,7 @@
                                     <input type="text" class="form-control" id="address" name="address"
                                         placeholder="Address" value="{{ $admin->address }}" required>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                {{-- <div class="col-md-4 mb-3">
                                     <label for="country">Country</label>
                                     <input type="text" class="form-control" id="country" placeholder="Country"
                                         name="country" value="{{ $admin->country }}" required>
@@ -122,7 +122,7 @@
                                     <label for="zip_code">Zip Code</label>
                                     <input type="text" class="form-control" id="zip_code" name="zip_code"
                                         placeholder="Zip Code" value="{{ $admin->zip_code }}" required>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-12">
                                 <div class="pro-title">
