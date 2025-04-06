@@ -73,7 +73,7 @@
         <div class="content" style="min-height: 273.9px;">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-8 offset-md-2">
+                    <div class="col-md-9 mx-auto">
                         <div class="account-content">
                             <div class="row align-items-center justify-content-center">
                                 <div class="col-lg-12 col-md-12">
@@ -101,6 +101,14 @@
                                                     <div class="dropdown">
                                                         <select id="stateSelect" name="state" class="select form-control" >
                                                             <option selected disabled>{{ __('web.Enter State') }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="drop_down_wrap">
+                                                    <label>{{ __('web.Enter City') }}</label>
+                                                    <div class="dropdown">
+                                                        <select id="citySelect" name="city" class="select form-control" >
+                                                            <option selected disabled>{{ __('web.Enter City') }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -172,15 +180,22 @@
     <script>
         // Add event listener for country select
         document.getElementById('countrySelect').addEventListener('change', function() {
-            loadCities(this.value);
+            loadStates(this.value);
+            loadCities(this.value, null);
+        });
+
+        // Add event listener for country select
+        document.getElementById('stateSelect').addEventListener('change', function() {
+            loadCities(null, this.value);
         });
 
         // Load all cities when document is ready
         document.addEventListener('DOMContentLoaded', function() {
-            loadCities(); // Call without countryId to load all cities
+            loadStates();
+            loadCities();
         });
 
-        async function loadCities(countryId = null) {
+        async function loadStates(countryId = null) {
             const stateSelect = document.getElementById('stateSelect');
             
             // Reset the state dropdown
@@ -206,6 +221,42 @@
             } catch (error) {
                 console.error('Error loading cities:', error);
                 stateSelect.disabled = true;
+            }
+        }
+
+        async function loadCities(countryId = null, stateId = null) {
+            
+            const citySelect = document.getElementById('citySelect');
+            
+            // Reset the state dropdown
+            citySelect.innerHTML = `
+                <option selected disabled>${'{{ __("web.Enter City") }}'}</option>
+                <option value="all">${'{{ __("web.All") }}'}</option>
+            `;
+
+            try {
+                var url = null;
+                if (stateId) {
+                    url = `/get-cities?state_id=${stateId}`;
+                }else {
+                    if (countryId) {
+                        url = `/get-cities?country_id=${countryId}`;
+                    }else{
+                        url = `/get-cities`;
+                    }
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                // Enable the state select and add the options
+                citySelect.disabled = false;
+                data.forEach(city => {
+                    citySelect.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading cities:', error);
+                citySelect.disabled = true;
             }
         }
         
