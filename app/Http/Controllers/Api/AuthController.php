@@ -55,7 +55,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'profile_image' => 'required|image|mimes:jpeg,png,gif|max:2048',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -262,9 +262,9 @@ class AuthController extends Controller
             'gender' => 'nullable|string|in:male,female',
             'date_of_birth' => 'nullable|date|before:today',
             'id_number' => [
-                'required', 
-                'numeric', 
-                'digits:10', 
+                'required',
+                'numeric',
+                'digits:10',
                 Rule::unique('users')->ignore($request->user()->id)
             ],
             'religion_id' => ['required', 'exists:religions,id'],
@@ -372,10 +372,10 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-        
+
         // Generate OTP
         $otp = rand(100000, 999999);
-        
+
         // Store OTP in password_resets table
         DB::table('password_resets')->updateOrInsert(
             ['email' => $request->email],
@@ -384,10 +384,10 @@ class AuthController extends Controller
                 'created_at' => Carbon::now()
             ]
         );
-        
+
         // Send OTP via email
         $user->notify(new SendOtpEmail($otp));
-        
+
         return response()->json([
             'success' => true,
             'message' => 'We have emailed your password reset OTP!',
@@ -411,19 +411,19 @@ class AuthController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         $passwordReset = DB::table('password_resets')
             ->where('email', $request->email)
             ->where('token', $request->otp)
             ->first();
-        
+
         if (!$passwordReset) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid OTP.',
             ], 400);
         }
-        
+
         // Check if OTP is expired (5 minutes)
         $createdAt = Carbon::parse($passwordReset->created_at);
         if (Carbon::now()->diffInMinutes($createdAt) > 5) {
@@ -432,13 +432,13 @@ class AuthController extends Controller
                 'message' => 'OTP has expired. Please request a new one.',
             ], 400);
         }
-        
+
         // Generate a reset token
         $token = \Illuminate\Support\Str::random(60);
         DB::table('password_resets')->where('email', $request->email)->update([
             'token' => $token
         ]);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'OTP verified successfully.',
@@ -463,32 +463,32 @@ class AuthController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         // Verify token
         $passwordReset = DB::table('password_resets')
             ->where('email', $request->email)
             ->where('token', $request->token)
             ->first();
-            
+
         if (!$passwordReset) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid token.',
             ], 400);
         }
-        
+
         // Update user password
         $user = User::where('email', $request->email)->first();
         $user->password = Hash::make($request->password);
         $user->setRememberToken(Str::random(60));
         $user->save();
-        
+
         // Delete the token
         DB::table('password_resets')->where('email', $request->email)->delete();
-        
+
         // Fire password reset event
         event(new PasswordReset($user));
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Your password has been reset successfully!',
@@ -497,19 +497,19 @@ class AuthController extends Controller
 
     public function delete_account(Request $request){
         try {
-            $validator = Validator::make($request->all(), [
-                'password' => 'required|string',
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'message' => 'Validation failed',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
+            // $validator = Validator::make($request->all(), [
+            //     'password' => 'required|string',
+            // ]);
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'message' => 'Validation failed',
+            //         'errors' => $validator->errors()
+            //     ], 422);
+            // }
             // Check if the provided password matches the user's password
-            if (!Hash::check($request->password, Auth::user()->password)) {
-                return $this->ErrorResponse(422, "The provided password is incorrect.");
-            }
+            // if (!Hash::check($request->password, Auth::user()->password)) {
+            //     return $this->ErrorResponse(422, "The provided password is incorrect.");
+            // }
             // Get the authenticated user
             $user = Auth::user();
 
