@@ -131,14 +131,14 @@
                                         <tbody>
                                         @forelse($doctors as $doctor)
                                             @php
-                                            $appointments = \App\Models\Appointment::query()->where('doctor_id', $doctor->id)->get();
+                                            $appointments = \App\Models\Appointment::query()->where('doctor_id', $doctor?->id)->get();
                                             $total_appointments = count($appointments);
                                             @endphp
                                         <tr>
                                             <td>
                                                 <h2 class="table-avatar">
                                                     @if($doctor?->profile_image ?? '')
-                                                    <a class="avatar-pos" href="#"><img class="avatar avatar-img" src="{{ asset($doctor->profile_image) }}" alt="User Image"></a>
+                                                    <a class="avatar-pos" href="#"><img class="avatar avatar-img" src="{{ asset($doctor?->profile_image) }}" alt="User Image"></a>
                                                     @else
                                                     <a class="avatar-pos" href="#"><img class="avatar avatar-img" src="{{ URL::asset('/assets_admin/img/profiles/avatar-05.jpg')}}" alt="User Image"></a>
                                                     @endif
@@ -148,12 +148,12 @@
                                             @php
                                             $hospital = \App\Models\Hospital::query()?->where('id',$doctor->hospital_id)?->first();
                                             @endphp
-                                            <td>{{$hospital->hospital_name}}</td>
+                                            <td>{{$hospital?->hospital_name}}</td>
                                             <td>{{ $doctor?->speciality?->name??"" }}</td>
                                             <td><span class="user-name">{{ $doctor?->created_at?->format('d M Y')??"" }} </span></td>
                                             <td>{{ $total_appointments }}</td>
 
-                                            <td> SAR {{ \App\Models\Appointment::query()->where('doctor_id', $doctor->id)->sum('fee')??0 }}</td>
+                                            <td> SAR {{ \App\Models\Appointment::query()->where('doctor_id', $doctor?->id)->sum('fee')??0 }}</td>
 
 {{--                                            <td>--}}
 {{--                                                <label class="toggle-switch" for="status1">--}}

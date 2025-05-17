@@ -57,16 +57,16 @@
                                                                 <td>{{$appointment->id}}</td>
                                                                 <td>
                                                                     <h2 class="table-avatar">
-                                                                        <a href="{{ route('doctor_profile', $doctor->id) }}"
+                                                                        <a href="{{ route('doctor_profile', $doctor?->id) }}"
                                                                             class="avatar avatar-sm me-2">
                                                                             <img class="avatar-img rounded-circle"
-                                                                                src="{{ asset( $doctor->profile_image) }}"
+                                                                                src="{{ asset( $doctor?->profile_image) }}"
                                                                                 alt="User Image">
                                                                         </a>
                                                                         <a
-                                                                            href="{{ route('doctor_profile', $doctor->id) }}">Dr.
-                                                                            {{ @$doctor->name }}
-                                                                            <span>{{ @$doctor->speciality->name }}</span></a>
+                                                                            href="{{ route('doctor_profile', $doctor?->id) }}">Dr.
+                                                                            {{ @$doctor?->name }}
+                                                                            <span>{{ @$doctor?->speciality->name }}</span></a>
                                                                     </h2>
                                                                 </td>
                                                                 <td>{{$doctor?->hospital?->hospital_name}}</td>
@@ -78,7 +78,7 @@
                                                                 <td>{{ date('d M Y', strtotime($appointment->created_at)) }}
                                                                 </td>
                                                                 <td>
-                                                                    
+
                                                                 {{ @$appointment->fee? 'SAR '.@$appointment->fee:'FREE'}}
                                                             </td>
                                                                 @if ($appointment->status == 'P')

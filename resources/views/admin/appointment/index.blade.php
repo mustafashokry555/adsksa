@@ -93,9 +93,9 @@
                                                     <h2 class="table-avatar">
                                                         <a class="avatar-pos" href="#" data-bs-target="#doctorlist"
                                                             data-bs-toggle="modal">
-                                                            @if ($doctor->profile_image ?? '')
+                                                            @if ($doctor?->profile_image ?? '')
                                                                 <img class="avatar avatar-img"
-                                                                    src="{{ asset($doctor->profile_image) }}"
+                                                                    src="{{ asset($doctor?->profile_image) }}"
                                                                     alt="User Image">
                                                             @else
                                                                 <img class="avatar avatar-img"
@@ -105,16 +105,16 @@
                                                         </a>
                                                         <a href="#" data-bs-target="#doctorlist"
                                                             data-bs-toggle="modal" class="user-name">Dr.
-                                                            {{ @$doctor->name }}</a>
+                                                            {{ @$doctor?->name }}</a>
                                                     </h2>
                                                 </td>
                                                 <td>
                                                     <h2 class="table-avatar">
                                                         <a class="avatar-pos" href="#" data-bs-target="#doctorlist"
                                                             data-bs-toggle="modal">
-                                                            @if ($patient->profile_image ?? '')
+                                                            @if ($patient?->profile_image ?? '')
                                                                 <img class="avatar avatar-img"
-                                                                    src="{{ asset($patient->profile_image) }}"
+                                                                    src="{{ asset($patient?->profile_image) }}"
                                                                     alt="User Image">
                                                             @else
                                                                 <img class="avatar avatar-img"
@@ -124,7 +124,7 @@
                                                         </a>
                                                         <a href="#" data-bs-target="#doctorlist"
                                                             data-bs-toggle="modal"
-                                                            class="user-name">{{ @$patient->name }}</a>
+                                                            class="user-name">{{ @$patient?->name }}</a>
                                                     </h2>
                                                 </td>
                                                 <td>

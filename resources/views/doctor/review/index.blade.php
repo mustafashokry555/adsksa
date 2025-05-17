@@ -18,14 +18,14 @@
                         @endphp
                     <li>
                         <div class="comment">
-                            @if($patient->profile_image ?? '')
-                            <img class="avatar rounded-circle" alt="User Image" src="{{ asset($patient->profile_image) }}">
+                            @if($patient?->profile_image ?? '')
+                            <img class="avatar rounded-circle" alt="User Image" src="{{ asset($patient?->profile_image) }}">
                             @else
                             <img class="avatar rounded-circle" alt="User Image" src="assets/img/patients/patient.jpg">
                             @endif
                             <div class="comment-body">
                                 <div class="meta-data">
-                                    <span class="comment-author">{{ $patient->name }}</span>
+                                    <span class="comment-author">{{ $patient?->name }}</span>
                                     <span class="comment-date">Reviewed {{ $review->created_at->diffForHumans() }}</span>
                                     <div class="review-count rating">
                                         @for($i = 1; $i<= $review->star_rated; $i++)

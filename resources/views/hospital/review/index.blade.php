@@ -22,17 +22,17 @@
                         @endphp
                         <li>
                             <div class="comment">
-                                @if ($patient->profile_image ?? '')
+                                @if ($patient?->profile_image ?? '')
                                     <img class="avatar rounded-circle" alt="User Image"
-                                        src="{{ asset($patient->profile_image) }}">
+                                        src="{{ asset($patient?->profile_image) }}">
                                 @else
                                     <img class="avatar rounded-circle" alt="User Image" src="assets/img/patients/patient.jpg">
                                 @endif
                                 <div class="comment-body">
                                     <div class="meta-data">
                                         <div class="d-flex justify-content-start">
-                                            <span class="comment-author">{{ $patient->name }}
-                                                {{ __('hospital.reviews.to_dr') }}. {{ $doctor->name }}</span>
+                                            <span class="comment-author">{{ $patient?->name }}
+                                                {{ __('hospital.reviews.to_dr') }}. {{ $doctor?->name }}</span>
                                         </div>
                                         <span class="comment-date">{{ __('hospital.reviews.reviewed') }}
                                             {{ $review->created_at->diffForHumans() }}</span>

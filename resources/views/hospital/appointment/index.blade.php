@@ -50,11 +50,11 @@
                                                         <td>{{$appointment->id}}</td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                @if ($doctor->profile_image ?? '')
+                                                                @if ($doctor?->profile_image ?? '')
                                                                     <a class="avatar avatar-sm me-2"
-                                                                        href="{{ route('profile.show', ['profile' => $doctor->id]) }}"><img
+                                                                        href="{{ route('profile.show', ['profile' => $doctor?->id]) }}"><img
                                                                             class="avatar-img rounded-circle"
-                                                                            src="{{ asset( $doctor->profile_image) }}"
+                                                                            src="{{ asset( $doctor?->profile_image) }}"
                                                                             alt="User Image"></a>
                                                                 @else
                                                                     <a class="avatar avatar-sm me-2"><img
@@ -63,17 +63,17 @@
                                                                             alt="User Image"></a>
                                                                 @endif
                                                                 <a
-                                                                    href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ $doctor->name }}
+                                                                    href="{{ route('profile.show', ['profile' => $doctor?->id]) }}">{{ $doctor?->name }}
                                                                     <span></span></a>
                                                             </h2>
                                                         </td>
                                                         <td>
                                                             <h2 class="table-avatar">
-                                                                @if ($patient->profile_image ?? '')
+                                                                @if ($patient?->profile_image ?? '')
                                                                     <a class="avatar avatar-sm me-2"
-                                                                        href="{{ route('profile.show', ['profile' => $patient->id]) }}"><img
+                                                                        href="{{ route('profile.show', ['profile' => $patient?->id]) }}"><img
                                                                             class="avatar-img rounded-circle"
-                                                                            src="{{ asset($patient->profile_image) }}"
+                                                                            src="{{ asset($patient?->profile_image) }}"
                                                                             alt="User Image"></a>
                                                                 @else
                                                                     <a class="avatar avatar-sm me-2"><img
@@ -82,7 +82,7 @@
                                                                             alt="User Image"></a>
                                                                 @endif
                                                                 <a
-                                                                    href="{{ @route('profile.show', ['profile' => @$patient->id]) }}">{{ @$patient->name }}
+                                                                    href="{{ @route('profile.show', ['profile' => @$patient?->id]) }}">{{ @$patient?->name }}
                                                                     <span></span></a>
                                                             </h2>
                                                         </td>
