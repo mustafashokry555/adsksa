@@ -23,19 +23,19 @@ class AppointController extends Controller
             return $this->ErrorResponse(404, 'Doctor not found', null);
         }
         $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
-        
+
         // Create selected CarbonDate instance
         $selectedDate = CarbonImmutable::parse($request->date);
         // create date
         $date = $selectedDate->format("Y-m-d");
         // day of the week
         $day_name = strtolower($selectedDate->format("l"));
-        
+
         // Doctor set unavailabilty on a specific date
         $unavailability = $doctor->unavailailities()->where("date", $date)->first();
         // return Not available
         if ($unavailability) {
-            
+
             return $this->SuccessResponse(200, "Not Available", []);
         }
         // Check if doctor set One time appointment on a specific date
@@ -68,13 +68,13 @@ class AppointController extends Controller
         $slots = [];
         $filteredSlots = collect([]);
         $intervals = collect($availability->slots);
-        
-        
+
+
         // Fliter slots
         foreach ($intervals as  $interval) {
             $start_dt = $date . $interval["start_time"];
             $end_dt = $date . $interval["end_time"];
-            
+
             // Create Slots
             $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
             foreach ($slots as $slot) {
@@ -190,8 +190,8 @@ class AppointController extends Controller
     public function CancelAppointment(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'appointment_id' => 'required',
-            'integer',
+            'appointment_id' => 'required', 'integer',
+            'cancel_reason' => 'nullable', 'string',
         ]);
 
         if ($validator->fails()) {
@@ -200,9 +200,14 @@ class AppointController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
-        $appointment = Appointment::where('patient_id', $request->user()->id)->where('id', $request->appointment_id)->first();
+
+        $appointment = Appointment::where('patient_id', $request->user()->id)
+        ->where('id', $request->appointment_id)->first();
+        if (!$appointment) {
+            return $this->ErrorResponse(404, "Appointment not found");
+        }
         $appointment->status = 'U';
+        $appointment->cancel_reason = $request->cancel_reason;
         $appointment->save();
 
         Notification::create([
@@ -272,7 +277,7 @@ class AppointController extends Controller
         }
 
     }
-    
+
     public function getAppointmentDetails(Request $request, $id){
         try {
             $appointment = Appointment::with(['doctor', 'hospital', 'patient'])
