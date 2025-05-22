@@ -156,26 +156,6 @@ class CommonController extends Controller
         }
     }
 
-    // public function DoctorWithFilter(Request $request){
-    //     $hospitalName = $request->hospital_name; // Replace with the hospital name you want to filter by
-    //     $doctorName = $request->doctor_name; // Replace with the doctor name you want to filter by
-    //     $address = $request->address;
-    //     $q = User::with('hospital')->where('user_type','D')
-    //         ->whereHas('hospital', function ($query) use ($hospitalName) {
-    //             $query->where('hospital_name', 'like', '%' . $hospitalName . '%');
-    //         });
-    //         if($doctorName){
-    //             $q->where('name', 'like', '%' . $doctorName . '%');
-    //         }
-    //         if($address){
-    //             $q->where('address', 'like', '%' . $address . '%');
-    //         }
-
-
-
-    //         $q->get();
-    //         return $this->SuccessResponse(200, 'Doctor list', $doctors);
-    // }
     public function DoctorWithFilter(Request $request)
     {
         $keyword = $request->search;
@@ -582,3 +562,24 @@ class CommonController extends Controller
         }
     }
 }
+
+// public function DoctorWithFilter(Request $request){
+//     $hospitalName = $request->hospital_name; // Replace with the hospital name you want to filter by
+//     $doctorName = $request->doctor_name; // Replace with the doctor name you want to filter by
+//     $address = $request->address;
+//     $q = User::with('hospital')->where('user_type','D')
+//         ->whereHas('hospital', function ($query) use ($hospitalName) {
+//             $query->where('hospital_name', 'like', '%' . $hospitalName . '%');
+//         });
+//         if($doctorName){
+//             $q->where('name', 'like', '%' . $doctorName . '%');
+//         }
+//         if($address){
+//             $q->where('address', 'like', '%' . $address . '%');
+//         }
+
+
+
+//         $q->get();
+//         return $this->SuccessResponse(200, 'Doctor list', $doctors);
+// }
