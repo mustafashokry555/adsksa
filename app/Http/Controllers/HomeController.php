@@ -161,7 +161,7 @@ class HomeController extends Controller
                         // Capture the command output
                         $exitCode = Artisan::call('backup:database');
                         $output = Artisan::output(); // Get the output of the command
-                
+
                         if ($exitCode === 0) {
                             return response()->json([
                                 'success' => true,
@@ -201,21 +201,87 @@ class HomeController extends Controller
                         'filename' => $file,
                         'allData' => $fileContent, // Return the content of the file
                     ]);
-                } elseif($request->operation == 'gitPull'){
+                }elseif($request->operation == 'gitStatus'){
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
-            
+
                         // Create and execute the process
-                        $process = new Process(['git', 'pull']);
+                        $process = new Process(['git', 'status']);
                         $process->setWorkingDirectory($projectPath);
                         $process->run();
-            
+
                         // Check if the process was successful
                         if (!$process->isSuccessful()) {
                             throw new ProcessFailedException($process);
                         }
-            
+
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'Git status executed successfully',
+                            'output' => $process->getOutput(),
+                        ]);
+                    } catch (ProcessFailedException $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Git status failed',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'An unexpected error occurred',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    }
+                }elseif($request->operation == 'migrate'){
+                    try {
+                        // Get the base path of the Laravel project
+                        $projectPath = base_path();
+
+                        // Create and execute the process
+                        $process = new Process(['php', 'artisan', 'migrate']);
+                        $process->setWorkingDirectory($projectPath);
+                        $process->run();
+
+                        // Check if the process was successful
+                        if (!$process->isSuccessful()) {
+                            throw new ProcessFailedException($process);
+                        }
+
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'Git status executed successfully',
+                            'output' => $process->getOutput(),
+                        ]);
+                    } catch (ProcessFailedException $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Git status failed',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'An unexpected error occurred',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    }
+                }elseif($request->operation == 'gitPull'){
+                    try {
+                        // Get the base path of the Laravel project
+                        $projectPath = base_path();
+
+                        // Create and execute the process
+                        $process = new Process(['git', 'pull']);
+                        $process->setWorkingDirectory($projectPath);
+                        $process->run();
+
+                        // Check if the process was successful
+                        if (!$process->isSuccessful()) {
+                            throw new ProcessFailedException($process);
+                        }
+
                         return response()->json([
                             'status' => 'success',
                             'message' => 'Git pull executed successfully',
@@ -236,13 +302,13 @@ class HomeController extends Controller
                     }
                 }elseif ($request->operation == 'Empty') {
                     $tables = [
-                        'appointments', 'app_setting', 'banners', 'blogs', 'cities', 'clinics', 
-                        'contact_us', 'countries', 'education', 'experiences', 'failed_jobs', 
-                        'genral_settings', 'hospitals', 'hospital_insurance', 'hospital_reviews', 
-                        'hospital_types', 'insurances', 'migrations', 'newsletters', 'notifications', 
-                        'offers', 'one_time_availabilities', 'password_resets', 'patient_comments', 
-                        'patient_details', 'personal_access_tokens', 'regular_availabilities', 'reviews', 
-                        'schedules', 'schedule_settings', 'services', 'settings', 'specialities', 
+                        'appointments', 'app_setting', 'banners', 'blogs', 'cities', 'clinics',
+                        'contact_us', 'countries', 'education', 'experiences', 'failed_jobs',
+                        'genral_settings', 'hospitals', 'hospital_insurance', 'hospital_reviews',
+                        'hospital_types', 'insurances', 'migrations', 'newsletters', 'notifications',
+                        'offers', 'one_time_availabilities', 'password_resets', 'patient_comments',
+                        'patient_details', 'personal_access_tokens', 'regular_availabilities', 'reviews',
+                        'schedules', 'schedule_settings', 'services', 'settings', 'specialities',
                         'specializations', 'unavailabilities', 'users', 'wishlists'
                     ];
                     DB::statement('SET FOREIGN_KEY_CHECKS=0;');  // Disable foreign key checks
