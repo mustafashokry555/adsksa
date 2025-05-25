@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\BannerResource;
+use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\HospitalTypeResource;
 use App\Http\Resources\Api\OfferResource;
@@ -169,15 +171,15 @@ class MainController extends Controller
 
                 // Data
                 $data [] = [
-                    'banners' => $banners,
+                    'banners' => $banners ? BannerResource::collection($banners) : [],
                     'hospital_types' => $hospital_types,
                     'hospitals' => $hospitals,
                     'offers' => $offers,
                     'specialities' => $specialities,
-                    'doctors' => $doctors,
+                    'doctors' => $doctors ? DoctorResource::collection($doctors) : [],
                     'unread_notification' => $unread_notification,
                 ];
-                
+
                 return $this->SuccessResponse(200, null, $data);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
@@ -274,7 +276,7 @@ class MainController extends Controller
             try {
                 $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
                 $keyword = $request->input('keyword');
-                
+
                 $states = State::query();
                 if (!empty($countryIds)) {
                     $states = $states->whereIn('country_id', $countryIds);
@@ -626,13 +628,6 @@ class MainController extends Controller
     /* End Doctor APIs*/
 
     ////////////////////////////////////////////////////////////////////////////////////////
-
-    /* Stert Appointment API's */
-        // Start Avail Slot API
-        
-    /* End Appointment API's */
-
-    ////////////////////////////////////////////////////////////////////////////////////////
     /* Start Hospital APIs*/
         // API for All hospitals (Done with Out Lang)
         public function HospitalWithFilter(Request $request)
@@ -726,7 +721,7 @@ class MainController extends Controller
             try {
                 $profile = Hospital::where('hospitals.id', $id)
                 ->with([
-                    'doctors', 'specialities', 
+                    'doctors', 'specialities',
                     'offers' => function($query) {
                         $query->where('is_active', 1)
                             ->where('start_date', '<=', now())
@@ -813,7 +808,7 @@ class MainController extends Controller
             if (request('hospital_type_id')) {
                 $query->where('hospital_type_id', request('hospital_type_id'));
             }
-            
+
             $query->leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
             ->leftJoin('states', 'hospitals.state_id', '=', 'states.id')
             ->leftJoin('hospital_types', 'hospitals.hospital_type_id', '=', 'hospital_types.id')

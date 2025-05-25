@@ -36,21 +36,21 @@ class HospitalResource extends JsonResource
             if($this->lat != null && $this->long != null){
                 $distance = $this->getDistance($this->lat, $this->long) ?? null;
             }
-        }        
-        
+        }
+
         return [
             'id' => $this->id,
             'hospital_name' => $this->hospital_name,
-            'hospital_type_id' => $this->hospitalType ? $this->hospitalType->id : null,
+            'hospital_type_id' => $this->hospitalType ? (int)$this->hospitalType->id : null,
             'hospital_type_name' => $this->hospitalType ? $this->hospitalType->name : null,
-            'avg_rating' =>  $this->avg_rating,
-            'rating_count' =>  $this->rating_count,
+            'avg_rating' =>  (float)$this->avg_rating,
+            'rating_count' =>  (int)$this->rating_count,
             'image' => $this->image,
             'country' => $this->country ? $this->country->name : null,
             'state' => $this->state ? $this->state->name : null,
             'city' => $this->city ? $this->city->name : null,
-            'lat' => $this->lat,
-            'long' => $this->long,
+            'lat' => $this->lat ? (float)$this->lat : $this->lat,
+            'long' => $this->long ? (float)$this->long : $this->long,
             'location' => $this->location,
             'distance' => $distance,
             'images_links' => $this->images_links,

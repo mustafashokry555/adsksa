@@ -89,6 +89,11 @@ class AuthController extends Controller
             }else{
                 $patient->name = $patient->name_en;
             }
+            $patient->religion_id = $patient->religion_id ? (int)$patient->religion_id : null;
+            if ($patient->patientDetails){
+                $patient->patientDetails->user_id = $patient->patientDetails->user_id ? (int)$patient->patientDetails->user_id : $patient->patientDetails->user_id;
+            }
+
         }
         return $this->SuccessResponse(200, 'Patient profile!', $patient);
     }

@@ -36,17 +36,17 @@ class DoctorResource extends JsonResource
             if($this->hospital->lat != null && $this->hospital->long != null){
                 $distance = $this->getDistance($this->hospital->lat, $this->hospital->long) ?? null;
             }
-        }        
-        
+        }
+
         return [
             'id' => $this->id,
             'profile_image' => $this->profile_image,
             'name' => $this->name,
             'speciality_name' => $this->speciality->name,
-            'avg_rate' => $this->avg_rate,
+            'avg_rate' => $this->avg_rate ? (float)$this->avg_rate :$this->avg_rate,
             'distance' => $distance,
             'hospital_name' => $this->hospital->hospital_name,
-            'pricing' => $this->pricing,
+            'pricing' => $this->pricing ? (float)$this->pricing : $this->pricing,
             'is_favorite' => $user ? $user->isFavoriteDoctor($this->id) : false
         ];
     }

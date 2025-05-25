@@ -14,7 +14,7 @@ class OfferResource extends JsonResource
      */
     public function toArray($request)
     {
-        
+
         return [
             'id' => $this->id,
             'title' => $this->title ?? '',
@@ -22,7 +22,7 @@ class OfferResource extends JsonResource
             'type' => $this->type,
             'video_link' =>  $this->video_link,
             'images' => $this->images,
-            'hospital_id' => $this->hospital_id,
+            'hospital_id' => $this->hospital_id ? (int)$this->hospital_id : $this->hospital_id,
             'hospital_name' => $this->hospital->hospital_name ?? '',
             'is_active' => $this->is_active,
             'start_date' => $this->start_date,
