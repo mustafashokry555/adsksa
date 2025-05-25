@@ -251,13 +251,46 @@ class HomeController extends Controller
 
                         return response()->json([
                             'status' => 'success',
-                            'message' => 'Git status executed successfully',
+                            'message' => 'migrate executed successfully',
                             'output' => $process->getOutput(),
                         ]);
                     } catch (ProcessFailedException $e) {
                         return response()->json([
                             'status' => 'error',
-                            'message' => 'Git status failed',
+                            'message' => 'migrate failed',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'An unexpected error occurred',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    }
+                }elseif($request->operation == 'migrateStatus'){
+                    try {
+                        // Get the base path of the Laravel project
+                        $projectPath = base_path();
+
+                        // Create and execute the process
+                        $process = new Process(['php', 'artisan', 'migrate:status']);
+                        $process->setWorkingDirectory($projectPath);
+                        $process->run();
+
+                        // Check if the process was successful
+                        if (!$process->isSuccessful()) {
+                            throw new ProcessFailedException($process);
+                        }
+
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'migrate status executed successfully',
+                            'output' => $process->getOutput(),
+                        ]);
+                    } catch (ProcessFailedException $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'migrate status failed',
                             'error' => $e->getMessage(),
                         ], 500);
                     } catch (\Exception $e) {
