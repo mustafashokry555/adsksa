@@ -33,7 +33,7 @@ class DoctorResource extends JsonResource
         }
         $distance = null;
         if(request("long") != null && request("lat") != null  ){
-            if($this->hospita?->lat != null && $this->hospital?->long != null){
+            if($this->hospital?->lat != null && $this->hospital?->long != null){
                 $distance = $this->getDistance($this->hospital->lat, $this->hospital->long) ?? null;
             }
         }
