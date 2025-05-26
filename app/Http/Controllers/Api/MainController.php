@@ -7,6 +7,7 @@ use App\Http\Resources\Api\BannerResource;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\HospitalTypeResource;
+use App\Http\Resources\Api\InsuranceResource;
 use App\Http\Resources\Api\OfferResource;
 use App\Http\Resources\Api\ReligionResource;
 use App\Http\Resources\Api\SpecialityResource;
@@ -343,7 +344,8 @@ class MainController extends Controller
                 }
                 $insurance = $query->whereHas('hospitals.doctors')
                 ->orderBy('id', 'desc')->get();
-                return $this->SuccessResponse(200, "All Insurance reterieved successfully", $insurance);
+                return $this->SuccessResponse(200, "All Insurance reterieved successfully",
+                InsuranceResource::collection($insurance));
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }

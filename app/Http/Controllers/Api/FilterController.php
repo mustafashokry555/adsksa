@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
+use App\Http\Resources\Api\InsuranceResource;
 use App\Http\Resources\Api\SpecialityResource;
 use App\Models\City;
 use App\Models\State;
@@ -59,12 +60,12 @@ class FilterController extends Controller
 
             $data = [
                 'specialities' => $specialities,
-                'insurance' => $insurance,
+                'insurance' => InsuranceResource::collection($insurance),
                 'countries' => $countries,
                 'states' => $states,
                 'cities' => $cities,
             ];
-            
+
             return $this->SuccessResponse(200, 'All Data for the Filter reterieved successfully', $data);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
