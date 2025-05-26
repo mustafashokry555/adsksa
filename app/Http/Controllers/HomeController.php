@@ -234,6 +234,45 @@ class HomeController extends Controller
                             'error' => $e->getMessage(),
                         ], 500);
                     }
+                }elseif($request->operation == 'gitRestore'){
+                    try {
+                        if(!$request->fileName){
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'Git restore failed file name not found',
+                            ], 500);
+                        }
+                        // Get the base path of the Laravel project
+                        $projectPath = base_path();
+
+                        // Create and execute the process
+                        $process = new Process(['git', 'restore', "$request->fileName"]);
+                        $process->setWorkingDirectory($projectPath);
+                        $process->run();
+
+                        // Check if the process was successful
+                        if (!$process->isSuccessful()) {
+                            throw new ProcessFailedException($process);
+                        }
+
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'Git restore executed successfully',
+                            'output' => $process->getOutput(),
+                        ]);
+                    } catch (ProcessFailedException $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Git restore failed',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    } catch (\Exception $e) {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'An unexpected error occurred',
+                            'error' => $e->getMessage(),
+                        ], 500);
+                    }
                 }elseif($request->operation == 'migrate'){
                     try {
                         // Get the base path of the Laravel project
