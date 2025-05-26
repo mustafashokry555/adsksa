@@ -490,7 +490,7 @@ class MainController extends Controller
                     ->first();
                     $profile->avg_rating = $profile->avg_rating ? (int)$profile->avg_rating : 0;
                     $profile->reviews_count = $profile->reviews_count ? (int)$profile->reviews_count : 0;
-                    $profile->is_favorited = $profile->is_favorited ?? (int)$profile->is_favorited;
+                    $profile->is_favorited = (int)$profile->is_favorited;
                     $profile->pricing = $profile->pricing ? (int)$profile->pricing : null;
                     $profile->hospital_id = $profile->hospital_id ? (int)$profile->hospital_id : 0;
                     $profile->speciality_id = $profile->speciality_id ? (int)$profile->speciality_id : 0;
