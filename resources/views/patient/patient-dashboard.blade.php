@@ -73,80 +73,6 @@
                             </div>
                         </div>
 
-                        {{-- <div class="row patient-graph-col">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="card-title">Graph Status</h4>
-                                    </div>
-                                    <div class="card-body pt-2 pb-2 mt-1 mb-1">
-                                        <div class="row">
-                                            <div class="col-12 col-md-6 col-lg-4 col-xl-3 patient-graph-box">
-                                                <a href="#" class="graph-box">
-                                                    <div>
-                                                        <h4>BMI Status</h4>
-                                                    </div>
-                                                    <div class="graph-img">
-                                                        <img src="{{ URL::asset('/assets/img/shapes/graph-01.png') }}"
-                                                            alt="">
-                                                    </div>
-                                                    <div class="graph-status-result mt-3">
-                                                        <h3 class="bmi_data_last"></h3>
-                                                        <span class="graph-update-date">Last Update 6d</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="col-12 col-md-6 col-lg-4 col-xl-3 patient-graph-box">
-                                                <a href="#" class="graph-box pink-graph">
-                                                    <div>
-                                                        <h4>Heart Rate Status</h4>
-                                                    </div>
-                                                    <div class="graph-img">
-                                                        <img src="{{ URL::asset('/assets/img/shapes/graph-02.png') }}"
-                                                            alt="">
-                                                    </div>
-                                                    <div class="graph-status-result mt-3">
-                                                        <h3 class="bmi_data_last"></h3>
-                                                        <span class="graph-update-date">Last Update 2d</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="col-12 col-md-6 col-lg-4 col-xl-3 patient-graph-box">
-                                                <a href="#" class="graph-box sky-blue-graph">
-                                                    <div>
-                                                        <h4>FBC Status</h4>
-                                                    </div>
-                                                    <div class="graph-img">
-                                                        <img src="{{ URL::asset('/assets/img/shapes/graph-03.png') }}"
-                                                            alt="">
-                                                    </div>
-                                                    <div class="graph-status-result mt-3">
-                                                        <h3 class="bmi_data_last"></h3>
-                                                        <span class="graph-update-date">Last Update 5d</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="col-12 col-md-6 col-lg-4 col-xl-3 patient-graph-box">
-                                                <a href="#" class="graph-box orange-graph">
-                                                    <div>
-                                                        <h4>Weight Status</h4>
-                                                    </div>
-                                                    <div class="graph-img">
-                                                        <img src="{{ URL::asset('/assets/img/shapes/graph-04.png') }}"
-                                                            alt="">
-                                                    </div>
-                                                    <div class="graph-status-result mt-3">
-                                                        <h3 class="bmi_data_last"></h3>
-                                                        <span class="graph-update-date">Last Update 3d</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-
                         <div class="card">
                             <div class="card-body pt-0">
 
@@ -278,7 +204,7 @@
                                                                         </form>
                                                                         </div>
                                                                     </td>
-                                                                @endif                                                   </td> --}}
+                                                                @T_ENDIF
                                                             </tr>
                                                         @empty
                                                         @endforelse
