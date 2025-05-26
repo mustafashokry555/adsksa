@@ -184,7 +184,7 @@
                                                     <table class="table table-hover table-center mb-0" id="datatable1">
                                                         <thead>
                                                             <tr>
-                                                            <th>ID</th>
+                                                                <th>ID</th>
                                                                 <th>Doctor</th>
                                                                 <th>Insurance</th>
                                                                 <th>Appt Date</th>
@@ -205,6 +205,7 @@
                                                             @endphp
                                                             <tr>
                                                                 <td>{{$appointment->id}}</td>
+
                                                                 <td>
                                                                     <h2 class="table-avatar">
                                                                         <a href="{{ route('doctor_profile',  $doctor->id) }}"
@@ -219,16 +220,21 @@
                                                                             <span>{{ @$doctor->speciality->name }}</span></a>
                                                                     </h2>
                                                                 </td>
+
                                                                 <td>{{ $appointment->insurance?->name??'N/A' }}</td>
+
                                                                 <td>{{ date('d M Y', strtotime($appointment->appointment_date)) }}
                                                                     <span
                                                                         class="d-block text-info">{{ date('H:i A', strtotime($appointment->appointment_time)) }}</span>
                                                                 </td>
+
                                                                 <td>{{ date('d M Y', strtotime($appointment->created_at)) }}
                                                                 </td>
-                                                                <td> 
-                                                                {{ @$appointment->fee? 'SAR '.@$appointment->fee:'FREE'}}
-                                                                    </td>
+
+                                                                <td>
+                                                                    {{ @$appointment->fee? 'SAR '.@$appointment->fee:'FREE'}}
+                                                                </td>
+
                                                                 @if ($appointment->status == 'P')
                                                                     <td><span
                                                                             class="badge rounded-pill bg-warning-light">Pending</span>
@@ -241,25 +247,15 @@
                                                                     <td><span
                                                                             class="badge rounded-pill bg-danger-light">Cancelled</span>
                                                                     </td>
+                                                                @else
+                                                                    <td>'N/A'</td>
                                                                 @endif
+
                                                                 @if ($appointment->status == 'D')
                                                                     <td >
                                                                         <div class="text-end d-flex justify-content-between">
-                                                                        {{-- <form method="GET" action="{{ route('update_appointment_status', $appointment)}}">
-                                                                @method('patch')
-                                                                @csrf
-                                                                <input type="hidden" name="status" value="P">
-                                                                <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-success-light">
-                                                                    <i class="fas fa-check"></i> Book Again
-                                                                </button>
-                                                            </form> --}}
-
                                                                         <a class="btn btn-sm bg-success-light me-2"
                                                                             href="{{ route('update-appointment', $appointment->id) }}">
-                                                                            {{-- <button type="submit"
-                                                                                href="javascript:void(0);"
-                                                                                class="btn btn-sm bg-success-light">
-                                                                            </button> --}}
                                                                             <i class="fas fa-check"></i> Book Again
                                                                         </a>
 
@@ -294,24 +290,9 @@
                                                                         </form>
                                                                         </div>
                                                                     </td>
-                                                                @endif
-                                                                {{--                                                        <td class="text-end"> --}}
-                                                                {{--                                                            <div class="table-action"> --}}
-                                                                {{--                                                                <a href="javascript:void(0);" class="btn btn-sm bg-primary-light"> --}}
-                                                                {{--                                                                    <i class="fas fa-print"></i> Print --}}
-                                                                {{--                                                                </a> --}}
-                                                                {{--                                                                <a href="javascript:void(0);" class="btn btn-sm bg-info-light"> --}}
-                                                                {{--                                                                    <i class="far fa-eye"></i> View --}}
-                                                                {{--                                                                </a> --}}
-                                                                {{--                                                            </div> --}}
-                                                                {{--                                                        </td> --}}
+                                                                @endif                                                   </td> --}}
                                                             </tr>
                                                         @empty
-                                                            <!-- <tr>
-                                                            <td class="col-span-6">
-                                                                <h3 class="bg-danger-light">No record found</h3>
-                                                            </td>
-                                                        </tr> -->
                                                         @endforelse
                                                     </tbody>
                                                     </table>

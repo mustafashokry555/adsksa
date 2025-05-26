@@ -18,7 +18,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <input type="text" name="search"  class="form-control" value="{{ request('search') }}"
-                                           placeholder="Search Location">
+                                        placeholder="Search Location">
                                     <i class="far fa-compass"></i>
                                 </div>
                             </div>

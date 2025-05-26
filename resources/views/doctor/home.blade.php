@@ -90,14 +90,14 @@
                                         <table class="table table-hover table-center mb-0" id="datatable1">
                                             <thead>
                                                 <tr>
-                                                <th>ID</th>
+                                                    <th>ID</th>
                                                     <th>Patient Name</th>
                                                     <th>Appt Date</th>
                                                     <!-- <th>Type</th> -->
                                                     <th>Insurance</th>
                                                     <th class="text-center">Paid Amount</th>
                                                     <th>Status</th>
-                                                    <th></th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -109,6 +109,7 @@
                                                     @endphp
                                                     <tr>
                                                         <td>{{$appointment->id}}</td>
+
                                                         <td>
                                                             <h2 class="table-avatar">
                                                                 @if ($patient)
@@ -128,30 +129,38 @@
                                                                 @endif
                                                             </h2>
                                                         </td>
+
                                                         <td>{{ date('d M Y', strtotime($appointment?->appointment_date??'')) }}
                                                             <span
                                                                 class="d-block text-info">{{ date('H:i A', strtotime($appointment?->appointment_time??'')) }}</span>
                                                         </td>
+
                                                         <!-- <td>New Patient</td> -->
                                                         <td>{{$appointment->insurance?->name??'N/A'}}</td>
+
                                                         @if ($appointment->fee == 'Free')
                                                             <td class="text-center bg-green-light">Free</td>
                                                         @else
                                                         <td class="text-center">{{ $appointment->fee?'SAR '.$appointment->fee:'FREE' }}</td>
                                                         @endif
+
                                                         @if ($appointment?->status == 'P')
                                                             <td><span
                                                                     class="badge rounded-pill bg-warning-light">Pending</span>
                                                             </td>
                                                         @elseif($appointment?->status == 'C')
-                                                            <td><span
+                                                            <td>
+                                                                <span
                                                                     class="badge rounded-pill bg-success-light">Confirm</span>
                                                             </td>
                                                         @elseif($appointment?->status == 'D')
                                                             <td><span
                                                                     class="badge rounded-pill bg-danger-light">Cancelled</span>
                                                             </td>
+                                                        @else
+                                                            <td>'N/A'</td>
                                                         @endif
+
                                                         <td class="text-end">
                                                             <div class="table-action">
                                                                 <div class="d-flex justify-content-end gap-3">
@@ -226,6 +235,7 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+
                                                     </tr>
                                                 @empty
                                                     <!-- <tr class="bg-danger-light">
@@ -261,7 +271,7 @@
                                             </thead>
                                             <tbody>
                                                 @forelse($today_appointments as $today_appointment)
-                                                    
+
                                                     <tr>
                                                         <td>{{$today_appointment->id}}</td>
                                                         <td>
