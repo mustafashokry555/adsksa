@@ -66,37 +66,10 @@ class MainController extends Controller
                 $hospital_types  = HospitalType::all();
                 $hospital_types = HospitalTypeResource::collection($hospital_types);
                 // Hospitals
-                $hospitals = Hospital::leftJoin('hospital_reviews', 'hospitals.id', '=', 'hospital_reviews.hospital_id')
-                ->leftJoin('states', 'hospitals.state_id', '=', 'states.id')
-                ->leftJoin('countries', 'states.country_id', '=', 'countries.id')
-                ->select(
-                    'hospitals.id',
-                    'hospitals.hospital_name_ar',
-                    'hospitals.hospital_name_en',
-                    DB::raw('AVG(hospital_reviews.star_rated) as avg_rating'),
-                    'hospitals.image',
-                    // 'hospitals.state',
-                    DB::raw("NULL AS distance"),
-                    'hospitals.lat',
-                    'hospitals.long',
-                    'hospitals.location',
-                    'hospitals.profile_images',
-                    "states.name_$this->lang as state_name",
-                    "countries.name_$this->lang as country_name"
-                )->groupBy(
-                    'hospitals.id',
-                    'hospitals.hospital_name_en',
-                    'hospitals.hospital_name_ar',
-                    'hospitals.image',
-                    // 'hospitals.state',
-                    'hospitals.lat',
-                    'hospitals.long',
-                    'hospitals.profile_images',
-                    'hospitals.location',
-                    "states.name_$this->lang",
-                    "countries.name_$this->lang"
-                )->orderBy('avg_rating', "DESC")->limit(8)->get();
-                $hospitals = HospitalResource::collection($hospitals);
+                $hospitals = Hospital::withAvg('hospitalReviews', 'star_rated')
+                ->orderByDesc('hospital_reviews_avg_star_rated')
+                ->limit(8)
+                ->get();
                 // Offers
                 $offers = Offer::where('is_active', 1)
                 ->where('start_date', '<=', now())
@@ -107,56 +80,12 @@ class MainController extends Controller
                 $specialities = Speciality::limit(8)->get();
                 $specialities = SpecialityResource::collection($specialities);
                 // Doctors
-                $doctors = User::leftJoin('hospitals', 'users.hospital_id', '=', 'hospitals.id')
-                ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
-                ->leftJoin('wishlists', function ($join) use ($patient_id) {
-                    $join->on('users.id', '=', 'wishlists.doctor_id')
-                        ->where('wishlists.patient_id', '=', $patient_id);
-                })
-                ->where('user_type', 'D')
-                ->select(
-                    'users.id',
-                    'users.name_en',
-                    'users.name_ar',
-                    DB::raw('AVG(reviews.star_rated) as avg_rating'),
-                    DB::raw('COUNT(reviews.id) as reviews_count'),
-                    'users.profile_image',
-                    DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                    'users.gender',
-                    'users.pricing',
-                    'users.hospital_id',
-                    'users.speciality_id',
-                )
-                ->with([
-                    'hospital' => function ($query) {
-                        $query->select([
-                            'id',
-                            'hospital_name_en',
-                            'hospital_name_ar',
-                            'lat',
-                            'long',
-                        ]);
-                    },
-                    'speciality' => function ($query) {
-                        $query->select([
-                            'id',
-                            'name_en',
-                            'name_ar',
-                        ]);
-                    }
-                ])
-                ->groupBy(
-                    'wishlists.id',
-                    'users.id',
-                    'users.hospital_id',
-                    'users.speciality_id',
-                    'users.name_en',
-                    'users.pricing',
-                    'users.gender',
-                    'users.name_ar',
-                    'users.profile_image'
-                )
-                ->orderBy('avg_rating', "DESC")->limit(8)->get();
+                $doctors = User::where('user_type', 'D')->withAvg('reviews', 'star_rated')
+                    ->orderByDesc('reviews_avg_star_rated')
+                    ->limit(8)
+                    ->get();
+                // $doctors = $doctors ? DoctorResource::collection($doctors) : [];
+                // $doctors = $doctors->sortByDesc(fn($doctor) => $doctor->avg_rate)->values();
                 // UnRead Notification
                 $unread_notification = 0;
                 $token = request()->bearerToken();
@@ -176,10 +105,10 @@ class MainController extends Controller
                 $data [] = [
                     'banners' => $banners ? BannerResource::collection($banners) : [],
                     'hospital_types' => $hospital_types,
-                    'hospitals' => $hospitals,
+                    'hospitals' => $hospitals ? HospitalResource::collection($hospitals) : [],
                     'offers' => $offers,
                     'specialities' => $specialities,
-                    'doctors' => $doctors ? DoctorResource::collection($doctors) : [],
+                    'doctors' => $doctors ? DoctorResource::collection($doctors) : [] ,
                     'unread_notification' => $unread_notification,
                 ];
 

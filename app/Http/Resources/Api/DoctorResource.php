@@ -43,7 +43,7 @@ class DoctorResource extends JsonResource
             'profile_image' => $this->profile_image,
             'name' => $this->name,
             'speciality_name' => $this->speciality->name,
-            'avg_rate' => $this->avg_rate ? (float)$this->avg_rate :$this->avg_rate,
+            'avg_rate' => $this->avg_rate ? (float)$this->avg_rate : $this->avg_rate,
             'distance' => $distance,
             'hospital_name' => $this->hospital ? $this->hospital->hospital_name : null,
             'pricing' => $this->pricing ? (float)$this->pricing : $this->pricing,
