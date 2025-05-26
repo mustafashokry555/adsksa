@@ -452,7 +452,7 @@ class MainController extends Controller
                         'users.profile_image',
                         DB::raw('AVG(reviews.star_rated) as avg_rating'),
                         DB::raw('COUNT(reviews.id) as reviews_count'),
-                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
+                        DB::raw('IF(wishlists.id IS NOT NULL, 1, 0) as is_favorited'),
                         'users.gender',
                         'users.pricing',
                         'users.hospital_id',
@@ -488,6 +488,16 @@ class MainController extends Controller
                         'users.profile_image'
                     )
                     ->first();
+                    $profile->avg_rating = $profile->avg_rating ? (int)$profile->avg_rating : 0;
+                    $profile->reviews_count = $profile->reviews_count ? (int)$profile->reviews_count : 0;
+                    $profile->is_favorited = $profile->is_favorited ?? (int)$profile->is_favorited;
+                    $profile->pricing = $profile->pricing ? (int)$profile->pricing : null;
+                    $profile->hospital_id = $profile->hospital_id ? (int)$profile->hospital_id : 0;
+                    $profile->speciality_id = $profile->speciality_id ? (int)$profile->speciality_id : 0;
+                    if($profile->hospital){
+                        $profile->hospital->lat = $profile->hospital->lat ? (float)$profile->hospital->lat : null;
+                        $profile->hospital->long = $profile->hospital->long ? (float)$profile->hospital->long : null;
+                    }
                 return $this->SuccessResponse(200, 'Doctor profile', $profile);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
