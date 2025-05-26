@@ -157,18 +157,6 @@
                                             <a class="nav-link active" href="{{ url('#pat_appointments') }}"
                                                 data-bs-toggle="tab">Appointments</a>
                                         </li>
-                                        <!-- <li class="nav-item">
-                                            <a class="nav-link" href="{{ url('#pat_prescriptions') }}"
-                                                data-bs-toggle="tab">Prescriptions</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{{ url('#pat_medical_records') }}"
-                                                data-bs-toggle="tab"><span class="med-records">Medical Records</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{{ url('#pat_billing') }}"
-                                                data-bs-toggle="tab">Billing</a>
-                                        </li> -->
                                     </ul>
                                 </nav>
                                 <!-- /Tab Menu -->
@@ -248,7 +236,7 @@
                                                                             class="badge rounded-pill bg-danger-light">Cancelled</span>
                                                                     </td>
                                                                 @else
-                                                                    <td>'N/A'</td>
+                                                                    <td>N/A</td>
                                                                 @endif
 
                                                                 @if ($appointment->status == 'D')

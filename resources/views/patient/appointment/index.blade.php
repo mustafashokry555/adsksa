@@ -100,7 +100,7 @@
                                                                             class="badge rounded-pill bg-danger-light">Cancelled</span>
                                                                     </td>
                                                                 @else
-                                                                    <td>'N/A'</td>
+                                                                    <td>N/A</td>
                                                                 @endif
 
                                                                 @if ($appointment->status == 'D')
