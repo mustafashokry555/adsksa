@@ -319,105 +319,21 @@ class MainController extends Controller
         // API for All Doctoes (Done with Out Lang)
         public function DoctorWithFilter(Request $request)
         {
-            $token = request()->bearerToken();
-            $patient_id = null;
-            if ($token) {
-                $tokenModel = PersonalAccessToken::findToken($token);
-                if ($tokenModel) {
-                    $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
-                }
-            }
             try {
-                $hospital_query = Hospital::query();
-                if (request('state_ids')) {
-                    $hospital_query = $hospital_query->whereIn('state_id', request('state_ids'));
+                $specialityIds = $request->input('speciality_ids') ? json_decode($request->input('speciality_ids')) : [];
+                $hospitalIds = $request->input('hospital_ids') ? json_decode($request->input('speciality_ids')) : [];
+                /*** 1. Search & Filter Doctors ***/
+                $doctors = User::where('user_type', 'D');
+                // Speciality Ids
+                if ($specialityIds) {
+                    $doctors = $doctors->whereIn('speciality_id', $specialityIds);
                 }
-                if (request('hospital_ids')) {
-                    $hospital_query = $hospital_query->whereIn('id', request('hospital_ids'));
+                if ($hospitalIds) {
+                    $doctors = $doctors->whereIn('hospital_id', $hospitalIds);
                 }
-                if (request('insurance_ids')) {
-                    $hospital_query->whereHas('insurances', function ($query) {
-                        $query->whereIn('insurance_id', request('insurance_ids'));
-                    });
-                }
-                $hospital_ids = $hospital_query->pluck('id');
-                // return $hospital_ids;
-                $query = User::query();
-                $query->leftJoin('hospitals', 'users.hospital_id', '=', 'hospitals.id');
-                if (request('search')) {
-                    $query->where(function ($query) {
-                        $query->where("name_en", 'like', '%' . request('search') . '%')
-                            ->orWhere("name_ar", 'like', '%' . request('search') . '%')
-                            ->orWhere("hospitals.hospital_name_en", 'like', '%' . request('search') . '%')
-                            ->orWhere("hospitals.hospital_name_ar", 'like', '%' . request('search') . '%');
-                    });
-                }
-                if (request('speciality_ids')) {
-                    $query->where(function ($query) {
-                        $query->whereIn("speciality_id", request('speciality_ids'));
-                    });
-                }
-
-                // Perform the left join with the reviews table
-                $query->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
-                    ->leftJoin('wishlists', function ($join) use ($patient_id) {
-                        $join->on('users.id', '=', 'wishlists.doctor_id')
-                            ->where('wishlists.patient_id', '=', $patient_id);
-                    })
-                    ->where('user_type', 'D')
-                    ->whereIn('users.hospital_id', $hospital_ids)
-                    ->select(
-                        'users.id',
-                        'users.name_en',
-                        'users.name_ar',
-                        DB::raw('AVG(reviews.star_rated) as avg_rating'),
-                        DB::raw('COUNT(reviews.id) as reviews_count'),
-                        'users.profile_image',
-                        DB::raw('IF(wishlists.id IS NOT NULL, TRUE, FALSE) as is_favorited'),
-                        'users.gender',
-                        'users.pricing',
-                        'users.hospital_id',
-                        'users.speciality_id',
-                    )
-                    ->with([
-                        'hospital' => function ($query) {
-                            $query->select([
-                                'id',
-                                'hospital_name_en',
-                                'hospital_name_ar',
-                                'lat',
-                                'long',
-                            ]);
-                        },
-                        'speciality' => function ($query) {
-                            $query->select([
-                                'id',
-                                'name_en',
-                                'name_ar',
-                            ]);
-                        }
-                    ])
-                    ->groupBy(
-                        'wishlists.id',
-                        'users.id',
-                        'users.hospital_id',
-                        'users.speciality_id',
-                        'users.name_en',
-                        'users.pricing',
-                        'users.gender',
-                        'users.name_ar',
-                        'users.profile_image'
-                    );
-
-                if (request('orderBy') == 'low_price') {
-                    $query->orderBy('users.pricing', "ASC");
-                } elseif (request('orderBy') == 'high_price') {
-                    $query->orderBy('users.pricing', "DESC");
-                } elseif (request('orderBy') == 'recommend') {
-                    $query->orderBy('avg_rating', "DESC");
-                }
-                $doctors = $query->get();
-                return $this->SuccessResponse(200, 'Doctor list', $doctors);
+                $doctors = $doctors->withAvg('reviews', 'star_rated')
+                    ->orderByDesc('reviews_avg_star_rated')->get();
+                return $this->SuccessResponse(200,  'Doctor list', DoctorResource::collection($doctors));
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }
