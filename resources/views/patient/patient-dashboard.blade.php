@@ -204,7 +204,7 @@
                                                                         </form>
                                                                         </div>
                                                                     </td>
-                                                                @T_ENDIF
+                                                                @endif
                                                             </tr>
                                                         @empty
                                                         @endforelse
