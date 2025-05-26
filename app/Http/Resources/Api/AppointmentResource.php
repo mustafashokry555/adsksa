@@ -51,10 +51,10 @@ class AppointmentResource extends JsonResource
                     break;
             }
         }
-        
+
         return [
             'id' => $this->id,
-            'fee' => $this->fee,
+            'fee' => $this->fee ? (float)$this->fee : $this->fee,
             'date' => $this->appointment_date,
             'time' => $this->appointment_time,
             'day' => $this->appointment_date ? date('l', strtotime($this->appointment_date)) : '',
