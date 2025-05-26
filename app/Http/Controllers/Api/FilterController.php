@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\CityResource;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\InsuranceResource;
 use App\Http\Resources\Api\SpecialityResource;
+use App\Http\Resources\Api\StateResource;
 use App\Models\City;
 use App\Models\State;
 use App\Models\Country;
@@ -62,8 +64,8 @@ class FilterController extends Controller
                 'specialities' => $specialities,
                 'insurance' => InsuranceResource::collection($insurance),
                 'countries' => $countries,
-                'states' => $states,
-                'cities' => $cities,
+                'states' => StateResource::collection($states),
+                'cities' => CityResource::collection($cities),
             ];
 
             return $this->SuccessResponse(200, 'All Data for the Filter reterieved successfully', $data);

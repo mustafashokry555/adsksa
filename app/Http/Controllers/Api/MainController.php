@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\BannerResource;
+use App\Http\Resources\Api\CityResource;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\HospitalTypeResource;
@@ -11,6 +12,7 @@ use App\Http\Resources\Api\InsuranceResource;
 use App\Http\Resources\Api\OfferResource;
 use App\Http\Resources\Api\ReligionResource;
 use App\Http\Resources\Api\SpecialityResource;
+use App\Http\Resources\Api\StateResource;
 use App\Models\AppSetting;
 use App\Models\Speciality;
 use Illuminate\Http\Request;
@@ -290,7 +292,8 @@ class MainController extends Controller
                 }
                 $states = $states->orderBy("name_$this->lang", 'ASC')->get();
                 // ->whereHas('hospitals.doctors')
-                return $this->SuccessResponse(200, 'All States reterieved successfully', $states);
+                return $this->SuccessResponse(200, 'All States reterieved successfully',
+                StateResource::collection($states));
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }
@@ -318,7 +321,8 @@ class MainController extends Controller
                     });
                 }
                 $cities = $cities->orderBy("name_$this->lang", 'ASC')->get();
-                return $this->SuccessResponse(200, 'All Cities reterieved successfully', $cities);
+                return $this->SuccessResponse(200, 'All Cities reterieved successfully',
+                CityResource::collection($cities));
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
             }
