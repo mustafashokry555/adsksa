@@ -488,7 +488,7 @@ class MainController extends Controller
                         'users.profile_image'
                     )
                     ->first();
-                    $profile->avg_rating = $profile->avg_rating ? (int)$profile->avg_rating : 0;
+                    $profile->avg_rating = $profile->avg_rating ? (float)$profile->avg_rating : 0.0;
                     $profile->reviews_count = $profile->reviews_count ? (int)$profile->reviews_count : 0;
                     $profile->is_favorited = (int)$profile->is_favorited;
                     $profile->pricing = $profile->pricing ? (int)$profile->pricing : null;
@@ -675,23 +675,30 @@ class MainController extends Controller
                 ])
                 ->first();
 
-                $profile->avg_rating = $profile->avg_rating;
-                $profile->rating_count = $profile->rating_count;
-                $doctorsList = [];
-                foreach ($profile->doctors as $doctor) {
-                    $d = [];
-                    $d['id'] = $doctor->id;
-                    $d['name'] = $doctor["name_$this->lang"] ?? $doctor->name_en;
-                    $d['profile_image'] = $doctor->profile_image;
-                    $d['hospital_id'] = $doctor->hospital_id;
-                    $d['avg_rating'] = $doctor->avg_rating;
-                    $d['rating_count'] = $doctor->rating_count;
-                    $d['speciality_id'] = $doctor->speciality->id;
-                    $d['speciality_name'] = $doctor->speciality->name;
-                    $doctorsList[] = $d;
-                }
+                $profile->state_id = $profile->state_id ? (int)$profile->state_id : null;
+                $profile->city_id = $profile->city_id ? (int)$profile->city_id : null;
+                $profile->long = $profile->long ? (float)$profile->long : null;
+                $profile->lat = $profile->lat ? (float)$profile->lat : null;
+                $profile->hospital_type_id = $profile->hospital_type_id ? (int)$profile->hospital_type_id : null;
+
+                $profile->avg_rating = $profile->avg_rating ? (float)$profile->avg_rating : 0.0;
+                $profile->rating_count = $profile->rating_count ? (int)$profile->rating_count : 0;
+                $doctorsList = $profile->doctors ? DoctorResource::collection($profile->doctors) : [];
                 unset($profile->doctors);
                 $profile->doctors = $doctorsList;
+                // $doctorsList = [];
+                // foreach ($profile->doctors as $doctor) {
+                //     $d = [];
+                //     $d['id'] = $doctor->id;
+                //     $d['name'] = $doctor["name_$this->lang"] ?? $doctor->name_en;
+                //     $d['profile_image'] = $doctor->profile_image;
+                //     $d['hospital_id'] = $doctor->hospital_id;
+                //     $d['avg_rating'] = $doctor->avg_rating;
+                //     $d['rating_count'] = $doctor->rating_count;
+                //     $d['speciality_id'] = $doctor->speciality->id;
+                //     $d['speciality_name'] = $doctor->speciality->name;
+                //     $doctorsList[] = $d;
+                // }
                 $offers = OfferResource::collection($profile->offers);
                 unset($profile->offers);
                 $profile->offers = $offers;

@@ -106,9 +106,9 @@ class Hospital extends Model
         return [];
     }
 
-    public function getAvgRatingAttribute()
+    public function getAvgRatingAttribute(): float
     {
-        return $this->hospitalReviews()->avg('star_rated') ?? 0;
+        return $this->hospitalReviews()->avg('star_rated') ?? 0.0;
     }
 
     public function country()
