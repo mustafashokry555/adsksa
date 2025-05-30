@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\BannerResource;
 use App\Http\Resources\Api\CityResource;
+use App\Http\Resources\Api\DoctorProfileResource;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\HospitalTypeResource;
@@ -346,74 +347,11 @@ class MainController extends Controller
         // Start DoctorProfile API
         public function DoctorProfile($id)
         {
-            $token = request()->bearerToken();
-            $patient_id = null;
-            if ($token) {
-                $tokenModel = PersonalAccessToken::findToken($token);
-                if ($tokenModel) {
-                    $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
-                }
-            }
             try {
                 $profile = User::where('users.id', $id)
-                    ->leftJoin('reviews', 'users.id', '=', 'reviews.doctor_id')
-                    ->leftJoin('wishlists', function ($join) use ($patient_id) {
-                        $join->on('users.id', '=', 'wishlists.doctor_id')
-                            ->where('wishlists.patient_id', '=', $patient_id);
-                    })
-                    ->select(
-                        'users.id',
-                        "users.name_ar",
-                        'users.name_en',
-                        'users.profile_image',
-                        DB::raw('AVG(reviews.star_rated) as avg_rating'),
-                        DB::raw('COUNT(reviews.id) as reviews_count'),
-                        DB::raw('IF(wishlists.id IS NOT NULL, 1, 0) as is_favorited'),
-                        'users.gender',
-                        'users.pricing',
-                        'users.hospital_id',
-                        'users.speciality_id'
-                    )
-                    ->with([
-                        'hospital' => function ($query) {
-                            $query->select([
-                                'id',
-                                'hospital_name_ar',
-                                'hospital_name_en',
-                                'lat',
-                                'long',
-                            ]);
-                        },
-                        'speciality' => function ($query) {
-                            $query->select([
-                                'id',
-                                'name_en',
-                                'name_ar',
-                            ]);
-                        }
-                    ])
-                    ->groupBy(
-                        'wishlists.id',
-                        'users.id',
-                        'users.hospital_id',
-                        'users.speciality_id',
-                        'users.name_en',
-                        'users.pricing',
-                        'users.gender',
-                        'users.name_ar',
-                        'users.profile_image'
-                    )
-                    ->first();
-                    $profile->avg_rating = $profile->avg_rating ? (float)$profile->avg_rating : 0.0;
-                    $profile->reviews_count = $profile->reviews_count ? (int)$profile->reviews_count : 0;
-                    $profile->is_favorited = (int)$profile->is_favorited;
-                    $profile->pricing = $profile->pricing ? (int)$profile->pricing : null;
-                    $profile->hospital_id = $profile->hospital_id ? (int)$profile->hospital_id : 0;
-                    $profile->speciality_id = $profile->speciality_id ? (int)$profile->speciality_id : 0;
-                    if($profile->hospital){
-                        $profile->hospital->lat = $profile->hospital->lat ? (float)$profile->hospital->lat : null;
-                        $profile->hospital->long = $profile->hospital->long ? (float)$profile->hospital->long : null;
-                    }
+                ->where('user_type', 'D')
+                ->first();
+                $profile = $profile ? DoctorProfileResource::make($profile) : null;
                 return $this->SuccessResponse(200, 'Doctor profile', $profile);
             } catch (\Throwable $th) {
                 return $this->ErrorResponse(400, $th->getMessage());
