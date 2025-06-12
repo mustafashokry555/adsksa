@@ -25,6 +25,13 @@
     <a href="{{ route('hospital-types.index') }}"><i class="feather-list"></i> <span>Hospital Types</span></a>
 </li>
 
+<li class="{{ Request::routeIs('docotr-degree.*') ? 'active' : '' }}">
+    <a href="{{ route('docotr-degree.index') }}"><i class="feather-list"></i> <span>Doctor Degree</span></a>
+</li>
+
+<li class="{{ Request::routeIs('currency.*') ? 'active' : '' }}">
+    <a href="{{ route('currency.index') }}"><i class="feather-list"></i> <span>Currency</span></a>
+</li>
 @endif
 
 <!-- /************************************************ doctor ********************************************************/ -->
@@ -47,7 +54,7 @@
                         <span>{{ __('admin.sidebar.patients') }}</span></a>
                 </li>
 
-                
+
 <!-- /************************************************ insurances ********************************************************/ -->
 
                 <li class="{{ Request::routeIs('insurances.*') ? 'active' : '' }}">
@@ -67,7 +74,7 @@
                     <a href="{{ route('invoices') }}"><i class="feather-users"></i>
                         <span>{{ __('admin.sidebar.invoices') }}</span></a>
                 </li>
-                              
+
 <!-- /************************************************ offers ********************************************************/ -->
                 <li class="{{ Request::routeIs('offers.*') ? 'active' : '' }}">
                     <a href="{{ route('offers.index') }}"><i class="feather-gift"></i> <span>Offers</span></a>

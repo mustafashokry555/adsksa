@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\CommonController;
 use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\DoctorDegreeController;
 use App\Http\Controllers\Admin\HospitalController;
 use App\Http\Controllers\Admin\HospitalDoctorsController;
 use App\Http\Controllers\Admin\HospitalTypesController;
@@ -77,7 +79,7 @@ Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital
 Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
 Route::post('/subscribe_newsletter', [HomeController::class, 'subscribeNewsletter']);
 
-// main search 
+// main search
 Route::get('get-states', [StateController::class, 'get_states'])->name('get.states');
 Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.cities');
 Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
@@ -119,6 +121,14 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('banner', BannerController::class);
     Route::resource('patient', PatientController::class);
     Route::resource('hospital-types', HospitalTypesController::class);
+    Route::resource('docotr-degree', DoctorDegreeController::class);
+    Route::get('docotr-degree/restore/{id}', [DoctorDegreeController::class, 'restore'])->name('docotr-degree.restore');
+    Route::delete('docotr-degree/force-delete/{id}', [DoctorDegreeController::class, 'forceDelete'])->name('docotr-degree.force-delete');
+
+    Route::resource('currency', CurrencyController::class);
+    Route::get('currency/restore/{id}', [CurrencyController::class, 'restore'])->name('currency.restore');
+    Route::delete('currency/force-delete/{id}', [CurrencyController::class, 'forceDelete'])->name('currency.force-delete');
+
     Route::resource('religions', ReligionsController::class);
     Route::get('hospital-patients/{hospital}/list', [CommonController::class, 'hospital_patients'])->name('hospital_patients');
     Route::get('doctor-patients/{doctor}/list', [CommonController::class, 'doctor_patients'])->name('doctor_patients');
@@ -135,7 +145,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('experience', ExperienceController::class);
     Route::resource('schedule', ScheduleController::class);
 
-    //cities & countries 
+    //cities & countries
     Route::resource('countries', CountryController::class);
     Route::resource('states', StateController::class);
     Route::resource('cities', CityController::class);

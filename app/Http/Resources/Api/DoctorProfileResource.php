@@ -45,6 +45,8 @@ class DoctorProfileResource extends JsonResource
             'gender' => $this->gender,
             'pricing' => $this->pricing ? (float)$this->pricing : $this->pricing,
             'distance' => $distance,
+            'degree' => $this->degree ?  DegreeResource::make($this->degree) : null,
+            'currency' => $this->currency ?  CurrancyResource::make($this->currency) : null,
             'hospital_id' => $this->hospital_id,
             'speciality_id' => $this->speciality_id,
             'hospital' => $this->hospital ? HospitalResource::make($this->hospital) : null,

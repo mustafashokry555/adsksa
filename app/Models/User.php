@@ -56,6 +56,8 @@ class User extends Authenticatable
         "timezone",
         'religion_id',
         'id_number',
+        'degree_id',
+        'currency_id',
 
     ];
     protected $appends = ['name'];
@@ -160,6 +162,16 @@ class User extends Authenticatable
         return $this->belongsTo(Religion::class);
     }
 
+    public function degree()
+    {
+        return $this->belongsTo(DoctorDegree::class, 'degree_id', 'id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_id', 'id');
+    }
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['search'], fn($query, $search) => $query
@@ -232,7 +244,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Blog::class);
     }
-    
+
     public function getAvgRateAttribute()
     {
         if ($this->user_type == self::DOCTOR) {

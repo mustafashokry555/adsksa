@@ -47,7 +47,9 @@ class DoctorResource extends JsonResource
             'distance' => $distance,
             'hospital_name' => $this->hospital ? $this->hospital->hospital_name : null,
             'pricing' => $this->pricing ? (float)$this->pricing : $this->pricing,
-            'is_favorite' => $user ? $user->isFavoriteDoctor($this->id) : false
+            'is_favorite' => $user ? $user->isFavoriteDoctor($this->id) : false,
+            'degree' => $this->degree ?  DegreeResource::make($this->degree) : null,
+            'currency' => $this->currency ?  CurrancyResource::make($this->currency) : null,
         ];
     }
 

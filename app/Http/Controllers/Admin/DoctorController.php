@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\City;
 use App\Models\State;
 use App\Models\Country;
+use App\Models\Currency;
+use App\Models\DoctorDegree;
 use App\Models\Hospital;
 use App\Models\Schedule;
 use App\Models\Speciality;
@@ -51,6 +53,8 @@ class DoctorController extends Controller
         $countries = Country::all();
         $states = State::all();
         $cities = City::all();
+        $degrees = DoctorDegree::all();
+        $currencies = Currency::all();
         if (Auth::user()->is_admin()) {
             return view(
                 'admin.doctor.create',
@@ -60,6 +64,8 @@ class DoctorController extends Controller
                     'countries' => $countries,
                     'cities' => $cities,
                     'states' => $states,
+                    'degrees' => $degrees,
+                    'currencies' => $currencies,
                 ]
             );
         } elseif (Auth::user()->is_hospital()) {
@@ -87,6 +93,8 @@ class DoctorController extends Controller
                 'profile_image' => 'image',
                 'user_type' => 'required',
                 'gender' => 'required',
+                'degree_id' => 'nullable',
+                'currency_id' => 'nullable',
                 'address' => 'required',
                 'state_id' => 'nullable',
                 'city_id' => 'nullable',
@@ -155,6 +163,8 @@ class DoctorController extends Controller
         }else{
             $cities = City::all();
         }
+        $degrees = DoctorDegree::all();
+        $currencies = Currency::all();
         if (Auth::user()->is_admin()) {
             return view(
                 'admin.doctor.edit',
@@ -165,6 +175,8 @@ class DoctorController extends Controller
                     'countries' => $countries,
                     'cities' => $cities,
                     'states' => $states,
+                    'degrees' => $degrees,
+                    'currencies' => $currencies,
                 ]
             );
         } elseif (Auth::user()->is_hospital()) {
@@ -177,6 +189,8 @@ class DoctorController extends Controller
                     'countries' => $countries,
                     'cities' => $cities,
                     'states' => $states,
+                    'degrees' => $degrees,
+                    'currencies' => $currencies,
                 ]
             );
         } else {
@@ -198,6 +212,8 @@ class DoctorController extends Controller
                     'address' => 'required',
                     'state_id' => 'nullable',
                     'city_id' => 'nullable',
+                    'degree_id' => 'nullable',
+                    'currency_id' => 'nullable',
                     'zip_code' => 'nullable',
                     'user_type' => 'required',
                     'hospital_id' => 'required',

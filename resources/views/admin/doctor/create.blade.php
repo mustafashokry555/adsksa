@@ -81,6 +81,47 @@
                             </div>
                             <!-- type -->
                             <input type="hidden" name="user_type" id="user_type" value="D">
+                            <!-- degree -->
+                            <div class="form-group row">
+                                <label for="degree_id"
+                                    class="col-form-label col-md-2">Degree</label>
+                                <div class="col-md-10">
+                                    <select id="degree_id" name="degree_id" class="form-select select" required>
+                                        <option value="">Select speciality</option>
+                                        @foreach ($degrees as $degree)
+                                            <option value="{{ $degree->id }}">
+                                                {{ $degree->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('degree_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- currancy -->
+                            <div class="form-group row">
+                                <label for="currency_id"
+                                    class="col-form-label col-md-2">Currency</label>
+                                <div class="col-md-10">
+                                    <select id="currency_id" name="currency_id" class="form-select select" required>
+                                        <option value="">Select speciality</option>
+                                        @foreach ($currencies as $currency)
+                                            <option value="{{ $currency->id }}">
+                                                {{ $currency->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('currency_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                             <!-- Speciality -->
                             <div class="form-group row">
                                 <label for="speciality_id"
@@ -270,7 +311,7 @@
 @endsection
 <script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script>
-    // get states fun 
+    // get states fun
     function getStatesAndCities(countryId) {
         // States
         $.ajax({
