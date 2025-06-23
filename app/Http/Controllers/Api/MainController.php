@@ -322,7 +322,7 @@ class MainController extends Controller
         {
             try {
                 $specialityIds = $request->input('speciality_ids') ? json_decode($request->input('speciality_ids')) : [];
-                $hospitalIds = $request->input('hospital_ids') ? json_decode($request->input('speciality_ids')) : [];
+                $hospitalIds = $request->input('hospital_ids') ? json_decode($request->input('hospital_ids')) : [];
                 /*** 1. Search & Filter Doctors ***/
                 $doctors = User::where('user_type', 'D');
                 // Speciality Ids
