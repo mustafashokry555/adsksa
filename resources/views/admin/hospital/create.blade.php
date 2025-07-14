@@ -313,10 +313,10 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="about" class="col-form-label col-md-2">About Hospital 1</label>
+                                <label for="about_en" class="col-form-label col-md-2">About Hospital (EN)</label>
                                 <div class="col-md-10">
-                                    <textarea id="about" name="about" type="text" class="form-control" placeholder="About The Hospital"></textarea>
-                                    @error('about')
+                                    <textarea id="about_en" name="about_en" type="text" class="form-control" placeholder="About The Hospital"></textarea>
+                                    @error('about_en')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -325,10 +325,10 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="about1" class="col-form-label col-md-2">About Hospital 2</label>
+                                <label for="about_ar" class="col-form-label col-md-2">About Hospital (AR)</label>
                                 <div class="col-md-10">
-                                    <textarea id="about1" name="about1" type="text" class="form-control" placeholder="About The Hospital"></textarea>
-                                    @error('about1')
+                                    <textarea id="about_ar" name="about_ar" type="text" class="form-control" placeholder="About The Hospital"></textarea>
+                                    @error('about_ar')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -336,16 +336,6 @@
                                 </div>
 
                             </div>
-                            <div class="form-group row">
-                                <label for="about2" class="col-form-label col-md-2">About Hospital 3</label>
-                                <div class="col-md-10">
-                                    <textarea id="about2" name="about2" type="text" class="form-control" placeholder="About The Hospital"></textarea>
-                                    @error('about2')
-                                        <div class="text-danger pt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
 
                             </div>
                             <div class="form-group row">
@@ -409,7 +399,7 @@
 <script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    // get states fun 
+    // get states fun
     function getStatesAndCities(countryId) {
         // States
         $.ajax({
@@ -545,7 +535,7 @@
     function updateMarkerPosition(coords) {
         marker.setLngLat(coords);
         console.log(coords);
-        
+
         selectedLocation = {
             lng: coords[0],
             lat: coords[1]

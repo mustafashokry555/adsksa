@@ -20,9 +20,8 @@ class Hospital extends Model
         'location',
         'long',
         'lat',
-        'about',
-        'about1',
-        'about2',
+        'about_ar',
+        'about_en',
         'opening_hours',
         'profile_images',
         'hospital_type_id',
@@ -36,7 +35,7 @@ class Hospital extends Model
     protected $casts = [
         'profile_images' => 'array', // Ensures profile_images is handled as an array
     ];
-    protected $appends = ['hospital_name', 'images_links'];
+    protected $appends = ['hospital_name', 'images_links', 'about'];
     public function users()
     {
         return $this->hasMany(User::class);
@@ -137,6 +136,14 @@ class Hospital extends Model
             return $this->hospital_name_ar;
         }
         return $this->hospital_name_en;
+    }
+
+    public function getAboutAttribute()
+    {
+        if (app()->getLocale() == 'ar' && $this->about_ar != NULL) {
+            return $this->about_ar;
+        }
+        return $this->about_en;
     }
 
     public function getRatingCountAttribute()

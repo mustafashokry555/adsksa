@@ -69,6 +69,21 @@
                                 </div>
                             </div>
 
+                            <!--  Image -->
+                            <div class="form-group row">
+                                <label for="icon"
+                                    class="col-form-label col-md-2">Icon</label>
+                                <div class="col-md-10">
+                                    <input id="icon" name="icon" class="form-control" type="file"
+                                        >
+                                    @error('icon')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
                                 Add Currency
                             </button>

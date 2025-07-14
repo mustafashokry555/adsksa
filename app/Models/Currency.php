@@ -15,6 +15,7 @@ class Currency extends Model
         'name_ar',
         'code_en',
         'code_ar',
+        'icon',
     ];
 
     public function getNameAttribute()
