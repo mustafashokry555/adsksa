@@ -271,6 +271,10 @@
                                                             <td><span
                                                                     class="badge rounded-pill bg-danger-light">Cancelled</span>
                                                             </td>
+                                                        @else
+                                                            <td><span
+                                                                    class="badge rounded-pill bg-danger-light">N/A</span>
+                                                            </td>
                                                         @endif
                                                         <td class="text-end">
                                                             <div class="table-action">
