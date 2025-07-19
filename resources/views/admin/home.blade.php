@@ -709,7 +709,7 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="app-img">
-                                                            <img src="{{ $appt->doctor->profile_image }}" alt=""
+                                                            <img src="{{ $appt?->doctor?->profile_image }}" alt=""
                                                                 class="img-fluid">
                                                             <div class="app-name">
                                                                 <<<<<<< Updated upstream <h6>
