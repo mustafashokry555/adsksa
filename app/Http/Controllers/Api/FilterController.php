@@ -23,11 +23,13 @@ class FilterController extends Controller
 {
     protected $lang;
 
-    public function __construct(Request $request){
+    public function __construct(Request $request)
+    {
         $this->lang = $request->header('lang', 'en');
     }
 
-    function filter_data(Request $request) {
+    function filter_data(Request $request)
+    {
         try {
             $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
             $stateIds = $request->input('state_ids') ? json_decode($request->input('state_ids')) : [];
@@ -53,7 +55,7 @@ class FilterController extends Controller
             $cities = City::query();
             if (!empty($stateIds)) {
                 $cities = $cities->whereIn('state_id', $stateIds);
-            }elseif (!empty($countryIds)) {
+            } elseif (!empty($countryIds)) {
                 $cities = $cities->whereHas('country', function ($query) use ($countryIds) {
                     $query->whereIn('countries.id', $countryIds);
                 });
@@ -74,7 +76,8 @@ class FilterController extends Controller
         }
     }
 
-    public function search(Request $request){
+    public function search2(Request $request)
+    {
         // Get filters
         // return $request->state_ids;
         $keyword = $request->input('keyword');
@@ -93,19 +96,19 @@ class FilterController extends Controller
         if ($keyword) {
             $doctors = $doctors->where(function ($q) use ($keyword) {
                 $q->where('name_en', 'LIKE', "%$keyword%")
-                ->orWhere('name_ar', 'LIKE', "%$keyword%");
+                    ->orWhere('name_ar', 'LIKE', "%$keyword%");
             });
 
             $hospitals = $hospitals->where(function ($q) use ($keyword) {
                 $q->where('hospital_name_ar', 'LIKE', "%$keyword%")
-                ->orWhere('hospital_name_en', 'LIKE', "%$keyword%");
+                    ->orWhere('hospital_name_en', 'LIKE', "%$keyword%");
             });
         }
         // Speciality Ids
         if ($specialityIds) {
             $doctors = $doctors->whereIn('speciality_id', $specialityIds);
 
-            $hospitals = $hospitals->whereHas('specialities', function ($query) use($specialityIds) {
+            $hospitals = $hospitals->whereHas('specialities', function ($query) use ($specialityIds) {
                 $query->whereIn('specialities.id', $specialityIds);
             });
         }
@@ -114,11 +117,11 @@ class FilterController extends Controller
             $hospitals = $hospitals->whereIn('city_id', $cityIds);
 
             $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
-        }elseif (!empty($stateIds)) {
+        } elseif (!empty($stateIds)) {
             $hospitals = $hospitals->whereIn('state_id', $stateIds);
 
             $doctors = $doctors->whereIn('hospital_id', $hospitals->pluck('id'));
-        }elseif (!empty($countryIds)){
+        } elseif (!empty($countryIds)) {
             $hospitals = $hospitals->whereHas('country', function ($query) use ($countryIds) {
                 $query->whereIn('countries.id', $countryIds);
             });
@@ -127,7 +130,7 @@ class FilterController extends Controller
         }
         // Insurance Ids
         if (!empty($insuranceIds)) {
-            $hospitalIds = Hospital::whereHas('insurances', function ($query) use ($insuranceIds){
+            $hospitalIds = Hospital::whereHas('insurances', function ($query) use ($insuranceIds) {
                 $query->whereIn('insurance_id', $insuranceIds);
             })->pluck('id');
 
@@ -139,7 +142,7 @@ class FilterController extends Controller
         // orderBy
         if ($orderBy == 'low_price') {
             $doctors = $doctors->orderBy('pricing', "ASC");
-        }elseif($orderBy == 'high_price'){
+        } elseif ($orderBy == 'high_price') {
             $doctors = $doctors->orderBy('pricing', "DESC");
         }
 
@@ -152,7 +155,7 @@ class FilterController extends Controller
         if ($orderBy == 'distance') {
             $hospitals = $hospitals->sortBy(fn($hospital) => $hospital->distance)->values();
             $doctors = $doctors->sortBy(fn($doctor) => $doctor->distance)->values();
-        }elseif($orderBy == 'recommend'){
+        } elseif ($orderBy == 'recommend') {
             $hospitals = $hospitals->sortByDesc(fn($hospital) => $hospital->avg_rating)->values();
             $doctors = $doctors->sortByDesc(fn($doctor) => $doctor->avg_rate)->values();
         }
@@ -164,4 +167,84 @@ class FilterController extends Controller
         return $this->SuccessResponse(200, 'All Data for the Filter reterieved successfully', $data);
     }
 
+
+    public function search(Request $request)
+    {
+        // Get filters
+        // return $request->state_ids;
+        $keyword = $request->input('keyword');
+        $specialityIds = $request->input('speciality_ids') ? json_decode($request->input('speciality_ids')) : [];
+        $insuranceIds = $request->input('insurance_ids') ? json_decode($request->input('insurance_ids')) : [];
+        $countryIds = $request->input('country_ids') ? json_decode($request->input('country_ids')) : [];
+        $stateIds = $request->input('state_ids') ? json_decode($request->input('state_ids')) : [];
+        $cityIds = $request->input('city_ids') ? json_decode($request->input('city_ids')) : [];
+        $orderBy = $request->input('orderBy');
+
+        /*** 1. Search & Filter Hospitals ***/
+        $hospitals = Hospital::query();
+        // Search
+        if ($keyword) {
+            $hospitals = $hospitals->where(function ($q) use ($keyword) {
+                $q->where('hospital_name_ar', 'LIKE', "%$keyword%")
+                    ->orWhere('hospital_name_en', 'LIKE', "%$keyword%");
+            });
+        }
+        // Speciality Ids
+        if ($specialityIds) {
+            $hospitals = $hospitals->whereHas('specialities', function ($query) use ($specialityIds) {
+                $query->whereIn('specialities.id', $specialityIds);
+            });
+        }
+        // Location
+        if (!empty($cityIds)) {
+            $hospitals = $hospitals->whereIn('city_id', $cityIds);
+        } elseif (!empty($stateIds)) {
+            $hospitals = $hospitals->whereIn('state_id', $stateIds);
+        } elseif (!empty($countryIds)) {
+            $hospitals = $hospitals->whereHas('country', function ($query) use ($countryIds) {
+                $query->whereIn('countries.id', $countryIds);
+            });
+        }
+        // Insurance Ids
+        if (!empty($insuranceIds)) {
+            $hospitals = $hospitals->whereHas('insurances', function ($query) use ($insuranceIds) {
+                $query->whereIn('insurance_id', $insuranceIds);
+            });
+        }
+
+        // Get hospitals
+        $hospitals = $hospitals->get();
+        $hospitals = collect(HospitalResource::collection($hospitals));
+
+        // Get hospital IDs
+        $hospitalIds = $hospitals->pluck('id')->toArray();
+
+        /*** 2. Get Doctors only from those hospitals ***/
+        $doctors = User::where('user_type', 'D')
+            ->whereIn('hospital_id', $hospitalIds);
+
+        // orderBy
+        if ($orderBy == 'low_price') {
+            $doctors = $doctors->orderBy('pricing', "ASC");
+        } elseif ($orderBy == 'high_price') {
+            $doctors = $doctors->orderBy('pricing', "DESC");
+        }
+
+        $doctors = $doctors->get();
+        $doctors = collect(DoctorResource::collection($doctors));
+
+        if ($orderBy == 'distance') {
+            $hospitals = $hospitals->sortBy(fn($hospital) => $hospital->distance)->values();
+            $doctors = $doctors->sortBy(fn($doctor) => $doctor->distance)->values();
+        } elseif ($orderBy == 'recommend') {
+            $hospitals = $hospitals->sortByDesc(fn($hospital) => $hospital->avg_rating)->values();
+            $doctors = $doctors->sortByDesc(fn($doctor) => $doctor->avg_rate)->values();
+        }
+
+        $data = [
+            'doctors' => $doctors,
+            'hospitals' => $hospitals,
+        ];
+        return $this->SuccessResponse(200, 'All Data for the Filter reterieved successfully', $data);
+    }
 }
