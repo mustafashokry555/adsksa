@@ -31,12 +31,6 @@ class HospitalResource extends JsonResource
                 }
             }
         }
-        $distance = null;
-        if(request("long") != null && request("lat") != null  ){
-            if($this->lat != null && $this->long != null){
-                $distance = $this->getDistance($this->lat, $this->long) ?? null;
-            }
-        }
 
         return [
             'id' => $this->id,
@@ -51,40 +45,12 @@ class HospitalResource extends JsonResource
             'city' => $this->city ? $this->city->name : null,
             'lat' => $this->lat ? (float)$this->lat : $this->lat,
             'long' => $this->long ? (float)$this->long : $this->long,
+            'distance' => $this->distance ? (float)$this->distance : null,
             'location' => $this->location,
-            'distance' => $distance,
             'images_links' => $this->images_links,
             'is_favorite' => $user ? $user->isFavoriteHospital($this->id) : false,
         ];
     }
 
-    private function getDistance($lat, $long)
-    {
-        $hospitalLatitude = (float) $lat;
-        $hospitalLongitude = (float) $long;
-        $userLatitude = (float) request()->lat;
-        $userLongitude = (float) request()->long;
-
-        $earthRadius = 6371; // Earth's radius in kilometers
-
-        // Convert degrees to radians
-        $latFrom = deg2rad($userLatitude);
-        $longFrom = deg2rad($userLongitude);
-        $latTo = deg2rad($hospitalLatitude);
-        $longTo = deg2rad($hospitalLongitude);
-
-        // Haversine formula
-        $latDelta = $latTo - $latFrom;
-        $longDelta = $longTo - $longFrom;
-
-        $a = sin($latDelta / 2) ** 2 +
-            cos($latFrom) * cos($latTo) * sin($longDelta / 2) ** 2;
-
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-        $distance = $earthRadius * $c; // Distance in kilometers
-
-        return round($distance, 2); // Return the distance rounded to 2 decimal places
-    }
 
 }

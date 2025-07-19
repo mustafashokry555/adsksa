@@ -16,12 +16,13 @@ use Illuminate\Validation\Rule;
 class WishlistController extends Controller
 {
     // add And Delete
-    public function addDoctorToWishlist(Request $request){
+    public function addDoctorToWishlist(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'doctor_id' => [
-            'required',
-            'integer',
-            Rule::exists('users', 'id')->where('user_type', User::DOCTOR),
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where('user_type', User::DOCTOR),
             ],
         ]);
         if ($validator->fails()) {
@@ -32,8 +33,8 @@ class WishlistController extends Controller
         }
 
         $wishlist = Wishlist::Where('patient_id', '=', $request->user()->id)
-        ->where('doctor_id', '=', $request->doctor_id)
-        ->first();
+            ->where('doctor_id', '=', $request->doctor_id)
+            ->first();
 
         if ($wishlist) {
             $wishlist->delete();
@@ -48,12 +49,13 @@ class WishlistController extends Controller
         return $this->SuccessResponse(200, 'Added to wishlist!', null);
     }
 
-    public function addHospitalToWishlist(Request $request){
+    public function addHospitalToWishlist(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'hospital_id' => [
-            'required',
-            'integer',
-            Rule::exists('hospitals', 'id'),
+                'required',
+                'integer',
+                Rule::exists('hospitals', 'id'),
             ],
         ]);
         if ($validator->fails()) {
@@ -64,8 +66,8 @@ class WishlistController extends Controller
         }
 
         $wishlist = Wishlist::Where('patient_id', '=', $request->user()->id)
-        ->where('hospital_id', '=', $request->hospital_id)
-        ->first();
+            ->where('hospital_id', '=', $request->hospital_id)
+            ->first();
 
         if ($wishlist) {
             $wishlist->delete();
@@ -81,33 +83,84 @@ class WishlistController extends Controller
     }
 
     // get Data
-    public function doctor_wishlist(Request $request){
+    public function doctor_wishlist(Request $request)
+    {
         $doctorsIds = $request->user()->favoriteDoctors->pluck('doctor_id');
         $doctors = User::whereIn('id', $doctorsIds)->where('user_type', User::DOCTOR)
-        ->get();
+            ->get();
+        // add distance to data
+        $lat = request("lat");
+        $long = request("long");
+        if ($lat != null && $long != null) {
+            $doctors->map(function ($doctor) use ($lat, $long) {
+                if ($doctor->hospital?->lat != null && $doctor->hospital?->long != null) {
+                    $doctor->distance = $this->getDistance($doctor->hospital->lat, $doctor->hospital->long, $lat, $long) ?? null;
+                } else {
+                    $doctor->distance = null;
+                }
+                return $doctor;
+            });
+        }
         $doctors = DoctorResource::collection($doctors);
         return $this->SuccessResponse(200, 'Doctors Wishlist Data', $doctors);
     }
 
-    public function hospital_wishlist(Request $request){
+    public function hospital_wishlist(Request $request)
+    {
 
         $hospitalsIds = $request->user()->favoriteHospitals->pluck('hospital_id');
         // return $hospitalsIds;
         $hospitals = Hospital::whereIn('id', $hospitalsIds)->get();
+        // add distance to data
+        $lat = request("lat");
+        $long = request("long");
+        if ($lat != null && $long != null) {
+            $hospitals->map(function ($hospital) use ($lat, $long) {
+                if ($hospital?->lat != null && $hospital?->long != null) {
+                    $hospital->distance = $this->getDistance($hospital->lat, $hospital->long, $lat, $long) ?? null;
+                } else {
+                    $hospital->distance = null;
+                }
+                return $hospital;
+            });
+        }
         $hospitals = HospitalResource::collection($hospitals);
         return $this->SuccessResponse(200, 'Hospitals Wishlist Data', $hospitals);
     }
 
-    public function wishlist(Request $request){
+    public function wishlist(Request $request)
+    {
         // Doctors
         $doctorsIds = $request->user()->favoriteDoctors->pluck('doctor_id');
         $doctors = User::whereIn('id', $doctorsIds)->where('user_type', User::DOCTOR)
-        ->get();
-        $doctors = DoctorResource::collection($doctors);
-        
+            ->get();
+
+
         // Hospitals
         $hospitalsIds = $request->user()->favoriteHospitals->pluck('hospital_id');
         $hospitals = Hospital::whereIn('id', $hospitalsIds)->get();
+        // add distance to data
+        $lat = request("lat");
+        $long = request("long");
+        if ($lat != null && $long != null) {
+            $hospitals->map(function ($hospital) use ($lat, $long) {
+                if ($hospital?->lat != null && $hospital?->long != null) {
+                    $hospital->distance = $this->getDistance($hospital->lat, $hospital->long, $lat, $long) ?? null;
+                } else {
+                    $hospital->distance = null;
+                }
+                return $hospital;
+            });
+            $doctors->map(function ($doctor) use ($lat, $long) {
+                if ($doctor->hospital?->lat != null && $doctor->hospital?->long != null) {
+                    $doctor->distance = $this->getDistance($doctor->hospital->lat, $doctor->hospital->long, $lat, $long) ?? null;
+                } else {
+                    $doctor->distance = null;
+                }
+                return $doctor;
+            });
+        }
+        $doctors = DoctorResource::collection($doctors);
         $hospitals = HospitalResource::collection($hospitals);
 
         $data = [
@@ -116,5 +169,4 @@ class WishlistController extends Controller
         ];
         return $this->SuccessResponse(200, 'Wishlist Data', $data);
     }
-
 }

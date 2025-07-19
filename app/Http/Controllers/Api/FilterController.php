@@ -76,7 +76,7 @@ class FilterController extends Controller
         }
     }
 
-    public function search2(Request $request)
+    public function search(Request $request)
     {
         // Get filters
         // return $request->state_ids;
@@ -147,18 +147,40 @@ class FilterController extends Controller
         }
 
         $doctors = $doctors->get();
-        $doctors = collect(DoctorResource::collection($doctors));
-
         $hospitals = $hospitals->get();
-        $hospitals = collect(HospitalResource::collection($hospitals));
+
+        // add distance to data
+        $lat = request("lat");
+        $long = request("long");
+        if ($lat != null && $long != null) {
+            $hospitals->map(function ($hospital) use ($lat, $long) {
+                if ($hospital?->lat != null && $hospital?->long != null) {
+                    $hospital->distance = $this->getDistance($hospital->lat, $hospital->long, $lat, $long) ?? null;
+                } else {
+                    $hospital->distance = null;
+                }
+                return $hospital;
+            });
+            $doctors->map(function ($doctor) use ($lat, $long) {
+                if ($doctor->hospital?->lat != null && $doctor->hospital?->long != null) {
+                    $doctor->distance = $this->getDistance($doctor->hospital->lat, $doctor->hospital->long, $lat, $long) ?? null;
+                } else {
+                    $doctor->distance = null;
+                }
+                return $doctor;
+            });
+        }
 
         if ($orderBy == 'distance') {
-            $hospitals = $hospitals->sortBy(fn($hospital) => $hospital->distance)->values();
-            $doctors = $doctors->sortBy(fn($doctor) => $doctor->distance)->values();
+            $hospitals = $hospitals->sortBy(fn($h) => $h['distance'] !== null ? $h['distance'] : INF)->values();
+            $doctors = $doctors->sortBy(fn($d) => $d['distance'] !== null ? $d['distance'] : INF)->values();
         } elseif ($orderBy == 'recommend') {
-            $hospitals = $hospitals->sortByDesc(fn($hospital) => $hospital->avg_rating)->values();
-            $doctors = $doctors->sortByDesc(fn($doctor) => $doctor->avg_rate)->values();
+            $hospitals = $hospitals->sortByDesc('avg_rating')->values();
+            $doctors = $doctors->sortByDesc('avg_rate')->values();
         }
+
+        $doctors = DoctorResource::collection($doctors);
+        $hospitals = HospitalResource::collection($hospitals);
 
         $data = [
             'doctors' => $doctors,
@@ -168,7 +190,7 @@ class FilterController extends Controller
     }
 
 
-    public function search(Request $request)
+    public function search2(Request $request)
     {
         // Get filters
         // return $request->state_ids;

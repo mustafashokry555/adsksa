@@ -19,7 +19,7 @@ class AppointController extends Controller
     public function get_availability(Request $request, $id)
     {
         $doctor = User::where('id', $id)->where('user_type', User::DOCTOR)->first();
-        if(!$doctor){
+        if (!$doctor) {
             return $this->ErrorResponse(404, 'Doctor not found', null);
         }
         $doctor->load("regularAvailabilities", "oneTimeailabilities", "unavailailities");
@@ -53,7 +53,7 @@ class AppointController extends Controller
                 $availability = $regularAvailability;
             }
         }
-            // return $availability;
+        // return $availability;
         // if availability is null
         if (!$availability) {
 
@@ -190,8 +190,10 @@ class AppointController extends Controller
     public function CancelAppointment(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'appointment_id' => 'required', 'integer',
-            'cancel_reason' => 'nullable', 'string',
+            'appointment_id' => 'required',
+            'integer',
+            'cancel_reason' => 'nullable',
+            'string',
         ]);
 
         if ($validator->fails()) {
@@ -202,7 +204,7 @@ class AppointController extends Controller
         }
 
         $appointment = Appointment::where('patient_id', $request->user()->id)
-        ->where('id', $request->appointment_id)->first();
+            ->where('id', $request->appointment_id)->first();
         if (!$appointment) {
             return $this->ErrorResponse(404, "Appointment not found");
         }
@@ -231,40 +233,68 @@ class AppointController extends Controller
             $now = Carbon::now();
 
             $completed_appointments = Appointment::where('patient_id', $user->id)
-            ->where('status', 'C')
-            ->where(function($query) use ($now) {
-                $query->whereDate('appointment_date', '<', $now->toDateString())
-                    ->orWhere(function($q) use ($now) {
-                        $q->whereDate('appointment_date', '=', $now->toDateString())
-                            ->whereTime('appointment_time', '<', $now->format('H:i:s'));
-                    });
-            })
-            ->orderBy('appointment_date', 'desc')
-            ->orderBy('appointment_time', 'desc')
-            ->get();
+                ->where('status', 'C')
+                ->where(function ($query) use ($now) {
+                    $query->whereDate('appointment_date', '<', $now->toDateString())
+                        ->orWhere(function ($q) use ($now) {
+                            $q->whereDate('appointment_date', '=', $now->toDateString())
+                                ->whereTime('appointment_time', '<', $now->format('H:i:s'));
+                        });
+                })
+                ->orderBy('appointment_date', 'desc')
+                ->orderBy('appointment_time', 'desc')
+                ->get();
 
             $upcoming_appointments = Appointment::where('patient_id', $user->id)
-            ->whereIn('status', ['P', 'C'])
-            ->where(function($query) use ($now) {
-                // Appointment date is in the future
-                $query->whereDate('appointment_date', '>', $now->toDateString())
-                    ->orWhere(function($q) use ($now) {
-                        // Or appointment date is today but time hasn't passed yet
-                        $q->whereDate('appointment_date', '=', $now->toDateString())
-                            ->whereTime('appointment_time', '>=', $now->format('H:i:s'));
-                    });
-            })
-            ->orderBy('appointment_date', 'asc')
-            ->orderBy('appointment_time', 'asc')
-            ->get();
+                ->whereIn('status', ['P', 'C'])
+                ->where(function ($query) use ($now) {
+                    // Appointment date is in the future
+                    $query->whereDate('appointment_date', '>', $now->toDateString())
+                        ->orWhere(function ($q) use ($now) {
+                            // Or appointment date is today but time hasn't passed yet
+                            $q->whereDate('appointment_date', '=', $now->toDateString())
+                                ->whereTime('appointment_time', '>=', $now->format('H:i:s'));
+                        });
+                })
+                ->orderBy('appointment_date', 'asc')
+                ->orderBy('appointment_time', 'asc')
+                ->get();
 
             $cancelled_appointments = Appointment::where('patient_id', $user->id)
-            ->whereIn('status', ['U', 'D']) // Both user and doctor cancellations
-            ->with(['doctor', 'hospital'])
-            ->orderBy('appointment_date', 'desc')
-            ->orderBy('appointment_time', 'desc')
-            ->get();
-
+                ->whereIn('status', ['U', 'D']) // Both user and doctor cancellations
+                ->with(['doctor', 'hospital'])
+                ->orderBy('appointment_date', 'desc')
+                ->orderBy('appointment_time', 'desc')
+                ->get();
+            // add distance to data
+            $lat = request("lat");
+            $long = request("long");
+            if ($lat != null && $long != null) {
+                $completed_appointments->map(function ($appointment) use ($lat, $long) {
+                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                        $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                    } else {
+                        $appointment->doctor->distance = null;
+                    }
+                    return $appointment;
+                });
+                $upcoming_appointments->map(function ($appointment) use ($lat, $long) {
+                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                        $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                    } else {
+                        $appointment->doctor->distance = null;
+                    }
+                    return $appointment;
+                });
+                $cancelled_appointments->map(function ($appointment) use ($lat, $long) {
+                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                        $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                    } else {
+                        $appointment->doctor->distance = null;
+                    }
+                    return $appointment;
+                });
+            }
             $appointments = [
                 'completed_appointments' => AppointmentResource::collection($completed_appointments),
                 'upcoming_appointments' => AppointmentResource::collection($upcoming_appointments),
@@ -275,15 +305,24 @@ class AppointController extends Controller
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
         }
-
     }
 
-    public function getAppointmentDetails(Request $request, $id){
+    public function getAppointmentDetails(Request $request, $id)
+    {
         try {
             $appointment = Appointment::with(['doctor', 'hospital', 'patient'])
-            ->where('id', $id)
-            ->firstOrFail();
-
+                ->where('id', $id)
+                ->firstOrFail();
+            // add distance to data
+            $lat = request("lat");
+            $long = request("long");
+            if ($lat != null && $long != null) {
+                if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                    $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                } else {
+                    $appointment->doctor->distance = null;
+                }
+            }
             $appointment = AppointmentResource::make($appointment);
             return $this->SuccessResponse(200, "Appointment Details", $appointment);
         } catch (\Throwable $th) {

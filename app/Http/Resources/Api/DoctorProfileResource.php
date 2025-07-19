@@ -29,12 +29,6 @@ class DoctorProfileResource extends JsonResource
                 }
             }
         }
-        $distance = null;
-        if(request("long") != null && request("lat") != null  ){
-            if($this->hospital?->lat != null && $this->hospital?->long != null){
-                $distance = $this->getDistance($this->hospital->lat, $this->hospital->long) ?? null;
-            }
-        }
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -44,7 +38,7 @@ class DoctorProfileResource extends JsonResource
             'is_favorite' => $user ? $user->isFavoriteDoctor($this->id) : false,
             'gender' => $this->gender,
             'pricing' => $this->pricing ? (float)$this->pricing : $this->pricing,
-            'distance' => $distance,
+            'distance' => $this->distance ? (float)$this->distance : null,
             'degree' => $this->degree ?  DegreeResource::make($this->degree) : null,
             'currency' => $this->currency ?  CurrancyResource::make($this->currency) : null,
             'hospital_id' => $this->hospital_id,
@@ -57,32 +51,4 @@ class DoctorProfileResource extends JsonResource
         ];
     }
 
-    private function getDistance($lat, $long)
-    {
-        $hospitalLatitude = (float) $lat;
-        $hospitalLongitude = (float) $long;
-        $userLatitude = (float) request()->lat;
-        $userLongitude = (float) request()->long;
-
-        $earthRadius = 6371; // Earth's radius in kilometers
-
-        // Convert degrees to radians
-        $latFrom = deg2rad($userLatitude);
-        $longFrom = deg2rad($userLongitude);
-        $latTo = deg2rad($hospitalLatitude);
-        $longTo = deg2rad($hospitalLongitude);
-
-        // Haversine formula
-        $latDelta = $latTo - $latFrom;
-        $longDelta = $longTo - $longFrom;
-
-        $a = sin($latDelta / 2) ** 2 +
-            cos($latFrom) * cos($latTo) * sin($longDelta / 2) ** 2;
-
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-        $distance = $earthRadius * $c; // Distance in kilometers
-
-        return round($distance, 2); // Return the distance rounded to 2 decimal places
-    }
 }
