@@ -190,7 +190,8 @@
                         <div class="card-body">
                             <div class="text-end w-100">
                                 <div class="income-rev">{{ __('admin.dashboard.total_revenue') }} :
-                                    <span>{{ __('admin.dashboard.SAR') }} {{ $totalRevanue }} </span></div>
+                                    <span>{{ __('admin.dashboard.SAR') }} {{ $totalRevanue }} </span>
+                                </div>
                             </div>
                             <div id="income-report"></div>
                         </div>
@@ -243,8 +244,8 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="app-img justify-content-sm-end">
-                                                    <img src="{{ $appointment?->patient?->profile_image }}" alt=""
-                                                        class="img-fluid">
+                                                    <img src="{{ $appointment?->patient?->profile_image }}"
+                                                        alt="" class="img-fluid">
 
                                                     <div class="app-name">
                                                         <h6>{{ $appointment?->patient->name ?? '' }}</h6>
@@ -269,7 +270,7 @@
                                     <div class="app-footer">
                                         <div class="app-mode">
                                             <!-- <p>Mode of Consultation</p>
-                                        <a href="#" class="mode-box text-danger"><i class="feather-video"></i></a> -->
+                                            <a href="#" class="mode-box text-danger"><i class="feather-video"></i></a> -->
                                         </div>
                                         <h6>{{ $appointment->fee != 0 ? __('admin.dashboard.SAR') . $appointment->fee : __('admin.dashboard.free') }}
                                         </h6>
@@ -353,12 +354,12 @@
                                                 <td>{{ $rec_pat->mobile ?? 'N/A' }}</td>
                                                 <!-- @if ($rec_pat?->patient?->status === 'Active')
     <td><span class="badge bg-badge-grey text-success"><i class="fas fa-circle me-1"></i>
-                                            Enabled</span>
-                                    </td>
+                                                Enabled</span>
+                                        </td>
 @else
     <td><span class="badge bg-badge-grey text-danger"><i class="fas fa-circle me-1"></i>
-                                            Disabled</span>
-                                    </td>
+                                                Disabled</span>
+                                        </td>
     @endif -->
                                                 {{-- <td class="text-right">
                                                             <i class="feather-chevron-right"></i>
@@ -621,66 +622,66 @@
 
                 <!-- Consultaion Today -->
                 <!-- <div class="col-xl-4 col-md-6">
-                                <div class="row">
-                                    <div class="col-md-6 pe-md-0">
-                                        <div class="card cons-card mb-3">
-                                            <h6>Consultaion Today</h6>
-                                            <div id="income-month"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="card pat-card mb-1">
-                                            <div class="card-body">
-                                                <p>New Patients</p>
-                                                <h3>45</h3>
-                                                <p class="trade-level mb-0"><span class="text-danger me-1"><i
-                                                            class="fas fa-caret-down me-1"></i>1.15%</span> last week
-                                                </p>
+                                    <div class="row">
+                                        <div class="col-md-6 pe-md-0">
+                                            <div class="card cons-card mb-3">
+                                                <h6>Consultaion Today</h6>
+                                                <div id="income-month"></div>
                                             </div>
                                         </div>
-                                        <div class="card pat-card mb-3">
-                                            <div class="card-body">
-                                                <p>Old Patients</p>
-                                                <h3>45</h3>
-                                                <p class="trade-level mb-0"><span class="text-success me-1"><i
-                                                            class="fas fa-caret-up me-1"></i>9.5%</span> last week</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <div class="row align-items-center">
-                                                    <div class="col">
-                                                        <h5 class="card-title">Appointment Status</h5>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <select class="select">
-                                                            <option>This Week</option>
-                                                            <option>This Month</option>
-                                                        </select>
-                                                    </div>
+                                        <div class="col-md-6">
+                                            <div class="card pat-card mb-1">
+                                                <div class="card-body">
+                                                    <p>New Patients</p>
+                                                    <h3>45</h3>
+                                                    <p class="trade-level mb-0"><span class="text-danger me-1"><i
+                                                                class="fas fa-caret-down me-1"></i>1.15%</span> last week
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div id="status_chart"></div>
+                                            <div class="card pat-card mb-3">
+                                                <div class="card-body">
+                                                    <p>Old Patients</p>
+                                                    <h3>45</h3>
+                                                    <p class="trade-level mb-0"><span class="text-success me-1"><i
+                                                                class="fas fa-caret-up me-1"></i>9.5%</span> last week</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <h5 class="card-title">Appointment Status</h5>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <select class="select">
+                                                                <option>This Week</option>
+                                                                <option>This Month</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="app-status">
-                                                            <p>Completed Appointment</p>
-                                                            <h6 class="text-primary">650</h6>
-                                                            <p>Cancelled Appointment</p>
-                                                            <h6>250</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div id="status_chart"></div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="app-status">
+                                                                <p>Completed Appointment</p>
+                                                                <h6 class="text-primary">650</h6>
+                                                                <p>Cancelled Appointment</p>
+                                                                <h6>250</h6>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div> -->
+                                </div> -->
                 <!-- /Consultaion Today -->
 
                 <!-- Upcoming Appointments -->
@@ -697,8 +698,8 @@
                             <div class="nav nav-tabs">
                                 <div class="nav nav-tabs upcomimg-app">
                                     <!-- <div class="pricing-carousel owl-carousel owl-theme">
-                                                                                                                                                                                </div>
-                                                                                                                                                                                            </div> -->
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                                </div> -->
                                 </div>
                             </div>
                             <div class="tab-content upcoming-content">
@@ -709,23 +710,19 @@
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="app-img">
-                                                            <img src="{{ $appt?->doctor?->profile_image }}" alt=""
-                                                                class="img-fluid">
+                                                            <img src="{{ $appt?->doctor?->profile_image }}"
+                                                                alt="" class="img-fluid">
                                                             <div class="app-name">
-                                                                <<<<<<< Updated upstream <h6>
+                                                                <h6>{{ __('admin.dashboard.dr') }}.
                                                                     {{ $appt?->doctor?->name ?? '' }} </h6>
-                                                                    =======
-                                                                    <h6>{{ __('admin.dashboard.dr') }}.
-                                                                        {{ $appt?->doctor?->name ?? '' }} </h6>
-                                                                    >>>>>>> Stashed changes
-                                                                    <!-- <p>Orthopaedics</p> -->
+                                                                <!-- <p>Orthopaedics</p> -->
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="app-img">
-                                                            <img src="{{ $appt?->patient?->profile_image }}" alt=""
-                                                                class="img-fluid">
+                                                            <img src="{{ $appt?->patient?->profile_image }}"
+                                                                alt="" class="img-fluid">
                                                             <div class="app-name">
                                                                 <h6>{{ $appt?->patient?->name ?? '' }}</h6>
                                                                 <!-- <p>ID : 781212, M</p> -->
@@ -746,9 +743,9 @@
                                             <div class="app-infos">
                                                 <div class="row align-items-center">
                                                     <!-- <div class="col-4 col-sm-4">
-                                        <p>Duration</p>
-                                        <p class="mb-0">20 Min</p>
-                                    </div> -->
+                                            <p>Duration</p>
+                                            <p class="mb-0">20 Min</p>
+                                        </div> -->
                                                     <div class="col-8 col-sm-4">
                                                         <p>Consultation Fee</p>
                                                         <h6> {{ $appt?->fee == 0 ? 'FREE' : 'SAR ' . $appt?->fee }}</h6>
@@ -756,8 +753,8 @@
                                                     <div class="col-sm-4">
                                                         <div class="float-sm-end">
                                                             <!-- <div class="mode-app text-yellow">
-                                                <i class="feather-video"></i>
-                                            </div> -->
+                                                    <i class="feather-video"></i>
+                                                </div> -->
                                                         </div>
                                                     </div>
                                                 </div>
@@ -778,15 +775,15 @@
 
                     <!-- Recent Prescriptions -->
                     <!-- <div class="col-xl-4 col-md-6">
-                                                                                 </div>
-                                                                                                       </div> -->
+                                                                                     </div>
+                                                                                                           </div> -->
                     <!-- /Top Countries -->
 
                     <!-- Doctor Ratings -->
                     <!-- <div class="col-xl-4">
-                                                                                                                                                                            <div class="row">
-                                                                                                                              </div>
-                                                                                                                                                                        </div> -->
+                                                                                                                                                                                <div class="row">
+                                                                                                                                  </div>
+                                                                                                                                                                            </div> -->
                     <!-- /Doctor Ratings -->
                 </div>
 
