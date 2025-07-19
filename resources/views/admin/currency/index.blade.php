@@ -110,6 +110,7 @@
                                             <th>Name (AR)</th>
                                             <th>Name (EN)</th>
                                             <th>Code</th>
+                                            <th>Icon</th>
                                             <th>Created At</th>
                                             <th>{{ __('admin.patient.action') }}</th>
                                         </tr>
@@ -121,6 +122,13 @@
                                                 <td>{{ $type->name_ar ?? '' }}</td>
                                                 <td>{{ $type->name_en }}</td>
                                                 <td>{{ $type->code_en }}< {{ $type->code_ar }} ></td>
+                                                <td>
+                                                    @if ($type->icon)
+                                                        <img class="avatar avatar-img" src="{{ asset('images/currency/' . $type->icon) }}" alt="">
+                                                    @else
+                                                        <span>N/A</span>
+                                                    @endif
+                                                </td>
                                                 <td>{{ $type->created_at->format('Y-m-d H:i A') }}</td>
                                                 <td class="text-end">
                                                     <div class="actions">

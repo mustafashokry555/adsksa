@@ -85,8 +85,8 @@
                             <div class="form-group row">
                                 <label for="email" class="col-form-label col-md-2">{{ __('admin.hospital.email') }}</label>
                                 <div class="col-md-10">
-                                    <input id="email" name="email" value="{{ $hospital->email ?? '' }}" 
-                                        type="email" class="form-control" 
+                                    <input id="email" name="email" value="{{ $hospital->email ?? '' }}"
+                                        type="email" class="form-control"
                                         placeholder="Enter Hospital Email">
                                     @error('email')
                                         <div class="text-danger pt-2">
@@ -100,8 +100,8 @@
                             <div class="form-group row">
                                 <label for="phone" class="col-form-label col-md-2">Hospital phone</label>
                                 <div class="col-md-10">
-                                    <input id="phone" name="phone" value="{{ $hospital->phone ?? '' }}" 
-                                        type="text" class="form-control" 
+                                    <input id="phone" name="phone" value="{{ $hospital->phone ?? '' }}"
+                                        type="text" class="form-control"
                                         placeholder="Enter Hospital phone">
                                     @error('phone')
                                         <div class="text-danger pt-2">
@@ -115,8 +115,8 @@
                             <div class="form-group row">
                                 <label for="whatsapp" class="col-form-label col-md-2">Hospital Whatsapp</label>
                                 <div class="col-md-10">
-                                    <input id="whatsapp" name="whatsapp" value="{{ $hospital->whatsapp ?? '' }}" 
-                                        type="text" class="form-control" 
+                                    <input id="whatsapp" name="whatsapp" value="{{ $hospital->whatsapp ?? '' }}"
+                                        type="text" class="form-control"
                                         placeholder="Enter Hospital Whatsapp">
                                     @error('whatsapp')
                                         <div class="text-danger pt-2">
@@ -130,8 +130,8 @@
                             <div class="form-group row">
                                 <label for="facebook" class="col-form-label col-md-2">Hospital Facebook</label>
                                 <div class="col-md-10">
-                                    <input id="facebook" name="facebook" value="{{ $hospital->facebook ?? '' }}" 
-                                        type="text" class="form-control" 
+                                    <input id="facebook" name="facebook" value="{{ $hospital->facebook ?? '' }}"
+                                        type="text" class="form-control"
                                         placeholder="Enter Hospital Facebook">
                                     @error('facebook')
                                         <div class="text-danger pt-2">
@@ -145,8 +145,8 @@
                             <div class="form-group row">
                                 <label for="instagram" class="col-form-label col-md-2">Hospital Instagram</label>
                                 <div class="col-md-10">
-                                    <input id="instagram" name="instagram" value="{{ $hospital->instagram ?? '' }}" 
-                                        type="text" class="form-control" 
+                                    <input id="instagram" name="instagram" value="{{ $hospital->instagram ?? '' }}"
+                                        type="text" class="form-control"
                                         placeholder="Enter Hospital Instagram">
                                     @error('instagram')
                                         <div class="text-danger pt-2">
@@ -160,8 +160,8 @@
                             <div class="form-group row">
                                 <label for="tiktok" class="col-form-label col-md-2">Hospital Tiktok</label>
                                 <div class="col-md-10">
-                                    <input id="tiktok" name="tiktok" value="{{ $hospital->tiktok ?? '' }}" 
-                                        type="text" class="form-control" 
+                                    <input id="tiktok" name="tiktok" value="{{ $hospital->tiktok ?? '' }}"
+                                        type="text" class="form-control"
                                         placeholder="Enter Hospital Tiktok">
                                     @error('tiktok')
                                         <div class="text-danger pt-2">
@@ -361,10 +361,10 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="about" class="col-form-label col-md-2">About Hospital 1</label>
+                                <label for="about_en" class="col-form-label col-md-2">About Hospital (EN)</label>
                                 <div class="col-md-10">
-                                    <textarea id="about" name="about" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about }}</textarea>
-                                    @error('about')
+                                    <textarea id="about_en" name="about_en" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about_en }}</textarea>
+                                    @error('about_en')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -373,22 +373,10 @@
 
                             </div>
                             <div class="form-group row">
-                                <label for="about1" class="col-form-label col-md-2">About Hospital 2</label>
+                                <label for="about_ar" class="col-form-label col-md-2">About Hospital (AR)</label>
                                 <div class="col-md-10">
-                                    <textarea id="about1"  name="about1" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about1 }}</textarea>
-                                    @error('about1')
-                                        <div class="text-danger pt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-
-                            </div>
-                            <div class="form-group row">
-                                <label for="about2" class="col-form-label col-md-2">About Hospital 3</label>
-                                <div class="col-md-10">
-                                    <textarea id="about2"  name="about2" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about2 }}</textarea>
-                                    @error('about2')
+                                    <textarea id="about_ar"  name="about_ar" type="text" class="form-control" placeholder="About The Hospital">{{ $hospital->about_ar }}</textarea>
+                                    @error('about_ar')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
@@ -408,7 +396,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
 
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>
                                 {{ __('admin.hospital.update_hospital') }}
@@ -431,7 +419,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    // get states fun 
+    // get states fun
     function getStatesAndCities(countryId) {
         // States
         $.ajax({
@@ -547,7 +535,7 @@
         // Set the initial text under the map if the hospital's location exists
         const initialLocation = '{{ $hospital->location ?? "Please Select A Hospital Location" }}';
         document.getElementById('selectedLocation').textContent = `Selected Location: ${initialLocation}`;
-        
+
 
         // Update selectedLocation when marker is dragged
         marker.on('dragend', onMarkerDragEnd);
@@ -584,7 +572,7 @@
     function updateMarkerPosition(coords) {
         marker.setLngLat(coords);
         console.log(coords);
-        
+
         selectedLocation = {
             lng: coords[0],
             lat: coords[1]

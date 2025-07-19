@@ -19,6 +19,7 @@ class CurrancyResource extends JsonResource
             'id' => (int)$this->id,
             'name' => (string)$this->name ?? '',
             'code' => (string)$this->code ?? '',
+            'icon' => $this->icon ? asset('images/currency/'.$this->icon) : NULL,
             'created_at' => $this->created_at ? Carbon::parse($this->created_at)->format('Y-m-d H:i:s') : null,
             'updated_at' => $this->updated_at ? Carbon::parse($this->updated_at)->format('Y-m-d H:i:s') : null,
         ];

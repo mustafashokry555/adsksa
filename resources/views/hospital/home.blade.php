@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="dash-widget-info">
                                         <h6>Total Patient</h6>
-                                        <h3>{{ count($totalpatients)}}
+                                        <h3>{{ count($totalpatients) }}
                                         </h3>
                                         <!-- <p class="text-muted">{{ now()->format('Y-m-d') }}</p> -->
                                     </div>
@@ -104,10 +104,10 @@
                                         @endforelse
                                     </select>
                                     <!-- <div class="ms-2">
-                                        <select class="select change_year" name="hospital">
+                                            <select class="select change_year" name="hospital">
 
-                                        </select>
-                                    </div> -->
+                                            </select>
+                                        </div> -->
                                 </div>
                             </div>
                         </form>
@@ -181,7 +181,7 @@
                                             class="display" style="width:100%">
                                             <thead>
                                                 <tr>
-                                                <th>ID</th>
+                                                    <th>ID</th>
                                                     <th>Doctor Name</th>
                                                     <th>Patient Name</th>
                                                     <th>Insurance</th>
@@ -203,7 +203,7 @@
                                                             ->first();
                                                     @endphp
                                                     <tr>
-                                                        <td>{{$appointment->id}}</td>
+                                                        <td>{{ $appointment->id }}</td>
                                                         <td>
                                                             <h2 class="table-avatar">
                                                                 @if ($doctor)
@@ -219,7 +219,8 @@
                                                                                 alt="Patient Image">
                                                                         @endif
                                                                     </a>
-                                                                    <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
+                                                                    <a
+                                                                        href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
                                                                 @else
                                                                     <span>Deleted Doctor</span>
                                                                 @endif
@@ -232,7 +233,7 @@
                                                                         class="avatar avatar-sm me-2">
                                                                         @if ($patient->profile_image)
                                                                             <img class="avatar-img rounded-circle"
-                                                                                src="{{ asset( $patient->profile_image) }}"
+                                                                                src="{{ asset($patient->profile_image) }}"
                                                                                 alt="Patient Image">
                                                                         @else
                                                                             <img class="avatar-img rounded-circle"
@@ -240,22 +241,23 @@
                                                                                 alt="Patient Image">
                                                                         @endif
                                                                     </a>
-                                                                    
-                                                                    <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+
+                                                                    <a
+                                                                        href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
                                                                 @else
                                                                     {{-- deleted patient --}}
                                                                     <span>Deleted Patient</span>
                                                                 @endif
                                                             </h2>
                                                         </td>
-                                                        <td> {{ $appointment->insurance?->name??'N/A' }}</td>
+                                                        <td> {{ $appointment->insurance?->name ?? 'N/A' }}</td>
                                                         <td>{{ date('d M Y', strtotime($appointment->appointment_date)) }}
                                                             <span
                                                                 class="d-block text-info">{{ date('H:i A', strtotime($appointment->appointment_time)) }}</span>
                                                         </td>
                                                         <!-- <td>New Patient</td> -->
                                                         <td class="text-center">
-                                                        {{ @$appointment->fee? 'SAR '.@$appointment->fee:'FREE'}}
+                                                            {{ @$appointment->fee ? 'SAR ' . @$appointment->fee : 'FREE' }}
                                                         </td>
                                                         @if ($appointment->status == 'P')
                                                             <td><span
@@ -268,6 +270,10 @@
                                                         @elseif($appointment->status == 'D')
                                                             <td><span
                                                                     class="badge rounded-pill bg-danger-light">Cancelled</span>
+                                                            </td>
+                                                        @else
+                                                            <td><span
+                                                                    class="badge rounded-pill bg-danger-light">N/A</span>
                                                             </td>
                                                         @endif
                                                         <td class="text-end">
@@ -347,9 +353,9 @@
                                                     </tr>
                                                 @empty
                                                     <!-- <tr class="bg-danger-light">
-                                                                <td class="text-center" colspan="6">No appointment available
-                                                                </td>
-                                                            </tr> -->
+                                                                    <td class="text-center" colspan="6">No appointment available
+                                                                    </td>
+                                                                </tr> -->
                                                 @endforelse
                                             </tbody>
 
@@ -369,7 +375,7 @@
                                         <table class="table table-hover table-center mb-0" id="datatable2">
                                             <thead>
                                                 <tr>
-                                                <th>ID</th>
+                                                    <th>ID</th>
                                                     <th>Doctor Name</th>
                                                     <th>Patient Name</th>
                                                     <th>Insurance</th>
@@ -391,7 +397,7 @@
                                                             ->first();
                                                     @endphp
                                                     <tr>
-                                                        <td>{{$today_appointment->id}}</td>
+                                                        <td>{{ $today_appointment->id }}</td>
                                                         <td>
                                                             <h2 class="table-avatar">
                                                                 @if ($doctor)
@@ -407,7 +413,8 @@
                                                                                 alt="Patient Image">
                                                                         @endif
                                                                     </a>
-                                                                    <a href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
+                                                                    <a
+                                                                        href="{{ route('profile.show', ['profile' => $doctor->id]) }}">{{ @$doctor->name }}</a>
                                                                 @else
                                                                     <span>Doctor Not Found</span>
                                                                 @endif
@@ -428,22 +435,23 @@
                                                                                 alt="Patient Image">
                                                                         @endif
                                                                     </a>
-                                                                    <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+                                                                    <a
+                                                                        href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
                                                                 @else
                                                                     <span>Not Found</span>
                                                                 @endif
                                                             </h2>
                                                         </td>
-                                                        <td> {{ $today_appointment->insurance?->name??'N/A' }}</td>
+                                                        <td> {{ $today_appointment->insurance?->name ?? 'N/A' }}</td>
                                                         <td>{{ date('d M Y', strtotime($today_appointment->appointment_date)) }}
                                                             <span
                                                                 class="d-block text-info">{{ date('H:i A', strtotime($today_appointment->appointment_time)) }}</span>
                                                         </td>
                                                         <td>New Patient</td>
                                                         <td>
-                                                       
-                                                {{ @$today_appointment->fee? 'SAR '.@$today_appointment->fee:'FREE'}}
-                                                
+
+                                                            {{ @$today_appointment->fee ? 'SAR ' . @$today_appointment->fee : 'FREE' }}
+
                                                         </td>
                                                         @if ($today_appointment->status == 'P')
                                                             <td><span
@@ -456,6 +464,10 @@
                                                         @elseif($today_appointment->status == 'D')
                                                             <td><span
                                                                     class="badge rounded-pill bg-danger-light">Cancelled</span>
+                                                            </td>
+                                                        @else
+                                                            <td><span
+                                                                    class="badge rounded-pill bg-danger-light">N/A</span>
                                                             </td>
                                                         @endif
                                                         <td>
@@ -535,8 +547,8 @@
                                                     </tr>
                                                 @empty
                                                     <!-- <tr class="bg-danger-light">
-                                                                    <td class="text-center" colspan="6">No Appointments found</td>
-                                                                </tr> -->
+                                                                        <td class="text-center" colspan="6">No Appointments found</td>
+                                                                    </tr> -->
                                                 @endforelse
                                             </tbody>
                                         </table>
@@ -647,7 +659,7 @@
                     yaxis: {
                         labels: {
                             formatter: function(val) {
-                                return "SAR "+val 
+                                return "SAR " + val
                             }
                         },
                         axisBorder: {
@@ -660,7 +672,7 @@
                     tooltip: {
                         y: {
                             formatter: function(val) {
-                                return "SAR "+val 
+                                return "SAR " + val
                             }
                         }
                     }
@@ -785,7 +797,7 @@
                 yaxis: {
                     labels: {
                         formatter: function(val) {
-                            return "SAR "+val 
+                            return "SAR " + val
                         }
                     },
                     axisBorder: {

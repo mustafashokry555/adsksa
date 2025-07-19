@@ -12,6 +12,19 @@
     </div>
     </section>
     <!-- /Home Banner -->
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .pagination .page-item .page-link {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #ddd;
+            margin: 0 2px;
+        }
+    </style>
     <section class="doctor-search">
         <!-- Page Content -->
         <div class="content">
@@ -24,12 +37,6 @@
                                 <h4 class="card-title mb-0">{{ __('web.search_filter') }}</h4>
                             </div>
                             <div class="card-body">
-                                {{--                                <div class="filter-widget"> --}}
-                                {{--                                    <div class=""> --}}
-                                {{--                                        <input type="date" class="form-control " --}}
-                                {{--                                               placeholder="Select Date"> --}}
-                                {{--                                    </div> --}}
-                                {{--                                </div> --}}
                                 <form method="get" action="">
                                     <div class="col-md-12">
                                         <div class="form-group">
@@ -53,13 +60,6 @@
                                                 <span class="checkmark"></span> {{ __('web.female') }}
                                             </label>
                                         </div>
-                                        {{-- <div>
-                                            <label class="custom_check">
-                                                <input type="checkbox" name="gender[]" value="O"
-                                                    @if (is_array(request('gender')) && in_array('O', request('gender'))) checked @endif>
-                                                    <span class="checkmark"></span> {{ __("web.other") }}
-                                                </label>
-                                        </div> --}}
                                     </div>
                                     <div class="filter-widget">
                                         <h4>{{ __('web.Select_Specialist') }}</h4>
@@ -213,11 +213,9 @@
                                 <h4>No Doctor Found</h4>
                             </div>
                         @endforelse
+                        <div class="text-center mt-4">
                         {{ $doctors->appends($queryParams)->links() }}
-
-                        {{--                        <div class="load-more text-center"> --}}
-                        {{--                            <a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a> --}}
-                        {{--                        </div> --}}
+                        </div>
                     </div>
                 </div>
 

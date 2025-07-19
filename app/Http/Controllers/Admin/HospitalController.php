@@ -78,9 +78,8 @@ class HospitalController extends Controller
             'location' => 'required',
             'insurance' => 'required',
             'profile_image' => 'image',
-            'about' => 'string|nullable',
-            'about1' => 'string|nullable',
-            'about2' => 'string|nullable',
+            'about_ar' => 'string|nullable',
+            'about_en' => 'string|nullable',
             'email' => 'string|nullable',
             'phone' => 'string|nullable',
             'whatsapp' => 'string|nullable',
@@ -229,9 +228,8 @@ class HospitalController extends Controller
                     'facebook' => 'string|nullable',
                     'instagram' => 'string|nullable',
                     'tiktok' => 'string|nullable',
-                    'about' => 'string|nullable',
-                    'about1' => 'string|nullable',
-                    'about2' => 'string|nullable',
+                    'about_en' => 'string|nullable',
+                    'about_ar' => 'string|nullable',
                     'opening_hours' => 'string|nullable',
                 ]);
                 $admin = User::where('hospital_id', $id)->where('user_type', 'H')->first();
@@ -277,9 +275,8 @@ class HospitalController extends Controller
                     'facebook' => 'string|nullable',
                     'instagram' => 'string|nullable',
                     'tiktok' => 'string|nullable',
-                    'about' => 'string|nullable',
-                    'about1' => 'string|nullable',
-                    'about2' => 'string|nullable',
+                    'about_en' => 'string|nullable',
+                    'about_ar' => 'string|nullable',
                     'opening_hours' => 'string|nullable',
                 ]);
             }

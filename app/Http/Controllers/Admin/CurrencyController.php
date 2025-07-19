@@ -25,7 +25,7 @@ class CurrencyController extends Controller
     {
         if (Auth::user()->is_admin()) {
             return view('admin.currency.create');
-        }else {
+        } else {
             abort(401);
         }
     }
@@ -39,12 +39,21 @@ class CurrencyController extends Controller
                 'name_ar' => 'required',
                 'code_ar' => 'required',
                 'code_en' => 'required',
+                'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
+            if ($attributes['icon'] ?? false) {
+                if ($file = $request->file('icon')) {
+                    $filename = time() . '-' . $file->getClientOriginalName();
+                    // Storage::disk('local')->put($this->image_path . $filename, $file->getContent());
+                    $file->move(public_path('images/currency'), $filename);
+                }
+                $attributes['icon'] = $filename;
+            }
             Currency::create($attributes);
             return redirect()
                 ->route('currency.index')
                 ->with('flash', ['type', 'success', 'message' => 'currency Added Successfully.']);
-        }else{
+        } else {
             abort(401);
         }
     }
@@ -56,7 +65,7 @@ class CurrencyController extends Controller
             return view('admin.currency.edit', [
                 'currency' => Currency::find($id),
             ]);
-        }else {
+        } else {
             abort(401);
         }
     }
@@ -71,29 +80,38 @@ class CurrencyController extends Controller
                     'name_en' => 'required',
                     'code_ar' => 'required',
                     'code_en' => 'required',
+                    'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ]);
+                if ($attributes['icon'] ?? false) {
+                    if ($file = $request->file('icon')) {
+                        $filename = time() . '-' . $file->getClientOriginalName();
+                        // Storage::disk('local')->put($this->image_path . $filename, $file->getContent());
+                        $file->move(public_path('images/currency'), $filename);
+                    }
+                    $attributes['icon'] = $filename;
+                }
                 $currency->update($attributes);
 
                 return redirect()
                     ->route('currency.index')
                     ->with('flash', ['type', 'success', 'message' => 'Currency Updated Successfully.']);
             }
-        }else{
+        } else {
             abort(401);
         }
     }
 
     public function destroy($id)
     {
-        if(Auth::user()->is_admin()){
+        if (Auth::user()->is_admin()) {
 
             $currency = Currency::find($id);
             $currency->delete();
 
             return redirect()
-            ->route('currency.index')
-            ->with('flash', ['type', 'success', 'message' => 'Currency Deleted Successfuly']);
-        }else{
+                ->route('currency.index')
+                ->with('flash', ['type', 'success', 'message' => 'Currency Deleted Successfuly']);
+        } else {
             abort(401);
         }
     }
@@ -102,7 +120,7 @@ class CurrencyController extends Controller
         Currency::onlyTrashed()->find($id)->restore();
 
         return redirect()->route('currency.index')
-        ->with('flash', ['type', 'success', 'message' => 'Currency restored successfully.']);
+            ->with('flash', ['type', 'success', 'message' => 'Currency restored successfully.']);
     }
 
     public function forceDelete($id)
@@ -110,6 +128,6 @@ class CurrencyController extends Controller
         Currency::onlyTrashed()->find($id)->forceDelete();
 
         return redirect()->route('currency.index')
-        ->with('flash', ['type', 'success', 'message' => 'Currency permanently deleted.']);
+            ->with('flash', ['type', 'success', 'message' => 'Currency permanently deleted.']);
     }
 }

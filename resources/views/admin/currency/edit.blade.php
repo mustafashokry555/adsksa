@@ -59,14 +59,29 @@
                                     @enderror
                                 </div>
                             </div>
+                            <!-- Code -->
                             <div class="form-group row">
                                 <label for="code_ar"
                                     class="col-form-label col-md-2">Code (AR)</label>
                                 <div class="col-md-10">
                                     <input id="code_ar" name="code_ar" type="text" value="{{ $currency->code_ar }}"
-                                        class="form-control" placeholder="Code AR"
+                                        class="form-control" placeholder="Code EN"
                                         required>
                                     @error('code_ar')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!--  Image -->
+                            <div class="form-group row">
+                                <label for="icon"
+                                    class="col-form-label col-md-2">Icon</label>
+                                <div class="col-md-10">
+                                    <input id="icon" name="icon" class="form-control" type="file"
+                                        >
+                                    @error('icon')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>

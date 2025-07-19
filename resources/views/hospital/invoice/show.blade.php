@@ -30,11 +30,11 @@
                             <p class="invoice-details invoice-details-two">
                                 {{ __('hospital.invoice.dr')  }}. {{ @$doctor->name }} <br>
                                 {{ @$doctor->address }},<br>
-                                {{ @$doctor->state }}, {{ $doctor->country}} <br>
+                                {{ @$doctor->city->name }}, {{ @$doctor->state->name }}, {{ $doctor->country->name }} <br>
                             </p>
                             <br>
                             <p class="invoice-details invoice-details-two">
-                                {{ __('hospital.invoice.appointment_date')  }} : {{ date('d M Y', strtotime(@$invoice->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment_time)) }} <br>
+                                Appointment Date : {{ date('d M Y', strtotime(@$invoice->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment_time)) }} <br>
 
                                 </p>
                         </div>
