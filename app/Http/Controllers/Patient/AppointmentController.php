@@ -16,8 +16,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Unavailability;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AppointmentController extends Controller
 {
@@ -26,7 +28,7 @@ class AppointmentController extends Controller
         if (Auth::user()->is_patient()) {
 
             // Example usage:
-            // 
+            //
             $doctor = User::find($id);
             //     $intervals =null;
             //     $time_interval = ScheduleSetting::query()->where('hospital_id', $doctor->hospital_id)->first();
@@ -48,7 +50,7 @@ class AppointmentController extends Controller
             //       $availableSlots = $this->generateTimeSlots($startTime, $endTime,$slots->time_interval)??[];
             //       $oneDaysSlots = array_merge($oneDaysSlots,$availableSlots);
 
-            //      }  
+            //      }
             //   }
             //   $slotsArr[$i] = $oneDaysSlots;
             //  }
@@ -496,11 +498,11 @@ class AppointmentController extends Controller
             foreach ($slots as $slot) {
                 $currentTime = Carbon::now(\Auth::user()->timezone);
                 $currentTimeFormatted = $currentTime->format('H:i:s');
-                
+
                 // dd($slot->format("H:i:s"),$currentTimeFormatted);
-                //$slot->format("H:i:s")>   $currentTimeFormatted && 
+                //$slot->format("H:i:s")>   $currentTimeFormatted &&
                 // return Carbon::now(\Auth::user()->timezone)->toDateString();
-                
+
                 if(Carbon::now(\Auth::user()->timezone)->toDateString()==$request->selectedDate){
                     if ( $slot->format("H:i:s") > $currentTimeFormatted &&  $slot->greaterThan(Carbon::now()->addMinutes(20))) {
                         if (!$appointments->contains($slot->format("H:i:s"))) {
@@ -514,7 +516,7 @@ class AppointmentController extends Controller
                         }
                     }
                 }
-               
+
             }
         }
 
@@ -524,4 +526,94 @@ class AppointmentController extends Controller
             "data" => $filteredSlots->unique()->values()->slice(0, -1)->all()
         ]);
     }
+
+    // public function invoice_download($id)
+    // {
+    //     // return view('admin.invoice.qr');
+    //     $data = [
+    //         'invoice_number' => 'INV01011',
+    //         'customer_name' => 'أحمد محمد',
+    //         'customer_address' => 'الرياض، المملكة العربية السعودية',
+    //         'date' => '2025-08-21',
+    //         'vat_number' => '123456789000003',
+    //         'items' => [
+    //             ['name' => 'منتج 1', 'price' => 57.5, 'quantity' => 1],
+    //             ['name' => 'منتج 2', 'price' => 75.0, 'quantity' => 2],
+    //             ['name' => 'منتج 3', 'price' => 80.0, 'quantity' => 1],
+    //             ['name' => 'منتج 4', 'price' => 115.0, 'quantity' => 1],
+    //         ]
+    //     ];
+
+    //     // Create base64 QR Code
+    //     $qrData = "\x01" . chr(strlen('اسم المتجر')) . 'اسم المتجر'
+    //     . "\x02" . chr(strlen('123456789000003')) . '123456789000003'
+    //     . "\x03" . chr(strlen('2025-08-21')) . '2025-08-21'
+    //     . "\x04" . chr(strlen('485.38')) . '485.38'
+    //     . "\x05" . chr(strlen('82.88')) . '82.88';
+    //     $qrCode = QrCode::encoding('UTF-8')->size(100)->generate($qrData);
+    //     // $qrCode = base64_encode(
+    //     //     QrCode::format('png')->encoding('UTF-8')->size(200)->generate($qrData)
+    //     // );
+
+
+    //     // return view('admin.invoice.download', compact('data', 'qrCodeSvg'));
+    //     // $pdf = Pdf::loadView('admin.invoice.download', compact('data'))
+    //     //         ->setPaper('a3', 'portrait')
+    //     //         ->setOptions([
+    //     //             'isHtml5ParserEnabled' => true,
+    //     //             'isRemoteEnabled' => true,
+    //     //         ]);+
+    //     $pdf = Pdf::loadView('admin.invoice.download', compact('data', 'qrCode'))
+    //     ->setPaper('a4', 'portrait')
+    //     ->setOptions([
+    //         'isHtml5ParserEnabled' => true,
+    //         'isRemoteEnabled' => true,
+    //         'defaultFont' => 'DejaVu Sans', // ensure it uses your font
+    //     ]);
+
+    //     return $pdf->download('invoice_download.pdf');
+    // }
+
+    public function invoice_download($id)
+    {
+        $data = [
+            'invoice_number' => 'INV01011',
+            'customer_name' => 'أحمد محمد',
+            'customer_address' => 'الرياض، المملكة العربية السعودية',
+            'date' => '2025-08-21',
+            'vat_number' => '123456789000003',
+            'items' => [
+                ['name' => 'منتج 1', 'price' => 57.5, 'quantity' => 1],
+                ['name' => 'منتج 2', 'price' => 75.0, 'quantity' => 2],
+                ['name' => 'منتج 3', 'price' => 80.0, 'quantity' => 1],
+                ['name' => 'منتج 4', 'price' => 115.0, 'quantity' => 1],
+            ]
+        ];
+
+        // بيانات ZATCA QR
+        $qrData = "\x01" . chr(strlen('اسم المتجر')) . 'اسم المتجر'
+            . "\x02" . chr(strlen('123456789000003')) . '123456789000003'
+            . "\x03" . chr(strlen('2025-08-21')) . '2025-08-21'
+            . "\x04" . chr(strlen('485.38')) . '485.38'
+            . "\x05" . chr(strlen('82.88')) . '82.88';
+
+        // QR كـ صورة PNG
+        $qrCode = base64_encode(
+            QrCode::format('png')->encoding('UTF-8')->size(200)->generate($qrData)
+        );
+
+        // return view('admin.invoice.download', compact('data', 'qrCode'));
+        $pdf = Pdf::loadView('admin.invoice.download', compact('data', 'qrCode'));
+        return $pdf->download("invoice-.pdf");
+        // $pdf = Pdf::loadView('admin.invoice.download', compact('data', 'qrCode'))
+        //     ->setPaper('a3', 'portrait')
+        //     ->setOptions([
+        //         'isHtml5ParserEnabled' => true,
+        //         'isRemoteEnabled' => true,
+        //         'defaultFont' => 'DejaVu Sans',
+        //     ]);
+
+        // return $pdf->download('invoice_download.pdf');
+    }
+
 }

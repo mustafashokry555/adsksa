@@ -253,6 +253,8 @@ Route::middleware(['auth'])->group(function () {
     // Invoice Routes
     Route::get('invoices', [AppointmentController::class, 'invoice'])->name('invoices');
     Route::get('invoices/{invoice}/view', [AppointmentController::class, 'show_invoice'])->name('show_invoice');
+    Route::get('invoices/{invoice}/download', [AppointmentController::class, 'invoice_download'])->name('invoice.download');
+    Route::get('invoices/123/download', [AppointmentController::class, 'downloadPdf']);
 
     // Patient Dashboard
     // Route::get('/patient-dashboard', function (){

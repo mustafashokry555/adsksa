@@ -31,11 +31,11 @@
                                 <p class="invoice-details invoice-details-two">
                                     Dr. {{ @$doctor->name }} <br>
                                     {{ @$doctor->address }},<br>
-                                    {{ @$doctor->state }}, {{ @$doctor->country}} <br>
+                                    {{ @$doctor->state?->name }}, {{ @$doctor->country?->name }} <br>
                                 </p><br>
                                 <p class="invoice-details invoice-details-two">
                                     Appoitment Date : {{ date('d M Y', strtotime(@$invoice->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment_time)) }} <br>
-                                    
+
                                 </p>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                                 <p class="invoice-details">
                                     {{ @$patient->name }} <br>
                                     {{ @$patient->address }} <br>
-                                    {{ @$patient->state }}, {{ @$patient->country }} <br>
+                                    {{ @$patient->state?->name }}, {{ @$patient->country?->name }} <br>
                                 </p>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                                 </p> -->
                                 <strong class="customer-text">Payment </strong>
                             <p class="invoice-details invoice-details-two">
-                               
+
                                 Online<br>
                             </p>
                             </div>
@@ -127,7 +127,7 @@
                                                 <td class="text-end">SAR {{ @$invoice->fee }}</td>
                                             @endif
                                         </tr>
-                                     
+
                                         <tr>
                                             <th>Total Amount:</th>
                                             @if(@$invoice->fee==0)
@@ -152,6 +152,12 @@
                         ligula, cursus blandit risus. Maecenas eget metus non tellus dignissim aliquam ut a ex. Maecenas sed
                         vehicula dui, ac suscipit lacus. Sed finibus leo vitae lorem interdum, eu scelerisque tellus
                         fermentum. Curabitur sit amet lacinia lorem. Nullam finibus pellentesque libero.</p>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a class="btn btn-primary" href="{{ route('invoice.download', $invoice->id) }}" target="_blank">
+                        <i class="fa fa-print"></i> Print Invoice
+                    </a>
                 </div>
 
             </div>
