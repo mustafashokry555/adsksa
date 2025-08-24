@@ -162,6 +162,15 @@ class User extends Authenticatable
         return $this->belongsTo(Religion::class);
     }
 
+    public function doctorInvoices()
+    {
+        return $this->hasMany(Invoice::class, 'doctor_id');
+    }
+
+    public function patientInvoices()
+    {
+        return $this->hasMany(Invoice::class, 'patient_id');
+    }
     public function degree()
     {
         return $this->belongsTo(DoctorDegree::class, 'degree_id', 'id');

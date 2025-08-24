@@ -123,6 +123,10 @@ class Hospital extends Model
         return $this->belongsTo(City::class, 'city_id', 'id');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 
     public function offers()
     {

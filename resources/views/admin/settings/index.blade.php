@@ -63,6 +63,16 @@
                                                     value="{{ $setting->website_name }}" placeholder="{{ __('admin.settings.enter_website_name')  }}">
                                             </div>
                                             <div class="form-group">
+                                                <label for="phone">Tax Number <span class="star-red">*</span></label>
+                                                <input type="text" name="tax_number" class="form-control"
+                                                    value="{{ $setting->tax_number }}" placeholder="Tax Number">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="phone">Vat Percentage <span class="star-red">*</span></label>
+                                                <input type="vat" name="vat" class="form-control"
+                                                    value="{{ $setting->vat }}" placeholder="Vat Percentage">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="phone">{{ __('admin.settings.website_phone')  }} <span class="star-red">*</span></label>
                                                 <input type="tel" name="phone" class="form-control"
                                                     value="{{ $setting->phone }}" placeholder="{{ __('admin.settings.enter_administrator_phone')  }} ">

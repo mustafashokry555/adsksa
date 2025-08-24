@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <title>فاتورة ضريبية مبسطة</title>
@@ -43,6 +44,7 @@
             padding: 10px;
             border-bottom: 1px solid #4CAF50;
             font-size: 11px;
+            text-align: center;
         }
 
         .date-section {
@@ -109,28 +111,33 @@
         }
     </style>
 </head>
+
 <body>
+    @php
+        $vat_amount = $invoice->subtotal == 0 ? 0 : $invoice->subtotal * ($invoice->vat / 100);
+        $total = $invoice->subtotal + $vat_amount;
+    @endphp
     <div class="invoice-container" id="invoice">
         <!-- Header -->
         <div class="header">
             <h1>فاتورة ضريبية مبسطة</h1>
-            <div class="invoice-number" dir="ltr">{{ $data['invoice_number'] }} :رقم الفاتورة</div>
+            <div class="invoice-number" dir="ltr">{{ $invoice->invoice_number }} :رقم الفاتورة</div>
         </div>
 
         <!-- Customer Info -->
         <div class="customer-info">
-            <div>اسم المشتري: {{ $data['customer_name'] }}</div>
-            <div>عنوان المشتري: {{ $data['customer_address'] }}</div>
+            <div>اسم الموسسة: {{ $invoice->company_name }}</div>
+            <div>عنوان الموسسة: {{ $invoice->company_address }}</div>
         </div>
 
         <!-- Date -->
         <div class="date-section">
-            التاريخ: {{ $data['date'] }}
+            التاريخ: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y (A H:i)') }}
         </div>
 
         <!-- Tax Number -->
         <div class="tax-number">
-            الرقم الضريبي لمقدم الخدمة: {{ $data['vat_number'] }}
+            الرقم الضريبي لمقدم الخدمة: {{ $invoice->tax_number }}
         </div>
 
         <!-- Items Table -->
@@ -138,32 +145,20 @@
             <thead>
                 <tr>
                     <th>البيان</th>
-                    <th>الكمية</th>
-                    <th>سعر الوحدة</th>
+                    <th>الموعد</th>
+                    <th>التكلفه</th>
                     <th>قيمة الضريبة</th>
                     <th>الإجمالي</th>
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $total = 0;
-                    $total_vat = 0;
-                @endphp
-                @foreach ($data['items'] as $item)
-                    @php
-                        $total_raw = $item['price'] * $item['quantity'];
-                        $vat_raw = $total_raw * 0.15;
-                        $total += $total_raw;
-                        $total_vat += $vat_raw;
-                    @endphp
-                    <tr>
-                        <td>{{ $item['name'] }}</td>
-                        <td>{{ $item['quantity'] }}</td>
-                        <td>{{ number_format($item['price'], 2) }}</td>
-                        <td>{{ number_format($vat_raw, 2) }}</td>
-                        <td>{{ number_format($total_raw + $vat_raw, 2) }}</td>
-                    </tr>
-                @endforeach
+                <tr>
+                    <td>استشاره طبية</td>
+                    <td>{{ $invoice->appointment?->appointment_date . " " . \Carbon\Carbon::parse($invoice->appointment?->appointment_time)->format('(A H:i)') }}</td>
+                    <td>{{ number_format($invoice->subtotal, 2) }}</td>
+                    <td>{{ number_format($vat_amount, 2) }}</td>
+                    <td>{{ number_format($total, 2) }}</td>
+                </tr>
             </tbody>
         </table>
 
@@ -171,24 +166,26 @@
         <div class="totals-section">
             <div class="total-row">
                 <span>إجمالي المبلغ الخاضع للضريبة</span>
-                <span>{{ number_format($total, 2) }}</span>
+                <span>{{ number_format($invoice->subtotal, 2) }}</span>
             </div>
             <div class="total-row">
                 <span>ضريبة القيمة المضافة (%15)</span>
-                <span>{{ number_format($total_vat, 2) }}</span>
+                <span>{{ number_format($vat_amount, 2) }}</span>
             </div>
             <div class="total-row final-total">
                 <span>المجموع الإجمالي</span>
-                <span>{{ number_format($total + $total_vat, 2) }}</span>
+                <span>{{ number_format($total, 2) }}</span>
             </div>
         </div>
 
         <!-- QR Code Section -->
         <div class="qr-section">
             <div class="footer-text" dir="ltr">
-                ({{ $data['invoice_number'] }}) الفاتورة الضريبية المبسطة
+                ({{ $invoice->invoice_number }}) الفاتورة الضريبية المبسطة
             </div>
-            <img src="data:image/png;base64,{{ $qrCode }}" alt="QR Code" width="120" height="120">
+            <div>
+                {!! $qrCode !!}
+            </div>
         </div>
     </div>
 
@@ -203,11 +200,11 @@
             window.print();
         };
     </script> --}}
-{{-- html2canvas --}}
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> --}}
+    {{-- html2canvas --}}
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> --}}
 
-{{-- jsPDF --}}
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    {{-- jsPDF --}}
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
     window.onload = function () {
@@ -228,4 +225,5 @@
     }
 </script> --}}
 </body>
+
 </html>

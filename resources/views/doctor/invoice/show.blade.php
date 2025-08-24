@@ -16,7 +16,7 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                     </div>
                     <div class="col-md-6">
                         <p class="invoice-details">
-                            <strong>Issued:</strong> {{ date('d M Y', strtotime($invoice->appointment_date)) }}
+                            <strong>Issued:</strong> {{ date('d M Y', strtotime($invoice->invoice_date)) }}
                         </p>
                     </div>
                 </div>
@@ -30,12 +30,12 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                             <p class="invoice-details invoice-details-two">
                                 Dr. {{ auth()->user()->name }} <br>
                                 {{ auth()->user()->address }},<br>
-                                {{ auth()->user()->state }}, {{ auth()->user()->country}} <br>
+                                {{ auth()->user()->state?->name }}, {{ auth()->user()->country?->name }} <br>
                             </p>
                             <br>
                             <p class="invoice-details invoice-details-two">
-                                    Appoitment Date : {{ date('d M Y', strtotime(@$invoice->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment_time)) }} <br>
-                                    
+                                    Appoitment Date : {{ date('d M Y', strtotime(@$invoice->appointment?->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment?->appointment_date)) }} <br>
+
                                 </p>
                         </div>
                     </div>
@@ -45,7 +45,7 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                             <p class="invoice-details">
                                 {{ $patient->name }} <br>
                                 {{ $patient->address }} <br>
-                                {{ $patient->state }}, {{ $patient->country }} <br>
+                                {{ $patient->state?->name }}, {{ $patient->country?->name }} <br>
                             </p>
                         </div>
                     </div>
@@ -65,7 +65,7 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                             </p> -->
                             <strong class="customer-text">Payment </strong>
                             <p class="invoice-details invoice-details-two">
-                               
+
                                 Online<br>
                             </p>
                         </div>
@@ -83,7 +83,8 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                                 <tr>
                                     <th>Description</th>
                                     <th class="text-center">Quantity</th>
-                                    <th class="text-center">VAT</th>
+                                    <th class="text-end">SubTotal</th>
+                                    <th class="text-center">VAT ({{ $invoice->vat }}%)</th>
                                     <th class="text-end">Total</th>
                                 </tr>
                                 </thead>
@@ -91,15 +92,14 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                                 <tr>
                                     <td>General Consultation</td>
                                     <td class="text-center">1</td>
-                                    <td class="text-center">SAR 0</td>
-                                    <td class="text-end">{{ $invoice->fee==0?'FREE':'SAR '.$invoice->fee }}</td>
+                                    <td class="text-center">SAR {{ $invoice->subtotal }}</td>
+                                    @php
+                                        $vat_amount = $invoice->subtotal == 0 ? 0 :  ($invoice->subtotal * ($invoice->vat / 100));
+                                        $totla = $invoice->subtotal + $vat_amount;
+                                    @endphp
+                                    <td class="text-center">SAR {{ $vat_amount }}</td>
+                                    <td class="text-end">{{ $totla == 0 ? 'FREE' : 'SAR '. $totla }}</td>
                                 </tr>
-                                <!-- <tr>
-                                    <td>Video Call Booking</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">SAR 0</td>
-                                    <td class="text-end">SAR {{ auth()->user()->pricing }}</td>
-                                </tr> -->
                                 </tbody>
                             </table>
                         </div>
@@ -110,15 +110,15 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                                 <tbody>
                                 <tr>
                                     <th>Subtotal:</th>
-                                    <td><span> {{ $invoice->fee==0?'FREE':'SAR '.$invoice->fee }}</span></td>
+                                    <td><span> {{ $invoice->subtotal == 0 ? 'FREE' : 'SAR '.$invoice->subtotal }}</span></td>
                                 </tr>
-{{--                                <tr>--}}
-{{--                                    <th>Discount:</th>--}}
-{{--                                    <td><span>-10%</span></td>--}}
-{{--                                </tr>--}}
+                                <tr>
+                                    <th>VAT ({{ $invoice->vat }}%):</th>
+                                    <td><span> {{ $vat_amount }}</span></td>
+                                </tr>
                                 <tr>
                                     <th>Total Amount:</th>
-                                    <td><span>{{ $invoice->fee==0?'FREE':'SAR '.$invoice->fee }}</span></td>
+                                    <td><span>{{ $totla == 0 ? 'FREE' : 'SAR '.$totla }}</span></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -127,14 +127,19 @@ $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first()
                 </div>
             </div>
 
+            <div class="text-end mt-4">
+                <a class="btn btn-primary" href="{{ route('invoice.download', $invoice->id) }}" target="_blank">
+                    <i class="fa fa-print"></i> Print Invoice
+                </a>
+            </div>
 
-            <div class="other-info">
+            {{-- <div class="other-info">
                 <h4>Other information</h4>
                 <p class="text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed dictum
                     ligula, cursus blandit risus. Maecenas eget metus non tellus dignissim aliquam ut a ex. Maecenas sed
                     vehicula dui, ac suscipit lacus. Sed finibus leo vitae lorem interdum, eu scelerisque tellus
                     fermentum. Curabitur sit amet lacinia lorem. Nullam finibus pellentesque libero.</p>
-            </div>
+            </div> --}}
 
         </div>
     </div>

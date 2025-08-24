@@ -46,7 +46,8 @@ class SettingsController extends Controller
                 'youtube' => 'nullable',
                 'linkedin' => 'nullable',
                 'instagram' => 'nullable',
-
+                'tax_number' => 'nullable',
+                'vat' => 'nullable',
             ]);
             if ($attributes['logo'] ?? false)
             {
@@ -76,7 +77,5 @@ class SettingsController extends Controller
         return redirect()->back();
     }
 
-    // public function social(){
 
-    // }
 }

@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\Notification;
 use App\Models\ScheduleSetting;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\Insurance;
 use App\Models\Hospital;
+use App\Models\Settings;
 use App\Models\Speciality;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
@@ -140,7 +142,7 @@ class AppointmentController extends Controller
             "appointment_date" => $dateTime->format("Y-m-d"),
             "appointment_time" => $dateTime->format("H:i:s"),
             "fee" => $doctor->pricing,
-            "status"=>'P'
+            "status" => 'P'
             // "insurance_id"=> $insurance
             // "vat" => $invoiceSettings->get("vat", 0.0),
         ]);
@@ -217,6 +219,21 @@ class AppointmentController extends Controller
             $appointment->update($attributes);
         }
         if (request('status') == 'C') {
+            // store invoice
+            $setting = Settings::first();
+            $invoice = Invoice::create([
+                'appointment_id'   => $appointment->id,
+                'doctor_id'        => $appointment->doctor_id,
+                'patient_id'       => $appointment->patient_id,
+                'hospital_id'      => $appointment->hospital_id,
+                'invoice_number'   => 'INV' . str_pad($appointment->id, 6, '0', STR_PAD_LEFT),
+                'company_address'  => $setting?->address_line_1 ?? '',
+                'company_name'     => $setting?->website_name ?? '',
+                'invoice_date'     => now(),
+                'tax_number'       => $setting?->tax_number,
+                'subtotal'         => $appointment->fee,
+                'vat'              => $setting?->vat,
+            ]);
             Notification::create([
                 'from_id' => $appointment->doctor_id,
                 'to_id' => $appointment->patient_id,
@@ -285,17 +302,17 @@ class AppointmentController extends Controller
     {
         if (Auth::user()->is_doctor()) {
             return view('doctor.invoice.index', [
-                'invoices' => Appointment::query()->where('doctor_id', Auth::id())->orderByDesc('id')->get(),
+                'invoices' => Invoice::query()->where('doctor_id', Auth::id())->orderByDesc('id')->get(),
             ]);
         } elseif (Auth::user()->is_hospital()) {
             return view('hospital.invoice.index', [
-                'invoices' => Appointment::query()->where('hospital_id', Auth::user()->hospital_id)->orderByDesc('id')->get(),
+                'invoices' => Invoice::query()->where('hospital_id', Auth::user()->hospital_id)->orderByDesc('id')->get(),
             ]);
         } elseif (Auth::user()->is_admin()) {
             return view(
                 'admin.invoice.index',
                 [
-                    'invoices' => Appointment::query()->orderByDesc('id')->get(),
+                    'invoices' => Invoice::query()->orderByDesc('id')->get(),
                 ]
             );
         } else {
@@ -303,9 +320,8 @@ class AppointmentController extends Controller
         }
     }
 
-    public function show_invoice(Appointment $invoice)
+    public function show_invoice(Invoice $invoice)
     {
-
         if (Auth::user()->is_doctor() && Auth::user()->id == $invoice->doctor_id) {
             return view('doctor.invoice.show', [
                 'invoice' => $invoice
@@ -326,44 +342,44 @@ class AppointmentController extends Controller
     public function update_appointment($id)
     {
         // if (Auth::user()->is_patient()) {
-            // $appointment = Appointment::with('doctor')->find($id);
-            // // $doctor = User::find($doctor->doctor_id);
-            // // dd($appointment);
-            // $time_interval = ScheduleSetting::query()->where('hospital_id', $appointment->doctor->hospital_id)->first();
-            // for ($i = 0; $i <= 6; $i++) {
-            //     if ($appointment->doctor->schedules[$i]->from ?? '') {
-            //         $starting_time = $appointment->doctor->schedules[$i]->from;
-            //         $end_time = $appointment->doctor->schedules[$i]->to;
-            //         if ($time_interval->time_interval ?? '') {
-            //             $intervals = CarbonInterval::minutes($time_interval->time_interval)->toPeriod($starting_time, $end_time);
-            //         } else {
-            //             $intervals = CarbonInterval::minutes(60)->toPeriod($starting_time, $end_time);
-            //         }
-            //     }
-            //     // dd($intervals);
-            // }
-            $appointment = Appointment::find($id);
-            $hospital = Hospital::findOrFail($appointment->hospital_id);
-            $insurances = $hospital->insurances;
+        // $appointment = Appointment::with('doctor')->find($id);
+        // // $doctor = User::find($doctor->doctor_id);
+        // // dd($appointment);
+        // $time_interval = ScheduleSetting::query()->where('hospital_id', $appointment->doctor->hospital_id)->first();
+        // for ($i = 0; $i <= 6; $i++) {
+        //     if ($appointment->doctor->schedules[$i]->from ?? '') {
+        //         $starting_time = $appointment->doctor->schedules[$i]->from;
+        //         $end_time = $appointment->doctor->schedules[$i]->to;
+        //         if ($time_interval->time_interval ?? '') {
+        //             $intervals = CarbonInterval::minutes($time_interval->time_interval)->toPeriod($starting_time, $end_time);
+        //         } else {
+        //             $intervals = CarbonInterval::minutes(60)->toPeriod($starting_time, $end_time);
+        //         }
+        //     }
+        //     // dd($intervals);
+        // }
+        $appointment = Appointment::find($id);
+        $hospital = Hospital::findOrFail($appointment->hospital_id);
+        $insurances = $hospital->insurances;
 
 
-            // if ($intervals ?? '')
-            return view('patient.appointment.update-appointment', [
-                'doctor' => User::find($appointment->doctor_id),
-                // 'intervals' => $intervals,
-                // 'date' => today(),
-                // 'unavailablities'=>$unavailablities,
-                'insurances' => $insurances,
-                'id'=>$id
+        // if ($intervals ?? '')
+        return view('patient.appointment.update-appointment', [
+            'doctor' => User::find($appointment->doctor_id),
+            // 'intervals' => $intervals,
+            // 'date' => today(),
+            // 'unavailablities'=>$unavailablities,
+            'insurances' => $insurances,
+            'id' => $id
 
-            ]);
-            // if ($intervals ?? '') {
-            //     return view('patient.appointment.update-appointment', [
-            //         'appointment' => $appointment,
-            //         'intervals' => $intervals,
-            //         'date' => today()
-            //     ]);
-            // }
+        ]);
+        // if ($intervals ?? '') {
+        //     return view('patient.appointment.update-appointment', [
+        //         'appointment' => $appointment,
+        //         'intervals' => $intervals,
+        //         'date' => today()
+        //     ]);
+        // }
         // }
     }
 
@@ -392,16 +408,16 @@ class AppointmentController extends Controller
             "appointment_date" => $dateTime->format("Y-m-d"),
             "appointment_time" => $dateTime->format("H:i:s"),
             "fee" => $doctor->pricing,
-            "status"=>'C'
+            "status" => 'C'
             // "insurance_id"=> $insurance
             // "vat" => $invoiceSettings->get("vat", 0.0),
         ];
-        Appointment::where('id',$id)->update($data);
+        Appointment::where('id', $id)->update($data);
 
         // return redirect()
         //     ->route('appointments')
         //     ->with('flash', ['type', 'success', 'message' => 'Appointment create Successfully']);
-            return redirect()->route('appointments')->with('flash', ['type', 'success', 'message' => 'Appointment Updated Successfully']);
+        return redirect()->route('appointments')->with('flash', ['type', 'success', 'message' => 'Appointment Updated Successfully']);
         // }
     }
 
@@ -471,8 +487,8 @@ class AppointmentController extends Controller
         }
         // Appointments of selected date
         $appointments = Appointment::where('appointment_date', $date)
-        ->where('doctor_id', $doctor->id)
-        ->whereIn('status', ['P', 'C'])->pluck("appointment_time");
+            ->where('doctor_id', $doctor->id)
+            ->whereIn('status', ['P', 'C'])->pluck("appointment_time");
 
         // Creating Slots
         $slots = [];
@@ -481,12 +497,11 @@ class AppointmentController extends Controller
 
         // Fliter slots
         foreach ($intervals as $key => $interval) {
-            if($key==0){
+            if ($key == 0) {
                 $dateTime = \DateTime::createFromFormat('H:i', $interval["end_time"]);
-                $int = "PT".$availability->time_interval."M";
+                $int = "PT" . $availability->time_interval . "M";
                 $dateTime->sub(new \DateInterval($int));
                 $interval["end_time"] = $dateTime->format('H:i');
-
             }
             $start_dt = $date . $interval["start_time"];
             $end_dt = $date . $interval["end_time"];
@@ -503,20 +518,19 @@ class AppointmentController extends Controller
                 //$slot->format("H:i:s")>   $currentTimeFormatted &&
                 // return Carbon::now(\Auth::user()->timezone)->toDateString();
 
-                if(Carbon::now(\Auth::user()->timezone)->toDateString()==$request->selectedDate){
-                    if ( $slot->format("H:i:s") > $currentTimeFormatted &&  $slot->greaterThan(Carbon::now()->addMinutes(20))) {
+                if (Carbon::now(\Auth::user()->timezone)->toDateString() == $request->selectedDate) {
+                    if ($slot->format("H:i:s") > $currentTimeFormatted &&  $slot->greaterThan(Carbon::now()->addMinutes(20))) {
                         if (!$appointments->contains($slot->format("H:i:s"))) {
                             $filteredSlots->push($slot->format("Y-m-d H:i"));
                         }
                     }
-                }else{
+                } else {
                     if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
                         if (!$appointments->contains($slot->format("H:i:s"))) {
                             $filteredSlots->push($slot->format("Y-m-d H:i"));
                         }
                     }
                 }
-
             }
         }
 
@@ -527,54 +541,60 @@ class AppointmentController extends Controller
         ]);
     }
 
-    // public function invoice_download($id)
-    // {
-    //     // return view('admin.invoice.qr');
-    //     $data = [
-    //         'invoice_number' => 'INV01011',
-    //         'customer_name' => 'أحمد محمد',
-    //         'customer_address' => 'الرياض، المملكة العربية السعودية',
-    //         'date' => '2025-08-21',
-    //         'vat_number' => '123456789000003',
-    //         'items' => [
-    //             ['name' => 'منتج 1', 'price' => 57.5, 'quantity' => 1],
-    //             ['name' => 'منتج 2', 'price' => 75.0, 'quantity' => 2],
-    //             ['name' => 'منتج 3', 'price' => 80.0, 'quantity' => 1],
-    //             ['name' => 'منتج 4', 'price' => 115.0, 'quantity' => 1],
-    //         ]
-    //     ];
 
-    //     // Create base64 QR Code
-    //     $qrData = "\x01" . chr(strlen('اسم المتجر')) . 'اسم المتجر'
-    //     . "\x02" . chr(strlen('123456789000003')) . '123456789000003'
-    //     . "\x03" . chr(strlen('2025-08-21')) . '2025-08-21'
-    //     . "\x04" . chr(strlen('485.38')) . '485.38'
-    //     . "\x05" . chr(strlen('82.88')) . '82.88';
-    //     $qrCode = QrCode::encoding('UTF-8')->size(100)->generate($qrData);
-    //     // $qrCode = base64_encode(
-    //     //     QrCode::format('png')->encoding('UTF-8')->size(200)->generate($qrData)
-    //     // );
+    public function invoice_download(Invoice $invoice)
+    {
+        $vat_amount = ($invoice->subtotal * $invoice->vat) / 100;
+        $total = $invoice->subtotal + $vat_amount;
+        if (Auth::user()->is_doctor() && Auth::user()->id == $invoice->doctor_id) {
+            // بيانات ZATCA QR
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);            // QR كـ صورة PNG
+            $qrCode = QrCode::encoding('UTF-8')->size(120)->generate($qrData);
 
+            return view('admin.invoice.download', [
+                'invoice' => $invoice,
+                'qrCode' => $qrCode
+            ]);
+        } elseif (Auth::user()->is_hospital() && Auth::user()->hospital_id == $invoice->hospital_id) {
+            // بيانات ZATCA QR
+            $qrData = $this->generateZatcaQr($invoice);
+            // QR كـ صورة PNG
+            $qrCode = QrCode::encoding('UTF-8')->size(120)->generate($qrData);
 
-    //     // return view('admin.invoice.download', compact('data', 'qrCodeSvg'));
-    //     // $pdf = Pdf::loadView('admin.invoice.download', compact('data'))
-    //     //         ->setPaper('a3', 'portrait')
-    //     //         ->setOptions([
-    //     //             'isHtml5ParserEnabled' => true,
-    //     //             'isRemoteEnabled' => true,
-    //     //         ]);+
-    //     $pdf = Pdf::loadView('admin.invoice.download', compact('data', 'qrCode'))
-    //     ->setPaper('a4', 'portrait')
-    //     ->setOptions([
-    //         'isHtml5ParserEnabled' => true,
-    //         'isRemoteEnabled' => true,
-    //         'defaultFont' => 'DejaVu Sans', // ensure it uses your font
-    //     ]);
+            return view('admin.invoice.download', [
+                'invoice' => $invoice,
+                'qrCode' => $qrCode
+            ]);
+        } elseif (Auth::user()->is_admin()) {
+            // بيانات ZATCA QR
+            $qrData = route('invoice.qrcode');
+            // QR كـ صورة PNG
+            $qrCode = QrCode::encoding('UTF-8')->size(120)->generate($qrData);
 
-    //     return $pdf->download('invoice_download.pdf');
-    // }
+            return view('admin.invoice.download', [
+                'invoice' => $invoice,
+                'qrCode' => $qrCode
+            ]);
+        } else {
+            abort(401);
+        }
+    }
 
-    public function invoice_download($id)
+    protected function generateZatcaQr($invoice, $vat_amount, $total)
+    {
+        $tlvData  = $this->toTLV(1, $invoice->company_name);
+        $tlvData .= $this->toTLV(2, $invoice->tax_number);
+        $tlvData .= $this->toTLV(3, $invoice->invoice_date->format('Y-m-d\TH:i:sp'));
+        $tlvData .= $this->toTLV(4, number_format($total, 2));
+        $tlvData .= $this->toTLV(5, number_format($vat_amount, 2));
+
+        return base64_encode($tlvData);
+    }
+    protected function toTLV($tag, $value)
+    {
+        return chr($tag) . chr(strlen($value)) . $value;
+    }
+    public function qrcode()
     {
         $data = [
             'invoice_number' => 'INV01011',
@@ -590,30 +610,14 @@ class AppointmentController extends Controller
             ]
         ];
 
-        // بيانات ZATCA QR
-        $qrData = "\x01" . chr(strlen('اسم المتجر')) . 'اسم المتجر'
-            . "\x02" . chr(strlen('123456789000003')) . '123456789000003'
-            . "\x03" . chr(strlen('2025-08-21')) . '2025-08-21'
-            . "\x04" . chr(strlen('485.38')) . '485.38'
-            . "\x05" . chr(strlen('82.88')) . '82.88';
-
-        // QR كـ صورة PNG
-        $qrCode = base64_encode(
-            QrCode::format('png')->encoding('UTF-8')->size(200)->generate($qrData)
-        );
-
-        // return view('admin.invoice.download', compact('data', 'qrCode'));
-        $pdf = Pdf::loadView('admin.invoice.download', compact('data', 'qrCode'));
-        return $pdf->download("invoice-.pdf");
-        // $pdf = Pdf::loadView('admin.invoice.download', compact('data', 'qrCode'))
-        //     ->setPaper('a3', 'portrait')
-        //     ->setOptions([
-        //         'isHtml5ParserEnabled' => true,
-        //         'isRemoteEnabled' => true,
-        //         'defaultFont' => 'DejaVu Sans',
-        //     ]);
-
-        // return $pdf->download('invoice_download.pdf');
+        $total = 0;
+        $total_vat = 0;
+        foreach ($data['items'] as $item) {
+            $total_raw = $item['price'] * $item['quantity'];
+            $vat_raw = $total_raw * 0.15;
+            $total += $total_raw;
+            $total_vat += $vat_raw;
+        }
+        return view('admin.invoice.qrcode', compact('data', 'total', 'total_vat'));
     }
-
 }

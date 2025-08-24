@@ -18,22 +18,18 @@
                         </thead>
                         <tbody>
                             @forelse($invoices as $invoice)
-                                @php
-                                    $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first();
-                                    $doctor = \App\Models\User::query()->where('id', $invoice->doctor_id)->first();
-                                @endphp
                                 <tr>
                                     <td>{{ $invoice->id }}</td>
                                     <td>
                                         <h2 class="table-avatar">
-                                            @if (@$patient?->profile_image)
-                                                <a href="{{ route('profile.show', ['profile' => $patient->id]) }}"
+                                            @if (@$invoice->patient?->profile_image)
+                                                <a href="{{ route('profile.show', ['profile' => $invoice->patient->id]) }}"
                                                     class="avatar avatar-sm me-2">
                                                     <img class="avatar-img rounded-circle"
-                                                        src="{{ asset(@$patient?->profile_image) }}" alt="User Image">
+                                                        src="{{ asset(@$invoice->patient?->profile_image) }}" alt="User Image">
                                                 </a>
                                                 <a
-                                                    href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient->name }}</a>
+                                                    href="{{ route('profile.show', ['profile' => $invoice->patient->id]) }}">{{ $invoice->patient->name }}</a>
                                             @else
                                                 <a class="avatar avatar-sm me-2">
                                                     <img class="avatar-img rounded-circle"
@@ -43,22 +39,24 @@
 
                                         </h2>
                                     </td>
-                                    @if ($invoice->fee == 0)
-                                        <td><span
-                                                class="badge rounded-pill bg-success-light">{{ __('hospital.invoice.free') }}</span>
+                                    @if ($invoice->subtotal == 0)
+                                        <td>
+                                            <span class="badge rounded-pill bg-success-light">
+                                                {{ __('hospital.invoice.free') }}
+                                            </span>
                                         </td>
                                     @else
                                         <td>
-                                            @if ($invoice->fee == 'Free')
+                                            @if ($invoice->subtotal == 'Free')
                                                 {{ __('hospital.invoice.free') }}
                                             @else
-                                                {{ @$doctor->pricing ? __('hospital.invoice.SAR') . @$invoice->fee : __('hospital.invoice.free') }}
+                                                {{ @$invoice->doctor?->pricing ? __('hospital.invoice.SAR') . @$invoice->subtotal : __('hospital.invoice.free') }}
                                             @endif
                                         </td>
                                     @endif
-                                    <td>{{ date('d M Y', strtotime($invoice->appointment_date)) }}
+                                    <td>{{ date('d M Y', strtotime($invoice->invoice_date)) }}
                                         <span
-                                            class="d-block text-info">{{ date('H:i A', strtotime($invoice->appointment_time)) }}</span>
+                                            class="d-block text-info">{{ date('H:i A', strtotime($invoice->invoice_date)) }}</span>
                                     </td>
                                     <td class="text-end">
                                         <div class="table-action">
@@ -66,16 +64,10 @@
                                                 class="btn btn-sm bg-info-light">
                                                 <i class="far fa-eye"></i> {{ __('hospital.invoice.view') }}
                                             </a>
-                                            {{--                                    <a href="javascript:void(0);" class="btn btn-sm bg-primary-light"> --}}
-                                            {{--                                        <i class="fas fa-print"></i> Print --}}
-                                            {{--                                    </a> --}}
                                         </div>
                                     </td>
                                 </tr>
                             @empty
-                                <!-- <tr class="bg-danger-light">
-                                        <td class="text-center" colspan="4">No Appointments found</td>
-                                    </tr> -->
                             @endforelse
                         </tbody>
                     </table>

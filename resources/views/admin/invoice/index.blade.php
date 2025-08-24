@@ -19,41 +19,34 @@
                             </thead>
                             <tbody>
                             @forelse($invoices as $invoice)
-                                @php
-                                    $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first();
-                                    $doctor = \App\Models\User::query()->where('id', $invoice->doctor_id)->first();
-                                @endphp
                                 <tr>
                                     <td>{{$invoice->id}}</td>
                                     <td>
                                         <h2 class="table-avatar">
                                             <a href="#" class="avatar avatar-sm me-2">
-                                                @if(@$patient?->profile_image)
-                                                    <img class="avatar-img rounded-circle" src="{{ asset( @$patient?->profile_image) }}" alt="User Image">
+                                                @if(@$invoice->patient?->profile_image)
+                                                    <img class="avatar-img rounded-circle" src="{{ asset( @$invoice->patient?->profile_image) }}" alt="User Image">
                                                 @else
                                                     <img class="avatar-img rounded-circle" src="assets/img/patients/patient.jpg" alt="User Image">
                                                 @endif
                                             </a>
-                                            <a href="#">{{ @$patient->name }}</a>
+                                            <a href="#">{{ @$invoice->patient->name }}</a>
                                         </h2>
                                     </td>
-                                    @if(@$doctor->pricing == 'Free')
-                                        <td><span class="badge rounded-pill bg-success-light">{{ $invoice->fee==0?'FREE':$invoice->fee }}</span></td>
+                                    @if(@$invoice->subtotal == 0)
+                                        <td><span class="badge rounded-pill bg-success-light">{{ $invoice->subtotal==0?'FREE':$invoice->subtotal }}</span></td>
                                     @else
-                                        <td>SAR {{ @$doctor->pricing }}</td>
+                                        <td>SAR {{ @$invoice->subtotal }}</td>
                                     @endif
-                                    <td>{{ date('d M Y', strtotime(@$invoice->appointment_date)) }}
+                                    <td>{{ date('d M Y', strtotime(@$invoice->invoice_date)) }}
                                         <span
-                                            class="d-block text-info">{{ date('H:i A', strtotime(@$invoice->appointment_time)) }}</span>
+                                            class="d-block text-info">{{ date('H:i A', strtotime(@$invoice->invoice_date)) }}</span>
                                     </td>
                                     <td class="text-end">
                                         <div class="table-action">
                                             <a href="{{ route('show_invoice', $invoice) }}" class="btn btn-sm bg-info-light">
                                                 <i class="far fa-eye"></i> View
                                             </a>
-                                            {{--                                    <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">--}}
-                                            {{--                                        <i class="fas fa-print"></i> Print--}}
-                                            {{--                                    </a>--}}
                                         </div>
                                     </td>
                                 </tr>

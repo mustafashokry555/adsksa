@@ -20,22 +20,19 @@
                         </thead>
                         <tbody>
                         @forelse($invoices as $invoice)
-                            @php
-                            $patient = \App\Models\User::query()->where('id', $invoice->patient_id)->first();
-                            @endphp
                         <tr>
                             <td>{{$invoice->id}}</td>
                             <td>
                                 <h2 class="table-avatar">
-                                    @if ($patient)
-                                        <a href="{{ route('profile.show', ['profile' => $patient->id]) }}" class="avatar avatar-sm me-2">
-                                            @if ($patient->profile_image)
-                                                <img class="avatar-img rounded-circle" src="{{ asset($patient->profile_image) }}" alt="Patient Image">
+                                    @if ($invoice->patient)
+                                        <a href="{{ route('profile.show', ['profile' => $invoice->patient->id]) }}" class="avatar avatar-sm me-2">
+                                            @if ($invoice->patient->profile_image)
+                                                <img class="avatar-img rounded-circle" src="{{ asset($invoice->patient->profile_image) }}" alt="Patient Image">
                                             @else
                                                 <img class="avatar-img rounded-circle" src="{{ URL::asset('/assets/img/patients/patient.jpg') }}" alt="Patient Image">
                                             @endif
                                         </a>
-                                        <a href="{{ route('profile.show', ['profile' => $patient->id]) }}">{{ $patient?->name??'' }}</a>
+                                        <a href="{{ route('profile.show', ['profile' => $invoice->patient->id]) }}">{{ $invoice->patient?->name??'' }}</a>
                                     @else
                                         <a href="#" class="avatar avatar-sm me-2">
                                             <img class="avatar-img rounded-circle" src="{{ URL::asset('/assets/img/patients/patient.jpg') }}" alt="Patient Image">
@@ -44,26 +41,20 @@
                                     @endif
                                 </h2>
                             </td>
-                            <td>{{ $invoice->fee?'SAR '.$invoice->fee:'FREE' }}</td>
-                            <td>{{ date('d M Y', strtotime($invoice->appointment_date)) }}
+                            <td>{{ $invoice->subtotal?'SAR '.$invoice->subtotal:'FREE' }}</td>
+                            <td>{{ date('d M Y', strtotime($invoice->invoice_date)) }}
                                 <span
-                                    class="d-block text-info">{{ date('H:i A', strtotime($invoice->appointment_time)) }}</span>
+                                    class="d-block text-info">{{ date('H:i A', strtotime($invoice->invoice_date)) }}</span>
                             </td>
                             <td class="text-end">
                                 <div class="table-action">
                                     <a href="{{ route('show_invoice', $invoice) }}" class="btn btn-sm bg-info-light">
                                         <i class="far fa-eye"></i> View
                                     </a>
-{{--                                    <a href="javascript:void(0);" class="btn btn-sm bg-primary-light">--}}
-{{--                                        <i class="fas fa-print"></i> Print--}}
-{{--                                    </a>--}}
                                 </div>
                             </td>
                         </tr>
                         @empty
-                            <!-- <tr class="bg-danger-light">
-                                <td class="text-center" colspan="4">No Appointments found</td>
-                            </tr> -->
                         @endforelse
                         </tbody>
                     </table>

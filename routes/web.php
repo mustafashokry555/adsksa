@@ -254,7 +254,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoices', [AppointmentController::class, 'invoice'])->name('invoices');
     Route::get('invoices/{invoice}/view', [AppointmentController::class, 'show_invoice'])->name('show_invoice');
     Route::get('invoices/{invoice}/download', [AppointmentController::class, 'invoice_download'])->name('invoice.download');
-    Route::get('invoices/123/download', [AppointmentController::class, 'downloadPdf']);
+    Route::get('invoices/qrcode', [AppointmentController::class, 'qrcode'])->name('invoice.qrcode');
 
     // Patient Dashboard
     // Route::get('/patient-dashboard', function (){

@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-md-6">
                         <p class="invoice-details">
-                            <strong>{{ __('hospital.invoice.issued')  }}:</strong> {{ date('d M Y', strtotime($invoice->appointment_date)) }}
+                            <strong>Issued:</strong> {{ date('d M Y', strtotime($invoice->invoice_date)) }}
                         </p>
                     </div>
                 </div>
@@ -26,26 +26,26 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="invoice-info">
-                            <strong class="customer-text">{{ __('hospital.invoice.invoice_from')  }}</strong>
+                            <strong class="customer-text">Invoice From</strong>
                             <p class="invoice-details invoice-details-two">
-                                {{ __('hospital.invoice.dr')  }}. {{ @$doctor->name }} <br>
-                                {{ @$doctor->address }},<br>
-                                {{ @$doctor->city->name }}, {{ @$doctor->state->name }}, {{ $doctor->country->name }} <br>
+                                Dr. {{ $invoice->doctor?->name }} <br>
+                                {{ $invoice->doctor?->address }},<br>
+                                {{ $invoice->doctor?->state?->name }}, {{ $invoice->doctor?->country?->name }} <br>
                             </p>
                             <br>
                             <p class="invoice-details invoice-details-two">
-                                Appointment Date : {{ date('d M Y', strtotime(@$invoice->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment_time)) }} <br>
+                                    Appoitment Date : {{ date('d M Y', strtotime(@$invoice->appointment?->appointment_date)) }}, {{ date('H:i A', strtotime(@$invoice->appointment?->appointment_date)) }} <br>
 
                                 </p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="invoice-info invoice-info2">
-                            <strong class="customer-text">{{ __('hospital.invoice.invoice_to')  }}</strong>
+                            <strong class="customer-text">Invoice To</strong>
                             <p class="invoice-details">
-                                {{ @$patient->name }} <br>
-                                {{ @$patient->address }} <br>
-                                {{ @$patient->state }}, {{ @$patient->country }} <br>
+                                {{ $patient->name }} <br>
+                                {{ $patient->address }} <br>
+                                {{ $patient->state?->name }}, {{ $patient->country?->name }} <br>
                             </p>
                         </div>
                     </div>
@@ -61,11 +61,12 @@
                             <p class="invoice-details invoice-details-two">
                                 Debit Card <br>
                                 XXXXXXXXXXXX-2541 <br>
-                                HDFC Bank<br> -->
-                                 <strong class="customer-text">{{ __('hospital.invoice.payment')  }} </strong>
+                                HDFC Bank<br>
+                            </p> -->
+                            <strong class="customer-text">Payment </strong>
                             <p class="invoice-details invoice-details-two">
 
-                                {{ __('hospital.invoice.online')  }}<br>
+                                Online<br>
                             </p>
                         </div>
                     </div>
@@ -80,33 +81,25 @@
                             <table class="invoice-table table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>{{ __('hospital.invoice.description')  }}</th>
-                                    <th class="text-center">{{ __('hospital.invoice.quantity')  }}</th>
-                                    <th class="text-center">{{ __('hospital.invoice.VAT')  }}</th>
-                                    <th class="text-end">{{ __('hospital.invoice.total')  }}</th>
+                                    <th>Description</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">SubTotal</th>
+                                    <th class="text-center">VAT ({{ $invoice->vat }}%)</th>
+                                    <th class="text-end">Total</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>{{ __('hospital.invoice.general_consultation')  }}</td>
+                                    <td>General Consultation</td>
                                     <td class="text-center">1</td>
-                                    <td class="text-center">{{ __('hospital.invoice.SAR')  }} {{@$invoice->vat??'0'}}</td>
-                                    @if(@$invoice->fee == 0)
-                                    <td class="text-end"><span class="badge rounded-pill bg-success-light">{{ __('hospital.invoice.free')  }}</span></td>
-                                    @else
-                                    <td class="text-end">{{ __('hospital.invoice.SAR')  }} {{ @$invoice->fee }}</td>
-                                    @endif
+                                    <td class="text-center">SAR {{ $invoice->subtotal }}</td>
+                                    @php
+                                        $vat_amount = $invoice->subtotal == 0 ? 0 :  ($invoice->subtotal * ($invoice->vat / 100));
+                                        $totla = $invoice->subtotal + $vat_amount;
+                                    @endphp
+                                    <td class="text-center">SAR {{ $vat_amount }}</td>
+                                    <td class="text-end">{{ $totla == 0 ? 'FREE' : 'SAR '. $totla }}</td>
                                 </tr>
-                                <!-- <tr>
-                                    <td>Video Call Booking</td>
-                                    <td class="text-center">1</td>
-                                    <td class="text-center">SAR 0</td>
-                                    @if(@$doctor->pricing == 'Free')
-                                        <td class="text-end"><span class="badge rounded-pill bg-success-light">{{ @$doctor->pricing }}</span></td>
-                                    @else
-                                        <td class="text-end">SAR {{ @$doctor->pricing }}</td>
-                                    @endif
-                                </tr> -->
                                 </tbody>
                             </table>
                         </div>
@@ -115,28 +108,18 @@
                         <div class="table-responsive">
                             <table class="invoice-table-two table">
                                 <tbody>
-                                @if(@$invoice->fee == 0)
-                                @else
                                 <tr>
-                                    <th>{{ __('hospital.invoice.subtotal')  }}:</th>
-
-                                    @if(@$invoice->fee == 'Free')
-                                        <td class="text-end"><span class="badge rounded-pill bg-success-light">{{ @$invoice->fee }}</span></td>
-                                    @else
-                                        <td class="text-end">{{ __('hospital.invoice.SAR')  }} {{ @$invoice->fee }}</td>
-                                    @endif
+                                    <th>Subtotal:</th>
+                                    <td><span> {{ $invoice->subtotal == 0 ? 'FREE' : 'SAR '.$invoice->subtotal }}</span></td>
                                 </tr>
-
                                 <tr>
-                                    <th>{{ __('hospital.invoice.total_amount')  }}:</th>
-                                    @if(@$invoice->fee == 0)
-                                        <td class="text-end"><span class="badge rounded-pill bg-success-light">{{ __('hospital.invoice.free')  }}</span></td>
-                                    @else
-                                        <td class="text-end">{{ __('hospital.invoice.SAR')  }} {{ @$invoice->fee }}</td>
-                                    @endif
+                                    <th>VAT ({{ $invoice->vat }}%):</th>
+                                    <td><span> {{ $vat_amount }}</span></td>
                                 </tr>
-                                @endif
-
+                                <tr>
+                                    <th>Total Amount:</th>
+                                    <td><span>{{ $totla == 0 ? 'FREE' : 'SAR '.$totla }}</span></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -144,14 +127,19 @@
                 </div>
             </div>
 
+            <div class="text-end mt-4">
+                <a class="btn btn-primary" href="{{ route('invoice.download', $invoice->id) }}" target="_blank">
+                    <i class="fa fa-print"></i> Print Invoice
+                </a>
+            </div>
 
-            <div class="other-info">
-                <h4>{{ __('hospital.invoice.other_information')  }}</h4>
+            {{-- <div class="other-info">
+                <h4>Other information</h4>
                 <p class="text-muted mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed dictum
                     ligula, cursus blandit risus. Maecenas eget metus non tellus dignissim aliquam ut a ex. Maecenas sed
                     vehicula dui, ac suscipit lacus. Sed finibus leo vitae lorem interdum, eu scelerisque tellus
                     fermentum. Curabitur sit amet lacinia lorem. Nullam finibus pellentesque libero.</p>
-            </div>
+            </div> --}}
 
         </div>
     </div>
