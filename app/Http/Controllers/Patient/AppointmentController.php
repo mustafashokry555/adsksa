@@ -21,7 +21,9 @@ use App\Models\Unavailability;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use SimpleXMLElement;
 
 class AppointmentController extends Controller
 {
@@ -548,8 +550,8 @@ class AppointmentController extends Controller
         $total = $invoice->subtotal + $vat_amount;
         if (Auth::user()->is_doctor() && Auth::user()->id == $invoice->doctor_id) {
             // بيانات ZATCA QR
-            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);            // QR كـ صورة PNG
-            $qrCode = QrCode::encoding('UTF-8')->size(120)->generate($qrData);
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
 
             return view('admin.invoice.download', [
                 'invoice' => $invoice,
@@ -557,9 +559,8 @@ class AppointmentController extends Controller
             ]);
         } elseif (Auth::user()->is_hospital() && Auth::user()->hospital_id == $invoice->hospital_id) {
             // بيانات ZATCA QR
-            $qrData = $this->generateZatcaQr($invoice);
-            // QR كـ صورة PNG
-            $qrCode = QrCode::encoding('UTF-8')->size(120)->generate($qrData);
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
 
             return view('admin.invoice.download', [
                 'invoice' => $invoice,
@@ -567,9 +568,8 @@ class AppointmentController extends Controller
             ]);
         } elseif (Auth::user()->is_admin()) {
             // بيانات ZATCA QR
-            $qrData = route('invoice.qrcode');
-            // QR كـ صورة PNG
-            $qrCode = QrCode::encoding('UTF-8')->size(120)->generate($qrData);
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
 
             return view('admin.invoice.download', [
                 'invoice' => $invoice,
@@ -580,44 +580,170 @@ class AppointmentController extends Controller
         }
     }
 
+    private function pemToDer($pem)
+    {
+        $data = preg_replace('/-----.*-----/', '', $pem);
+        $data = str_replace(["\r", "\n"], '', $data);
+        return base64_decode($data);
+    }
     protected function generateZatcaQr($invoice, $vat_amount, $total)
     {
+        // 1️⃣ Generate XML
+        $xmlString = $this->generateInvoiceXml($invoice);
+        // 2️⃣ Hash
+        $rawHash = hash('sha256', $xmlString, true);
+        $hash = base64_encode($rawHash);
+        // 3️⃣ Sign with Private Key
+        $privateKey = openssl_pkey_get_private(file_get_contents(storage_path('app/private_key.pem')));
+        $signature = '';
+        openssl_sign($rawHash, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        $signature = base64_encode($signature);
+        // 4️⃣ Public Key (convert to DER)
+        $publicKeyPem = file_get_contents(storage_path('app/public_key.pem'));
+        $publicKeyDer = $this->pemToDer($publicKeyPem);
+        $publicKey = base64_encode($publicKeyDer);
+        // 5️⃣ Certificate (convert to DER)
+        $certPem = file_get_contents(storage_path('app/zatca_cert.pem'));
+        $certDer = $this->pemToDer($certPem);
+        $certificate = base64_encode($certDer);
+        // 6️⃣ TLV Encoding
         $tlvData  = $this->toTLV(1, $invoice->company_name);
         $tlvData .= $this->toTLV(2, $invoice->tax_number);
         $tlvData .= $this->toTLV(3, $invoice->invoice_date->format('Y-m-d\TH:i:sp'));
-        $tlvData .= $this->toTLV(4, number_format($total, 2));
-        $tlvData .= $this->toTLV(5, number_format($vat_amount, 2));
+        $tlvData .= $this->toTLV(4, (string)number_format($total, 2));
+        $tlvData .= $this->toTLV(5, (string)number_format($vat_amount, 2));
+        $tlvData .= $this->toTLV(6, base64_encode($rawHash));
+        $tlvData .= $this->toTLV(7, $signature);
+
+
+        // 6️⃣ TLV Encoding
+        // $elements = [
+        //     [1, $invoice->company_name],        // اسم البائع
+        //     [2, $invoice->tax_number],         // رقم الضريبة
+        //     [3, $invoice->invoice_date->format('Y-m-d\TH:i:sp')],   // تاريخ الفاتورة
+        //     [4, number_format($total, 2)],  // الإجمالي مع الضريبة
+        //     [5, number_format($vat_amount, 2)],      // إجمالي الضريبة
+        //     [6, $hash],                        // تجزئة الفاتورة
+        //     [7, $signature],                   // التوقيع الإلكتروني
+        //     // [8, $certificate],                 // شهادة التوقيع
+        //     // [9, $publicKey],                   // المفتاح العام
+        // ];
+
+        // $tlvData = '';
+        // foreach ($elements as [$tag, $value]) {
+        //     $tlvData .= $this->toTLV($tag, $value);
+        // }
+
+        // $tlvData .= $this->toTLV(8, $certificate);
+        // $tlvData .= $this->toTLV(9, $publicKey);
+
+        // // 1. Hash of XML
+        // $xmlInvoice = $this->generateInvoiceXml($invoice, $vat_amount, $total);
+        // $hash = hash('sha256', $xmlInvoice);
+        // $tlvData .= $this->toTLV(6, $hash);
+
+        // // 2. ECDSA signature
+        // // الـ Private/Public Keys بتعملهم بعملية CSR + Onboarding API مع ZATCA.
+        // $privateKey = openssl_pkey_get_private(file_get_contents(storage_path('app/private_key.pem')));
+        // openssl_sign($hash, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        // $tlvData .= $this->toTLV(7, base64_encode($signature));
+
+        // // 3. ECDSA Public Key
+        // $publicKey = file_get_contents(storage_path('app/public_key.pem'));
+        // $tlvData .= $this->toTLV(8, base64_encode($publicKey));
+
+        // // 4. Certificate signed by ZATCA CA
+        // $zatcaCertificate = file_get_contents(storage_path('app/zatca_cert.pem'));
+        // $tlvData .= $this->toTLV(9, base64_encode($zatcaCertificate));
 
         return base64_encode($tlvData);
     }
-    protected function toTLV($tag, $value)
+    private function toTLV($tag, $value)
     {
-        return chr($tag) . chr(strlen($value)) . $value;
-    }
-    public function qrcode()
-    {
-        $data = [
-            'invoice_number' => 'INV01011',
-            'customer_name' => 'أحمد محمد',
-            'customer_address' => 'الرياض، المملكة العربية السعودية',
-            'date' => '2025-08-21',
-            'vat_number' => '123456789000003',
-            'items' => [
-                ['name' => 'منتج 1', 'price' => 57.5, 'quantity' => 1],
-                ['name' => 'منتج 2', 'price' => 75.0, 'quantity' => 2],
-                ['name' => 'منتج 3', 'price' => 80.0, 'quantity' => 1],
-                ['name' => 'منتج 4', 'price' => 115.0, 'quantity' => 1],
-            ]
-        ];
+        $len = strlen($value);
 
-        $total = 0;
-        $total_vat = 0;
-        foreach ($data['items'] as $item) {
-            $total_raw = $item['price'] * $item['quantity'];
-            $vat_raw = $total_raw * 0.15;
-            $total += $total_raw;
-            $total_vat += $vat_raw;
+        // Handle variable length encoding (ZATCA spec)
+        if ($len < 128) {
+            $lengthBytes = chr($len);
+        } elseif ($len < 256) {
+            $lengthBytes = chr(0x81) . chr($len);
+        } else {
+            $lengthBytes = chr(0x82) . chr($len >> 8) . chr($len & 0xFF);
         }
-        return view('admin.invoice.qrcode', compact('data', 'total', 'total_vat'));
+
+        return chr($tag) . $lengthBytes . $value;
     }
+
+
+    private function generateInvoiceXml($invoice)
+    {
+        $uuid = Str::uuid()->toString();
+
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
+        <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+                xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
+        </Invoice>');
+
+        // UBLExtensions (mandatory for signing)
+        $ext = $xml->addChild('ext:UBLExtensions', null, 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');
+        $ext->addChild('ext:UBLExtension', '', 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');
+
+        // Mandatory Fields
+        $xml->addChild('cbc:ProfileID', 'reporting:1.0', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+        $xml->addChild('cbc:ID', $invoice->id, 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+        $xml->addChild('cbc:UUID', $uuid, 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+        $xml->addChild('cbc:IssueDate', $invoice->invoice_date->format('Y-m-d'), 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+        $xml->addChild('cbc:IssueTime', $invoice->invoice_date->format('H:i:sP'), 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+        $xml->addChild('cbc:InvoiceTypeCode', '388', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+        $xml->addChild('cbc:DocumentCurrencyCode', 'SAR', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+
+        // Example total
+        $legalMonetaryTotal = $xml->addChild('cac:LegalMonetaryTotal', '', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+        $legalMonetaryTotal->addChild('cbc:PayableAmount', $invoice->total_amount, 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2')
+            ->addAttribute('currencyID', 'SAR');
+
+        return  $xml->asXML();
+    }
+
+
+
+
+    // protected function generateInvoiceXml($invoice, $vat_amount, $total)
+    // {
+    //     $xml = new \SimpleXMLElement('<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"></Invoice>');
+
+    //     // Add mandatory namespaces
+    //     $xml->addAttribute('xmlns:cac', 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2');
+    //     $xml->addAttribute('xmlns:cbc', 'urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2');
+
+    //     // Invoice ID
+    //     $xml->addChild('cbc:ID', $invoice->id);
+
+    //     // Invoice Issue Date
+    //     $xml->addChild('cbc:IssueDate', $invoice->invoice_date->format('Y-m-d'));
+
+    //     // Seller info
+    //     $accountingSupplierParty = $xml->addChild('cac:AccountingSupplierParty');
+    //     $party = $accountingSupplierParty->addChild('cac:Party');
+    //     $party->addChild('cbc:Name', $invoice->company_name);
+    //     $partyTax = $party->addChild('cac:PartyTaxScheme');
+    //     $partyTax->addChild('cbc:CompanyID', $invoice->tax_number);
+
+    //     // Buyer info (if available)
+    //     $accountingCustomerParty = $xml->addChild('cac:AccountingCustomerParty');
+    //     $customerParty = $accountingCustomerParty->addChild('cac:Party');
+    //     $customerParty->addChild('cbc:Name', $invoice->patient_name ?? 'Customer');
+
+    //     // Total Amount
+    //     $legalMonetaryTotal = $xml->addChild('cac:LegalMonetaryTotal');
+    //     $legalMonetaryTotal->addChild('cbc:PayableAmount', number_format($total, 2));
+
+    //     // VAT Amount
+    //     $taxTotal = $xml->addChild('cac:TaxTotal');
+    //     $taxTotal->addChild('cbc:TaxAmount', number_format($vat_amount, 2));
+
+    //     return $xml->asXML();
+    // }
 }
