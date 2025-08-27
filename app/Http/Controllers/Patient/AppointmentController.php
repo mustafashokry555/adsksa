@@ -592,7 +592,7 @@ class AppointmentController extends Controller
         $xmlString = $this->generateInvoiceXml($invoice);
         // 2️⃣ Hash
         $rawHash = hash('sha256', $xmlString, true);
-        $hash = base64_encode($rawHash);
+        $hashBase64 = base64_encode($rawHash);
         // 3️⃣ Sign with Private Key
         $privateKey = openssl_pkey_get_private(file_get_contents(storage_path('app/private_key.pem')));
         $signature = '';
@@ -601,61 +601,18 @@ class AppointmentController extends Controller
         // 4️⃣ Public Key (convert to DER)
         $publicKeyPem = file_get_contents(storage_path('app/public_key.pem'));
         $publicKeyDer = $this->pemToDer($publicKeyPem);
-        $publicKey = base64_encode($publicKeyDer);
         // 5️⃣ Certificate (convert to DER)
         $certPem = file_get_contents(storage_path('app/zatca_cert.pem'));
         $certDer = $this->pemToDer($certPem);
-        $certificate = base64_encode($certDer);
         // 6️⃣ TLV Encoding
         $tlvData  = $this->toTLV(1, $invoice->company_name);
         $tlvData .= $this->toTLV(2, $invoice->tax_number);
         $tlvData .= $this->toTLV(3, $invoice->invoice_date->format('Y-m-d\TH:i:sp'));
-        $tlvData .= $this->toTLV(4, (string)number_format($total, 2));
-        $tlvData .= $this->toTLV(5, (string)number_format($vat_amount, 2));
-        $tlvData .= $this->toTLV(6, base64_encode($rawHash));
+        $tlvData .= $this->toTLV(4, (string)number_format($total, 2, '.', ''));
+        $tlvData .= $this->toTLV(5, (string)number_format($vat_amount, 2, '.', ''));
+        // Ensure hash is base64 and valid for ZATCA
+        $tlvData .= $this->toTLV(6, rtrim(strtr($hashBase64, '+/', '-_'), '='));
         $tlvData .= $this->toTLV(7, $signature);
-
-
-        // 6️⃣ TLV Encoding
-        // $elements = [
-        //     [1, $invoice->company_name],        // اسم البائع
-        //     [2, $invoice->tax_number],         // رقم الضريبة
-        //     [3, $invoice->invoice_date->format('Y-m-d\TH:i:sp')],   // تاريخ الفاتورة
-        //     [4, number_format($total, 2)],  // الإجمالي مع الضريبة
-        //     [5, number_format($vat_amount, 2)],      // إجمالي الضريبة
-        //     [6, $hash],                        // تجزئة الفاتورة
-        //     [7, $signature],                   // التوقيع الإلكتروني
-        //     // [8, $certificate],                 // شهادة التوقيع
-        //     // [9, $publicKey],                   // المفتاح العام
-        // ];
-
-        // $tlvData = '';
-        // foreach ($elements as [$tag, $value]) {
-        //     $tlvData .= $this->toTLV($tag, $value);
-        // }
-
-        // $tlvData .= $this->toTLV(8, $certificate);
-        // $tlvData .= $this->toTLV(9, $publicKey);
-
-        // // 1. Hash of XML
-        // $xmlInvoice = $this->generateInvoiceXml($invoice, $vat_amount, $total);
-        // $hash = hash('sha256', $xmlInvoice);
-        // $tlvData .= $this->toTLV(6, $hash);
-
-        // // 2. ECDSA signature
-        // // الـ Private/Public Keys بتعملهم بعملية CSR + Onboarding API مع ZATCA.
-        // $privateKey = openssl_pkey_get_private(file_get_contents(storage_path('app/private_key.pem')));
-        // openssl_sign($hash, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-        // $tlvData .= $this->toTLV(7, base64_encode($signature));
-
-        // // 3. ECDSA Public Key
-        // $publicKey = file_get_contents(storage_path('app/public_key.pem'));
-        // $tlvData .= $this->toTLV(8, base64_encode($publicKey));
-
-        // // 4. Certificate signed by ZATCA CA
-        // $zatcaCertificate = file_get_contents(storage_path('app/zatca_cert.pem'));
-        // $tlvData .= $this->toTLV(9, base64_encode($zatcaCertificate));
-
         return base64_encode($tlvData);
     }
     private function toTLV($tag, $value)
@@ -709,6 +666,45 @@ class AppointmentController extends Controller
 
 
 
+            // 6️⃣ TLV Encoding
+        // $elements = [
+        //     [1, $invoice->company_name],        // اسم البائع
+        //     [2, $invoice->tax_number],         // رقم الضريبة
+        //     [3, $invoice->invoice_date->format('Y-m-d\TH:i:sp')],   // تاريخ الفاتورة
+        //     [4, number_format($total, 2)],  // الإجمالي مع الضريبة
+        //     [5, number_format($vat_amount, 2)],      // إجمالي الضريبة
+        //     [6, $hash],                        // تجزئة الفاتورة
+        //     [7, $signature],                   // التوقيع الإلكتروني
+        //     // [8, $certificate],                 // شهادة التوقيع
+        //     // [9, $publicKey],                   // المفتاح العام
+        // ];
+
+        // $tlvData = '';
+        // foreach ($elements as [$tag, $value]) {
+        //     $tlvData .= $this->toTLV($tag, $value);
+        // }
+
+        // $tlvData .= $this->toTLV(8, $certificate);
+        // $tlvData .= $this->toTLV(9, $publicKey);
+
+        // // 1. Hash of XML
+        // $xmlInvoice = $this->generateInvoiceXml($invoice, $vat_amount, $total);
+        // $hash = hash('sha256', $xmlInvoice);
+        // $tlvData .= $this->toTLV(6, $hash);
+
+        // // 2. ECDSA signature
+        // // الـ Private/Public Keys بتعملهم بعملية CSR + Onboarding API مع ZATCA.
+        // $privateKey = openssl_pkey_get_private(file_get_contents(storage_path('app/private_key.pem')));
+        // openssl_sign($hash, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        // $tlvData .= $this->toTLV(7, base64_encode($signature));
+
+        // // 3. ECDSA Public Key
+        // $publicKey = file_get_contents(storage_path('app/public_key.pem'));
+        // $tlvData .= $this->toTLV(8, base64_encode($publicKey));
+
+        // // 4. Certificate signed by ZATCA CA
+        // $zatcaCertificate = file_get_contents(storage_path('app/zatca_cert.pem'));
+        // $tlvData .= $this->toTLV(9, base64_encode($zatcaCertificate));
 
     // protected function generateInvoiceXml($invoice, $vat_amount, $total)
     // {
