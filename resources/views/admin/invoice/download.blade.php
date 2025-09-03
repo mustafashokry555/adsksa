@@ -189,41 +189,6 @@
         </div>
     </div>
 
-    {{-- <script>
-    // Auto trigger download on page load
-    window.onload = function() {
-        window.location.href = "{{ url('invoices/123/download') }}";
-    }
-</script> --}}
-    {{-- <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script> --}}
-    {{-- html2canvas --}}
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> --}}
-
-    {{-- jsPDF --}}
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script>
-    window.onload = function () {
-        const { jsPDF } = window.jspdf;
-
-        html2canvas(document.getElementById("invoice"), { scale: 1 }).then(canvas => {
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF("p", "mm", "a3");
-
-            // Calculate width/height to fit A4
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-            pdf.addImage(imgData, "PNG", 100, 0, 100, 200);
-            pdf.save("invoice.pdf");
-        });
-    }
-</script> --}}
 </body>
 
 </html>

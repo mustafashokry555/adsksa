@@ -234,7 +234,7 @@ class AppointmentController extends Controller
                 'invoice_date'     => now(),
                 'tax_number'       => $setting?->tax_number,
                 'subtotal'         => $appointment->fee,
-                'vat'              => $setting?->vat,
+                'vat'              => $setting?->vat ?? 0.0,
             ]);
             Notification::create([
                 'from_id' => $appointment->doctor_id,
@@ -311,8 +311,7 @@ class AppointmentController extends Controller
                 'invoices' => Invoice::query()->where('hospital_id', Auth::user()->hospital_id)->orderByDesc('id')->get(),
             ]);
         } elseif (Auth::user()->is_admin()) {
-            return view(
-                'admin.invoice.index',
+            return view('admin.invoice.index',
                 [
                     'invoices' => Invoice::query()->orderByDesc('id')->get(),
                 ]
@@ -324,17 +323,31 @@ class AppointmentController extends Controller
 
     public function show_invoice(Invoice $invoice)
     {
+        $vat_amount = ($invoice->subtotal * $invoice->vat) / 100;
+        $total = $invoice->subtotal + $vat_amount;
         if (Auth::user()->is_doctor() && Auth::user()->id == $invoice->doctor_id) {
+            // بيانات ZATCA QR
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
             return view('doctor.invoice.show', [
-                'invoice' => $invoice
+                'invoice' => $invoice,
+                'qrCode' => $qrCode
             ]);
         } elseif (Auth::user()->is_hospital() && Auth::user()->hospital_id == $invoice->hospital_id) {
+            // بيانات ZATCA QR
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
             return view('hospital.invoice.show', [
-                'invoice' => $invoice
+                'invoice' => $invoice,
+                'qrCode' => $qrCode
             ]);
         } elseif (Auth::user()->is_admin()) {
+            // بيانات ZATCA QR
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
             return view('admin.invoice.show', [
                 'invoice' => $invoice,
+                'qrCode' => $qrCode
             ]);
         } else {
             abort(401);
