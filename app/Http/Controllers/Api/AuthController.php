@@ -119,7 +119,7 @@ class AuthController extends Controller
                 'address' => 'nullable|string|max:255',
                 'id_number' => ['required', 'string', 'max:50', 'unique:users'],
                 'religion_id' => ['required', 'exists:religions,id'],
-                'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
+                'marital_status' => ['nullable', 'string', 'in:single,married,divorced,widowed'],
             ]);
 
             if ($validator->fails()) {
