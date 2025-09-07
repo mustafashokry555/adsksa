@@ -7,13 +7,61 @@
                 <div class="row align-items-center">
                     <div class="col-md-12 d-flex justify-content-end">
                         <div class="doc-badge me-3">Doctors <span class="ms-1">{{ count($doctors) }}</span></div>
-                        {{--                        <a href="{{ route('doctor.create') }}" class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i> Add New</a> --}}
                     </div>
                 </div>
             </div>
             @if (session()->has('flash'))
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
+            <div id="flash-message" style="display: none" class="alert alert-success mt-2">
+                {{ session()->has('flash') ? session('flash')['message'] : '' }}
+            </div>
+            <style>
+                .switch {
+                    position: relative;
+                    display: inline-block;
+                    width: 50px;
+                    height: 25px;
+                }
+
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                .slider {
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #ccc;
+                    transition: 0.4s;
+                    border-radius: 25px;
+                }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 19px;
+                    width: 19px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: 0.4s;
+                    border-radius: 50%;
+                }
+
+                input:checked+.slider {
+                    background-color: #4caf50;
+                }
+
+                input:checked+.slider:before {
+                    transform: translateX(24px);
+                }
+            </style>
             <!-- Doctor List -->
             <div class="row">
                 <div class="col-sm-12">
@@ -66,11 +114,12 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Doctor</th>
+                                            <th>Status</th>
                                             <th>Specialities</th>
                                             <th>Address</th>
                                             <th>Member Since</th>
                                             <th>Total Income</th>
-                                            <th></th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -88,6 +137,14 @@
                                                             {{ $doctor->name }}</a>
                                                     </h2>
                                                 </td>
+                                                <td>
+                                                    <label class="switch">
+                                                        <input type="checkbox"
+                                                            {{ strtolower($doctor->status) === 'active' ? 'checked' : '' }}
+                                                            data-id="{{ $doctor->id }}">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </td>
                                                 @if ($doctor->speciality ?? '')
                                                     <td>{{ $doctor?->speciality?->name }}</td>
                                                 @else
@@ -95,9 +152,12 @@
                                                 @endif
                                                 <td>
                                                     {{-- <span class="user-name">{{ $doctor->address }} </span> --}}
-                                                    <span class="d-block">{{ $doctor->country ? $doctor->country->name : null }}</span>
-                                                    <span class="d-block">{{ $doctor->state ? $doctor->state->name : null  }}</span>
-                                                    <span class="d-block">{{ $doctor->city ? $doctor->city->name : null   }}</span>
+                                                    <span
+                                                        class="d-block">{{ $doctor->country ? $doctor->country->name : null }}</span>
+                                                    <span
+                                                        class="d-block">{{ $doctor->state ? $doctor->state->name : null }}</span>
+                                                    <span
+                                                        class="d-block">{{ $doctor->city ? $doctor->city->name : null }}</span>
                                                 </td>
                                                 <td><span class="user-name">26 November 2022 </span><span
                                                         class="d-block">12/20/2022</span>
@@ -145,4 +205,36 @@
     <!-- /Page Wrapper -->
     </div>
     <!-- /Main Wrapper -->
+    <script>
+        document.querySelectorAll('.switch input').forEach((toggle) => {
+            toggle.addEventListener('change', function() {
+                let doctorId = this.dataset.id;
+                let isActive = this.checked ? 'Active' : 'Inactive';
+
+                fetch(`/doctor/${doctorId}/toggle-active`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            is_active: isActive
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Show flash message
+                        let flash = document.getElementById("flash-message");
+                        flash.innerText = data.message;
+                        flash.style.display = "block";
+
+                        // Auto-hide after 3s
+                        setTimeout(() => {
+                            flash.style.display = "none";
+                        }, 3000);
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
 @endsection

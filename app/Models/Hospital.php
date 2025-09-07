@@ -31,11 +31,17 @@ class Hospital extends Model
         'facebook',     // New field
         'instagram',    // New field
         'tiktok',       // New field
+        'is_active',       // New field
     ];
     protected $casts = [
         'profile_images' => 'array', // Ensures profile_images is handled as an array
+        'is_active' => 'boolean',
     ];
     protected $appends = ['hospital_name', 'images_links', 'about'];
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
     public function users()
     {
         return $this->hasMany(User::class);

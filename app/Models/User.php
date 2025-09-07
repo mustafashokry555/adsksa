@@ -100,6 +100,11 @@ class User extends Authenticatable
         return $this->hasMany(Wishlist::class, 'patient_id')->whereNotNull('doctor_id');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'Active');
+    }
+
     // Favorite hospitals for patients
     public function favoriteHospitals()
     {

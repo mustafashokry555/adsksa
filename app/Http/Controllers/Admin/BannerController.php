@@ -19,11 +19,13 @@ class BannerController extends Controller
         } elseif (Auth::user()->user_type == 'A') {
             $selectedHospitals = $request->hospitals;
             $banners = Banner::orderByDesc('id');
-            $hospitals = Hospital::all();
+            $hospitals = Hospital::active()->get();
             if ($selectedHospitals) {
                 $banners->whereIn('hospital_id', $selectedHospitals);
             }
-            $banners = $banners->with('hospital')->get();
+            $banners = $banners->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })->with('hospital')->get();
             // return $banners;
             return view('admin.banner.index', [
                 'banners' => $banners,
@@ -62,7 +64,7 @@ class BannerController extends Controller
                 'expired_at' => 'required',
                 'image' => 'required|image',
             ]);
-            
+
             if ($attributes['image'] ?? false) {
                 if ($file = $request->file('image')) {
                     $filename = time() . '-' . $file->getClientOriginalName();
@@ -79,7 +81,7 @@ class BannerController extends Controller
             abort(401);
         }
     }
-    
+
 
     public function show($id)
     {

@@ -117,7 +117,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('speciality', SpecialityController::class);
     Route::resource('hospital', HospitalController::class);
+    Route::post('/hospitals/{id}/toggle-active', [HospitalController::class, 'toggleActive']);
     Route::resource('doctor', DoctorController::class);
+    Route::post('/doctor/{id}/toggle-active', [DoctorController::class, 'toggleActive']);
     Route::resource('banner', BannerController::class);
     Route::resource('patient', PatientController::class);
     Route::resource('hospital-types', HospitalTypesController::class);

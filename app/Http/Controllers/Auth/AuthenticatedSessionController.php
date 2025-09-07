@@ -29,8 +29,13 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         $user = \App\Models\User::where('email', $request->email)->first();
-    
+
         if ($user && $user->status !== 'Active') {
+            return back()->withErrors([
+                'email' => __('web.account_inactive'),
+            ])->withInput($request->except('password'));
+        }
+        if ($user && ($user->is_doctor() || $user->is_hospital()) && (!$user->hospital || $user->hospital->is_active != 1)) {
             return back()->withErrors([
                 'email' => __('web.account_inactive'),
             ])->withInput($request->except('password'));
@@ -39,16 +44,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if(Auth::user()->is_patient()){
+        if (Auth::user()->is_patient()) {
             return redirect()->intended(RouteServiceProvider::DASHBOARD);
-        }
-
-        elseif(Auth::user()->is_doctor() || Auth::user()->is_admin() || Auth::user()->is_hospital()){
+        } elseif (Auth::user()->is_doctor() || Auth::user()->is_admin() || Auth::user()->is_hospital()) {
             return redirect()->intended(RouteServiceProvider::HOME);
-        }else{
+        } else {
             abort(401);
         }
-
     }
 
     /**

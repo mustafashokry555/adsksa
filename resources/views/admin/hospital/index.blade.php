@@ -17,8 +17,56 @@
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
 
+            <style>
+                .switch {
+                    position: relative;
+                    display: inline-block;
+                    width: 50px;
+                    height: 25px;
+                }
 
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                .slider {
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #ccc;
+                    transition: 0.4s;
+                    border-radius: 25px;
+                }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 19px;
+                    width: 19px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: 0.4s;
+                    border-radius: 50%;
+                }
+
+                input:checked+.slider {
+                    background-color: #4caf50;
+                }
+
+                input:checked+.slider:before {
+                    transform: translateX(24px);
+                }
+            </style>
             <!-- Hospitals -->
+            <div id="flash-message" style="display: none" class="alert alert-success mt-2">
+                {{ session()->has('flash') ? session('flash')['message'] : '' }}
+            </div>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
@@ -83,6 +131,7 @@
                                             <th>{{ __('admin.hospital.name_en') }}</th>
                                             <th>{{ __('admin.hospital.name_ar') }}</th>
                                             <th>{{ __('admin.hospital.email') }}</th>
+                                            <th>status</th>
                                             <th>{{ __('admin.hospital.location') }}</th>
                                             <th>{{ __('admin.hospital.insurance') }}</th>
                                             <th>{{ __('admin.hospital.created_at') }}</th>
@@ -96,8 +145,9 @@
                                                 <td>
                                                     <h2 class="table-avatar">
                                                         <a href="{{ route('hospital.edit', $hospital) }}" class="spl-img">
-                                                            <img src="{{ asset($hospital->image) }}" class="img-fluid" alt="User Image">
-                                                            </a>
+                                                            <img src="{{ asset($hospital->image) }}" class="img-fluid"
+                                                                alt="User Image">
+                                                        </a>
                                                     </h2>
                                                 </td>
                                                 <td>
@@ -120,10 +170,20 @@
                                                     <td> No Admin </td>
                                                 @endif
                                                 <td>
+                                                    <label class="switch">
+                                                        <input type="checkbox" {{ $hospital->is_active ? 'checked' : '' }}
+                                                            data-id="{{ $hospital->id }}">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </td>
+                                                <td>
                                                     <span class="user-name">{{ $hospital->address }} </span>
-                                                    <span class="d-block">{{ $hospital->country ? $hospital->country->name : null }}</span>
-                                                    <span class="d-block">{{ $hospital->state ? $hospital->state->name : null  }}</span>
-                                                    <span class="d-block">{{ $hospital->city ? $hospital->city->name : null   }}</span>
+                                                    <span
+                                                        class="d-block">{{ $hospital->country ? $hospital->country->name : null }}</span>
+                                                    <span
+                                                        class="d-block">{{ $hospital->state ? $hospital->state->name : null }}</span>
+                                                    <span
+                                                        class="d-block">{{ $hospital->city ? $hospital->city->name : null }}</span>
 
                                                 </td>
                                                 <td>
@@ -183,5 +243,40 @@
     <!-- /Main Wrapper -->
     @component('admin.components.modal-popup')
     @endcomponent
+
+    <script>
+        document.querySelectorAll('.switch input').forEach((toggle) => {
+            toggle.addEventListener('change', function() {
+                let hospitalId = this.dataset.id;
+                let isActive = this.checked ? 1 : 0;
+
+                fetch(`/hospitals/${hospitalId}/toggle-active`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            is_active: isActive
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Show flash message
+                        let flash = document.getElementById("flash-message");
+                        flash.innerText = data.message;
+                        flash.style.display = "block";
+
+                        // Auto-hide after 3s
+                        setTimeout(() => {
+                            flash.style.display = "none";
+                        }, 3000);
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
+
+
 
 @endsection

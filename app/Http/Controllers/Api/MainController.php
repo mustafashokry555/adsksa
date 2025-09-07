@@ -355,7 +355,9 @@ class MainController extends Controller
             $specialityIds = $request->input('speciality_ids') ? json_decode($request->input('speciality_ids')) : [];
             $hospitalIds = $request->input('hospital_ids') ? json_decode($request->input('hospital_ids')) : [];
             /*** 1. Search & Filter Doctors ***/
-            $doctors = User::where('user_type', 'D');
+            $doctors = User::active()->where('user_type', 'D')->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            });
             // Speciality Ids
             if ($specialityIds) {
                 $doctors = $doctors->whereIn('speciality_id', $specialityIds);
@@ -630,7 +632,9 @@ class MainController extends Controller
         try {
             $banners = Banner::where('is_active', 1)
                 ->where('expired_at', '>', now())
-                ->get();
+                ->whereHas('hospital', function ($q) {
+                    $q->where('is_active', 1);
+                })->get();
             return $this->SuccessResponse(200, null, $banners);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
@@ -649,7 +653,9 @@ class MainController extends Controller
             if ($request->hospital_id) {
                 $offers = $offers->where('hospital_id', $request->hospital_id);
             }
-            $offers = $offers->get();
+            $offers = $offers->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })->get();
             $offers = OfferResource::collection($offers);
             return $this->SuccessResponse(200, null, $offers);
         } catch (\Throwable $th) {
@@ -661,7 +667,7 @@ class MainController extends Controller
     public function HospitalsTest(Request $request)
     {
         try {
-            $query = Hospital::query();
+            $query = Hospital::query()->where('hospitals.is_active', 1);
             if (request('search')) {
                 $query->where(function ($query) {
                     $query->where("hospital_name_ar", 'like', '%' . request('search') . '%')

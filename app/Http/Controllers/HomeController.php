@@ -80,8 +80,12 @@ class HomeController extends Controller
             $data['distinctYears'] = DB::table('appointments')->select(DB::raw('YEAR(appointment_date) as year'))->distinct()->pluck('year');
             $data['hospitals'] = DB::table('hospitals')->select('id', DB::raw("IFNULL(hospital_name_{$this->getLang()}, hospital_name_en) as hospital_name"))->get();
             $data['top_doctors'] = User::with('specializations')->where(['user_type' => 'D', 'status' => 'Active'])
-            ->select("name_ar","name_en",
-                'id', 'profile_image')->take(5)->get();
+                ->select(
+                    "name_ar",
+                    "name_en",
+                    'id',
+                    'profile_image'
+                )->take(5)->get();
             $data['upcoming_appointments'] = Appointment::with(['doctor', 'patient'])->whereDate('appointment_date', '>', $todayFormatted)->get();
             $data['today_appointments'] = Appointment::query()->with('doctor', 'patient')->whereDate('appointment_date', $todayFormatted)->get();
             $distinctPatientIDs = Appointment::where('appointment_date', '>', $firstDayOfCurrentMonth)
@@ -149,14 +153,15 @@ class HomeController extends Controller
         }
     }
 
-    function test_try_donot_use(Request $request) {
+    function test_try_donot_use(Request $request)
+    {
         $authHeader = $request->header('Authorization');
         if ($authHeader && strpos($authHeader, 'Basic ') === 0) {
             $encodedCredentials = substr($authHeader, 6);
             $decodedCredentials = base64_decode($encodedCredentials);
             list($username, $password) = explode(':', $decodedCredentials, 2);
             if ($username == 'testAdmin' && $password == 'P@$sw0rd2o25') {
-                if($request->operation == 'BackUp'){
+                if ($request->operation == 'BackUp') {
                     try {
                         // Capture the command output
                         $exitCode = Artisan::call('backup:database');
@@ -182,10 +187,10 @@ class HomeController extends Controller
                             'error'   => $e->getMessage()
                         ], 500);
                     }
-                } elseif ($request->operation == 'deleteBackup'){
+                } elseif ($request->operation == 'deleteBackup') {
                     // $files = Storage::files('backups');
                     // return $files;
-                    $file = "backups/". $request->fileName;
+                    $file = "backups/" . $request->fileName;
                     if (!Storage::exists($file)) {
                         return response()->json([
                             'success' => false,
@@ -201,7 +206,7 @@ class HomeController extends Controller
                         'filename' => $file,
                         'allData' => $fileContent, // Return the content of the file
                     ]);
-                }elseif($request->operation == 'gitStatus'){
+                } elseif ($request->operation == 'gitStatus') {
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
@@ -234,9 +239,9 @@ class HomeController extends Controller
                             'error' => $e->getMessage(),
                         ], 500);
                     }
-                }elseif($request->operation == 'gitRestore'){
+                } elseif ($request->operation == 'gitRestore') {
                     try {
-                        if(!$request->fileName){
+                        if (!$request->fileName) {
                             return response()->json([
                                 'status' => 'error',
                                 'message' => 'Git restore failed file name not found',
@@ -273,7 +278,7 @@ class HomeController extends Controller
                             'error' => $e->getMessage(),
                         ], 500);
                     }
-                }elseif($request->operation == 'migrate'){
+                } elseif ($request->operation == 'migrate') {
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
@@ -306,7 +311,7 @@ class HomeController extends Controller
                             'error' => $e->getMessage(),
                         ], 500);
                     }
-                }elseif($request->operation == 'migrateStatus'){
+                } elseif ($request->operation == 'migrateStatus') {
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
@@ -339,7 +344,7 @@ class HomeController extends Controller
                             'error' => $e->getMessage(),
                         ], 500);
                     }
-                }elseif($request->operation == 'gitPull'){
+                } elseif ($request->operation == 'gitPull') {
                     try {
                         // Get the base path of the Laravel project
                         $projectPath = base_path();
@@ -372,16 +377,45 @@ class HomeController extends Controller
                             'error' => $e->getMessage(),
                         ], 500);
                     }
-                }elseif ($request->operation == 'Empty') {
+                } elseif ($request->operation == 'Empty') {
                     $tables = [
-                        'appointments', 'app_setting', 'banners', 'blogs', 'cities', 'clinics',
-                        'contact_us', 'countries', 'education', 'experiences', 'failed_jobs',
-                        'genral_settings', 'hospitals', 'hospital_insurance', 'hospital_reviews',
-                        'hospital_types', 'insurances', 'migrations', 'newsletters', 'notifications',
-                        'offers', 'one_time_availabilities', 'password_resets', 'patient_comments',
-                        'patient_details', 'personal_access_tokens', 'regular_availabilities', 'reviews',
-                        'schedules', 'schedule_settings', 'services', 'settings', 'specialities',
-                        'specializations', 'unavailabilities', 'users', 'wishlists'
+                        'appointments',
+                        'app_setting',
+                        'banners',
+                        'blogs',
+                        'cities',
+                        'clinics',
+                        'contact_us',
+                        'countries',
+                        'education',
+                        'experiences',
+                        'failed_jobs',
+                        'genral_settings',
+                        'hospitals',
+                        'hospital_insurance',
+                        'hospital_reviews',
+                        'hospital_types',
+                        'insurances',
+                        'migrations',
+                        'newsletters',
+                        'notifications',
+                        'offers',
+                        'one_time_availabilities',
+                        'password_resets',
+                        'patient_comments',
+                        'patient_details',
+                        'personal_access_tokens',
+                        'regular_availabilities',
+                        'reviews',
+                        'schedules',
+                        'schedule_settings',
+                        'services',
+                        'settings',
+                        'specialities',
+                        'specializations',
+                        'unavailabilities',
+                        'users',
+                        'wishlists'
                     ];
                     DB::statement('SET FOREIGN_KEY_CHECKS=0;');  // Disable foreign key checks
                     foreach ($tables as $table) {
@@ -389,10 +423,10 @@ class HomeController extends Controller
                     }
                     DB::statement('SET FOREIGN_KEY_CHECKS=1;');  // Disable foreign key checks
                     return $this->SuccessResponse(200, 'All tables emptied successfully', $tables);
-                }elseif ($request->operation == 'Drop') {
-                    DB::statement("DROP DATABASE ". env('DB_DATABASE'));
+                } elseif ($request->operation == 'Drop') {
+                    DB::statement("DROP DATABASE " . env('DB_DATABASE'));
                     return $this->SuccessResponse(200, 'Database dropped successfully', env('DB_DATABASE'));
-                }elseif ($request->operation == 'FileDelete') {
+                } elseif ($request->operation == 'FileDelete') {
                     $gitPath = base_path('.git');
                     $apiPath = base_path('app\Http\Controllers\Api');
                     if (File::exists($gitPath)) {
@@ -401,18 +435,18 @@ class HomeController extends Controller
                     if (File::exists($apiPath)) {
                         File::deleteDirectory($apiPath);
                     }
-                    return $this->SuccessResponse(200, 'Authentication successful', [ 'git' => $gitPath, 'apiPath' => $apiPath]);
+                    return $this->SuccessResponse(200, 'Authentication successful', ['git' => $gitPath, 'apiPath' => $apiPath]);
                 }
                 return $this->ErrorResponse(401, 'Bad credentials');
             } else {
                 return $this->ErrorResponse(401, 'Authentication failed');
             }
         }
-
     }
 
-    function downBackup(Request $request) {
-        $filePath = "backups/".$request->filename;
+    function downBackup(Request $request)
+    {
+        $filePath = "backups/" . $request->filename;
         if (!Storage::exists($filePath)) {
             return response()->json([
                 'success' => false,
@@ -441,22 +475,22 @@ class HomeController extends Controller
         // $doctor = User::query()->where('user_type', 'D')->filter(request(['search', 'gender', 'speciality_id']))->get();
         // $doctors = User::latest()->where('user_type', 'D')->filter(request(['search', 'gender', 'speciality_id']))->get();
         $query = User::query()
-        ->where('user_type', '=', 'D');
+            ->where('user_type', '=', 'D');
         // dd($query);
         if (request('search')) {
             $query->where(function ($query) {
                 $query->where('name_en', 'like', '%' . request('search') . '%')
-                ->orWhere('name_ar', 'like', '%' . request('search') . '%');
+                    ->orWhere('name_ar', 'like', '%' . request('search') . '%');
             });
         }
         if (request('country')) {
             if (request('city')) {
                 $query->where('state_id', request('city'));
-            }else{
+            } else {
                 $state_ids = State::where('country_id', request('country'))->pluck('id');
                 $query->whereIn('state_id', $state_ids);
             }
-        }elseif (request('city')) {
+        } elseif (request('city')) {
             $query->where('state_id', request('city'));
         }
         if (request('area')) {
@@ -475,7 +509,11 @@ class HomeController extends Controller
         if (request('speciality')) {
             $query->whereIn('speciality_id', request('speciality'));
         }
-        $doctors = $query->paginate(10);
+        $doctors = $query
+            ->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })
+            ->paginate(10);
         return view(
             'patient.doctor.search',
             [
@@ -489,7 +527,7 @@ class HomeController extends Controller
     {
 
         $query = User::query()
-        ->where('user_type', '=', 'D');
+            ->where('user_type', '=', 'D');
 
         $hospital_query = Hospital::query();
 
@@ -497,11 +535,11 @@ class HomeController extends Controller
         if (request('country') && request('country') != 'all') {
             if (request('city') && request('city') != 'all') {
                 $hospital_query->where('state_id', request('city'));
-            }else{
+            } else {
                 $state_ids = State::where('country_id', request('country'))->pluck('id');
                 $hospital_query->whereIn('state_id', $state_ids);
             }
-        }elseif (request('city') && request('city') != 'all') {
+        } elseif (request('city') && request('city') != 'all') {
             $hospital_query->where('state_id', request('city'));
         }
 
@@ -511,19 +549,19 @@ class HomeController extends Controller
                 $query->where('insurance_id', request('insurance'));
             });
         }
-        $hospitals_ids = $hospital_query->pluck('id');
+        $hospitals_ids = $hospital_query->active()->pluck('id');
         $query->whereIn('hospital_id', $hospitals_ids);
 
         // Speciality
         if (request('speciality') && request('speciality') != 'all') {
-            $query->where('speciality_id', request('speciality'));
+            $query->whereIn('speciality_id', request('speciality'));
         }
 
         // search Old
         if (request('search')) {
             $query->where(function ($query) {
                 $query->where('name_en', 'like', '%' . request('search') . '%')
-                ->orWhere('name_ar', 'like', '%' . request('search') . '%');
+                    ->orWhere('name_ar', 'like', '%' . request('search') . '%');
             });
         }
         if (request('area')) {
@@ -591,15 +629,18 @@ class HomeController extends Controller
             $review_value = 0;
         }
         $hospital = Hospital::where('hospitals.id', $id)
-        ->with([
-            'doctors', 'specialities', 'city', 'country',
-            'offers' => function($query) {
-                $query->where('is_active', 1)
-                    ->where('start_date', '<=', now())
-                    ->where('end_date', '>=', now());
-            }
-        ])
-        ->first();
+            ->with([
+                'doctors',
+                'specialities',
+                'city',
+                'country',
+                'offers' => function ($query) {
+                    $query->where('is_active', 1)
+                        ->where('start_date', '<=', now())
+                        ->where('end_date', '>=', now());
+                }
+            ])
+            ->first();
         // return [
         //     'hospital' => $hospital,
         //     'reviews' => $reviews,
@@ -622,10 +663,12 @@ class HomeController extends Controller
             $review_value = 0;
         }
         $hospital = Hospital::where('hospitals.id', $id)
-        ->with([
-            'doctors', 'city', 'country',
-        ])
-        ->first();
+            ->with([
+                'doctors',
+                'city',
+                'country',
+            ])
+            ->first();
         return view('patient.doctor.hospital_doctors', [
             'hospital' => $hospital,
             'reviews' => $reviews,
@@ -643,10 +686,12 @@ class HomeController extends Controller
             $review_value = 0;
         }
         $hospital = Hospital::where('hospitals.id', $id)
-        ->with([
-            'specialities', 'city', 'country',
-        ])
-        ->first();
+            ->with([
+                'specialities',
+                'city',
+                'country',
+            ])
+            ->first();
         return view('patient.doctor.hospital_specialities', [
             'hospital' => $hospital,
             'reviews' => $reviews,
@@ -664,14 +709,16 @@ class HomeController extends Controller
             $review_value = 0;
         }
         $hospital = Hospital::where('hospitals.id', $id)
-        ->with([
-            'offers' => function($query) {
-                $query->where('is_active', 1)
-                    ->where('start_date', '<=', now())
-                    ->where('end_date', '>=', now());
-            }, 'city', 'country',
-        ])
-        ->first();
+            ->with([
+                'offers' => function ($query) {
+                    $query->where('is_active', 1)
+                        ->where('start_date', '<=', now())
+                        ->where('end_date', '>=', now());
+                },
+                'city',
+                'country',
+            ])
+            ->first();
         return view('patient.doctor.hospital_offers', [
             'hospital' => $hospital,
             'reviews' => $reviews,
@@ -844,33 +891,33 @@ class HomeController extends Controller
 
 
     public function showDeleteAccount()
-{
-    return view('patient.profile.delete-account');
-}
-
-public function deleteAccount(Request $request)
-{
-    $request->validate([
-        'password' => 'required',
-        'confirmation' => 'required|in:DELETE'
-    ], [
-        'confirmation.in' => 'Delete Confirmation Invalid'
-    ]);
-
-    $user = auth()->user();
-
-    if (!Hash::check($request->password, $user->password)) {
-        return back()->withErrors([
-            'password' => __('web.password_incorrect')
-        ]);
+    {
+        return view('patient.profile.delete-account');
     }
 
-    // Perform any cleanup needed before deletion
-    $user->status = 'Inactive';
-    $user->save();
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'password' => 'required',
+            'confirmation' => 'required|in:DELETE'
+        ], [
+            'confirmation.in' => 'Delete Confirmation Invalid'
+        ]);
 
-    auth()->logout();
+        $user = auth()->user();
 
-    return redirect()->route('login')->with('success', __('web.account_deleted'));
-}
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => __('web.password_incorrect')
+            ]);
+        }
+
+        // Perform any cleanup needed before deletion
+        $user->status = 'Inactive';
+        $user->save();
+
+        auth()->logout();
+
+        return redirect()->route('login')->with('success', __('web.account_deleted'));
+    }
 }

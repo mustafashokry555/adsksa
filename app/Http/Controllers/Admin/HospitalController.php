@@ -137,8 +137,7 @@ class HospitalController extends Controller
             $query->whereIn('speciality_id', $selectedSpecialities);
         }
         $doctors = $query->get();
-        return view(
-            'admin.hospital.doctor.index',
+        return view( 'admin.hospital.doctor.index',
             [
                 'doctors' => $doctors,
                 'specialities' => $specialities,
@@ -153,18 +152,18 @@ class HospitalController extends Controller
         $hospital = Hospital::find($id);
         $hospital_types = HospitalType::all();
         $countries = Country::all();
-        if($hospital->country){
+        if ($hospital->country) {
             $states = State::where('country_id', $hospital->country->id)->get();
-        }else{
+        } else {
             $states = State::all();
         }
-        if($hospital->state){
+        if ($hospital->state) {
             $cities = City::where('state_id', $hospital->state->id)->get();
-        }elseif($hospital->country){
-            $cities = City::whereHas('country', function ($query) use($hospital) {
+        } elseif ($hospital->country) {
+            $cities = City::whereHas('country', function ($query) use ($hospital) {
                 $query->where('countries.id', $hospital->country->id);
             })->get();
-        }else{
+        } else {
             $cities = City::all();
         }
         if (Auth::user()->user_type == 'A') {
@@ -178,7 +177,7 @@ class HospitalController extends Controller
                 'states' => $states,
                 'cities' => $cities,
             ]);
-        }elseif (Auth::user()->user_type == 'H') {
+        } elseif (Auth::user()->user_type == 'H') {
             return view('hospital.profile.editHospital', [
                 'hospital' => $hospital,
                 'admin' => User::query()->where('hospital_id', $id)->where('user_type', 'H')->first(),
@@ -206,7 +205,7 @@ class HospitalController extends Controller
         // return $request;
         $hospital = Hospital::find($id);
         if ($hospital) {
-            if(Auth::user()->user_type == 'A'){
+            if (Auth::user()->user_type == 'A') {
                 $attributes = $request->validate([
                     'hospital_name_en' => 'required',
                     'hospital_name_ar' => 'required',
@@ -233,7 +232,7 @@ class HospitalController extends Controller
                     'opening_hours' => 'string|nullable',
                 ]);
                 $admin = User::where('hospital_id', $id)->where('user_type', 'H')->first();
-                if ($admin){
+                if ($admin) {
                     $data = [
                         'name_en' => $request->name,
                         'name_ar' => $request->name,
@@ -243,7 +242,7 @@ class HospitalController extends Controller
                         $data['password'] = Hash::make($request->password);
                     }
                     $admin->update($data);
-                }else{
+                } else {
                     $data['user_type'] = 'H';
                     $data['hospital_id'] = $id;
                     $data['name_en'] = $request->name;
@@ -254,7 +253,7 @@ class HospitalController extends Controller
                     }
                     $admin = User::create($data);
                 }
-            }elseif(Auth::user()->user_type == 'H'){
+            } elseif (Auth::user()->user_type == 'H') {
                 $attributes = $request->validate([
                     'hospital_name_en' => 'required',
                     'hospital_name_ar' => 'required',
@@ -321,11 +320,11 @@ class HospitalController extends Controller
             $hospital->update($attributes);
 
             $hospital->insurances()->sync($request->insurance);
-            if(Auth::user()->user_type == 'A'){
+            if (Auth::user()->user_type == 'A') {
                 return redirect()
                     ->route('hospital.index')
                     ->with('flash', ['type', 'success', 'message' => 'Hospital Details updated Successfully']);
-            }else{
+            } else {
                 return redirect()
                     ->route('hospital.edit', $id)
                     ->with('flash', ['type', 'success', 'message' => 'Hospital Details updated Successfully']);
@@ -346,5 +345,15 @@ class HospitalController extends Controller
 
         return redirect()
             ->route('hospital.index');
+    }
+
+
+    public function toggleActive(Request $request, $id)
+    {
+        $hospital = Hospital::findOrFail($id);
+        $hospital->is_active = $request->is_active;
+        $hospital->save();
+
+        return response()->json(['message' => 'Status updated successfully']);
     }
 }

@@ -16,6 +16,55 @@
             @if (session()->has('flash'))
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
+            <style>
+                .switch {
+                    position: relative;
+                    display: inline-block;
+                    width: 50px;
+                    height: 25px;
+                }
+
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                .slider {
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #ccc;
+                    transition: 0.4s;
+                    border-radius: 25px;
+                }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 19px;
+                    width: 19px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: 0.4s;
+                    border-radius: 50%;
+                }
+
+                input:checked+.slider {
+                    background-color: #4caf50;
+                }
+
+                input:checked+.slider:before {
+                    transform: translateX(24px);
+                }
+            </style>
+            <div id="flash-message" style="display: none" class="alert alert-success mt-2">
+                {{ session()->has('flash') ? session('flash')['message'] : '' }}
+            </div>
             <!-- Doctor List -->
             <div class="row">
                 <div class="col-sm-12">
@@ -69,6 +118,7 @@
                                             <th>{{ __('admin.doctor.id') }}</th>
                                             <th>{{ __('admin.doctor.doctor') }}</th>
                                             <th>{{ __('admin.doctor.hospital') }}</th>
+                                            <th>Status</th>
                                             <th>{{ __('admin.doctor.specialities') }}</th>
                                             <th>{{ __('admin.doctor.address') }}</th>
                                             <th>{{ __('admin.doctor.member_since') }}</th>
@@ -102,6 +152,14 @@
                                                     </h2>
                                                 </td>
                                                 <td>{{ $doctor?->hospital?->hospital_name }}</td>
+                                                <td>
+                                                    <label class="switch">
+                                                        <input type="checkbox"
+                                                            {{ strtolower($doctor->status) === 'active' ? 'checked' : '' }}
+                                                            data-id="{{ $doctor->id }}">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </td>
                                                 @if ($doctor->speciality ?? '')
                                                     <td>{{ $doctor?->speciality?->name ?? '' }}</td>
                                                 @else
@@ -157,4 +215,37 @@
     <!-- /Page Wrapper -->
     </div>
     <!-- /Main Wrapper -->
+
+    <script>
+        document.querySelectorAll('.switch input').forEach((toggle) => {
+            toggle.addEventListener('change', function() {
+                let doctorId = this.dataset.id;
+                let isActive = this.checked ? 'Active' : 'Inactive';
+
+                fetch(`/doctor/${doctorId}/toggle-active`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            is_active: isActive
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Show flash message
+                        let flash = document.getElementById("flash-message");
+                        flash.innerText = data.message;
+                        flash.style.display = "block";
+
+                        // Auto-hide after 3s
+                        setTimeout(() => {
+                            flash.style.display = "none";
+                        }, 3000);
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
 @endsection

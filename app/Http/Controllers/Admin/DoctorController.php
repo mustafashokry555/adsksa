@@ -27,14 +27,16 @@ class DoctorController extends Controller
         if (Auth::user()->is_admin()) {
             $selectedSpecialities = $request->speciality;
             $specialities = Speciality::all();
-            $query = User::where('user_type', 'D')->orderByDesc('id');
+            $query = User::where('user_type', 'D')
+            ->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })
+            ->orderByDesc('id');
             if ($selectedSpecialities) {
                 $query->whereIn('speciality_id', $selectedSpecialities);
             }
             $doctors = $query->get();
-            return view(
-                'admin.doctor.index',
-                [
+            return view('admin.doctor.index',[
                     'doctors' => $doctors,
                     'specialities' => $specialities
                 ]
@@ -319,5 +321,15 @@ class DoctorController extends Controller
         }else{
             abort(401);
         }
+    }
+
+
+    public function toggleActive(Request $request, $id)
+    {
+        $doctor = User::findOrFail($id);
+        $doctor->status = $request->is_active;
+        $doctor->save();
+
+        return response()->json(['message' => 'Status updated successfully']);
     }
 }

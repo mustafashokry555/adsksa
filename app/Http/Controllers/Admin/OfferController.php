@@ -12,8 +12,10 @@ class OfferController extends Controller
 {
     public function index()
     {
-        if( auth()->user()->user_type == User::ADMIN ) {
-            $offers = Offer::with(['hospital'])->get();
+        if (auth()->user()->user_type == User::ADMIN) {
+            $offers = Offer::whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })->with(['hospital'])->get();
             return view('admin.offer.index', compact('offers'));
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
             $offers = Offer::where('hospital_id', auth()->user()->hospital_id)->with(['hospital'])->get();
@@ -97,7 +99,7 @@ class OfferController extends Controller
     {
         $offer = Offer::find($id);
         $currentImages = json_decode($offer->getRawOriginal('images'), true) ?? [];
-        
+
         // Calculate how many images would remain after deletion
         $remainingImagesCount = count($currentImages);
         if ($request->deletedImages) {
@@ -142,7 +144,7 @@ class OfferController extends Controller
         }
 
         $newImages = $currentImages;
-        
+
         // Handle image deletion
         if ($request->deletedImages) {
             $deletedKeys = explode(',', rtrim($request->deletedImages, ','));
