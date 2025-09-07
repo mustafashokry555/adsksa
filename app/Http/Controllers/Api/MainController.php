@@ -60,19 +60,23 @@ class MainController extends Controller
 
             $data = [];
             // Banners
-            $banners = Banner::where('is_active', 1)
+            $banners = Banner::where('is_active', 1)->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })
                 ->where('expired_at', '>', now())
                 ->get();
             // Services
             $hospital_types  = HospitalType::all();
             $hospital_types = HospitalTypeResource::collection($hospital_types);
             // Hospitals
-            $hospitals = Hospital::withAvg('hospitalReviews', 'star_rated')
+            $hospitals = Hospital::active()->withAvg('hospitalReviews', 'star_rated')
                 ->orderByDesc('hospital_reviews_avg_star_rated')
                 ->limit(8)
                 ->get();
             // Offers
-            $offers = Offer::where('is_active', 1)
+            $offers = Offer::where('is_active', 1)->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())
                 ->get();
@@ -81,7 +85,9 @@ class MainController extends Controller
             $specialities = Speciality::limit(8)->get();
             $specialities = SpecialityResource::collection($specialities);
             // Doctors
-            $doctors = User::where('user_type', 'D')->withAvg('reviews', 'star_rated')
+            $doctors = User::active()->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })->where('user_type', 'D')->withAvg('reviews', 'star_rated')
                 ->orderByDesc('reviews_avg_star_rated')
                 ->limit(8)
                 ->get();
