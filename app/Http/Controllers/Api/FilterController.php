@@ -89,9 +89,11 @@ class FilterController extends Controller
         $orderBy = $request->input('orderBy');
 
         /*** 1. Search & Filter Doctors ***/
-        $doctors = User::where('user_type', 'D');
+        $doctors = User::active()->whereHas('hospital', function ($q) {
+            $q->where('is_active', 1);
+        })->where('user_type', 'D');
         /*** 2. Search & Filter Hospitals ***/
-        $hospitals = Hospital::query();
+        $hospitals = Hospital::query()->active();
         // Search
         if ($keyword) {
             $doctors = $doctors->where(function ($q) use ($keyword) {
