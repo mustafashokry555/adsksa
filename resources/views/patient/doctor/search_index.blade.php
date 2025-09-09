@@ -132,7 +132,7 @@
                                                     <p class="doc-location"><i class="fas fa-map-marker-alt"></i>
                                                         {{ $doctor->address }}
                                                         ,
-                                                        {{ $doctor->state }}
+                                                        {{ $doctor->state?->name}}
                                                     </p>
                                                     <ul class="clinic-gallery">
                                                         <li>

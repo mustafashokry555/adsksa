@@ -95,7 +95,7 @@
                                 {{-- <li><i class="far fa-thumbs-up"></i> 99%</li> --}}
                                 <li><i class="far fa-comment"></i> {{$reviews->count()}} Feedback</li>
                                 @if ($doctor->state ?? '')
-                                <li><i class="fas fa-map-marker-alt"></i> {{ $doctor->state }}</li>
+                                <li><i class="fas fa-map-marker-alt"></i> {{ $doctor->state->name }}</li>
                                 @else
                                 <li><i class="fas fa-map-marker-alt"></i> N/A</li>
                                 @endif
