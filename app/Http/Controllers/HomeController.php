@@ -553,8 +553,10 @@ class HomeController extends Controller
         $query->whereIn('hospital_id', $hospitals_ids);
 
         // Speciality
+        // return request();
         if (request('speciality') && request('speciality') != 'all') {
-            $query->whereIn('speciality_id', request('speciality'));
+
+            $query->whereIn('speciality_id', (array)request('speciality'));
         }
 
         // search Old
