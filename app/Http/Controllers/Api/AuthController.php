@@ -107,7 +107,7 @@ class AuthController extends Controller
                 'name_en' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'password' => ['required', 'min:6'],
-                'mobile' => 'required|numeric|digits:9',
+                'mobile' => ['required', 'digits:10', 'regex:/^0[0-9]{9}$/'],
                 'date_of_birth' => 'nullable|date|before:today',
                 'gender' => 'nullable|string|in:male,female',
                 'height' => 'nullable|numeric|min:30|max:300',
