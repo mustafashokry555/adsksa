@@ -27,7 +27,7 @@
                                 <h3>{{ auth()->user()->name }}</h3>
 
                                 <div class="patient-details">
-                                    <h5 class="mb-0">{{ auth()->user()->address }}, {{ auth()->user()->state }}</h5>
+                                    <h5 class="mb-0">{{ auth()->user()->hospital?->country?->name }}, {{ auth()->user()->hospital?->state?->name }}</h5>
                                 </div>
                             </div>
                         </div>

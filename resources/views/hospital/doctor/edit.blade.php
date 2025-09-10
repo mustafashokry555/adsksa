@@ -14,12 +14,31 @@
                             @method('patch')
                             <!-- Name -->
                             <div class="form-group row">
-                                <label for="name"
-                                    class="col-form-label col-md-2">{{ __('hospital.doctor.doctor_name') }}</label>
+                                <label for="name_en"
+                                    class="col-form-label col-md-2">{{ __('admin.doctor.doctor_name') }} EN</label>
                                 <div class="col-md-10">
-                                    <input id="name" name="name" type="text" value="{{ $doctor->name }}"
-                                        class="form-control" placeholder="{{ __('hospital.doctor.enter_doctor_name') }}"
-                                        required>
+                                    <input id="name_en" name="name_en" type="text"
+                                        value="{{ old('name_en', $doctor->name_en) }}" class="form-control"
+                                        placeholder="{{ __('admin.doctor.enter_doctor_name') }}" required>
+                                    @error('name_en')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name_ar"
+                                    class="col-form-label col-md-2">{{ __('admin.doctor.doctor_name') }} AR</label>
+                                <div class="col-md-10">
+                                    <input id="name_ar" name="name_ar" type="text"
+                                        value="{{ old('name_ar', $doctor->name_ar) }}" class="form-control"
+                                        placeholder="{{ __('admin.doctor.enter_doctor_name') }}" required>
+                                    @error('name_ar')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
                             <!-- Email -->
@@ -87,29 +106,58 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label for="country">{{ __('hospital.doctor.country') }}</label>
-                                    <input type="text" class="form-control" id="country"
-                                        placeholder="{{ __('hospital.doctor.country') }}" name="country"
-                                        value="{{ $doctor->country }}" required>
-                                    @error('country')
+                                    <select id="country_id" name="country_id" class="form-select select" required>
+                                        <option value="" disabled selected>Select Country</option>
+                                        @foreach ($countries as $country)
+                                            <option value="{{ $country->id }}"
+                                                {{ old('country_id', $doctor->country?->id) == $country->id ? 'selected' : '' }}>
+                                                {{ $country->name_en }} < {{ $country->name_ar }} >
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('country_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
+                                    <label for="country">{{ __('hospital.doctor.country') }}</label>
+                                    <select id="state_id" name="state_id" class="form-select select" required>
+                                        <option disabled selected>-- Select State --</option>
+                                        @foreach ($states as $state)
+                                            <option value="{{ $state->id }}"
+                                                {{ old('state_id', $doctor->state_id) == $state->id ? 'selected' : '' }}>
+                                                {{ $state->name_en }} < {{ $state->name_ar }} >
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('state_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-3 mb-3">
                                     <label for="state">{{ __('hospital.doctor.state') }}</label>
-                                    <input type="text" class="form-control" id="state" name="state"
-                                        placeholder="{{ __('hospital.doctor.state') }}" value="{{ $doctor->state }}"
-                                        required>
-                                    @error('state')
+                                    <select id="city_id" name="city_id" class="form-select select" required>
+                                        <option disabled selected>-- Select City --</option>
+                                        @foreach ($cities as $city)
+                                            <option value="{{ $city->id }}"
+                                                {{ old('city_id', $doctor->city_id) == $city->id ? 'selected' : '' }}>
+                                                {{ $city->name_en }} < {{ $city->name_ar }} >
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('city_id')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-3 mb-3">
                                     <label for="zip_code">{{ __('hospital.doctor.zip_code') }}</label>
                                     <input type="text" class="form-control" id="zip_code" name="zip_code"
                                         placeholder="{{ __('hospital.doctor.zip_code') }}" value="{{ $doctor->zip_code }}"
@@ -808,3 +856,84 @@
     <!-- /Page Content -->
     </div>
 @endsection
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    // get states fun
+    function getStatesAndCities(countryId) {
+        // States
+        $.ajax({
+            url: '{{ route("get.states") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { country_id: countryId },
+            success: function (data) {
+                $('#state_id').empty(); // Clear the cities dropdown
+                $('#state_id').append('<option value="" disabled selected>Select State</option>');
+                $.each(data, function (key, state) {
+                    $('#state_id').append('<option value="' + state.id + '">' + state.name_en +' < '+ state.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading States');
+            }
+        });
+
+        // Cities
+        $.ajax({
+            url: '{{ route("get.cities") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { country_id: countryId },
+            success: function (data) {
+                $('#city_id').empty(); // Clear the cities dropdown
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+                $.each(data, function (key, city) {
+                    $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Cities');
+            }
+        });
+    }
+    function getCities(stateId) {
+        // Cities
+        $.ajax({
+            url: '{{ route("get.cities") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { state_id: stateId },
+            success: function (data) {
+                $('#city_id').empty(); // Clear the cities dropdown
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+                $.each(data, function (key, city) {
+                    $('#city_id').append('<option value="' + city.id + '">' + city.name_en +' < '+ city.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Cities');
+            }
+        });
+    }
+    $(document).ready(function() {
+        $('.js-example-basic-multiple').select2();
+        $('#country_id').on('change', function () {
+            var countryId = $(this).val();
+            if (countryId) {
+                getStatesAndCities(countryId);
+            } else {
+                $('#state_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#state_id').append('<option value="" disabled selected>Select State</option>');
+                $('#city_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+            }
+        });
+        $('#state_id').on('change', function () {
+            var stateId = $(this).val();
+            if (stateId) {
+                getCities(stateId);
+            } else {
+                $('#city_id').empty(); // Clear the cities dropdown if no country is selected
+                $('#city_id').append('<option value="" disabled selected>Select City</option>');
+            }
+        });
+    });
+</script>

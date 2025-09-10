@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Education;
 use App\Models\Experience;
 use App\Models\Hospital;
 use App\Models\Review;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,21 +114,36 @@ class ProfileController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
+        $countries = Country::all();
+        $states = State::all();
+        $cities = City::all();
         if (Auth::user()->is_admin()) {
             return view('admin.profile.edit', [
                 'admin' => $user,
+                'countries' => $countries,
+                'states' => $states,
+                'cities' => $cities,
             ]);
         } elseif (Auth::user()->is_hospital() && $user->user_type === 'H' && Auth::user()->hospital_id == $user->hospital_id) {
             return view('hospital.profile.edit', [
                 'hospital_admin' => $user,
+                'countries' => $countries,
+                'states' => $states,
+                'cities' => $cities,
             ]);
         } elseif (Auth::user()->is_doctor() && $user->user_type === 'D' && Auth::user()->id == $user->id) {
             return view('doctor.profile.edit', [
                 'doctor' => $user,
+                'countries' => $countries,
+                'states' => $states,
+                'cities' => $cities,
             ]);
         } elseif (Auth::user()->is_patient() && $user->user_type === 'U' && Auth::user()->id == $user->id) {
             return view('patient.profile.edit', [
-                'patient' => $user
+                'patient' => $user,
+                'countries' => $countries,
+                'states' => $states,
+                'cities' => $cities,
             ]);
         } else {
             abort(401);
@@ -147,9 +165,9 @@ class ProfileController extends Controller
                 'gender' => 'nullable',
                 'age' => 'nullable',
                 'address' => 'nullable',
-                // 'country' => 'nullable',
-                // 'state' => 'nullable',
-                // 'zip_code' => 'nullable',
+                'state_id' => 'nullable',
+                'city_id' => 'nullable',
+                'zip_code' => 'nullable',
                 'blood_group' => 'nullable',
                 'pricing' => 'nullable',
                 'twitter' => 'nullable',

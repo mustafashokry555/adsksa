@@ -168,8 +168,7 @@ class DoctorController extends Controller
         $degrees = DoctorDegree::all();
         $currencies = Currency::all();
         if (Auth::user()->is_admin()) {
-            return view(
-                'admin.doctor.edit',
+            return view('admin.doctor.edit',
                 [
                     'doctor' => $doctor,
                     'specialities' => Speciality::query()->orderByDesc('id')->get(),
@@ -182,8 +181,7 @@ class DoctorController extends Controller
                 ]
             );
         } elseif (Auth::user()->is_hospital()) {
-            return view(
-                'hospital.doctor.edit',
+            return view('hospital.doctor.edit',
                 [
                     'doctor' => $doctor,
                     'specialities' => Speciality::query()->orderByDesc('id')->get(),
