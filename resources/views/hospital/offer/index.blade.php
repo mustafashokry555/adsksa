@@ -31,7 +31,7 @@
                                             <thead class="thead-light">
 
                                                 <tr>
-                                                    <th>{{ __('admin.hospital.id') }}</th>
+                                                    {{-- <th>{{ __('admin.hospital.id') }}</th> --}}
                                                     {{-- <th>Hospital</th> --}}
                                                     <th>ID</th>
                                                     <th>Title AR</th>
