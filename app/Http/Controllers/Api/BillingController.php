@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use SimpleXMLElement;
 
 class BillingController extends Controller
 {
@@ -22,58 +25,39 @@ class BillingController extends Controller
     public function billingDetails(Request $request, $id){
         try {
             $user = $request->user();
-            $billing = $user->billings()->where('id', $id)->first();
-            if (!$billing) {
+            $invoice = Invoice::where('patient_id', $user->id)->where('id', $id)->first();
+
+
+
+            if (!$invoice) {
                 return $this->ErrorResponse(404, 'Billing record not found');
             }
-            return $this->SuccessResponse(200, 'Billing details retrieved successfully', $billing);
+
+            $vat_amount = ($invoice->subtotal * $invoice->vat) / 100;
+            $total = $invoice->subtotal + $vat_amount;
+
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            // $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
+
+            $data = [
+                'invoice_number' => $invoice->invoice_number,
+                'company_name' => $invoice->company_name,
+                'company_address' => $invoice->company_address,
+                'invoice_date' => $invoice->invoice_date,
+                'tax_number' => $invoice->tax_number,
+                'subtotal' => $invoice->subtotal,
+                'vat' => $invoice->vat,
+                'vat_amount' => $vat_amount,
+                'total' => $total,
+                'qrCode' => $qrData
+            ];
+            return $this->SuccessResponse(200, 'Billing details retrieved successfully', $data);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
-/*
-    public function invoice_download(Invoice $invoice)
-    {
-        $vat_amount = ($invoice->subtotal * $invoice->vat) / 100;
-        $total = $invoice->subtotal + $vat_amount;
-        if (Auth::user()->is_doctor() && Auth::user()->id == $invoice->doctor_id) {
-            // بيانات ZATCA QR
-            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
-            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
 
-            return view('admin.invoice.download', [
-                'invoice' => $invoice,
-                'qrCode' => $qrCode
-            ]);
-        } elseif (Auth::user()->is_hospital() && Auth::user()->hospital_id == $invoice->hospital_id) {
-            // بيانات ZATCA QR
-            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
-            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
 
-            return view('admin.invoice.download', [
-                'invoice' => $invoice,
-                'qrCode' => $qrCode
-            ]);
-        } elseif (Auth::user()->is_admin()) {
-            // بيانات ZATCA QR
-            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
-            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
-
-            return view('admin.invoice.download', [
-                'invoice' => $invoice,
-                'qrCode' => $qrCode
-            ]);
-        } else {
-            abort(401);
-        }
-    }
-
-    private function pemToDer($pem)
-    {
-        $data = preg_replace('/-----.*-----/', '', $pem);
-        $data = str_replace(["\r", "\n"], '', $data);
-        return base64_decode($data);
-    }
     protected function generateZatcaQr($invoice, $vat_amount, $total)
     {
         // 1️⃣ Generate XML
@@ -103,25 +87,8 @@ class BillingController extends Controller
         $tlvData .= $this->toTLV(7, $signature);
         return base64_encode($tlvData);
     }
-    private function toTLV($tag, $value)
-    {
-        $len = strlen($value);
 
-        // Handle variable length encoding (ZATCA spec)
-        if ($len < 128) {
-            $lengthBytes = chr($len);
-        } elseif ($len < 256) {
-            $lengthBytes = chr(0x81) . chr($len);
-        } else {
-            $lengthBytes = chr(0x82) . chr($len >> 8) . chr($len & 0xFF);
-        }
-
-        return chr($tag) . $lengthBytes . $value;
-    }
-
-
-    private function generateInvoiceXml($invoice)
-    {
+    private function generateInvoiceXml($invoice){
         $uuid = Str::uuid()->toString();
 
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
@@ -150,5 +117,27 @@ class BillingController extends Controller
             ->addAttribute('currencyID', 'SAR');
 
         return  $xml->asXML();
-    }*/
+    }
+
+    private function pemToDer($pem){
+        $data = preg_replace('/-----.*-----/', '', $pem);
+        $data = str_replace(["\r", "\n"], '', $data);
+        return base64_decode($data);
+    }
+
+    private function toTLV($tag, $value){
+        $len = strlen($value);
+
+        // Handle variable length encoding (ZATCA spec)
+        if ($len < 128) {
+            $lengthBytes = chr($len);
+        } elseif ($len < 256) {
+            $lengthBytes = chr(0x81) . chr($len);
+        } else {
+            $lengthBytes = chr(0x82) . chr($len >> 8) . chr($len & 0xFF);
+        }
+
+        return chr($tag) . $lengthBytes . $value;
+    }
+
 }
