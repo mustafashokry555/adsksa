@@ -104,6 +104,20 @@
                                                 </h6>
                                             </div>
 
+                                            <div class="form-group">
+                                                <p class="settings-label">Icon  <span class="star-red">*</span></p>
+                                                <div class="settings-btn">
+                                                    <input type="file" accept="image/*" name="favicon" id="favicon"
+                                                        onchange="loadFile(event)" class="hide-input">
+                                                    <label for="favicon" class="upload">
+                                                        <i class="feather-upload"></i>
+                                                    </label>
+                                                </div>
+                                                {{-- <h6 class="settings-size">{{ __('admin.settings.recommended_image_size_is')  }}
+                                                    <span>{{ __('admin.settings.150px_x_150px')  }}</span>
+                                                </h6> --}}
+                                            </div>
+
                                             {{-- favicon --}}
                                             {{-- <div class="form-group">
                                                 <p class="settings-label">Favicon <span class="star-red">*</span></p>

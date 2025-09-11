@@ -246,7 +246,7 @@
         <!-- Header -->
         <div class="header">
             <div href="{{ route('home') }}" class="logo" style="margin-right: 0 !important">
-                <img src="{{ URL::asset('/assets/img/logo.jpg')}}" alt="Logo" style="height: 3rem; margin-bottom: 10px;">
+                <img src="{{ URL::asset('images/' . $setting->logo)}}" alt="Logo" style="height: 3rem; margin-bottom: 10px;">
             </div>
             <h1>فاتورة ضريبية مبسطة</h1>
             <div class="invoice-number" dir="ltr">{{ $invoice->invoice_number }} :رقم الفاتورة</div>

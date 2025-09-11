@@ -38,7 +38,6 @@ class HomeController extends Controller
             'insurances' => Insurance::orderByDesc('id')->get(),
             'specialities' => Speciality::orderByDesc('id')->get(),
             'countries' => Country::orderByDesc('id')->get(),
-
         ]);
     }
     public function index()
@@ -119,8 +118,7 @@ class HomeController extends Controller
             return view('hospital.home', $data);
         } elseif (Auth::user()->is_doctor()) {
 
-            return view(
-                'doctor.home',
+            return view('doctor.home',
                 [
                     'appointments' => Appointment::query()->where('doctor_id', Auth::id())
                         ->where('appointment_date', '>', $todayFormatted)

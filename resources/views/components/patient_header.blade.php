@@ -2,8 +2,6 @@
     use Illuminate\Support\Facades\Request;
     use Illuminate\Support\Facades\Auth;
 
-    $setting = \App\Models\Settings::query()->first();
-
     $notifications = [];
     if (Auth::check()) {
         $notifications = \App\Models\Notification::query()
@@ -60,7 +58,7 @@
         left: 0;
         right: 0;
         padding: 0;
-        
+
         /* Styles */
         background: #fff;
         border-radius: 0 0 5px 5px;
@@ -191,12 +189,12 @@
                             </a>
                             @auth
                                 <a href="{{ url('/') }}" class="navbar-brand logo">
-                                    <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
+                                    <img src="{{ URL::asset('images/' . $setting->logo) }}" class="img-fluid" alt="Logo"
                                         style="height: 3rem">
                                 </a>
                             @else
                                 <a href="/" class="navbar-brand logo">
-                                    <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
+                                    <img src="{{ URL::asset('images/' . $setting->logo) }}" class="img-fluid" alt="Logo"
                                         style="height: 3rem">
                                 </a>
                             @endauth
@@ -205,12 +203,12 @@
                             <div class="menu-header">
                                 @auth
                                     <a href="{{ url('/') }}" class="menu-logo">
-                                        <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
+                                        <img src="{{ URL::asset('images/' . $setting->logo) }}" class="img-fluid" alt="Logo"
                                             style="height: 3rem">
                                     </a>
                                 @else
                                     <a href="{{ url('/') }}" class="menu-logo">
-                                        <img src="{{ asset('/assets/img/logo copy.png') }}" class="img-fluid" alt="Logo"
+                                        <img src="{{ URL::asset('images/' . $setting->logo) }}" class="img-fluid" alt="Logo"
                                             style="height: 3rem">
                                     </a>
                                 @endauth

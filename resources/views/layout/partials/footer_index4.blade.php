@@ -78,13 +78,13 @@
 											<br>California, CA <br>94108
 										</p>
 									</div>
-									<p>
+									{{-- <p>
 										<i class="feather-phone"></i>
-										+1 315 369 5943
-									</p>
+										{{ $setting->phone }}
+									</p> --}}
 									<p class="mb-0">
 										<i class="feather-mail"></i>
-										doccure@example.com
+										{{ $setting->email }}
 									</p>
 								</div>
 							</div>

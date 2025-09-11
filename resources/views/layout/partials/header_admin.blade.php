@@ -7,10 +7,10 @@
 			<!-- Logo -->
 			<div class="header-left">
 				<a href="{{ route('home') }}" class="logo">
-					<img src="{{ URL::asset('/assets/img/logo.jpg')}}" alt="Logo" style="height: 3rem; margin-left: 1rem;">
+					<img src="{{ URL::asset('images/' . $setting->logo)}}" alt="Logo" style="height: 3rem; margin-left: 1rem;">
 				</a>
 				<a href="{{ route('home') }}" class="logo logo-small">
-					<img src="{{ URL::asset('/assets/img/logo.jpg')}}" alt="Logo" width="30" height="30" style="height: 3rem; margin-left: 1rem;">
+					<img src="{{ URL::asset('images/' . $setting->logo)}}" alt="Logo" width="30" height="30" style="height: 3rem; margin-left: 1rem;">
 				</a>
 
 				<a href="javascript:void(0);" id="toggle_btn">
@@ -147,7 +147,7 @@
 				<!-- /Notifications -->
 
 				<!-- User Menu -->
-				
+
 				<li class="nav-item dropdown main-drop">
 					<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 						<span class="user-img">

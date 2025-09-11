@@ -253,7 +253,7 @@
                 <!-- Header -->
                 <div id="header">
                     <div href="{{ route('home') }}" class="logo">
-					    <img src="{{ URL::asset('/assets/img/logo.jpg')}}" alt="Logo" style="height: 3rem; margin-bottom: 10px;">
+					    <img src="{{ URL::asset('images/' . $setting->logo)}}" alt="Logo" style="height: 3rem; margin-bottom: 10px;">
 				    </div>
                     <h1>فاتورة ضريبية مبسطة</h1>
                     <div class="invoice-number" dir="ltr">{{ $invoice->invoice_number }} :رقم الفاتورة</div>
@@ -261,8 +261,10 @@
 
                 <!-- Customer Info -->
                 <div class="customer-info">
-                    <div>اسم الموسسة: {{ $invoice->company_name }}</div>
-                    <div>عنوان الموسسة: {{ $invoice->company_address }}</div>
+                    <div>اسم الموسسة: {{ $setting->website_name }}</div>
+                    <div>عنوان الموسسة: {{ $setting->address_line_1 }}</div>
+                    {{-- <div>اسم الموسسة: {{ $invoice->company_name }}</div>
+                    <div>عنوان الموسسة: {{ $invoice->company_address }}</div> --}}
                 </div>
 
                 <!-- Date -->
@@ -272,8 +274,11 @@
 
                 <!-- Tax Number -->
                 <div class="tax-number">
-                    الرقم الضريبي لمقدم الخدمة: {{ $invoice->tax_number }}
+                    الرقم الضريبي لمقدم الخدمة: {{ $setting->tax_number }}
                 </div>
+                {{-- <div class="tax-number">
+                    الرقم الضريبي لمقدم الخدمة: {{ $invoice->tax_number }}
+                </div> --}}
 
                 <!-- Items Table -->
                 <table class="items-table">

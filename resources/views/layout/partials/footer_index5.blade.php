@@ -1,6 +1,4 @@
-@php
-    $setting = \App\Models\Settings::query()->first();
-@endphp
+
 <!-- Footer Four -->
 <footer dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="footer footer-four">
     {{-- <div class="news-section-four">

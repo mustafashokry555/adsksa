@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 <title>@yield('title')</title>
 <!-- Favicons -->
-<link type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}" rel="icon">
+<link type="image/x-icon" href="{{ asset('images/' . $setting->favicon) }}" rel="icon">
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="{{ asset('assets/libs/bootstrap/css/bootstrap.min.css') }}">
 <!-- Fontawesome CSS -->

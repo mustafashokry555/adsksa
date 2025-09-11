@@ -25,11 +25,11 @@
                 </a>
                 @auth
                     <a href="{{ url('/') }}" class="navbar-brand logo">
-                        <img src="{{ URL::asset('/assets/img/logo.jpg')}}" class="img-fluid" alt="Logo">
+                        <img src="{{ URL::asset('images/' . $setting->logo)}}" class="img-fluid" alt="Logo">
                     </a>
                 @else
                     <a href="/" class="navbar-brand logo">
-                        <img src="{{ URL::asset('/assets/img/logo.jpg')}}" class="img-fluid" alt="Logo">
+                        <img src="{{ URL::asset('images/' . $setting->logo)}}" class="img-fluid" alt="Logo">
                     </a>
                 @endauth
 
@@ -37,7 +37,7 @@
             <div class="main-menu-wrapper">
                 <div class="menu-header">
                     <a href="{{url('/')}}" class="menu-logo">
-                        <img src="{{ URL::asset('/assets/img/logo.jpg')}}" class="img-fluid" alt="Logo">
+                        <img src="{{ URL::asset('images/' . $setting->logo)}}" class="img-fluid" alt="Logo">
                     </a>
                     <a id="menu_close" class="menu-close" href="javascript:void(0);">
                         <i class="fas fa-times"></i>
@@ -75,7 +75,7 @@
                     </div>
                     <div class="header-contact-detail">
                         <p class="contact-header">Contact</p>
-                        <p class="contact-info-header"> +1 315 369 5943</p>
+                        <p class="contact-info-header"> {{ $setting->phone }}</p>
                     </div>
                 </li>
                 @auth

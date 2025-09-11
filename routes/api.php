@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AppointController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\api\CommonController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\FilterController;
@@ -125,5 +126,10 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
         Route::post('/read/{id}', [NotificationController::class, 'markAsRead']);
         // Route::get('/{notification}', [NotificationController::class, 'show']);
     });
+
+    // Billing
+    Route::get('billing-history', [BillingController::class, 'billingHistory']);
+    Route::get('billing-details/{id}', [BillingController::class, 'billingDetails']);
+
 
 });

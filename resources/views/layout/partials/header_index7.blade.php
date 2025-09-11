@@ -68,7 +68,7 @@
 										</ul>
 									</li>
 								</ul>
-							</li>	
+							</li>
 							<li class="has-submenu <?php if($page=="map-grid" || $page=="map-list" || $page=="map-list-1" || $page=="search1" || $page=="doctor-profile" || $page=="booking" || $page=="checkout" || $page=="booking-success" || $page=="patient-dashboard" || $page=="favourites" || $page=="chat" || $page=="profile-settings" || $page=="change-password") { echo 'active'; } ?>">
 								<a href="">Patients <i class="fas fa-chevron-down"></i></a>
 								<ul class="submenu">
@@ -104,7 +104,7 @@
 									<li  class="<?php if($page=="product-checkout") { echo 'active'; } ?>"><a href="{{url('product-checkout')}}">Product Checkout</a></li>
 									<li class="<?php if($page=="payment-success") { echo 'active'; } ?>"><a href="{{url('payment-success')}}">Payment Success</a></li>
 									<li class="<?php if($page=="pharmacy-register") { echo 'active'; } ?>"><a href="{{url('pharmacy-register')}}">Pharmacy Register</a></li>
-									
+
 								</ul>
 							</li>
 							<li class="has-submenu <?php if($page=="voice-call" || $page=="video-call" || $page=="onboarding-email" || $page=="patient-email" || $page=="search" || $page=="calendar" || $page=="components" || $page=="invoices1" || $page=="invoice-view" || $page=="blank-page" || $page=="about-us" || $page=="contact-us" || $page=="login" || $page=="register1" || $page=="forgot-pswd") { echo 'active'; } ?>">
@@ -155,10 +155,10 @@
 					<ul class="nav header-navbar-rht right-menu">
 						<li class="nav-item contact-item">
 							<div class="header-contact-img">
-								<i class="fas fa-phone-alt"></i>					
+								<i class="fas fa-phone-alt"></i>
 							</div>
 							<div class="header-contact-detail">
-								<p class="contact-info-header">+1 315 369 5943</p>
+								<p class="contact-info-header">{{ $setting->phone }}</p>
 							</div>
 						</li>
 						<li class="nav-item">

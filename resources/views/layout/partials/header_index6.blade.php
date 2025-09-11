@@ -70,7 +70,7 @@
 												</ul>
 											</li>
 										</ul>
-									</li>	
+									</li>
 									<li class="has-submenu <?php if($page=="map-grid" || $page=="map-list" || $page=="map-list-1" || $page=="search1" || $page=="doctor-profile" || $page=="booking" || $page=="checkout" || $page=="booking-success" || $page=="patient-dashboard" || $page=="favourites" || $page=="chat" || $page=="profile-settings" || $page=="change-password") { echo 'active'; } ?>">
 										<a href="">Patients <i class="fas fa-chevron-down"></i></a>
 										<ul class="submenu">
@@ -135,15 +135,15 @@
 									<li class="login-link">
 										<a href="{{url('login')}}">Login / Signup</a>
 									</li>
-								</ul>		 
-							</div>		 
+								</ul>
+							</div>
 							<ul class="nav header-navbar-rht">
 								<li class="nav-item contact-item">
 									<div class="header-contact-img">
 										<i class="feather-phone"></i>
 									</div>
 									<div class="header-contact-detail">
-										<p class="contact-info-header">+1 315 369 5943</p>
+										<p class="contact-info-header">{{ $setting->phone }}</p>
 									</div>
 								</li>
 								<li class="nav-item">

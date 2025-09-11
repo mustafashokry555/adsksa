@@ -19,7 +19,7 @@
                     </span>
                 </a>
                 <a href="{{ route('home') }}" class="navbar-brand logo">
-                    <img src="{{ URL::asset('/assets/img/logo.jpg') }}" class="img-fluid ml-4" alt="Logo"
+                    <img src="{{ URL::asset('images/' . $setting->logo) }}" class="img-fluid ml-4" alt="Logo"
                         style="height: 3rem;">
                 </a>
             </div>

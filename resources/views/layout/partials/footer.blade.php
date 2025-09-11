@@ -9,11 +9,11 @@
                     <!-- Footer Widget -->
                     <div class="footer-widget footer-about">
                         <div class="footer-logo">
-                            <img src="{{ URL::asset('/assets/img/logo.jpg')}}" alt="logo" style="height: 3rem;"/>
+                            <img src="{{ URL::asset('images/' . $setting->logo)}}" alt="logo" style="height: 3rem;"/>
                         </div>
                         <div class="footer-about-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                incididunt ut labore et dolore magna aliqua. </p>
+                            {{-- <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua. </p> --}}
                             <div class="social-icon">
                                 <ul>
                                     <li>
@@ -95,15 +95,15 @@
                             <div class="footer-contact-info">
                                 <div class="footer-address">
                                     <span><i class="fas fa-map-marker-alt"></i></span>
-                                    <p> 3556 Beech Street, San Francisco,<br> California, CA 94108 </p>
+                                    <p> {{ $setting->address_line_1 }}</p>
                                 </div>
-                                <p>
+                                {{-- <p>
                                     <i class="fas fa-phone-alt"></i>
-                                    +1 315 369 5943
-                                </p>
+                                    {{ $setting->phone }}
+                                </p> --}}
                                 <p class="mb-0">
                                     <i class="fas fa-envelope"></i>
-                                    doccure@example.com
+                                    {{ $setting->email }}
                                 </p>
                             </div>
                         </div>

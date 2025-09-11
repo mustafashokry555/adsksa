@@ -99,10 +99,10 @@
 											<p>3556 Beech Street, San Francisco,
 												<br>California, CA <br>94108</p>
 										</div>
-										<p><i class="feather-phone"></i>
-											+1 315 369 5943</p>
+										{{-- <p><i class="feather-phone"></i>
+											{{ $setting->phone }}</p> --}}
 										<p class="mb-0"><i class="feather-mail"></i>
-											doccure@example.com</p>
+											{{ $setting->email }}</p>
 									</div>
 								</div>
 								<!-- /Footer Widget -->
@@ -143,7 +143,6 @@
 				<!-- /Footer Bottom -->
 			</footer>
 			<!-- /Footer Two-->
-		   
+
 	   </div>
 	   <!-- /Main Wrapper -->
-	  

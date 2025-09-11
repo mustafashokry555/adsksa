@@ -5,8 +5,8 @@
 		<div class="header-top home-three-top">
 			<div class="left-top aos" data-aos="fade-up">
 				<ul>
-					<li><i class="feather-phone me-1"></i> +1 315 369 5943</li>
-					<li><i class="feather-mail me-1"></i> doccure@example.com</li>
+					<li><i class="feather-phone me-1"></i> {{ $setting->phone }}</li>
+					<li><i class="feather-mail me-1"></i> {{ $setting->email }}</li>
 				</ul>
 			</div>
 			<div class="right-top aos" data-aos="fade-up">
@@ -89,7 +89,7 @@
 											</ul>
 										</li>
 									</ul>
-								</li>	
+								</li>
 	                            <li class="has-submenu <?php if($page=="map-grid" || $page=="map-list" || $page=="map-list-1" || $page=="search1" || $page=="doctor-profile" || $page=="booking" || $page=="checkout" || $page=="booking-success" || $page=="patient-dashboard" || $page=="favourites" || $page=="chat" || $page=="profile-settings" || $page=="change-password") { echo 'active'; } ?>">
 									<a href="">Patients <i class="fas fa-chevron-down"></i></a>
 									<ul class="submenu">
@@ -121,7 +121,7 @@
 										<li class="<?php if($page=="search") { echo 'active'; } ?>"><a href="{{url('search')}}">Search Doctors</a></li>
 										<li class="<?php if($page=="calendar") { echo 'active'; } ?>"><a href="{{url('calendar')}}">Calendar</a></li>
 										<li class="<?php if($page=="onboarding-email") { echo 'active'; } ?>"><a href="{{url('onboarding-email')}}">Doctor Onboarding</a></li>
-										<li class="<?php if($page=="patient-email") { echo 'active'; } ?>"><a href="{{url('patient-email')}}">Patient Onboarding</a></li>				
+										<li class="<?php if($page=="patient-email") { echo 'active'; } ?>"><a href="{{url('patient-email')}}">Patient Onboarding</a></li>
 										<li class="<?php if($page=="components") { echo 'active'; } ?>"><a href="{{url('components')}}">Components</a></li>
 										<li class="has-submenu <?php if($page=="invoices1" || $page=="invoice-view") { echo 'active'; } ?>">
 											<a href="{{url('invoices')}}">Invoices</a>
@@ -143,10 +143,10 @@
 	                                <li class="<?php if($page=="blog-grid") { echo 'active'; } ?>"><a href="{{url('blog-grid')}}">Blog Grid</a></li>
 	                                <li class="<?php if($page=="blog-details") { echo 'active'; } ?>"><a href="{{url('blog-details')}}">Blog Details</a></li>
 	                            </ul>
-	                        </li>						
+	                        </li>
 	                        <li>
 								<a href="#" target="_blank">Admin</i></a>
-								
+
 							</li>
 							<li class="login-link">
 								<a href="{{url('login')}}">Login / Signup</a>
@@ -163,10 +163,9 @@
 									<i class="feather-user me-1"></i> Sign Up
 								</a>
 							</li>
-						</ul>	 
-					</div>	
+						</ul>
+					</div>
 				</nav>
 				</div>
 			</header>
 			<!-- /Header -->
-			
