@@ -27,8 +27,6 @@ class BillingController extends Controller
             $user = $request->user();
             $invoice = Invoice::where('patient_id', $user->id)->where('id', $id)->first();
 
-
-
             if (!$invoice) {
                 return $this->ErrorResponse(404, 'Billing record not found');
             }
