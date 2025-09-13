@@ -127,8 +127,8 @@
 									<!-- Copyright Menu -->
 									<div class="copyright-menu">
 										<ul class="policy-menu">
-											<li><a href="{{url('term-condition')}}">Terms and Conditions</a>
-											</li>
+											{{-- <li><a href="{{url('term-condition')}}">Terms and Conditions</a>
+											</li> --}}
 											<li><a href="{{url('privacy-policy')}}">Policy</a>
 											</li>
 										</ul>

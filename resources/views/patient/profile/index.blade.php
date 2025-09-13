@@ -142,8 +142,6 @@
                                                                     <p>Male</p>
                                                                 @elseif($patient->gender == 'F')
                                                                     <p>Female</p>
-                                                                @elseif($patient->gender == 'O')
-                                                                    <p>Others</p>
                                                                 @endif
                                                             @else
                                                                 <p>N/A</p>
@@ -171,7 +169,7 @@
                                                         <div class="col-md-3">
                                                             <h5>Country</h5>
                                                             @if ($patient->country ?? '')
-                                                                <p>{{ $patient->country }}</p>
+                                                                <p>{{ $patient->country?->name }}</p>
                                                             @else
                                                                 <p>N/A</p>
                                                             @endif
@@ -179,7 +177,15 @@
                                                         <div class="col-md-3">
                                                             <h5>State</h5>
                                                             @if ($patient->state ?? '')
-                                                                <p>{{ $patient->state }}</p>
+                                                                <p>{{ $patient->state?->name }}</p>
+                                                            @else
+                                                                <p>N/A</p>
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <h5>City</h5>
+                                                            @if ($patient->city ?? '')
+                                                                <p>{{ $patient->city?->name }}</p>
                                                             @else
                                                                 <p>N/A</p>
                                                             @endif

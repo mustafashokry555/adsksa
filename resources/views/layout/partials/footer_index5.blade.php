@@ -177,8 +177,8 @@
                                         content: none !important;
                                     }
                                 </style>
-                                <li class="disable-after"><a href="{{ route('terms-conditions') }}">{{ __('patient.Terms and Conditions') }}</a>
-                                </li>
+                                {{-- <li class="disable-after"><a href="{{ route('terms-conditions') }}">{{ __('patient.Terms and Conditions') }}</a>
+                                </li> --}}
                                 <li class="mx-2 disable-after" style="color: white; --after-content: none;">|</li>
                                 <li><a href="{{ route('privacy') }}">{{ __('patient.Policy') }}</a>
                                 </li>

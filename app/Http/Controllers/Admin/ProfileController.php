@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -152,11 +153,15 @@ class ProfileController extends Controller
 
     public function update(Request $request, $id)
     {
+        // return $request;
         if (Auth::user()->is_admin() || Auth::user()->is_patient() || Auth::user()->is_hospital() || Auth::user()->is_doctor()) {
             $attributes = $request->validate([
                 'name_en' => 'required',
                 'name_ar' => 'required',
-                'email' => 'required',
+                'email' => [
+                    'required',
+                    Rule::unique('users', 'email')->ignore(Auth::user()->id), // 👈 ignore current user's email
+                ],
                 'username' => 'nullable',
                 'profile_image' => 'image',
                 'mobile' => 'nullable',
@@ -177,6 +182,9 @@ class ProfileController extends Controller
                 'instagram' => 'nullable',
                 'youtube' => 'nullable',
             ]);
+            if (Auth::user()->is_patient()) {
+                $attributes['name_ar'] = $attributes['name_en'];
+            }
             if ($attributes['profile_image'] ?? false) {
                 if ($file = $request->file('profile_image')) {
                     $filename = time() . '-' . $file->getClientOriginalName();

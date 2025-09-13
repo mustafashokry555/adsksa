@@ -80,8 +80,8 @@
                                         </option>
                                         <option value="F" {{ $doctor->gender == 'F' ? 'selected' : '' }}>Female
                                         </option>
-                                        <option value="O" {{ $doctor->gender == 'O' ? 'selected' : '' }}>Others
-                                        </option>
+                                        {{-- <option value="O" {{ $doctor->gender == 'O' ? 'selected' : '' }}>Others
+                                        </option> --}}
                                     </select>
                                     @error('gender')
                                         <div class="text-danger pt-2">
