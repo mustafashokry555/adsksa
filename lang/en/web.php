@@ -138,5 +138,13 @@ return [
     'account_deleted' => 'Your account has been successfully deleted',
     'cancel' => 'Cancel',
     'account_inactive' => 'Your account is inactive',
+
+    'gender' => "Gender",
+    'select_gender' => 'Select Gender',
+    'male' => "Mall",
+    'date_of_birth' => "Date of Birth",
+    'id_number' => "ID Number",
+    'nationality' => "Nationality",
+    'mobile' => "Mobile",
 ];
 ?>

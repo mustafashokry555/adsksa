@@ -139,4 +139,14 @@ return [
     'cancel' => 'إلغاء',
 
     'account_inactive' => 'حسابك غير نشط',
+
+    'gender' => "الجنس",
+    'select_gender' => 'اخنر الجنس',
+    'male' => "ذكر",
+    'date_of_birth' => "تاريخ الميلاد",
+    'id_number' => "رقم الهويه",
+    'nationality' => "الجنسيه",
+    'mobile' => "الهاتف",
+    
+
 ];

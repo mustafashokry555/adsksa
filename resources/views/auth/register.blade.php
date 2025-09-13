@@ -31,14 +31,68 @@
                                     <!-- Register Form -->
                                     <form action="{{ route('register') }}" method="POST">
                                         @csrf
+                                        {{-- name --}}
                                         <div class="form-group form-focus">
                                             <input type="text" class="form-control floating" id="name_en"
                                                 name="name_en" value="{{ old('name_en') }}" required>
                                             <label class="focus-label">{{ __('web.name') }}</label>
                                             @error('name_en')
-                                                <div class="text-danger pt-2">
+                                                <div class="text-danger ">
                                                     {{ $message }}
                                                 </div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Gender --}}
+                                        <div class="form-group form-focus">
+                                            <select name="gender" id="gender" class="form-control floating">
+                                                <option value=""></option>
+                                                <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>
+                                                    {{ __('web.male') }}</option>
+                                                <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>
+                                                    {{ __('web.female') }}</option>
+                                            </select>
+                                            <label class="focus-label">{{ __('web.gender') }}</label>
+                                            @error('gender')
+                                                <div class="text-danger ">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Date of Birth --}}
+                                        <div class="form-group form-focus focused">
+                                            <input type="date" id="date_of_birth" class="form-control floating"
+                                                name="date_of_birth" value="{{ old('date_of_birth') }}">
+                                            <label class="focus-label">{{ __('web.date_of_birth') }}</label>
+                                            @error('date_of_birth')
+                                                <div class="text-danger ">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- ID Number --}}
+                                        <div class="form-group form-focus">
+                                            <input type="text" id="id_number" class="form-control floating"
+                                                name="id_number" value="{{ old('id_number') }}" required>
+                                            <label class="focus-label">{{ __('web.id_number') }}</label>
+                                            @error('id_number')
+                                                <div class="text-danger ">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- nationality --}}
+                                        <div class="form-group form-focus">
+                                            <select name="nationality" id="nationality" class="form-control floating"
+                                                required>
+                                                <option value="" ></option>
+                                                @foreach ($religions as $religion)
+                                                    <option value="{{ $religion->id }}"
+                                                        {{ old('nationality') == $religion->id ? 'selected' : '' }}>
+                                                        {{ $religion->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <label class="focus-label">{{ __('web.nationality') }}</label>
+                                            @error('nationality')
+                                                <div class="text-danger ">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -47,9 +101,19 @@
                                                 name="email" value="{{ old('email') }}" required>
                                             <label class="focus-label">{{ __('web.email') }}</label>
                                             @error('email')
-                                                <div class="text-danger pt-2">
+                                                <div class="text-danger ">
                                                     {{ $message }}
                                                 </div>
+                                            @enderror
+                                        </div>
+
+                                        {{-- Mobile --}}
+                                        <div class="form-group form-focus">
+                                            <input type="text" id="mobile" class="form-control floating"
+                                                name="mobile" value="{{ old('mobile') }}" required>
+                                            <label class="focus-label">{{ __('web.mobile') }}</label>
+                                            @error('mobile')
+                                                <div class="text-danger ">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -57,9 +121,9 @@
                                             <input type="password" id="password" class="form-control floating pass-input"
                                                 name="password" required>
                                             <label class="focus-label">{{ __('web.enter_password') }}</label>
-                                            <span class="fa fa-eye-slash toggle-password pt-4"></span>
+                                            {{-- <span class="fa fa-eye-slash toggle-password pt-4"></span> --}}
                                             @error('password')
-                                                <div class="text-danger pt-2">
+                                                <div class="text-danger ">
                                                     {{ $message }}
                                                 </div>
                                             @enderror
@@ -70,12 +134,12 @@
                                                 class="form-control floating pass-input" name="password_confirmation"
                                                 required>
                                             <label class="focus-label">{{ __('web.confirm_password') }}</label>
-                                            <span class="fa fa-eye-slash toggle-password pt-4"></span>
+                                            {{-- <span class="fa fa-eye-slash toggle-password pt-4"></span> --}}
                                         </div>
 
                                         <div class="form-group">
                                             <div class="row">
-                                                <div  class="col-12">
+                                                <div class="col-12">
                                                     <label class="custom_check mr-2 mb-0">
                                                         {{ __('web.terms_agree') }}
                                                         <a href="#" class="text-primary">
@@ -87,7 +151,7 @@
                                                         <span class="checkmark"></span>
                                                     </label>
                                                     @error('terms')
-                                                        <div class="text-danger pt-2">
+                                                        <div class="text-danger ">
                                                             {{ $message }}
                                                         </div>
                                                     @enderror
