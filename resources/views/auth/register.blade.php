@@ -59,10 +59,10 @@
                                         </div>
 
                                         {{-- Date of Birth --}}
-                                        <div class="form-group form-focus focused">
+                                        <div class="form-group form-focus">
                                             <input type="date" id="date_of_birth" class="form-control floating"
                                                 name="date_of_birth" value="{{ old('date_of_birth') }}">
-                                            <label class="focus-label">{{ __('web.date_of_birth') }}</label>
+                                            <label class="focus-label"style="top: -18px; font-size: 12px;" >{{ __('web.date_of_birth') }}</label>
                                             @error('date_of_birth')
                                                 <div class="text-danger ">{{ $message }}</div>
                                             @enderror
@@ -110,7 +110,7 @@
                                         {{-- Mobile --}}
                                         <div class="form-group form-focus">
                                             <input type="text" id="mobile" class="form-control floating"
-                                                name="mobile" value="{{ old('mobile') }}" required>
+                                                name="mobile" value="{{ old('mobile') }}" placeholder="05xxxxxxxx" required>
                                             <label class="focus-label">{{ __('web.mobile') }}</label>
                                             @error('mobile')
                                                 <div class="text-danger ">{{ $message }}</div>
