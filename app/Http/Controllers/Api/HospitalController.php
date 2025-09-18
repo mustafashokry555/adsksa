@@ -120,7 +120,10 @@ class HospitalController extends Controller
             if (request('orderBy') == 'recommend') {
                 $query->orderBy('avg_rating', "DESC");
             }
-            $hospitals = $query->get();
+            // ✅ pagination with limit param (default 10)
+            $limit = $request->get('limit', 10);
+            $hospitals = $query->paginate($limit);
+
             // add distance to data
             $lat = request("lat");
             $long = request("long");
@@ -140,6 +143,8 @@ class HospitalController extends Controller
                     return $hospital['distance'] !== null ? $hospital['distance'] : INF;
                 })->values();
             }
+            // ✅ keep pagination meta but replace data with transformed resource
+        // $hospitals->setCollection($hospitalsResource);
             return $this->SuccessResponse(200, 'Hospitals list', $hospitals);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
