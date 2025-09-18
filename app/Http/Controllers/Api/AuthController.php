@@ -264,18 +264,18 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            'gender' => 'nullable|string|in:male,female',
-            'date_of_birth' => 'nullable|date|before:today',
-            'id_number' => [
-                'required',
-                'numeric',
-                'digits:10',
-                Rule::unique('users')->ignore($request->user()->id)
-            ],
-            'religion_id' => ['required', 'exists:religions,id'],
-            'mobile' => 'required|numeric|digits:9',
+            // 'gender' => 'nullable|string|in:male,female',
+            // 'date_of_birth' => 'nullable|date|before:today',
+            // 'id_number' => [
+            //     'required',
+            //     'numeric',
+            //     'digits:10',
+            //     Rule::unique('users')->ignore($request->user()->id)
+            // ],
+            // 'religion_id' => ['required', 'exists:religions,id'],
+            // 'mobile' => 'required|numeric|digits:9',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
-            'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
+            // 'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
             // 'password' => ['nullable', 'min:6'],
             // 'height' => 'nullable|numeric|min:30|max:300',
             // 'weight' => 'nullable|numeric|min:1|max:500',
@@ -307,13 +307,13 @@ class AuthController extends Controller
 
             $patient->name_en = $request->name;
             $patient->name_ar = $request->name;
-            $patient->gender = $request->gender;
-            $patient->date_of_birth = Carbon::parse($request->date_of_birth)->format('Y-m-d');
-            $patient->id_number = $request->id_number;
-            $patient->religion_id = $request->religion_id;
+            // $patient->gender = $request->gender;
+            // $patient->date_of_birth = Carbon::parse($request->date_of_birth)->format('Y-m-d');
+            // $patient->id_number = $request->id_number;
+            // $patient->religion_id = $request->religion_id;
             $patient->email = $request->email;
-            $patient->mobile = $request->mobile;
-            $patient->marital_status = $request->marital_status;
+            // $patient->mobile = $request->mobile;
+            // $patient->marital_status = $request->marital_status;
             // $patient->address = $request->address;
             // $patient->country = $request->country;
             // $patient->state = $request->state;

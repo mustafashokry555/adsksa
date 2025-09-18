@@ -16,7 +16,7 @@
                     <h3 class="mb-4">Company Profile</h3>
                     <p>This is the privacy policy of our website.</p>
                     <p>
-                        {{ $setting->privacy_policy }}
+                        {!! $setting->privacy_policy !!}
                     </p>
                 <div class="col-md-6">
                 </div>

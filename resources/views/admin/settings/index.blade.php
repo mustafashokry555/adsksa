@@ -6,7 +6,7 @@
             <div class="page-header">
                 <div class="row">
                     <div class="col-sm-6">
-                        <h3 class="page-title">{{ __('admin.settings.settings')  }}</h3>
+                        <h3 class="page-title">{{ __('admin.settings.settings') }}</h3>
                     </div>
                 </div>
             </div>
@@ -14,7 +14,8 @@
             <div class="settings-menu-links">
                 <ul class="nav nav-tabs nav-tabs-bottom">
                     <li class="nav-item active">
-                        <a class="nav-link" data-bs-toggle="tab" href="{{ url('#general_settings') }}">{{ __('admin.settings.general_settings')  }}</a>
+                        <a class="nav-link" data-bs-toggle="tab"
+                            href="{{ url('#general_settings') }}">{{ __('admin.settings.general_settings') }}</a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="{{ url('#localization') }}">Localization</a>
@@ -50,17 +51,18 @@
                             <div class="card">
                                 <div class="card-body pt-0">
                                     <div class="card-header">
-                                        <h5 class="card-title">{{ __('admin.settings.website_basic_details')  }}</h5>
+                                        <h5 class="card-title">{{ __('admin.settings.website_basic_details') }}</h5>
                                     </div>
                                     <form method="POST" action="{{ route('store_settings') }}"
                                         enctype="multipart/form-data">
                                         @csrf
                                         <div class="settings-form">
                                             <div class="form-group">
-                                                <label for="website_name">{{ __('admin.settings.website_name')  }} <span
+                                                <label for="website_name">{{ __('admin.settings.website_name') }} <span
                                                         class="star-red">*</span></label>
                                                 <input type="text" name="website_name" class="form-control"
-                                                    value="{{ $setting->website_name }}" placeholder="{{ __('admin.settings.enter_website_name')  }}">
+                                                    value="{{ $setting->website_name }}"
+                                                    placeholder="{{ __('admin.settings.enter_website_name') }}">
                                             </div>
                                             <div class="form-group">
                                                 <label for="phone">Tax Number <span class="star-red">*</span></label>
@@ -73,25 +75,33 @@
                                                     value="{{ $setting->vat }}" placeholder="Vat Percentage">
                                             </div>
                                             <div class="form-group">
-                                                <label for="phone">{{ __('admin.settings.website_phone')  }} <span class="star-red">*</span></label>
+                                                <label for="phone">{{ __('admin.settings.website_phone') }} <span
+                                                        class="star-red">*</span></label>
                                                 <input type="tel" name="phone" class="form-control"
-                                                    value="{{ $setting->phone }}" placeholder="{{ __('admin.settings.enter_administrator_phone')  }} ">
+                                                    value="{{ $setting->phone }}"
+                                                    placeholder="{{ __('admin.settings.enter_administrator_phone') }} ">
                                             </div>
                                             <div class="form-group">
-                                                <label for="email">{{ __('admin.settings.website_email')  }}  <span class="star-red">*</span></label>
+                                                <label for="email">{{ __('admin.settings.website_email') }} <span
+                                                        class="star-red">*</span></label>
                                                 <input type="email" name="email" class="form-control"
-                                                    value="{{ $setting->email }}" placeholder="{{ __('admin.settings.enter_administrator_email')  }} ">
+                                                    value="{{ $setting->email }}"
+                                                    placeholder="{{ __('admin.settings.enter_administrator_email') }} ">
                                             </div>
                                             <div class="form-group">
-                                                <label for="email">Privacy Policy(En) <span class="star-red">*</span></label>
-                                                <textarea type="text" name="privacy_policy_en" class="form-control">{{ $setting->privacy_policy_en }}</textarea>
+                                                <label for="privacy_policy_en">Privacy Policy (EN) <span
+                                                        class="star-red">*</span></label>
+                                                <textarea id="privacy_policy_en" name="privacy_policy_en" class="form-control">{{ $setting->privacy_policy_en }}</textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="privacy_policy_ar">Privacy Policy (AR) <span
+                                                        class="star-red">*</span></label>
+                                                <textarea id="privacy_policy_ar" name="privacy_policy_ar" class="form-control">{{ $setting->privacy_policy_ar }}</textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="email">Privacy Policy(AR) <span class="star-red">*</span></label>
-                                                <textarea type="text" name="privacy_policy_ar" class="form-control">{{ $setting->privacy_policy_ar }}</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <p class="settings-label">{{ __('admin.settings.logo')  }}  <span class="star-red">*</span></p>
+                                                <p class="settings-label">{{ __('admin.settings.logo') }} <span
+                                                        class="star-red">*</span></p>
                                                 <div class="settings-btn">
                                                     <input type="file" accept="image/*" name="logo" id="logo"
                                                         onchange="loadFile(event)" class="hide-input">
@@ -99,13 +109,14 @@
                                                         <i class="feather-upload"></i>
                                                     </label>
                                                 </div>
-                                                <h6 class="settings-size">{{ __('admin.settings.recommended_image_size_is')  }}
-                                                    <span>{{ __('admin.settings.150px_x_150px')  }}</span>
+                                                <h6 class="settings-size">
+                                                    {{ __('admin.settings.recommended_image_size_is') }}
+                                                    <span>{{ __('admin.settings.150px_x_150px') }}</span>
                                                 </h6>
                                             </div>
 
                                             <div class="form-group">
-                                                <p class="settings-label">Icon  <span class="star-red">*</span></p>
+                                                <p class="settings-label">Icon <span class="star-red">*</span></p>
                                                 <div class="settings-btn">
                                                     <input type="file" accept="image/*" name="favicon" id="favicon"
                                                         onchange="loadFile(event)" class="hide-input">
@@ -135,9 +146,11 @@
 
                                             <div class="form-group mb-0">
                                                 <div class="settings-btns">
-                                                    <button type="submit" class="btn btn-primary btn-add">{{ __('admin.settings.update')  }}
+                                                    <button type="submit"
+                                                        class="btn btn-primary btn-add">{{ __('admin.settings.update') }}
                                                     </button>
-                                                    <button type="submit" class="btn btn-danger btn-cancel">{{ __('admin.settings.cancel')  }}
+                                                    <button type="submit"
+                                                        class="btn btn-danger btn-cancel">{{ __('admin.settings.cancel') }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -150,38 +163,46 @@
                             <div class="card">
                                 <div class="card-body pt-0">
                                     <div class="card-header">
-                                        <h5 class="card-title">{{ __('admin.settings.address_details')  }}</h5>
+                                        <h5 class="card-title">{{ __('admin.settings.address_details') }}</h5>
                                     </div>
                                     <form method="POST" action="{{ route('store_settings') }}">
                                         @csrf
                                         <div class="settings-form">
                                             <div class="form-group">
-                                                <label>{{ __('admin.settings.address_line_1')  }} <span class="star-red">*</span></label>
+                                                <label>{{ __('admin.settings.address_line_1') }} <span
+                                                        class="star-red">*</span></label>
                                                 <input type="text" class="form-control" name="address_line_1"
-                                                    placeholder="{{ __('admin.settings.enter_address_line_1')  }}" value="{{ $setting->address_line_1 }}">
+                                                    placeholder="{{ __('admin.settings.enter_address_line_1') }}"
+                                                    value="{{ $setting->address_line_1 }}">
                                             </div>
                                             <div class="form-group">
-                                                <label>{{ __('admin.settings.address_line_2')  }} <span class="star-red">*</span></label>
-                                                <input type="text" class="form-control" name="address_line_2" placeholder="{{ __('admin.settings.enter_address_line_2')  }}" value="{{ $setting->address_line_2}}">
+                                                <label>{{ __('admin.settings.address_line_2') }} <span
+                                                        class="star-red">*</span></label>
+                                                <input type="text" class="form-control" name="address_line_2"
+                                                    placeholder="{{ __('admin.settings.enter_address_line_2') }}"
+                                                    value="{{ $setting->address_line_2 }}">
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>{{ __('admin.settings.city')  }} <span class="star-red">*</span></label>
-                                                        <input type="text" name="city" class="form-control" placeholder="{{ __('admin.settings.enter_city')  }}" value="{{ $setting->city}}">
+                                                        <label>{{ __('admin.settings.city') }} <span
+                                                                class="star-red">*</span></label>
+                                                        <input type="text" name="city" class="form-control"
+                                                            placeholder="{{ __('admin.settings.enter_city') }}"
+                                                            value="{{ $setting->city }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <!-- <label>State/Province <span class="star-red">*</span></label>
-                                                        <select
-                                                            class="select form-control select2-hidden-accessible form-select select"
-                                                            data-select2-id="1" tabindex="-1" aria-hidden="true" name="state">
-                                                            <option selected="selected" data-select2-id="3">Select</option>
-                                                            <option>California</option>
-                                                            <option>Tasmania</option>
-                                                            <option>Auckland</option>
-                                                        </select> -->
+                                                                <select
+                                                                    class="select form-control select2-hidden-accessible form-select select"
+                                                                    data-select2-id="1" tabindex="-1" aria-hidden="true" name="state">
+                                                                    <option selected="selected" data-select2-id="3">Select</option>
+                                                                    <option>California</option>
+                                                                    <option>Tasmania</option>
+                                                                    <option>Auckland</option>
+                                                                </select> -->
 
 
                                                         {{-- <span class="select2 select2-container select2-container--default"
@@ -204,22 +225,25 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label>{{ __('admin.settings.zip/postal_code')  }} <span class="star-red">*</span></label>
-                                                        <input type="text" class="form-control" placeholder="{{ __('admin.settings.enter_zip/postal_code')  }}" name="zip_code" value="{{ $setting->zip_code }}">
+                                                        <label>{{ __('admin.settings.zip/postal_code') }} <span
+                                                                class="star-red">*</span></label>
+                                                        <input type="text" class="form-control"
+                                                            placeholder="{{ __('admin.settings.enter_zip/postal_code') }}"
+                                                            name="zip_code" value="{{ $setting->zip_code }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <!-- <label>Country <span class="star-red">*</span></label>
-                                                        <select class="select form-control select2-hidden-accessible"
-                                                            data-select2-id="4" tabindex="-1" aria-hidden="true" name="country">
-                                                            <option selected="selected" data-select2-id="6">Select
-                                                            </option>
-                                                            <option>India</option>
-                                                            <option>London</option>
-                                                            <option>France</option>
-                                                            <option>USA</option>
-                                                        </select> -->
+                                                                <select class="select form-control select2-hidden-accessible"
+                                                                    data-select2-id="4" tabindex="-1" aria-hidden="true" name="country">
+                                                                    <option selected="selected" data-select2-id="6">Select
+                                                                    </option>
+                                                                    <option>India</option>
+                                                                    <option>London</option>
+                                                                    <option>France</option>
+                                                                    <option>USA</option>
+                                                                </select> -->
 
                                                         {{-- <span class="select2 select2-container select2-container--default"
                                                             dir="ltr" data-select2-id="5" style="width: 100%;"><span
@@ -243,9 +267,11 @@
                                             </div>
                                             <div class="form-group mb-0">
                                                 <div class="settings-btns">
-                                                    <button type="submit" class="btn btn-primary btn-add">{{ __('admin.settings.update')  }}
+                                                    <button type="submit"
+                                                        class="btn btn-primary btn-add">{{ __('admin.settings.update') }}
                                                     </button>
-                                                    <button type="submit" class="btn btn-danger">{{ __('admin.settings.cancel')  }}</button>
+                                                    <button type="submit"
+                                                        class="btn btn-danger">{{ __('admin.settings.cancel') }}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -260,44 +286,59 @@
                 <div class="card">
                     <div class="card-body pt-0">
                         <div class="card-header">
-                            <h5 class="card-title">{{ __('admin.settings.social_links')  }}</h5>
+                            <h5 class="card-title">{{ __('admin.settings.social_links') }}</h5>
                         </div>
                         <form method="POST" action="{{ route('store_settings') }}">
                             @csrf
                             <div class="settings-form">
                                 <div class="form-group">
-                                    <label>{{ __('admin.settings.facebook')  }} <span class="star-red">*</span></label>
-                                    <input type="text" class="form-control" name="facebook" value="{{ $setting->facebook }}" placeholder="{{ __('admin.settings.enter_facebook_address')  }}">
+                                    <label>{{ __('admin.settings.facebook') }} <span class="star-red">*</span></label>
+                                    <input type="text" class="form-control" name="facebook"
+                                        value="{{ $setting->facebook }}"
+                                        placeholder="{{ __('admin.settings.enter_facebook_address') }}">
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ __('admin.settings.twitter')  }} <span class="star-red">*</span></label>
-                                    <input type="text" class="form-control" name="twitter" value="{{ $setting->twitter }}" placeholder="{{ __('admin.settings.enter_twitter_address')  }}">
+                                    <label>{{ __('admin.settings.twitter') }} <span class="star-red">*</span></label>
+                                    <input type="text" class="form-control" name="twitter"
+                                        value="{{ $setting->twitter }}"
+                                        placeholder="{{ __('admin.settings.enter_twitter_address') }}">
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>{{ __('admin.settings.linkedin')  }} <span class="star-red">*</span></label>
-                                            <input type="text" name="linkedin" value="{{ $setting->linkedin }}" class="form-control" placeholder="{{ __('admin.settings.enter_linkedIn_address')  }}">
+                                            <label>{{ __('admin.settings.linkedin') }} <span
+                                                    class="star-red">*</span></label>
+                                            <input type="text" name="linkedin" value="{{ $setting->linkedin }}"
+                                                class="form-control"
+                                                placeholder="{{ __('admin.settings.enter_linkedIn_address') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>{{ __('admin.settings.instagram')  }} <span class="star-red">*</span></label>
-                                            <input type="text" name="instagram" value="{{ $setting->instagram }}"  class="form-control" placeholder="{{ __('admin.settings.enter_instagram_address')  }}">
+                                            <label>{{ __('admin.settings.instagram') }} <span
+                                                    class="star-red">*</span></label>
+                                            <input type="text" name="instagram" value="{{ $setting->instagram }}"
+                                                class="form-control"
+                                                placeholder="{{ __('admin.settings.enter_instagram_address') }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>{{ __('admin.settings.youtube')  }}<span class="star-red">*</span></label>
-                                            <input type="text" name="youtube" value="{{ $setting->youtube }}" class="form-control" placeholder="{{ __('admin.settings.enter_youtube_address')  }}">
+                                            <label>{{ __('admin.settings.youtube') }}<span
+                                                    class="star-red">*</span></label>
+                                            <input type="text" name="youtube" value="{{ $setting->youtube }}"
+                                                class="form-control"
+                                                placeholder="{{ __('admin.settings.enter_youtube_address') }}">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group mb-0">
                                     <div class="settings-btns">
-                                        <button type="submit" class="btn btn-primary btn-add">{{ __('admin.settings.update')  }}
+                                        <button type="submit"
+                                            class="btn btn-primary btn-add">{{ __('admin.settings.update') }}
                                         </button>
-                                        <button type="submit" class="btn btn-danger">{{ __('admin.settings.cancel')  }}</button>
+                                        <button type="submit"
+                                            class="btn btn-danger">{{ __('admin.settings.cancel') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -1083,3 +1124,18 @@
     </div>
     <!-- /Main Wrapper -->
 @endsection
+{{-- CKEditor 5 --}}
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        ClassicEditor
+            .create(document.querySelector('#privacy_policy_en'))
+            .catch(error => console.error(error));
+
+        ClassicEditor
+            .create(document.querySelector('#privacy_policy_ar'))
+            .catch(error => console.error(error));
+    });
+</script>
+
