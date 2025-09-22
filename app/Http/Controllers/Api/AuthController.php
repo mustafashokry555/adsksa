@@ -274,14 +274,12 @@ class AuthController extends Controller
             'gender' => 'nullable|string|in:male,female',
             'date_of_birth' => 'nullable|date|before:today',
             'id_number' => [
-                'required',
-                'numeric',
-                'digits:10',
+                'required', 'string', 'max:50',
                 Rule::unique('users')->ignore($request->user()->id)
             ],
             'religion_id' => ['required', 'exists:religions,id'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
-            'mobile' => 'required|numeric|digits:9',
+            'mobile' => ['required', 'digits:10', 'regex:/^0[0-9]{9}$/'],
             // 'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
             // 'password' => ['nullable', 'min:6'],
             // 'height' => 'nullable|numeric|min:30|max:300',
