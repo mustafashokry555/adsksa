@@ -135,6 +135,12 @@ class AuthController extends Controller
 
             // $twilio = new Client($sid, $token);
             // DB::beginTransaction();
+            $gender = null;
+            if($request->gender == 'male'){
+                $gender = "M";
+            }elseif ($request->gender == 'female') {
+                $gender = "F";
+            }
             $user = User::create([
                 'name_en' => $request->name_en,
                 'name_ar' => $request->name_ar,
@@ -142,6 +148,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'mobile'  => $request->mobile,
                 'user_type'  => 'U',
+                'gender' => $gender,
                 'date_of_birth' => $request->date_of_birth,
                 'country' => $request->country,
                 'state' => $request->state,
@@ -264,17 +271,17 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
-            // 'gender' => 'nullable|string|in:male,female',
-            // 'date_of_birth' => 'nullable|date|before:today',
-            // 'id_number' => [
-            //     'required',
-            //     'numeric',
-            //     'digits:10',
-            //     Rule::unique('users')->ignore($request->user()->id)
-            // ],
-            // 'religion_id' => ['required', 'exists:religions,id'],
-            // 'mobile' => 'required|numeric|digits:9',
+            'gender' => 'nullable|string|in:male,female',
+            'date_of_birth' => 'nullable|date|before:today',
+            'id_number' => [
+                'required',
+                'numeric',
+                'digits:10',
+                Rule::unique('users')->ignore($request->user()->id)
+            ],
+            'religion_id' => ['required', 'exists:religions,id'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
+            'mobile' => 'required|numeric|digits:9',
             // 'marital_status' => ['required', 'string', 'in:single,married,divorced,widowed'],
             // 'password' => ['nullable', 'min:6'],
             // 'height' => 'nullable|numeric|min:30|max:300',
@@ -295,7 +302,12 @@ class AuthController extends Controller
 
         try {
             $patient = User::find($request->user()->id);
-
+            $gender = null;
+            if($request->gender == 'male'){
+                $gender = "M";
+            }elseif ($request->gender == 'female') {
+                $gender = "F";
+            }
             // if ($request->profile_image) {
             //     $image = $request->profile_image;
             //     $publicPath = public_path("images/");
@@ -307,12 +319,12 @@ class AuthController extends Controller
 
             $patient->name_en = $request->name;
             $patient->name_ar = $request->name;
-            // $patient->gender = $request->gender;
-            // $patient->date_of_birth = Carbon::parse($request->date_of_birth)->format('Y-m-d');
-            // $patient->id_number = $request->id_number;
-            // $patient->religion_id = $request->religion_id;
+            $patient->gender = $gender;
+            $patient->date_of_birth = Carbon::parse($request->date_of_birth)->format('Y-m-d');
+            $patient->id_number = $request->id_number;
+            $patient->religion_id = $request->religion_id;
             $patient->email = $request->email;
-            // $patient->mobile = $request->mobile;
+            $patient->mobile = $request->mobile;
             // $patient->marital_status = $request->marital_status;
             // $patient->address = $request->address;
             // $patient->country = $request->country;
