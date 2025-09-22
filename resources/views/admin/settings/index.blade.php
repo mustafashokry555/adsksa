@@ -100,6 +100,28 @@
                                                 <textarea id="privacy_policy_ar" name="privacy_policy_ar" class="form-control">{{ $setting->privacy_policy_ar }}</textarea>
                                             </div>
                                             <div class="form-group">
+                                                <label for="terms_en">Terms & Conditions (EN) <span
+                                                        class="star-red">*</span></label>
+                                                <textarea id="terms_en" name="terms_en" class="form-control">{{ $setting->terms_en }}</textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="terms_ar">Terms & Conditions (AR) <span
+                                                        class="star-red">*</span></label>
+                                                <textarea id="terms_ar" name="terms_ar" class="form-control">{{ $setting->terms_ar }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="return_policy_en">Return Policy (EN) <span
+                                                        class="star-red">*</span></label>
+                                                <textarea id="return_policy_en" name="return_policy_en" class="form-control">{{ $setting->return_policy_en }}</textarea>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="return_policy_ar">Return Policy (AR) <span
+                                                        class="star-red">*</span></label>
+                                                <textarea id="return_policy_ar" name="return_policy_ar" class="form-control">{{ $setting->return_policy_ar }}</textarea>
+                                            </div>
+                                            <div class="form-group">
                                                 <p class="settings-label">{{ __('admin.settings.logo') }} <span
                                                         class="star-red">*</span></p>
                                                 <div class="settings-btn">
@@ -195,14 +217,14 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <!-- <label>State/Province <span class="star-red">*</span></label>
-                                                                <select
-                                                                    class="select form-control select2-hidden-accessible form-select select"
-                                                                    data-select2-id="1" tabindex="-1" aria-hidden="true" name="state">
-                                                                    <option selected="selected" data-select2-id="3">Select</option>
-                                                                    <option>California</option>
-                                                                    <option>Tasmania</option>
-                                                                    <option>Auckland</option>
-                                                                </select> -->
+                                                                    <select
+                                                                        class="select form-control select2-hidden-accessible form-select select"
+                                                                        data-select2-id="1" tabindex="-1" aria-hidden="true" name="state">
+                                                                        <option selected="selected" data-select2-id="3">Select</option>
+                                                                        <option>California</option>
+                                                                        <option>Tasmania</option>
+                                                                        <option>Auckland</option>
+                                                                    </select> -->
 
 
                                                         {{-- <span class="select2 select2-container select2-container--default"
@@ -235,15 +257,15 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <!-- <label>Country <span class="star-red">*</span></label>
-                                                                <select class="select form-control select2-hidden-accessible"
-                                                                    data-select2-id="4" tabindex="-1" aria-hidden="true" name="country">
-                                                                    <option selected="selected" data-select2-id="6">Select
-                                                                    </option>
-                                                                    <option>India</option>
-                                                                    <option>London</option>
-                                                                    <option>France</option>
-                                                                    <option>USA</option>
-                                                                </select> -->
+                                                                    <select class="select form-control select2-hidden-accessible"
+                                                                        data-select2-id="4" tabindex="-1" aria-hidden="true" name="country">
+                                                                        <option selected="selected" data-select2-id="6">Select
+                                                                        </option>
+                                                                        <option>India</option>
+                                                                        <option>London</option>
+                                                                        <option>France</option>
+                                                                        <option>USA</option>
+                                                                    </select> -->
 
                                                         {{-- <span class="select2 select2-container select2-container--default"
                                                             dir="ltr" data-select2-id="5" style="width: 100%;"><span
@@ -781,11 +803,6 @@
                                                     placeholder="https://www.twitter.com">
                                             </div>
                                         </div>
-                                        {{-- <div class="col-12 col-md-1"> --}}
-                                        {{-- <a href="#" class="btn trash"> --}}
-                                        {{--                                                            <i class="feather-trash-2"></i> --}}
-                                        {{--                                                        </a> --}}
-                                        {{--                                                    </div> --}}
                                     </div>
                                 </div>
                                 <div class="links-info">
@@ -799,11 +816,6 @@
                                                     placeholder="https://www.youtube.com">
                                             </div>
                                         </div>
-                                        {{--                                                    <div class="col-12 col-md-1"> --}}
-                                        {{--                                                        <a href="#" class="btn trash"> --}}
-                                        {{--                                                            <i class="feather-trash-2"></i> --}}
-                                        {{--                                                        </a> --}}
-                                        {{--                                                    </div> --}}
                                     </div>
                                 </div>
                                 <div class="links-info">
@@ -817,11 +829,6 @@
                                                     name="linkedin" placeholder="https://www.linkedin.com">
                                             </div>
                                         </div>
-                                        {{--                                                    <div class="col-12 col-md-1"> --}}
-                                        {{--                                                        <a href="#" class="btn trash"> --}}
-                                        {{--                                                            <i class="feather-trash-2"></i> --}}
-                                        {{--                                                        </a> --}}
-                                        {{--                                                    </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -1125,10 +1132,10 @@
     <!-- /Main Wrapper -->
 @endsection
 {{-- CKEditor 5 --}}
-<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script src="{{ asset('assets/js/ckeditor.js') }}"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         ClassicEditor
             .create(document.querySelector('#privacy_policy_en'))
             .catch(error => console.error(error));
@@ -1136,6 +1143,19 @@
         ClassicEditor
             .create(document.querySelector('#privacy_policy_ar'))
             .catch(error => console.error(error));
+        ClassicEditor
+            .create(document.querySelector('#terms_ar'))
+            .catch(error => console.error(error));
+
+        ClassicEditor
+            .create(document.querySelector('#terms_en'))
+            .catch(error => console.error(error));
+        ClassicEditor
+            .create(document.querySelector('#return_policy_ar'))
+            .catch(error => console.error(error));
+
+        ClassicEditor
+            .create(document.querySelector('#return_policy_en'))
+            .catch(error => console.error(error));
     });
 </script>
-
