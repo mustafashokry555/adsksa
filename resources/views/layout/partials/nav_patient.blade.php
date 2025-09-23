@@ -22,7 +22,7 @@
                         @endif
                         @if( auth()->user()->address)
                         <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ auth()->user()->address }}
-                            , {{ auth()->user()->state }}</h5>
+                            , {{ auth()->user()->state?->name }}</h5>
                             @endif
                     </div>
                 </div>
