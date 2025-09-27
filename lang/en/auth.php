@@ -21,5 +21,6 @@ return [
     'password_incorrect' => 'The provided password is incorrect.',
     'password_change' => 'The password changed successfully.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
+    'email_for_update_email' => 'We have emailed your update email OTP!',
+    'email_updated_success' => 'Your email has been updated successfully!',
 ];

@@ -146,5 +146,10 @@ return [
     'id_number' => "ID Number",
     'nationality' => "Nationality",
     'mobile' => "Mobile",
+
+    'forget_password' => 'Forgot Password',
+    'forget_password_subtitle' => 'Enter your email to receive a password reset OTP.',
+    'send_reset_otp' => 'Send Password Reset OTP',
+    'remember_password' => 'Remember your password?',
 ];
 ?>

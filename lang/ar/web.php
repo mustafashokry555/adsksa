@@ -148,5 +148,8 @@ return [
     'nationality' => "الجنسيه",
     'mobile' => "الهاتف",
     
-
+    'forget_password' => 'نسيت كلمة المرور',
+    'forget_password_subtitle' => 'أدخل بريدك الإلكتروني لإرسال رمز إعادة تعيين كلمة المرور.',
+    'send_reset_otp' => 'إرسال رمز إعادة التعيين',
+    'remember_password' => 'هل تتذكر كلمة المرور؟',
 ];

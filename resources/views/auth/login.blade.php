@@ -31,13 +31,8 @@
                                     <div  class="form-group form-focus">
                                         <input  type="text" class="form-control floating" name="email" value="{{ old('email', request('email')) }}" id="Email">
                                         <label class="focus-label">{{ __('web.email') }}</label>
-                                        @error('0')
-                                            <div class="text-danger pt-2">
-                                                {{$message}}
-                                            </div>
-                                        @enderror
                                         @error('email')
-                                            <div class="text-danger pt-2">
+                                            <div class="text-danger my-2">
                                                 {{$message}}
                                             </div>
                                         @enderror
@@ -46,14 +41,9 @@
                                     <div class="form-group form-focus">
                                         <input type="password" class="form-control floating pass-input" name="password" id="password">
                                         <label class="focus-label">{{ __('web.password') }}</label>
-                                        <span class="fa fa-eye-slash toggle-password pt-4"></span>
-                                        @error('0')
-                                            <div class="text-danger pt-2">
-                                                {{$message}}
-                                            </div>
-                                        @enderror
+                                        {{-- <span class="fa fa-eye-slash toggle-password pt-4"></span> --}}
                                         @error('password')
-                                            <div class="text-danger pt-2">
+                                            <div class="text-danger my-2">
                                                 {{$message}}
                                             </div>
                                         @enderror
@@ -73,7 +63,7 @@
                                                 @enderror
                                             </div>
                                             <div class="col-6 text-end">
-                                                <a class="forgot-link" href="{{url('admin/forgot-password')}}">
+                                                <a class="forgot-link" href="{{route('password.request')}}">
                                                     {{ __('web.forgot_password') }}
                                                 </a>
                                             </div>
