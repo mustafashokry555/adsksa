@@ -156,5 +156,11 @@ return [
     'otp' => 'OTP',
     'verify_otp' => 'Verify OTP',
     'resend_otp' => 'Resend OTP',
+
+    'invalid_or_expired_otp' => 'The OTP is invalid or has expired.',
+    'password_reset_success' => 'Your password has been reset successfully! Please login.',
+    'user_not_found' => 'User not found.',
+    'otp_expired' => 'OTP has expired. Please request a new one.',
+
+    'new_password' => "New Password",
 ];
-?>
