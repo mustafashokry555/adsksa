@@ -76,7 +76,7 @@
                                 <div  dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="login-header">
                                     <h3>{{ __('web.reset_password') }} </h3>
                                 </div>
-                                <form method="POST" action="{{ route('verification.send') }}">
+                                <form method="POST" action="{{ route('password.update') }}">
                                     @csrf
                                     
                                     <input type="hidden" class="form-control floating pass-input" name="timezone" id="timezone" value="">

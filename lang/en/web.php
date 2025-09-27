@@ -151,5 +151,10 @@ return [
     'forget_password_subtitle' => 'Enter your email to receive a password reset OTP.',
     'send_reset_otp' => 'Send Password Reset OTP',
     'remember_password' => 'Remember your password?',
+
+    'reset_password' => 'Reset Password',
+    'otp' => 'OTP',
+    'verify_otp' => 'Verify OTP',
+    'resend_otp' => 'Resend OTP',
 ];
 ?>
