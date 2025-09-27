@@ -23,7 +23,12 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request)
     {
-        return view('auth.reset-password', ['request' => $request]);
+        if (!$request->has('email') || !User::where('email', $request->email)->exists()) {
+        return redirect()
+            ->route('password.request') // Forgot Password route
+            ->withErrors(['email' => __('This email does not exist in our records.')]);
+        }
+        return view('auth.reset-password', ['email' => $request->email]);
     }
 
     /**
@@ -47,7 +52,6 @@ class NewPasswordController extends Controller
             ->where('email', $request->email)
             ->where('token', $request->token) // OTP check
             ->first();
-
         if (!$passwordReset) {
             return back()->withErrors([
                 'token' => __('web.invalid_or_expired_otp'), // Add translation
@@ -55,14 +59,16 @@ class NewPasswordController extends Controller
         }
         // ✅ OTP Expiration Check (5 minutes)
         if (Carbon::now()->diffInMinutes(Carbon::parse($passwordReset->created_at)) > 5) {
-            return back()->withErrors([
-                'token' => __('web.otp_expired'),
+            return redirect()->route('password.request')
+            ->withErrors([
+                'email' => __('web.otp_expired'),
             ])->withInput(['email' => $request->email]);
         }
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->withErrors([
+            return redirect()->route('password.request')
+            ->withErrors([
                 'email' => __('web.user_not_found'),
             ]);
         }

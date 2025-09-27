@@ -51,6 +51,6 @@ class PasswordResetLinkController extends Controller
         // Send OTP via email
         $user->notify(new SendOtpEmail($otp, 'Password Reset OTP', 'a password reset'));
 
-        return view('auth.reset-password', compact('email'));
+        return redirect()->route('password.reset', ['email' => $email]);
     }
 }

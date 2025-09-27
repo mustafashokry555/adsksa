@@ -79,11 +79,11 @@
                                 <form method="POST" action="{{ route('password.update') }}">
                                     @csrf
                                     
-                                    <input type="hidden" class="form-control floating pass-input" name="timezone" id="timezone" value="">
-                                    <input type="hidden" class="form-control floating pass-input" name="email" value="{{ $email }}">
+                                    {{-- <input type="hidden" class="form-control floating pass-input" name="timezone" id="timezone" value=""> --}}
+                                    <input type="hidden" class="form-control floating pass-input" required name="email" value="{{ $email }}">
                                     
                                     <div class="form-group form-focus">
-                                        <input type="text" class="form-control floating" name="token" value="{{ old('token') }}" id="token">
+                                        <input type="text" class="form-control floating" name="token" required value="{{ old('token') }}" id="token">
                                         <label class="focus-label">{{ __('web.otp') }}</label>
                                         @error('token')
                                             <div class="text-danger my-2">{{ $message }}</div>
@@ -91,7 +91,7 @@
                                     </div>
 
                                     <div class="form-group form-focus">
-                                        <input type="password" class="form-control floating" name="password" id="Password">
+                                        <input type="password" class="form-control floating" name="password" id="Password" required>
                                         <label class="focus-label">{{ __('web.new_password') }}</label>
                                         @error('password')
                                             <div class="text-danger my-2">{{ $message }}</div>
@@ -99,11 +99,11 @@
                                     </div>
 
                                     <div class="form-group form-focus">
-                                        <input type="password" class="form-control floating" name="password_confirmation" id="PasswordConfirmation">
+                                        <input type="password" class="form-control floating" name="password_confirmation" required id="PasswordConfirmation">
                                         <label class="focus-label">{{ __('web.confirm_password') }}</label>
                                     </div>
 
-                                    <input type="hidden" class="form-control floating pass-input" name="timezone" id="timezone" value="">
+                                    {{-- <input type="hidden" class="form-control floating pass-input" name="timezone" id="timezone" value=""> --}}
 
                                     <div class="d-grid">
                                         <button class="btn btn-primary" type="submit">{{ __('web.reset_password') }}</button>
@@ -126,12 +126,3 @@
 <!-- /Page Content -->
 
 @endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        var inputElement = document.getElementById('timezone');
-
-        // Set the value of the input element
-        inputElement.value = userTimezone;
-    });
-</script>
