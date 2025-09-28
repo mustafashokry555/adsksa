@@ -23,4 +23,9 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'email_for_update_email' => 'We have emailed your update email OTP!',
     'email_updated_success' => 'Your email has been updated successfully!',
+    'email_not_exist' => 'This email does not exist in our records register first and verify your email.',
+
+    'email_is_verified_login' => 'Your email is already verified. Please log in.',
+    'email_verified_success' => 'Your email has been successfully verified. You can now log in.',
+
 ];

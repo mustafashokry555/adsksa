@@ -67,12 +67,14 @@
                                     <h3>{{ __('web.verify_email') }}</h3>
                                     <p class="text-muted">{{ __('web.enter_email_to_verify') }}</p>
                                 </div>
-                                <form method="POST" action="{{ route('verification.send') }}">
+                                <form method="POST" action="{{ route('verification.verify') }}">
                                     @csrf
+                                    <input type="email" name="email" hidden value="{{ $email }}">
+
                                     <div  class="form-group form-focus">
-                                        <input  type="text" class="form-control floating" name="email" value="{{ old('email') }}" id="email">
-                                        <label class="focus-label">{{ __('web.email') }}</label>
-                                        @error('email')
+                                        <input  type="text" class="form-control floating" name="otp" value="{{ old('otp') }}" id="otp">
+                                        <label class="focus-label">{{ __('web.otp') }}</label>
+                                        @error('otp')
                                             <div class="text-danger my-2">
                                                 {{$message}}
                                             </div>
@@ -83,8 +85,7 @@
                                         <button class="btn btn-primary" type="submit">{{ __('web.verify') }}</button>
                                     </div>
                                     <div  dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dont-have">
-                                        {{ __('web.dont_have_account') }}
-                                        <a href="{{ route('register') }}">{{ __('web.sign_up') }}</a>
+                                        <a href="{{ route('verification.email') }}">{{ __('web.resend_otp') }}</a>
                                     </div>
                                     <div class="login-or">
                                         <span class="or-line"></span>

@@ -27,7 +27,11 @@
                                     <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="login-header">
                                         <h3>{{ __('web.patient_register') }}</h3>
                                     </div>
-
+                                    @if (session('error'))
+                                        <div class="alert alert-danger mt-2">
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
                                     <!-- Register Form -->
                                     <form action="{{ route('register') }}" method="POST">
                                         @csrf
@@ -62,7 +66,8 @@
                                         <div class="form-group form-focus">
                                             <input type="date" id="date_of_birth" class="form-control floating"
                                                 name="date_of_birth" value="{{ old('date_of_birth') }}">
-                                            <label class="focus-label"style="top: -18px; font-size: 12px;" >{{ __('web.date_of_birth') }}</label>
+                                            <label
+                                                class="focus-label"style="top: -18px; font-size: 12px;">{{ __('web.date_of_birth') }}</label>
                                             @error('date_of_birth')
                                                 <div class="text-danger ">{{ $message }}</div>
                                             @enderror
@@ -82,7 +87,7 @@
                                         <div class="form-group form-focus">
                                             <select name="nationality" id="nationality" class="form-control floating"
                                                 required>
-                                                <option value="" ></option>
+                                                <option value=""></option>
                                                 @foreach ($religions as $religion)
                                                     <option value="{{ $religion->id }}"
                                                         {{ old('nationality') == $religion->id ? 'selected' : '' }}>
@@ -110,7 +115,8 @@
                                         {{-- Mobile --}}
                                         <div class="form-group form-focus">
                                             <input type="text" id="mobile" class="form-control floating"
-                                                name="mobile" value="{{ old('mobile') }}" placeholder="05xxxxxxxx" required>
+                                                name="mobile" value="{{ old('mobile') }}" placeholder="05xxxxxxxx"
+                                                required>
                                             <label class="focus-label">{{ __('web.mobile') }}</label>
                                             @error('mobile')
                                                 <div class="text-danger ">{{ $message }}</div>

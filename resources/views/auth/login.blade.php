@@ -26,6 +26,16 @@
                                 <div  dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="login-header">
                                     <h3>{{ __('web.login') }} </h3>
                                 </div>
+                                @if (session('error'))
+                                    <div class="alert alert-danger mt-2">
+                                        {{ session('error') }}
+                                    </div>
+                                @endif
+                                @if (session('success'))
+                                    <div class="alert alert-success mt-2">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
                                 <form method="POST" action="{{ route('login') }}">
                                     @csrf
                                     <div  class="form-group form-focus">

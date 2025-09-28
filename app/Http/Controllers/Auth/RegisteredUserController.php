@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Hospital;
+use App\Models\Otp;
 use App\Models\Religion;
 use App\Models\User;
+use App\Notifications\SendOtpEmail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -65,13 +67,30 @@ class RegisteredUserController extends Controller
             'user_type' => "U",
         ]);
 
-        event(new Registered($user));
+        if($user){
+            event(new Registered($user));
+            // // Generate OTP
+            // $otp = rand(100000, 999999);
+            // // Store OTP in otps table
+            // $newRow = Otp::create([
+            //     'user_id ' => $otp,
+            //     'email ' => $request->email,
+            //     'otp' => $otp,
+            //     'expires_at' => now()->addMinutes(5),
+            //     'reason' => "Verify Email",
+            // ]);
+            // if ($newRow) {
+            //     $user->notify(new SendOtpEmail($otp, 'Virefiy Email OTP', 'an email verification'));
+            // }
 
-        Auth::login($user);
+            return view('auth.verify-email');
+        }
+
+        // Auth::login($user);
         // dd(Auth::user());
         
         // if(Auth::user()->user_type=='U'){
-            return redirect(RouteServiceProvider::DASHBOARD);
+            // return redirect(RouteServiceProvider::DASHBOARD);
         // }
 
         // return redirect(RouteServiceProvider::HOME);

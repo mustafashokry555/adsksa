@@ -40,6 +40,9 @@ class AuthenticatedSessionController extends Controller
                 'email' => __('web.account_inactive'),
             ])->withInput($request->except('password'));
         }
+        if($user && $user->is_patient() && $user->email_verified_at == null){
+            return view('auth.verify-email');
+        }
         $request->authenticate();
 
         $request->session()->regenerate();

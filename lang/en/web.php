@@ -163,4 +163,12 @@ return [
     'otp_expired' => 'OTP has expired. Please request a new one.',
 
     'new_password' => "New Password",
+
+    'verify_email' => 'Verify Your Email',
+    'enter_email_to_verify' => 'Please enter your email to be verified.',
+    'verification_message' => 'We have sent a verification code to your email. Please enter it below.',
+    'enter_otp' => 'Enter Verification Code',
+    'verify' => 'Verify',
+    'didnt_receive_code' => "Didn't receive the code?",
+    'resend_code' => 'Resend Code',
 ];
