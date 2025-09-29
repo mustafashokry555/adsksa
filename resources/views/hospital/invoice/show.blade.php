@@ -256,20 +256,19 @@
         <!-- Customer Info -->
         <!-- Customer & Patient Info -->
         <div class="customer-info" style="display: flex; justify-content: space-between; text-align: right;">
-            <!-- Company Info -->
-            <div style="width: 48%;">
-                <div>اسم المؤسسة:</div>
-                <div>{{ $invoice->company_name }}</div>
-                <div>عنوان المؤسسة:</div>
-                <div>{{ $invoice->company_address }}</div>
-            </div>
-
             <!-- Patient Info -->
             <div style="width: 48%; border-right: 1px solid #4CAF50; padding-right: 10px;">
                 <div>اسم المريض:</div>
                 <div>{{ $invoice->patient?->name ?? '---' }}</div>
                 <div>رقم الهوية:</div>
                 <div>{{ $invoice->patient?->id_number ?? '---' }}</div>
+            </div>
+            <!-- Company Info -->
+            <div style="width: 48%;">
+                <div>اسم المؤسسة:</div>
+                <div>{{ $invoice->company_name }}</div>
+                <div>عنوان المؤسسة:</div>
+                <div>{{ $invoice->company_address }}</div>
             </div>
         </div>
 
