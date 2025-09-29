@@ -41,7 +41,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name_en' => ['required', 'string', 'max:255'],
-            'gender' => 'nullable|string|in:male,female',
+            'gender' => 'nullable|string|in:M,F',
             'date_of_birth' => 'nullable|date|before:today',
             'id_number' => ['required', 'string', 'max:50', 'unique:users'],
             'nationality' => ['required', 'exists:religions,id'],

@@ -6,8 +6,7 @@
             <div class="profile-info-widget">
                 <a href="#" class="booking-doc-img">
                     @if (auth()->user()->profile_image ?? '')
-                        <img src="{{ asset(auth()->user()->profile_image) }}"
-                            alt="{{ auth()->user()->name }}">
+                        <img src="{{ asset(auth()->user()->profile_image) }}" alt="{{ auth()->user()->name }}">
                     @else
                         <img src="{{ URL::asset('/assets/img/patients/patient.jpg') }}" alt="User Image">
                     @endif
@@ -15,15 +14,15 @@
                 <div class="profile-det-info">
                     <h3>{{ auth()->user()->name }}</h3>
                     <div class="patient-details">
-                        @if( auth()->user()->date_of_birth)
-                        <h5><i class="fas fa-birthday-cake"></i> {{ auth()->user()->date_of_birth }}
-                            <!-- ({{ \Carbon\Carbon::parse(auth()->user()->date_of_birth)->age }}Yrs) -->
-                        </h5>
+                        @if (auth()->user()->date_of_birth)
+                            <h5><i class="fas fa-birthday-cake"></i> {{ auth()->user()->date_of_birth }}
+                                <!-- ({{ \Carbon\Carbon::parse(auth()->user()->date_of_birth)->age }}Yrs) -->
+                            </h5>
                         @endif
-                        @if( auth()->user()->address)
-                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ auth()->user()->address }}
-                            , {{ auth()->user()->state?->name }}</h5>
-                            @endif
+                        @if (auth()->user()->address)
+                            <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ auth()->user()->address }}
+                                , {{ auth()->user()->state?->name }}</h5>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -41,6 +40,12 @@
                         <a href="{{ route('appointments') }}">
                             <i class="fas fa-bookmark"></i>
                             <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li class="{{ Request::routeIs('invoices') ? 'active' : '' }}">
+                        <a href="{{ route('invoices') }}">
+                            <i class="fas fa-file"></i>
+                            <span>Invoices</span>
                         </a>
                     </li>
                     {{--                    <li> --}}

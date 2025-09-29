@@ -308,12 +308,18 @@ class AppointmentController extends Controller
             ]);
         } elseif (Auth::user()->is_hospital()) {
             return view('hospital.invoice.index', [
-                'invoices' => Invoice::query()->where('hospital_id', Auth::user()->hospital_id)->orderByDesc('id')->get(),
+                'invoices' => Invoice::query()->orderByDesc('id')->get(),
             ]);
         } elseif (Auth::user()->is_admin()) {
             return view('admin.invoice.index',
                 [
                     'invoices' => Invoice::query()->orderByDesc('id')->get(),
+                ]
+            );
+        } elseif (Auth::user()->is_patient()) {
+            return view('patient.invoice.index',
+                [
+                    'invoices' => Invoice::query()->where('patient_id', Auth::id())->orderByDesc('id')->get(),
                 ]
             );
         } else {
@@ -346,6 +352,14 @@ class AppointmentController extends Controller
             $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
             $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
             return view('admin.invoice.show', [
+                'invoice' => $invoice,
+                'qrCode' => $qrCode
+            ]);
+        } elseif (Auth::user()->is_patient()) {
+            // بيانات ZATCA QR
+            $qrData = $this->generateZatcaQr($invoice, $vat_amount, $total);
+            $qrCode = QrCode::encoding('UTF-8')->errorCorrection('L')->size(200)->generate($qrData);
+            return view('patient.invoice.show', [
                 'invoice' => $invoice,
                 'qrCode' => $qrCode
             ]);

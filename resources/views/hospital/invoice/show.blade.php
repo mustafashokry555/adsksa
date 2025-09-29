@@ -139,7 +139,7 @@
         }
 
         .invoice-container {
-            width: 320px;
+            width: 400px;
             margin: 0 auto;
             background: white;
             border: 1px solid #ddd;
@@ -242,20 +242,35 @@
         $vat_amount = $invoice->subtotal == 0 ? 0 : $invoice->subtotal * ($invoice->vat / 100);
         $total = $invoice->subtotal + $vat_amount;
     @endphp
-    <div class="invoice-container"  id="invoice">
+    <div class="invoice-container" id="invoice">
         <!-- Header -->
         <div class="header">
             <div href="{{ route('home') }}" class="logo" style="margin-right: 0 !important">
-                <img src="{{ URL::asset('images/' . $setting->logo)}}" alt="Logo" style="height: 3rem; margin-bottom: 10px;">
+                <img src="{{ URL::asset('images/' . $setting->logo) }}" alt="Logo"
+                    style="height: 3rem; margin-bottom: 10px;">
             </div>
             <h1>فاتورة ضريبية مبسطة</h1>
             <div class="invoice-number" dir="ltr">{{ $invoice->invoice_number }} :رقم الفاتورة</div>
         </div>
 
         <!-- Customer Info -->
-        <div class="customer-info">
-            <div>اسم الموسسة: {{ $invoice->company_name }}</div>
-            <div>عنوان الموسسة: {{ $invoice->company_address }}</div>
+        <!-- Customer & Patient Info -->
+        <div class="customer-info" style="display: flex; justify-content: space-between; text-align: right;">
+            <!-- Company Info -->
+            <div style="width: 48%;">
+                <div>اسم المؤسسة:</div>
+                <div>{{ $invoice->company_name }}</div>
+                <div>عنوان المؤسسة:</div>
+                <div>{{ $invoice->company_address }}</div>
+            </div>
+
+            <!-- Patient Info -->
+            <div style="width: 48%; border-right: 1px solid #4CAF50; padding-right: 10px;">
+                <div>اسم المريض:</div>
+                <div>{{ $invoice->patient?->name ?? '---' }}</div>
+                <div>رقم الهوية:</div>
+                <div>{{ $invoice->patient?->id_number ?? '---' }}</div>
+            </div>
         </div>
 
         <!-- Date -->
