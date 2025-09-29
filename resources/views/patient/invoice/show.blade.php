@@ -151,16 +151,17 @@
                             <div>عنوان الموسسة: {{ $invoice->company_address }}</div>
                         </div> --}}
                         <!-- Customer & Patient Info -->
-                        <div class="customer-info" style="display: flex; justify-content: space-between; text-align: right;">
-                            <!-- Company Info -->
+                        <div class="customer-info"
+                            style="display: flex; justify-content: space-between; text-align: right;">
                             <!-- Patient Info -->
-                            <div style="width: 48%; border-right: 1px solid #4CAF50; padding-right: 10px;">
+                            <div style="width: 48%; ">
                                 <div>اسم المريض:</div>
                                 <div>{{ $invoice->patient?->name ?? '---' }}</div>
                                 <div>رقم الهوية:</div>
                                 <div>{{ $invoice->patient?->id_number ?? '---' }}</div>
                             </div>
-                            <div style="width: 48%;">
+                            <!-- Company Info -->
+                            <div style="width: 48%; border-right: 1px solid #4CAF50; padding-right: 10px;">
                                 <div>اسم المؤسسة:</div>
                                 <div>{{ $invoice->company_name }}</div>
                                 <div>عنوان المؤسسة:</div>
