@@ -3,9 +3,13 @@
 @section('title', 'Welcome')
 @section('content')
     <!-- Header -->
-    <link href="{{ url('assets/css/bootstrap.min.css') }}" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    {{-- <link href="{{ url('assets/css/bootstrap.min.css') }}" rel="stylesheet" crossorigin="anonymous"> --}}
     @include('components.patient_header')
+        <div class="row align-items-center mt-4">
+        </div>
+    </div>
+    </section>
+
     <style>
         .search_bar {
             display: flex;
@@ -59,17 +63,7 @@
             margin-left: 391px;
         }
     </style>
-
-
-    <!-- /Header -->
-    <div class="row align-items-center">
-        <!-- <div class="col-lg-12 col-md-12"></div> -->
-        
-    </div>
-    </div>
-    </section>
-
-    <section class="login">
+    <section class="home">
         <div class="content" style="min-height: 273.9px;">
             <div class="container-fluid">
                 <div class="row">
@@ -80,18 +74,24 @@
                                     <div class="home-four-doctor">
                                         <div class="home-four-header">
                                             <!-- <h2 style="color: #272b41">{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2> -->
-                                            <h2 style="color: #009eff">{{__('Find Doctor') }} <span style="color: #12b3ab">{{ __('make an ') }}<span style="color: #1aeebe">{{ __('web.Appointment') }}</span></h2>
+                                            <h2 style="color: #009eff">{{ __('Find Doctor') }} <span
+                                                    style="color: #12b3ab">{{ __('make an ') }}<span
+                                                        style="color: #1aeebe">{{ __('web.Appointment') }}</span></h2>
                                         </div>
-                                        <form method="GET" action="{{ route('single_search_doctor') }}" class="banner-four-search">
-                                            <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="search_bar" style="background-color:white">
+                                        <form method="GET" action="{{ route('single_search_doctor') }}"
+                                            class="banner-four-search">
+                                            <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="search_bar"
+                                                style="background-color:white">
                                                 <div class="drop_down_wrap">
                                                     <label>{{ __('web.Enter_country') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="countrySelect" name="country" class="select form-control" >
+                                                        <select id="countrySelect" name="country"
+                                                            class="select form-control">
                                                             <option selected disabled>{{ __('web.Enter_country') }}</option>
                                                             <option value='all'>{{ __('web.All') }}</option>
-                                                            @foreach($countries as $country)
-                                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                                            @foreach ($countries as $country)
+                                                                <option value="{{ $country->id }}">{{ $country->name }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -99,7 +99,7 @@
                                                 <div class="drop_down_wrap">
                                                     <label>{{ __('web.Enter State') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="stateSelect" name="state" class="select form-control" >
+                                                        <select id="stateSelect" name="state" class="select form-control">
                                                             <option selected disabled>{{ __('web.Enter State') }}</option>
                                                         </select>
                                                     </div>
@@ -107,7 +107,7 @@
                                                 <div class="drop_down_wrap">
                                                     <label>{{ __('web.Enter City') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="citySelect" name="city" class="select form-control" >
+                                                        <select id="citySelect" name="city" class="select form-control">
                                                             <option selected disabled>{{ __('web.Enter City') }}</option>
                                                         </select>
                                                     </div>
@@ -115,11 +115,14 @@
                                                 <div class="drop_down_wrap">
                                                     <label>{{ __('web.Select a Insurance') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="insuranceSelect" name="insurance" class="select form-control">
-                                                            <option selected disabled>{{ __('web.Select a Insurance') }}</option>
+                                                        <select id="insuranceSelect" name="insurance"
+                                                            class="select form-control">
+                                                            <option selected disabled>{{ __('web.Select a Insurance') }}
+                                                            </option>
                                                             <option value='all'>{{ __('web.All') }}</option>
-                                                            @foreach($insurances as $insurance)
-                                                                <option value="{{ $insurance->id }}">{{ $insurance->name }}</option>
+                                                            @foreach ($insurances as $insurance)
+                                                                <option value="{{ $insurance->id }}">
+                                                                    {{ $insurance->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -127,20 +130,23 @@
                                                 <div class="drop_down_wrap">
                                                     <label>{{ __('web.Select a specility') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="specialitySelect" name="speciality" class="select form-control">
-                                                            <option selected disabled>{{ __('web.Select a specility') }}</option>
+                                                        <select id="specialitySelect" name="speciality"
+                                                            class="select form-control">
+                                                            <option selected disabled>{{ __('web.Select a specility') }}
+                                                            </option>
                                                             <option value='all'>{{ __('web.All') }}</option>
-                                                            @foreach($specialities as $speciality)
-                                                                <option value="{{ $speciality->id }}">{{ $speciality->name }}</option>
+                                                            @foreach ($specialities as $speciality)
+                                                                <option value="{{ $speciality->id }}">
+                                                                    {{ $speciality->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
-                        
+
                                                 <button class="btn_search">{{ __('web.Search') }}</button>
                                             </div>
                                         </form>
-                        
+
                                     </div>
                                 </div>
                             </div>
@@ -174,9 +180,9 @@
     <!-- Blog Section Four -->
     {{-- <x-patient_blogs_section :blogs="$blogs" /> --}}
     <!-- /Blog Section Four -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
+    </script> --}}
     <script>
         // Add event listener for country select
         document.getElementById('countrySelect').addEventListener('change', function() {
@@ -197,18 +203,18 @@
 
         async function loadStates(countryId = null) {
             const stateSelect = document.getElementById('stateSelect');
-            
+
             // Reset the state dropdown
             stateSelect.innerHTML = `
-                <option selected disabled>${'{{ __("web.Enter State") }}'}</option>
-                <option value="all">${'{{ __("web.All") }}'}</option>
+                <option selected disabled>${'{{ __('web.Enter State') }}'}</option>
+                <option value="all">${'{{ __('web.All') }}'}</option>
             `;
 
             try {
                 // Build the URL based on whether we have a countryId
-                const url = countryId 
-                    ? `/get-states?country_id=${countryId}`
-                    : '/get-states'; // Endpoint for all cities
+                const url = countryId ?
+                    `/get-states?country_id=${countryId}` :
+                    '/get-states'; // Endpoint for all cities
 
                 const response = await fetch(url);
                 const data = await response.json();
@@ -225,23 +231,23 @@
         }
 
         async function loadCities(countryId = null, stateId = null) {
-            
+
             const citySelect = document.getElementById('citySelect');
-            
+
             // Reset the state dropdown
             citySelect.innerHTML = `
-                <option selected disabled>${'{{ __("web.Enter City") }}'}</option>
-                <option value="all">${'{{ __("web.All") }}'}</option>
+                <option selected disabled>${'{{ __('web.Enter City') }}'}</option>
+                <option value="all">${'{{ __('web.All') }}'}</option>
             `;
 
             try {
                 var url = null;
                 if (stateId) {
                     url = `/get-cities?state_id=${stateId}`;
-                }else {
+                } else {
                     if (countryId) {
                         url = `/get-cities?country_id=${countryId}`;
-                    }else{
+                    } else {
                         url = `/get-cities`;
                     }
                 }
@@ -259,7 +265,6 @@
                 citySelect.disabled = true;
             }
         }
-        
     </script>
 
 
