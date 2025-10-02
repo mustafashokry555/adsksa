@@ -23,6 +23,7 @@ use App\Http\Controllers\Doctor\ScheduleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\InsuranceController;
 use App\Http\Controllers\Admin\OfferController;
+use App\Http\Controllers\Admin\OfferTypesController;
 use App\Http\Controllers\Admin\PatientInsuranceController;
 use App\Http\Controllers\Admin\ReligionsController;
 use App\Http\Controllers\BlogController as HomeBlogController;
@@ -99,6 +100,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Offers
     Route::resource('offers', OfferController::class);
+    Route::resource('offer-types', OfferTypesController::class);
+    Route::post('/offer-types/{id}/toggle-status', [OfferTypesController::class, 'toggleActive']);
+
 
     // notifications
     Route::resource('insurances', InsuranceController::class);

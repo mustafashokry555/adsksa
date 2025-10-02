@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Hospital;
 use App\Models\Offer;
+use App\Models\OfferType;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -26,11 +27,12 @@ class OfferController extends Controller
     public function create()
     {
         // check if the auth is admin or a hospital
+        $offerTypes = OfferType::active()->get();
         if( auth()->user()->user_type == User::ADMIN ) {
             $hospitals = Hospital::all();
-            return view('admin.offer.create', compact('hospitals'));
+            return view('admin.offer.create', compact('hospitals', 'offerTypes'));
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
-            return view('hospital.offer.create');
+            return view('hospital.offer.create', compact('offerTypes'));
         }
     }
 
@@ -42,6 +44,7 @@ class OfferController extends Controller
                 'title_en' => ['required', 'string', 'max:255'],
                 'content_ar' => ['required', 'string'],
                 'content_en' => ['required', 'string'],
+                'offer_type_id' => ['required', 'exists:offer_types,id'],
                 'hospital_id' => ['required', 'exists:hospitals,id'],
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
@@ -59,6 +62,7 @@ class OfferController extends Controller
             $attributes = $request->validate([
                 'title_ar' => ['required', 'string', 'max:255'],
                 'title_en' => ['required', 'string', 'max:255'],
+                'offer_type_id' => ['required', 'exists:offer_types,id'],
                 'content_ar' => ['required', 'string'],
                 'content_en' => ['required', 'string'],
                 'type' => ['required', 'in:image,video'],
@@ -87,11 +91,12 @@ class OfferController extends Controller
     public function edit(Offer $offer)
     {
         // check if the auth is admin or a hospital
+        $offerTypes = OfferType::active()->get();
         if( auth()->user()->user_type == User::ADMIN ) {
             $hospitals = Hospital::all();
-            return view('admin.offer.edit', compact('offer', 'hospitals'));
+            return view('admin.offer.edit', compact('offer', 'hospitals' ,'offerTypes'));
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
-            return view('hospital.offer.edit', compact('offer'));
+            return view('hospital.offer.edit', compact('offer' ,'offerTypes'));
         }
     }
 
@@ -113,6 +118,7 @@ class OfferController extends Controller
             'content_ar' => ['required', 'string'],
             'content_en' => ['required', 'string'],
             'type' => ['required', 'in:image,video'],
+            'offer_type_id' => ['required', 'exists:offer_types,id'],
             'video_link' => ['nullable', 'required_if:type,video', 'url'],
             'start_date' => ['required', 'date', 'date_format:Y-m-d'],
             'end_date' => [

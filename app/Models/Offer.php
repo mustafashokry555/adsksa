@@ -19,7 +19,8 @@ class Offer extends Model
         'is_active',
         'images',
         'start_date',
-        'end_date'
+        'end_date',
+        'offer_type_id'
     ];
 
     protected $casts = [
@@ -34,6 +35,16 @@ class Offer extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+    public function scopeActiveType($query)
+    {
+        return $query->whereHas('offerType', function ($q) {
+            $q->where('status', 1);
+        });
+    }
+    public function offerType()
+    {
+        return $this->belongsTo(OfferType::class);
     }
 
     public function geTtitleAttribute($value)
@@ -58,8 +69,8 @@ class Offer extends Model
     {
         if ($value) {
             $images = [];
-            foreach( json_decode($value) as $image){
-                $image = asset('images/'.$image);
+            foreach (json_decode($value) as $image) {
+                $image = asset('images/' . $image);
                 $images[] = $image;
             }
             return $images;
