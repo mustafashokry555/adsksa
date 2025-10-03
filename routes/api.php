@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\HospitalController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OfferTypesController;
 use App\Http\Controllers\Api\PatientInsuranceController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
@@ -37,13 +38,15 @@ Route::post('login',[AuthController::class,'login']);
 
 // Patient
 Route::post('verify',[AuthController::class,'VerifyOtp']);
-Route::post('password/email', [AuthController::class, 'sendResetEmail']);
-Route::post('password/verify-otp', [AuthController::class, 'verifyOtp2']);
-Route::post('password/reset', [AuthController::class, 'reset']);
+Route::post('password/email', [AuthController::class, 'sendResetPasswordEmail']);
+Route::post('password/verify-otp', [AuthController::class, 'verifyRestPasswprdOtp']);
+Route::post('password/reset', [AuthController::class, 'resetPassword']);
 
 // Basic data
 Route::get('home',[MainController::class,'home']);
 Route::get('offers',[MainController::class,'offers']);
+Route::get('offer-types',[OfferTypesController::class,'offerTypes']);
+Route::get('offer-types/{id}',[OfferTypesController::class,'offerTypeDetails']);
 Route::get('banners',[MainController::class,'banners']);
 Route::get('religions', [MainController::class, 'getReligions']);
 Route::get('insurances',[MainController::class,'get_insurances']);
@@ -93,6 +96,10 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     });
     Route::get('profile',[AuthController::class,'PatientProfile']);
     Route::post('update-profile',[AuthController::class,'UpdatePatientProfile']);
+    // update Email
+    Route::post('update-email/email',[AuthController::class,'sendEmailToUpdateEmail']);
+    Route::post('update-email/verify-otp',[AuthController::class,'VerifyUpdateMailOtp']);
+
     Route::post('change-password',[AuthController::class,'changePassword']);
     Route::post('/delete-account', [AuthController::class, 'delete_account']);
     Route::post('/profile-image', [AuthController::class, 'profile_image']);
