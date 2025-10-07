@@ -146,7 +146,7 @@
                 }
 
                 .invoice-container {
-                    width: 320px;
+                    width: 400px;
                     margin: 0 auto;
                     background: white;
                     border: 1px solid #ddd;
