@@ -253,20 +253,37 @@
                 <!-- Header -->
                 <div id="header">
                     <div href="{{ route('home') }}" class="logo">
-					    <img src="{{ URL::asset('images/' . $setting->logo)}}" alt="Logo" style="height: 3rem; margin-bottom: 10px;">
-				    </div>
+                        <img src="{{ URL::asset('images/' . $setting->logo) }}" alt="Logo"
+                            style="height: 3rem; margin-bottom: 10px;">
+                    </div>
                     <h1>فاتورة ضريبية مبسطة</h1>
                     <div class="invoice-number" dir="ltr">{{ $invoice->invoice_number }} :رقم الفاتورة</div>
                 </div>
 
                 <!-- Customer Info -->
-                <div class="customer-info">
+                {{-- <div class="customer-info">
                     <div>اسم الموسسة: {{ $setting->website_name }}</div>
                     <div>عنوان الموسسة: {{ $setting->address_line_1 }}</div>
-                    {{-- <div>اسم الموسسة: {{ $invoice->company_name }}</div>
-                    <div>عنوان الموسسة: {{ $invoice->company_address }}</div> --}}
+                    <div>اسم الموسسة: {{ $invoice->company_name }}</div>
+                    <div>عنوان الموسسة: {{ $invoice->company_address }}</div>
+                </div> --}}
+                <!-- Customer & Patient Info -->
+                <div class="customer-info" style="display: flex; justify-content: space-between; text-align: right;">
+                    <!-- Patient Info -->
+                    <div style="width: 48%; ">
+                        <div>اسم المريض:</div>
+                        <div>{{ $invoice->patient?->name ?? '---' }}</div>
+                        <div>رقم الهوية:</div>
+                        <div>{{ $invoice->patient?->id_number ?? '---' }}</div>
+                    </div>
+                    <!-- Company Info -->
+                    <div style="width: 48%; border-right: 1px solid #4CAF50; padding-right: 10px;">
+                        <div>اسم المؤسسة:</div>
+                        <div>{{ $invoice->company_name }}</div>
+                        <div>عنوان المؤسسة:</div>
+                        <div>{{ $invoice->company_address }}</div>
+                    </div>
                 </div>
-
                 <!-- Date -->
                 <div class="date-section">
                     التاريخ: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y (A H:i)') }}
