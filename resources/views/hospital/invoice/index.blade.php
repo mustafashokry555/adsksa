@@ -13,7 +13,7 @@
                                 <th>{{ __('hospital.invoice.patient') }}</th>
                                 <th>{{ __('hospital.invoice.amount') }}</th>
                                 <th>{{ __('hospital.invoice.paid_on') }}</th>
-                                <th></th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

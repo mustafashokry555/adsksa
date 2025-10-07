@@ -261,6 +261,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoices/{invoice}/view', [AppointmentController::class, 'show_invoice'])->name('show_invoice');
     Route::get('invoices/{invoice}/download', [AppointmentController::class, 'invoice_download'])->name('invoice.download');
     Route::get('invoices/qrcode', [AppointmentController::class, 'qrcode'])->name('invoice.qrcode');
+    Route::get('admin/invoices/{invoice}/download-xml', [AppointmentController::class, 'downloadXml'])->name('invoice.download.xml');
+
 
     // Patient Dashboard
     // Route::get('/patient-dashboard', function (){

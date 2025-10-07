@@ -31,7 +31,7 @@
                                                 <th>Doctor</th>
                                                 <th>Amount</th>
                                                 <th>Paid On</th>
-                                                <th></th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
