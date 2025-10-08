@@ -102,6 +102,36 @@ class AuthController extends Controller
         }
     }
 
+    public function verify_register_otp(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'email' => 'required|email|exists:users,email',
+                'otp' => 'required|numeric|digits:6',
+            ]);
+            $user = User::where('email', $request->email)->where('status', 'Active')->first();
+            if (!$user) {
+                return $this->ErrorResponse(404, trans('auth.email'), null);
+            }
+            $otp = Otp::where('email', $request->email)->where('user_id', $user->id)->where('expires_at', '>', now())->where('is_used', 0)->latest()->first();
+            if (!$otp) {
+                return $this->ErrorResponse(403, trans('web.invalid_or_expired_otp'), null);
+                $otp->delete();
+            }
+            if ($otp->otp != $request->otp) {
+                return $this->ErrorResponse(403, trans('web.invalid_or_expired_otp'), null);
+            }
+            $user->email_verified_at = now();
+            $user->save();
+            $otp->delete();
+            Otp::where('email', $request->email)->where('user_id', $user->id)->where('expires_at', '<', now())->delete();
+            return $this->SuccessResponse(200, trans('auth.email_verified_success'), null);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
     // Done
     public function profile_image(Request $request)
     {
@@ -232,6 +262,18 @@ class AuthController extends Controller
             // $verification = $twilio->verify->v2->services($service_sid)
             //     ->verifications
             //     ->create($request->country_code . $request->mobile, "sms");
+            $otp = rand(100000, 999999);
+            // Store OTP in otps table
+            $newRow = Otp::create([
+                'email' => $user->email,
+                'user_id' => $user->id,
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(5),
+                'reason' => "Verify Email",
+            ]);
+            if ($newRow) {
+                $user->notify(new SendOtpEmail($otp, 'Virefiy Email OTP', 'an email verification'));
+            }
             return $this->SuccessResponse(200, trans('auth.logupGood'), NULL);
         } catch (\Throwable $th) {
             // DB::rollback();

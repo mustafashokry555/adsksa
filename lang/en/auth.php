@@ -27,5 +27,6 @@ return [
 
     'email_is_verified_login' => 'Your email is already verified. Please log in.',
     'email_verified_success' => 'Your email has been successfully verified. You can now log in.',
+    'email_is_not_verified' => 'Your email is not verified. Please verify your email.',
 
 ];
