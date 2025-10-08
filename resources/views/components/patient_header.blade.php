@@ -229,12 +229,12 @@
                                 {{-- <li class="{{ Request::routeIs('blog-list') ? 'active' : '' }}">
                                     <a href="{{ route('blog-list') }}">{{ __('web.blog') }}</a>
                                 </li> --}}
-                                <li class="{{ Request::routeIs('about-us') ? 'active' : '' }}">
+                                {{-- <li class="{{ Request::routeIs('about-us') ? 'active' : '' }}">
                                     <a href="{{ route('about-us') }}">{{ __('web.aboutUs') }}</a>
                                 </li>
                                 <li class="{{ Request::routeIs('contact-us') ? 'active' : '' }}">
                                     <a href="{{ route('contact-us') }}">{{ __('web.contactUs') }}</a>
-                                </li>
+                                </li> --}}
                                 @auth
                                     <li class="{{ Request::routeIs('patient_dashboard') ? 'active' : '' }}">
                                         <a href="{{ route('patient_dashboard') }}">{{ __('web.dashboard') }}</a>

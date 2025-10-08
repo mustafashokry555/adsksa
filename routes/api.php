@@ -37,7 +37,7 @@ Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
 
 // Patient
-Route::post('verify',[AuthController::class,'VerifyOtp']);
+Route::post('login/verify',[AuthController::class,'verify_login_otp']);
 Route::post('password/email', [AuthController::class, 'sendResetPasswordEmail']);
 Route::post('password/verify-otp', [AuthController::class, 'verifyRestPasswprdOtp']);
 Route::post('password/reset', [AuthController::class, 'resetPassword']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Otp;
 use App\Models\PatientDetail;
 use App\Models\User;
 use App\Notifications\SendOtpEmail;
@@ -39,8 +40,60 @@ class AuthController extends Controller
             if (!Hash::check($request->password, $user->password)) {
                 return $this->ErrorResponse(401, trans('auth.password_incorrect'));
             }
+            if ($user && $user->is_patient() && $user->email_verified_at == null) {
+                // Generate OTP
+                $otp = rand(100000, 999999);
+                // Store OTP in otps table
+                $newRow = Otp::create([
+                    'email' => $user->email,
+                    'user_id' => $user->id,
+                    'otp' => $otp,
+                    'expires_at' => now()->addMinutes(5),
+                    'reason' => "Verify Email",
+                ]);
+                if ($newRow) {
+                    $user->notify(new SendOtpEmail($otp, 'Virefiy Email OTP', 'an email verification'));
+                    return $this->SuccessResponse(200, trans('auth.email_is_not_verified'), 0);
+                }
+                return $this->ErrorResponse(403, trans('auth.email_is_not_verified'), 0);
+            }
             // $user->status = 'Active';
             // $user->save();
+            $token = $user->createToken('MyApp')->plainTextToken;
+            return $this->SuccessResponse(200, trans('auth.loginGood'), $token);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
+    public function verify_login_otp(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'email' => 'required|email|exists:users,email',
+                'password' => 'required',
+                'otp' => 'required|numeric|digits:6',
+            ]);
+            $user = User::where('email', $request->email)->where('status', 'Active')->first();
+            if (!$user) {
+                return $this->ErrorResponse(404, trans('auth.email'), null);
+            }
+            if (!Hash::check($request->password, $user->password)) {
+                return $this->ErrorResponse(401, trans('auth.password_incorrect'));
+            }
+            $otp = Otp::where('email', $request->email)->where('user_id', $user->id)->where('expires_at', '>', now())->where('is_used', 0)->latest()->first();
+            if (!$otp) {
+                return $this->ErrorResponse(403, trans('web.invalid_or_expired_otp'), null);
+                $otp->delete();
+            }
+            if ($otp->otp != $request->otp) {
+                return $this->ErrorResponse(403, trans('web.invalid_or_expired_otp'), null);
+            }
+            $user->email_verified_at = now();
+            $user->save();
+            $otp->delete();
+            Otp::where('email', $request->email)->where('user_id', $user->id)->where('expires_at', '<', now())->delete();
             $token = $user->createToken('MyApp')->plainTextToken;
             return $this->SuccessResponse(200, trans('auth.loginGood'), $token);
         } catch (\Throwable $th) {
@@ -84,16 +137,16 @@ class AuthController extends Controller
         $lang = $request->header('lang', 'en');
         if ($patient) {
             $patient = User::with(['patientDetails', 'appSetting'])->find($patient->id);
-            if( $lang == 'ar' && (!empty($patient->name_ar) || $patient->name_ar != null)){
+            if ($lang == 'ar' && (!empty($patient->name_ar) || $patient->name_ar != null)) {
                 $patient->name = $patient->name_ar;
-            }else{
+            } else {
                 $patient->name = $patient->name_en;
             }
             $patient->religion_id = $patient->religion_id ? (int)$patient->religion_id : null;
-            if ($patient->patientDetails){
+            if ($patient->patientDetails) {
                 $patient->patientDetails->user_id = $patient->patientDetails->user_id ? (int)$patient->patientDetails->user_id : $patient->patientDetails->user_id;
             }
-            $patient->state_id = $patient->state_id ? (int)$patient->state_id: null;
+            $patient->state_id = $patient->state_id ? (int)$patient->state_id : null;
             $patient->city_id = $patient->city_id ? (int)$patient->city_id : null;
         }
         return $this->SuccessResponse(200, 'Patient profile!', $patient);
@@ -137,9 +190,9 @@ class AuthController extends Controller
             // $twilio = new Client($sid, $token);
             // DB::beginTransaction();
             $gender = null;
-            if($request->gender == 'male'){
+            if ($request->gender == 'male') {
                 $gender = "M";
-            }elseif ($request->gender == 'female') {
+            } elseif ($request->gender == 'female') {
                 $gender = "F";
             }
             $user = User::create([
@@ -275,7 +328,9 @@ class AuthController extends Controller
             'gender' => 'nullable|string|in:male,female',
             'date_of_birth' => 'nullable|date|before:today',
             'id_number' => [
-                'required', 'string', 'max:50',
+                'required',
+                'string',
+                'max:50',
                 Rule::unique('users')->ignore($request->user()->id)
             ],
             'religion_id' => ['required', 'exists:religions,id'],
@@ -302,9 +357,9 @@ class AuthController extends Controller
         try {
             $patient = User::find($request->user()->id);
             $gender = null;
-            if($request->gender == 'male'){
+            if ($request->gender == 'male') {
                 $gender = "M";
-            }elseif ($request->gender == 'female') {
+            } elseif ($request->gender == 'female') {
                 $gender = "F";
             }
             // if ($request->profile_image) {
@@ -511,7 +566,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function delete_account(Request $request){
+    public function delete_account(Request $request)
+    {
         try {
             // $validator = Validator::make($request->all(), [
             //     'password' => 'required|string',
@@ -541,5 +597,4 @@ class AuthController extends Controller
             return $this->ErrorResponse(422, $th->getMessage());
         }
     }
-
 }
