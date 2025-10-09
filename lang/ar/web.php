@@ -1,5 +1,7 @@
 <?php
 return [
+    'invalid_or_expired_otp' => 'رمز التحقق غير صالح أو منتهي الصلاحية.',
+    'something_wrong' => 'حدث خطأ ما، يرجى المحاولة مرة أخرى.',
     'home' => 'الرئيسية',
     'blog' => 'المدونه',
     'aboutUs' => 'معلومات عنا',
@@ -147,7 +149,7 @@ return [
     'id_number' => "رقم الهويه",
     'nationality' => "الجنسيه",
     'mobile' => "الهاتف",
-    
+
     'forget_password' => 'نسيت كلمة المرور',
     'forget_password_subtitle' => 'أدخل بريدك الإلكتروني لإرسال رمز إعادة تعيين كلمة المرور.',
     'send_reset_otp' => 'إرسال رمز إعادة التعيين',

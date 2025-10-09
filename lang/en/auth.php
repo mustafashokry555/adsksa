@@ -15,7 +15,7 @@ return [
 
     'loginGood' => 'Login successful.',
     'logupGood' => 'Signed Up successfully.',
-    'user_type_fail'=> "You are not authorized for this route.",
+    'user_type_fail' => "You are not authorized for this route.",
     'failed' => 'These credentials do not match our records.',
     'email' => 'you are not registered with the given Email.',
     'password_incorrect' => 'The provided password is incorrect.',
@@ -28,5 +28,6 @@ return [
     'email_is_verified_login' => 'Your email is already verified. Please log in.',
     'email_verified_success' => 'Your email has been successfully verified. You can now log in.',
     'email_is_not_verified' => 'Your email is not verified. Please verify your email.',
-
+    'otp_sent_successfully' => 'An OTP has been sent to your new email.',
+    'email_updated_successfully' => 'Your email has been updated successfully.',
 ];

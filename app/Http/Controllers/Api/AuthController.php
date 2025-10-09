@@ -102,6 +102,87 @@ class AuthController extends Controller
         }
     }
 
+    public function sendEmailToUpdateEmail(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'password' => 'required|string',
+                'new_email' => 'required|email|unique:users,email',
+            ]);
+
+            $user = $request->user();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return $this->ErrorResponse(401, trans('auth.password_incorrect'));
+            }
+
+            // Generate OTP
+            $otp = rand(100000, 999999);
+
+            // Store OTP in table
+            $newRow = Otp::create([
+                'email' => $request->new_email,
+                'user_id' => $user->id,
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(5),
+                'reason' => "Update Email",
+            ]);
+
+            if ($newRow) {
+                $user->notify(new SendOtpEmail($otp, 'Verify Email Update OTP', 'an update request for your email address'));
+                return $this->SuccessResponse(200, trans('auth.otp_sent_successfully'), null);
+            }
+
+            return $this->ErrorResponse(500, trans('web.something_wrong'));
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
+    public function verifyUpdateMailOtp(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'password' => 'required|string',
+                'new_email' => 'required|email|unique:users,email',
+                'otp' => 'required|numeric|digits:6',
+            ]);
+
+            $user = $request->user();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return $this->ErrorResponse(401, trans('auth.password_incorrect'));
+            }
+
+            $otp = Otp::where('email', $request->new_email)
+                ->where('user_id', $user->id)
+                ->where('expires_at', '>', now())
+                ->where('is_used', 0)
+                ->latest()
+                ->first();
+
+            if (!$otp || $otp->otp != $request->otp) {
+                return $this->ErrorResponse(403, trans('web.invalid_or_expired_otp'));
+            }
+
+            // Update the user email
+            $user->email = $request->new_email;
+            $user->email_verified_at = now();
+            $user->save();
+
+            // Clean up OTPs
+            $otp->delete();
+            Otp::where('email', $request->new_email)
+                ->where('user_id', $user->id)
+                ->where('expires_at', '<', now())
+                ->delete();
+
+            return $this->SuccessResponse(200, trans('auth.email_updated_successfully'), null);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(422, $th->getMessage());
+        }
+    }
+
     public function verify_register_otp(Request $request)
     {
         try {

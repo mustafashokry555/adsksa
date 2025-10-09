@@ -1,5 +1,7 @@
 <?php
 return [
+    'invalid_or_expired_otp' => 'The OTP is invalid or has expired.',
+    'something_wrong' => 'Something went wrong, please try again.',
     'home' => 'Home',
     'blog' => 'Blog',
     'aboutUs' => 'About Us',
