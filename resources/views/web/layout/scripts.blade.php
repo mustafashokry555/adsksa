@@ -41,10 +41,10 @@
     };
 </script>
 <link rel="stylesheet" id="tm-cs-google-fonts-css"
-    href="{{ asset('web/assets/css/css(3)') }}" media="all">
-<script src="{{ asset('web/assets/js/hooks.min.js.download') }}" id="wp-hooks-js">
+    href="{{ asset('web/assets/css/css(3).css') }}" media="all">
+<script src="{{ asset('web/assets/js/hooks.min.js') }}" id="wp-hooks-js">
 </script>
-<script src="{{ asset('web/assets/js/i18n.min.js.download') }}" id="wp-i18n-js">
+<script src="{{ asset('web/assets/js/i18n.min.js') }}" id="wp-i18n-js">
 </script>
 <script id="wp-i18n-js-after">
     /* <![CDATA[ */
@@ -53,7 +53,7 @@
     });
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/index.js.download') }}" id="swv-js"></script>
+<script src="{{ asset('web/assets/js/index.js') }}" id="swv-js"></script>
 <script id="contact-form-7-js-before">
     /* <![CDATA[ */
     var wpcf7 = {
@@ -64,39 +64,39 @@
     };
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/index(1).js.download') }}"
+<script src="{{ asset('web/assets/js/index(1).js') }}"
     id="contact-form-7-js"></script>
-<script src="{{ asset('web/assets/js/perfect-scrollbar.jquery.min.js.download') }}"
+<script src="{{ asset('web/assets/js/perfect-scrollbar.jquery.min.js') }}"
     id="perfect-scrollbar-js"></script>
-<script src="{{ asset('web/assets/js/select2.min.js.download') }}" id="select2-js">
+<script src="{{ asset('web/assets/js/select2.min.js') }}" id="select2-js">
 </script>
-<script src="{{ asset('web/assets/js/isotope.pkgd.min.js.download') }}"
+<script src="{{ asset('web/assets/js/isotope.pkgd.min.js') }}"
     id="isotope-js"></script>
-<script src="{{ asset('web/assets/js/jquery.mousewheel.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.mousewheel.min.js') }}"
     id="jquery-mousewheel-js"></script>
-<script src="{{ asset('web/assets/js/jquery.flexslider-min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.flexslider-min.js') }}"
     id="jquery-flexslider-js"></script>
-<script src="{{ asset('web/assets/js/jquery.sticky-kit.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.sticky-kit.min.js') }}"
     id="jquery-sticky-kit-js"></script>
-<script src="{{ asset('web/assets/js/slick.min.js.download') }}" id="slick-js">
+<script src="{{ asset('web/assets/js/slick.min.js') }}" id="slick-js">
 </script>
-<script src="{{ asset('web/assets/js/jquery.prettyPhoto.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.prettyPhoto.js') }}"
     id="prettyphoto-js"></script>
-<script src="{{ asset('web/assets/js/dflip.min.js.download') }}"
+<script src="{{ asset('web/assets/js/dflip.min.js') }}"
     id="dflip-script-js"></script>
-<script src="{{ asset('web/assets/js/functions.js.download') }}"
+<script src="{{ asset('web/assets/js/functions.js') }}"
     id="anomica-functions-js"></script>
-<script src="{{ asset('web/assets/js/jquery.waypoints.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.waypoints.min.js') }}"
     id="waypoints-js"></script>
-<script src="{{ asset('web/assets/js/numinate.min.js.download') }}" id="numinate-js">
+<script src="{{ asset('web/assets/js/numinate.min.js') }}" id="numinate-js">
 </script>
-<script src="{{ asset('web/assets/js/circle-progress.min.js.download') }}"
+<script src="{{ asset('web/assets/js/circle-progress.min.js') }}"
     id="jquery-circle-progress-js"></script>
-<script src="{{ asset('web/assets/js/webpack.runtime.min.js.download') }}"
+<script src="{{ asset('web/assets/js/webpack.runtime.min.js') }}"
     id="elementor-webpack-runtime-js"></script>
-<script src="{{ asset('web/assets/js/frontend-modules.min.js.download') }}"
+<script src="{{ asset('web/assets/js/frontend-modules.min.js') }}"
     id="elementor-frontend-modules-js"></script>
-<script src="{{ asset('web/assets/js/core.min.js.download') }}"
+<script src="{{ asset('web/assets/js/core.min.js') }}"
     id="jquery-ui-core-js"></script>
 <script id="elementor-frontend-js-before">
     /* <![CDATA[ */
@@ -229,7 +229,7 @@
     };
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/frontend.min.js.download') }}"
+<script src="{{ asset('web/assets/js/frontend.min.js') }}"
     id="elementor-frontend-js"></script><span id="elementor-device-mode" class="elementor-screen-only">
 </span>
 <script data-cfasync="false">

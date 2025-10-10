@@ -54,7 +54,7 @@
         }
     </style>
     <section class="home" style="margin: 50px 0 0 0;">
-        <div class="content" style="min-height: 273.9px;">
+        <div class="content" style="min-height: 273.9px; height: 40vh;;">
             <div class="container-fluid">
                 <div class="row " style="display: flex; justify-content: center;">
                     <div class="col-md-9 mx-auto">

@@ -536,7 +536,7 @@
 <link rel="stylesheet" id="truebooker-bootstrap-css"
     href="{{ asset('web/assets/css/bootstrap.css') }}" media="all">
 <link rel="stylesheet" id="add_google_fonts-css"
-    href="{{ asset('web/assets/css/css2') }}" media="all">
+    href="{{ asset('web/assets/css/css2.css') }}" media="all">
 <link rel="stylesheet" id="font-awesome-css"
     href="{{ asset('web/assets/css/font-awesome.min.css') }}" media="all">
 <link rel="stylesheet" id="perfect-scrollbar-css"
@@ -5020,18 +5020,18 @@
 <link rel="stylesheet" id="elementor-post-847-css"
     href="{{ asset('web/assets/css/post-847.css') }}" media="all">
 <link rel="stylesheet" id="elementor-gf-roboto-css"
-    href="{{ asset('web/assets/css/css') }}" media="all">
+    href="{{ asset('web/assets/css/css.css') }}" media="all">
 <link rel="stylesheet" id="elementor-gf-robotoslab-css"
-    href="{{ asset('web/assets/css/css(1)') }}" media="all">
-<script src="{{ asset('web/assets/js/tptools.js.download') }}" id="tp-tools-js"
+    href="{{ asset('web/assets/css/css(1).css') }}" media="all">
+<script src="{{ asset('web/assets/js/tptools.js') }}" id="tp-tools-js"
     async="async" data-wp-strategy="async"></script>
-<script src="{{ asset('web/assets/js/sr7.js.download') }}" id="sr7-js" async="async"
+<script src="{{ asset('web/assets/js/sr7.js') }}" id="sr7-js" async="async"
     data-wp-strategy="async"></script>
-<script src="{{ asset('web/assets/js/jquery.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.min.js') }}"
     id="jquery-core-js"></script>
-<script src="{{ asset('web/assets/js/jquery-migrate.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery-migrate.min.js') }}"
     id="jquery-migrate-js"></script>
-<script src="{{ asset('web/assets/js/jquery-resize.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery-resize.min.js') }}"
     id="jquery-resize-js"></script>
 <script id="jquery-front-js-extra">
     /* <![CDATA[ */
@@ -5041,15 +5041,15 @@
     };
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/truebooker_front.js.download') }}"
+<script src="{{ asset('web/assets/js/truebooker_front.js') }}"
     id="jquery-front-js"></script>
-<script src="{{ asset('web/assets/js/jquery-ui.js.download') }}" id="jquery-ui-js">
+<script src="{{ asset('web/assets/js/jquery-ui.js') }}" id="jquery-ui-js">
 </script>
-<script src="{{ asset('web/assets/js/jquery.timepicker.min.js.download') }}"
+<script src="{{ asset('web/assets/js/jquery.timepicker.min.js') }}"
     id="jquery-timepicker-js"></script>
-<script src="{{ asset('web/assets/js/intlTelInput.js.download') }}"
+<script src="{{ asset('web/assets/js/intlTelInput.js') }}"
     id="intlTelInput-js"></script>
-<script src="{{ asset('web/assets/js/intlTelInput-jquery.min.js.download') }}"
+<script src="{{ asset('web/assets/js/intlTelInput-jquery.min.js') }}"
     id="intlTelInput-jquery-min-js"></script>
 <script id="utils-js-extra">
     /* <![CDATA[ */
@@ -5061,18 +5061,18 @@
     };
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/utils.min.js.download') }}" id="utils-js">
+<script src="{{ asset('web/assets/js/utils.min.js') }}" id="utils-js">
 </script>
-<script src="{{ asset('web/assets/js/gsap.js.download') }}" id="gsap-js-js"></script>
-<script src="{{ asset('web/assets/js/scrolltrigger.js.download') }}"
+<script src="{{ asset('web/assets/js/gsap.js') }}" id="gsap-js-js"></script>
+<script src="{{ asset('web/assets/js/scrolltrigger.js') }}"
     id="scrolltrigger-js"></script>
-<script src="{{ asset('web/assets/js/SplitText.js.download') }}" id="splittext-js">
+<script src="{{ asset('web/assets/js/SplitText.js') }}" id="splittext-js">
 </script>
-<script src="{{ asset('web/assets/js/gsap-animation.js.download') }}"
+<script src="{{ asset('web/assets/js/gsap-animation.js') }}"
     id="gsap-animation-js"></script>
-<script src="{{ asset('web/assets/js/throwable.js.download') }}" id="throwable-js">
+<script src="{{ asset('web/assets/js/throwable.js') }}" id="throwable-js">
 </script>
-<script src="{{ asset('web/assets/js/v4-shims.min.js.download') }}"
+<script src="{{ asset('web/assets/js/v4-shims.min.js') }}"
     id="font-awesome-4-shim-js"></script>
 <link rel="https://api.w.org/" href="https://arabcares.com/wp-json/">
 <link rel="alternate" title="JSON" type="application/json" href="https://arabcares.com/wp-json/wp/v2/pages/847">
@@ -5084,7 +5084,7 @@
 <link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed"
     href="https://arabcares.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Farabcares.com%2Fservices-1%2F&amp;format=xml">
 <!-- Inline CSS Start --><!-- Inline CSS End -->
-<link href="{{ asset('web/assets/css/css(2)') }}" rel="stylesheet">
+<link href="{{ asset('web/assets/css/css(2).css') }}" rel="stylesheet">
 <script>
     var tm_breakpoint = 1200;
 </script>
@@ -5483,5 +5483,5 @@
             }
     }();
 </script>
-<script src="{{ asset('web/assets/js/wp-emoji-release.min.js.download') }}" defer="">
+<script src="{{ asset('web/assets/js/wp-emoji-release.min.js') }}" defer="">
 </script>
