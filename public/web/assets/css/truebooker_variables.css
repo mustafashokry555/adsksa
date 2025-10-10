@@ -1,0 +1,21 @@
+:root {
+	--tba-body-color: #7F7F7F;
+	--tba-cl-white: #ffffff;
+	--tba-cl-black: #000000;
+	--tba-cl-dark: #2B4FFF;
+	--tba-cl-lightdark: #EAEEFD;
+	--tba-gray: #F4F5F7;
+	--tba-bordercolor: #D6D6D6;
+	--tba-bordercolor-dark: #E4E4E5;
+	--tba-radius-50px: 50px;
+	--tba-radius-20px: 20px;
+	--tba-radius-10px: 10px;
+	--tba-radius-5px: 5px;
+	--tba-radius-3px: 3px;
+	--tba-al-success: #DDFFDD;
+	--tba-al-error: #FFC0C7;
+	--tba-appointment-color: #1ad88e;
+	--tba-pappointment-color: #ffb646;
+	--tba-user-color: #e036cf;
+	--tba-font-family: 'Poppins';
+}

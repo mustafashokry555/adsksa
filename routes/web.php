@@ -278,3 +278,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+// new page
+Route::get('new-home', function () {
+    return view('web.home');
+});
+
