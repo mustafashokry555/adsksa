@@ -177,6 +177,7 @@
                                     <div class="container">
                                         <div class="container">
                                             <div class="tm-titlebar-main-inner">
+                                                @yield('content')
                                             </div>
                                         </div>
                                     </div><!-- .tm-titlebar-main -->
@@ -186,7 +187,7 @@
                     </div><!-- .tm-titlebar-wrapper -->
                 </div>
             </header><!-- .site-header -->
-            <br><br><br><br><br><br><br><br><br>
+            {{-- <br><br><br><br><br><br><br><br><br> --}}
             </main>
         </div><!-- #primary .content-area -->
     </div><!-- .site-content-inner -->

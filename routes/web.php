@@ -32,6 +32,9 @@ use App\Http\Controllers\Patient\AppointmentController;
 use App\Http\Controllers\Patient\ReviewController;
 use App\Http\Controllers\PrivacyAndTermsConditionController;
 use App\Http\Controllers\Hospital\DoctorScheduleController;
+use App\Models\Country;
+use App\Models\Insurance;
+use App\Models\Speciality;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/lang/change/{lang}', [HomeController::class, 'changeLang'])->name('changeLang');
@@ -281,6 +284,10 @@ require __DIR__ . '/auth.php';
 
 // new page
 Route::get('new-home', function () {
-    return view('web.home');
+    return view('web.home',[
+        'insurances' => Insurance::orderByDesc('id')->get(),
+        'specialities' => Speciality::orderByDesc('id')->get(),
+        'countries' => Country::orderByDesc('id')->get(),
+    ]);
 });
 
