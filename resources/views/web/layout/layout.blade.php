@@ -2,7 +2,7 @@
 <!-- saved from url=(0033)https://arabcares.com/services-1/ -->
 <html dir="ltr" lang="en-US" prefix="og: https://ogp.me/ns#" class="no-js">
 <head>
-    @extends('web.layout.head')
+    @include('web.layout.head')
     @yield('style')
 </head>
 <body
@@ -194,7 +194,7 @@
     </div>
     </div>
 
-    @extends('web.layout.footer')
+    @include('web.layout.footer')
 
     </div>
 
@@ -207,7 +207,7 @@
         </a>
         <i class="tm-anomica-icon-angle-up"></i>
     </div>
-    @extends('web.layout.scripts')
+    @include('web.layout.scripts')
     @yield('script')
 </body>
 
