@@ -37,6 +37,7 @@
                                                     <th>Title AR</th>
                                                     <th>Title EN</th>
                                                     <th>Media Type</th>
+                                                    <th>Offer Type</th>
                                                     <th>Status</th>
                                                     <th>Price</th>
                                                     <th>Start Date</th>
@@ -59,6 +60,7 @@
                                                             </h2>
                                                         </td>
                                                         <td>{{ $offer->type }}</td>
+                                                        <td>{{ $offer->offerType ? $offer->offerType->name_en ."<".$offer->offerType->name_ar.">" : "Not Fount"}}</td>
                                                         @if ($offer->is_active)
                                                             <td>
                                                                 <span class="badge rounded-pill bg-success-light">

@@ -92,6 +92,23 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <label for="offer_type_id"
+                                    class="col-form-label col-md-2">Offer Type</label>
+                                <div class="col-md-10">
+                                    <select id="offer_type_id" name="offer_type_id" class="form-select select" required>
+                                        <option value="">-- Select Offer Type --</option>
+                                        @foreach ($offerTypes as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name_en }} < {{ $type->name_ar }} ></option>
+                                        @endforeach
+                                    </select>
+                                    @error('offer_type_id')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
                             {{-- type --}}
                             <div class="form-group row">
                                 <label for="hopital_id" class="col-form-label col-md-2">Type</label>
