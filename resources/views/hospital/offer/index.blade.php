@@ -38,6 +38,7 @@
                                                     <th>Title EN</th>
                                                     <th>Media Type</th>
                                                     <th>Status</th>
+                                                    <th>Price</th>
                                                     <th>Start Date</th>
                                                     <th>End Date</th>
                                                     <th>{{ __('admin.hospital.action') }}</th>
@@ -71,7 +72,7 @@
                                                                 </span>
                                                             </td>
                                                         @endif
-                                                        {{-- <td>{{ $offer->is_active }}</td> --}}
+                                                        <td>{{ $offer->price }}</td>
                                                         <td>{{ $offer->start_date }}</td>
                                                         <td>{{ $offer->end_date }}</td>
                                                         <td class="text-end">

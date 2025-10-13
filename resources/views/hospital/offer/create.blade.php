@@ -92,7 +92,7 @@
                                 </div>
                             </div>
 
-                            {{-- type --}}    
+                            {{-- type --}}
                             <div class="form-group row">
                                 <label for="hopital_id" class="col-form-label col-md-2">Type</label>
                                 <div class="col-md-10">
@@ -102,6 +102,19 @@
                                         <option value="video">Video</option>
                                     </select>
                                     @error('type')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- price --}}
+                            <div class="form-group row">
+                                <label for="price" class="col-form-label col-md-2">Price</label>
+                                <div class="col-md-10">
+                                    <input id="price" name="price" value="{{ old('price') }}" type="number" step="0.01" class="form-control" placeholder="Offer Price" required>
+                                    @error('price')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>

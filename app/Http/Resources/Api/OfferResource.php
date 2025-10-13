@@ -28,8 +28,10 @@ class OfferResource extends JsonResource
             'start_date' => $this->start_date,
             'offer_type' => $this->offerType->name ?? '',
             'end_date' => $this->end_date,
+            'price' => $this->price ? (float)$this->price : $this->price,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'is_fav' => $this->isFavouritedBy(auth()->id()),
         ];
     }
 }

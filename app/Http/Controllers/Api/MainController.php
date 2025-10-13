@@ -303,25 +303,6 @@ class MainController extends Controller
         }
     }
 
-    // All Offers
-    public function offers(Request $request){
-        try {
-            $offers = Offer::where('is_active', 1)
-                ->where('start_date', '<=', now())
-                ->where('end_date', '>=', now());
-            if ($request->hospital_id) {
-                $offers = $offers->where('hospital_id', $request->hospital_id);
-            }
-            $offers = $offers->whereHas('hospital', function ($q) {
-                $q->where('is_active', 1);
-            })->get();
-            $offers = OfferResource::collection($offers);
-            return $this->SuccessResponse(200, null, $offers);
-        } catch (\Throwable $th) {
-            return $this->ErrorResponse(400, $th->getMessage());
-        }
-    }
-
     // religions
     public function getReligions()
     {

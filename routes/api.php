@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FilterController;
 use App\Http\Controllers\Api\HospitalController;
 use App\Http\Controllers\Api\MainController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\OfferTypesController;
 use App\Http\Controllers\Api\PatientInsuranceController;
 use App\Http\Controllers\Api\ReviewController;
@@ -45,9 +46,6 @@ Route::post('password/reset', [AuthController::class, 'resetPassword']);
 
 // Basic data
 Route::get('home',[MainController::class,'home']);
-Route::get('offers',[MainController::class,'offers']);
-Route::get('offer-types',[OfferTypesController::class,'offerTypes']);
-Route::get('offer-types/{id}',[OfferTypesController::class,'offerTypeDetails']);
 Route::get('banners',[MainController::class,'banners']);
 Route::get('religions', [MainController::class, 'getReligions']);
 Route::get('insurances',[MainController::class,'get_insurances']);
@@ -139,5 +137,13 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::get('billing-history', [BillingController::class, 'billingHistory']);
     Route::get('billing-details/{id}', [BillingController::class, 'billingDetails']);
 
+
+    Route::get('offers',[OfferController::class,'offers']);
+    Route::get('offer-types',[OfferTypesController::class,'offerTypes']);
+    Route::get('offer-types/{id}',[OfferTypesController::class,'offerTypeDetails']);
+
+    // Offers Favourites
+    Route::post('/offers/{offer}/toggle-favourite', [OfferController::class, 'toggleFavourite']);
+    Route::get('/favourites', [OfferController::class, 'myFavourites']);
 
 });

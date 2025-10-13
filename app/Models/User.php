@@ -110,7 +110,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Wishlist::class, 'patient_id')->whereNotNull('hospital_id');
     }
-
+    public function favouriteOffers()
+    {
+        return $this->hasMany(FavouriteOffer::class);
+    }
     // Check if doctor is favorited by patient
     public function isFavoriteDoctor($doctorId)
     {
@@ -188,11 +191,15 @@ class User extends Authenticatable
 
     public function scopeFilter($query, array $filters)
     {
-        $query->when($filters['search'], fn($query, $search) => $query
-            ->where('address', 'like', '%' . $search . '%')
+        $query->when(
+            $filters['search'],
+            fn($query, $search) => $query
+                ->where('address', 'like', '%' . $search . '%')
         );
-        $query->when($filters['gender'], fn($query, $gender) => $query
-            ->where('gender', 'like', '%' . request('gender') . '%')
+        $query->when(
+            $filters['gender'],
+            fn($query, $gender) => $query
+                ->where('gender', 'like', '%' . request('gender') . '%')
         );
         $query->when($filters['speciality_id'], fn($query, $speciality_id) => $query
             ->where('speciality_id', request('speciality_id')));
@@ -203,9 +210,10 @@ class User extends Authenticatable
         return $this->belongsTo(Hospital::class);
     }
 
-    public function doctors(){
+    public function doctors()
+    {
         return $this->hasMany(User::class, 'hospital_id', 'hospital_id')
-        ->where('user_type', 'D');
+            ->where('user_type', 'D');
     }
 
     public function speciality()
@@ -245,10 +253,10 @@ class User extends Authenticatable
 
     public function appointments()
     {
-        if($this->is_hospital()){
+        if ($this->is_hospital()) {
             return $this->hasMany(Appointment::class, "hospital_id");
         }
-        if($this->is_doctor()){
+        if ($this->is_doctor()) {
             return $this->hasMany(Appointment::class, "doctor_id");
         }
         return $this->hasMany(Appointment::class, "patient_id");
@@ -307,25 +315,30 @@ class User extends Authenticatable
     }
 
 
-    public function regularAvailabilities(){
+    public function regularAvailabilities()
+    {
         return $this->hasMany(RegularAvailability::class, "doctor_id", "id");
     }
-    public function oneTimeailabilities(){
+    public function oneTimeailabilities()
+    {
         return $this->hasMany(OneTimeAvailability::class, "doctor_id", "id");
     }
-    public function unavailailities(){
+    public function unavailailities()
+    {
         return $this->hasMany(Unavailability::class, "doctor_id", "id");
     }
     // Attributes
-    public function getAgeAttribute(){
-        if($this->date_of_birth){
+    public function getAgeAttribute()
+    {
+        if ($this->date_of_birth) {
             return \Carbon\Carbon::parse($this->date_of_birth)->age;
         }
         return 0;
     }
 
-    public function getProfileImageAttribute($value){
-        if($value !=null) return env('BASE_URL').'images/'.rawurlencode($value) ;
+    public function getProfileImageAttribute($value)
+    {
+        if ($value != null) return env('BASE_URL') . 'images/' . rawurlencode($value);
         return asset('images/user.png');
     }
 }

@@ -42,7 +42,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             {{-- Content --}}
                             <div class="form-group row">
                                 <label for="content_en" class="col-form-label col-md-2">Content EN</label>
@@ -113,15 +113,28 @@
                                 </div>
                             </div>
 
+                            {{-- price --}}
+                            <div class="form-group row">
+                                <label for="price" class="col-form-label col-md-2">Price</label>
+                                <div class="col-md-10">
+                                    <input id="price" name="price" value="{{ old('price', $offer->price) }}" type="number" step="0.01" class="form-control" placeholder="Offer Price" required>
+                                    @error('price')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- hospital --}}
-                            @if ($hospitals)    
+                            @if ($hospitals)
                                 <div class="form-group row">
                                     <label for="hospital_id" class="col-form-label col-md-2">Hospital</label>
                                     <div class="col-md-10">
                                         <select id="hospital_id" name="hospital_id" class="form-control" required>
                                             <option value="" disabled selected>Select Hospital</option>
                                             @foreach ($hospitals as $hospital)
-                                                <option value="{{ $hospital->id }}" 
+                                                <option value="{{ $hospital->id }}"
                                                     {{ old('hospital_id', $offer->hospital_id) == $hospital->id ? 'selected' : '' }}>
                                                     {{ $hospital->hospital_name_en }} < {{ $hospital->hospital_name_ar }} ></option>
                                             @endforeach
@@ -135,7 +148,7 @@
                                 </div>
                             @endif
 
-                            {{-- type --}}    
+                            {{-- type --}}
                             <div class="form-group row">
                                 <label for="hopital_id" class="col-form-label col-md-2">Type</label>
                                 <div class="col-md-10">
@@ -145,7 +158,7 @@
                                         {{ old('type', $offer->type) == 'image' ? 'selected' : '' }}>
                                         Image</option>
                                         <option value="video"
-                                        {{ old('type', $offer->type) == 'video' ? 'selected' : '' }}>    
+                                        {{ old('type', $offer->type) == 'video' ? 'selected' : '' }}>
                                         Video</option>
                                     </select>
                                     @error('type')
@@ -156,7 +169,7 @@
                                 </div>
                             </div>
 
-                            {{-- is Active --}}    
+                            {{-- is Active --}}
                             <div class="form-group row">
                                 <label for="is_active" class="col-form-label col-md-2">Status</label>
                                 <div class="col-md-10">
@@ -166,7 +179,7 @@
                                         {{ old('is_active', $offer->is_active) == false ? 'selected' : '' }}>
                                         Not Active</option>
                                         <option value="1"
-                                        {{ old('is_active', $offer->is_active) == true ? 'selected' : '' }}>    
+                                        {{ old('is_active', $offer->is_active) == true ? 'selected' : '' }}>
                                         Active</option>
                                     </select>
                                     @error('type')
@@ -295,7 +308,7 @@
         // Set the initial text under the map if the hospital's location exists
         const initialLocation = '{{ $hospital->location ?? "Please Select A Hospital Location" }}';
         document.getElementById('selectedLocation').textContent = `Selected Location: ${initialLocation}`;
-        
+
 
         // Update selectedLocation when marker is dragged
         marker.on('dragend', onMarkerDragEnd);
@@ -332,7 +345,7 @@
     function updateMarkerPosition(coords) {
         marker.setLngLat(coords);
         console.log(coords);
-        
+
         selectedLocation = {
             lng: coords[0],
             lat: coords[1]

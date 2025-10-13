@@ -20,12 +20,23 @@ class Offer extends Model
         'images',
         'start_date',
         'end_date',
-        'offer_type_id'
+        'offer_type_id',
+        'price'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function favourites()
+    {
+        return $this->hasMany(FavouriteOffer::class);
+    }
+
+    public function isFavouritedBy($userId)
+    {
+        return $this->favourites()->where('user_id', $userId)->exists();
+    }
 
     public function hospital()
     {
