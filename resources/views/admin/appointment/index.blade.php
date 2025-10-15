@@ -71,7 +71,7 @@
                                             <th>{{ __('admin.appointments.appt_date') }}</th>
                                             <th>{{ __('admin.appointments.amount') }}</th>
                                             <th>{{ __('admin.appointments.status') }}</th>
-                                            <th></th>
+                                            {{-- <th></th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -166,7 +166,7 @@
                                                         <span class="badge rounded-pill bg-danger-light">Cancelled</span>
                                                     @endif
                                                 </td>
-                                                @if ($appointment->status == 'D')
+                                                {{-- @if ($appointment->status == 'D')
                                                     <td class="text-end d-flex justify-content-between">
                                                         <form method="POST"
                                                             action="{{ route('update_appointment_status', $appointment) }}">
@@ -204,7 +204,7 @@
                                                             </button>
                                                         </form>
                                                     </td>
-                                                @endif
+                                                @endif --}}
                                             </tr>
                                             {{ $appointment->links }}
                                         @empty

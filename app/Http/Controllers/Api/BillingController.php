@@ -14,7 +14,7 @@ class BillingController extends Controller
     public function billingHistory(Request $request){
         try {
             $user = $request->user();
-            $billings = Invoice::where('patient_id', $user->id)->orderByDesc('created_at')
+            $billings = Invoice::where('patient_id', $user->id)->where('paymentstatus', 'paid')->orderByDesc('created_at')
             ->with(['hospital', 'doctor'])->get();
             return $this->SuccessResponse(200, 'Billing history retrieved successfully', $billings);
         } catch (\Throwable $th) {
@@ -25,7 +25,7 @@ class BillingController extends Controller
     public function billingDetails(Request $request, $id){
         try {
             $user = $request->user();
-            $invoice = Invoice::where('patient_id', $user->id)->where('id', $id)->first();
+            $invoice = Invoice::where('patient_id', $user->id)->where('paymentstatus', 'paid')->where('id', $id)->first();
 
             if (!$invoice) {
                 return $this->ErrorResponse(404, 'Billing record not found');

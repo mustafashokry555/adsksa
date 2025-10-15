@@ -34,7 +34,7 @@
                                                     <th>{{ __('hospital.appointments.booking_date') }}</th>
                                                     <th>{{ __('hospital.appointments.amount') }}</th>
                                                     <th>{{ __('hospital.appointments.status') }}</th>
-                                                    <th>{{ __('hospital.appointments.action') }}</th>
+                                                    {{-- <th>{{ __('hospital.appointments.action') }}</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -134,7 +134,7 @@
                                                     </td> --}}
 
 
-                                                        <td class="text-end">
+                                                        {{-- <td class="text-end">
                                                             <div class="table-action">
                                                                 <div class="d-flex justify-content-end gap-3">
                                                                     @if ($appointment->status == 'P')
@@ -213,7 +213,7 @@
                                                                     @endif
                                                                 </div>
                                                             </div>
-                                                        </td>
+                                                        </td> --}}
                                                     </tr>
                                                 @empty
                                                     <!-- <tr class="col-span-6">

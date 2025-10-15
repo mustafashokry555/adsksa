@@ -304,24 +304,24 @@ class AppointmentController extends Controller
     {
         if (Auth::user()->is_doctor()) {
             return view('doctor.invoice.index', [
-                'invoices' => Invoice::query()->where('doctor_id', Auth::id())->orderByDesc('id')->get(),
+                'invoices' => Invoice::query()->where('doctor_id', Auth::id())->where('paymentstatus', 'paid')->orderByDesc('id')->get(),
             ]);
         } elseif (Auth::user()->is_hospital()) {
             return view('hospital.invoice.index', [
-                'invoices' => Invoice::query()->orderByDesc('id')->get(),
+                'invoices' => Invoice::query()->where('hospital_id', Auth::user()->hospital_id)->where('paymentstatus', 'paid')->orderByDesc('id')->get(),
             ]);
         } elseif (Auth::user()->is_admin()) {
             return view(
                 'admin.invoice.index',
                 [
-                    'invoices' => Invoice::query()->orderByDesc('id')->get(),
+                    'invoices' => Invoice::query()->where('paymentstatus', 'paid')->orderByDesc('id')->get(),
                 ]
             );
         } elseif (Auth::user()->is_patient()) {
             return view(
                 'patient.invoice.index',
                 [
-                    'invoices' => Invoice::query()->where('patient_id', Auth::id())->orderByDesc('id')->get(),
+                    'invoices' => Invoice::query()->where('patient_id', Auth::id())->where('paymentstatus', 'paid')->orderByDesc('id')->get(),
                 ]
             );
         } else {

@@ -11,20 +11,29 @@
             <div class="appointments">
                 @forelse($appointments as $appointment)
                     @php
-                        $patient = \App\Models\User::query()
-                            ->where('id', $appointment->patient_id)
-                            ->first();
+                        $patient = \App\Models\User::query()->where('id', $appointment->patient_id)->first();
                     @endphp
                     <div class="appointment-list">
                         <div class="profile-info-widget">
-                            <a href="{{ route('profile.show', ['profile' => $patient?->id]) }}" class="booking-doc-img">
-                                <img src="{{ asset( $patient?->profile_image) }}" alt="User Image">
-                            </a>
+                            @if ($patient)
+                                <a href="{{ route('profile.show', ['profile' => $patient?->id]) }}" class="booking-doc-img">
+                                    <img src="{{ asset($patient?->profile_image) }}" alt="User Image">
+                                </a>
+                            @else
+                                <a class="booking-doc-img">
+                                    <img src="{{ asset($patient?->profile_image) }}" alt="User Image">
+                                </a>
+                            @endif
                             <?php //echo asset('storage/images/' . $patient->profile_image);
                             ?>
                             <div class="profile-det-info">
-                                <h3><a
-                                        href="{{ route('profile.show', ['profile' => $patient?->id]) }}">{{ $patient?->name }}</a>
+
+                                <h3>
+                                    @if ($patient)
+                                        <a href="{{ route('profile.show', ['profile' => $patient?->id]) }}">{{ $patient?->name }}</a>
+                                    @else
+                                        <a>{{ $patient?->name }}</a>
+                                    @endif
                                 </h3>
                                 <div class="patient-details">
                                     <h5><i class="far fa-clock"></i>
@@ -38,15 +47,15 @@
                                     @endif
                                     <h5><i class="fas fa-envelope"></i> {{ $patient?->email }}</h5>
                                     <h5 class="mb-0"><i class="fas fa-phone"></i>{{ $patient?->mobile }}</h5>
-                                    <h5 class="mb-0">Insurance: {{ $appointment->insurance?->name??'N/A' }}</h5>
-                                    <h5 class="mb-0">Price: {{ $appointment->fee?'SAR '.$appointment->fee:'FREE' }}</h5>
+                                    <h5 class="mb-0">Insurance: {{ $appointment->insurance?->name ?? 'N/A' }}</h5>
+                                    <h5 class="mb-0">Price: {{ $appointment->fee ? 'SAR ' . $appointment->fee : 'FREE' }}</h5>
 
                                 </div>
                             </div>
                         </div>
                         <div class="appointment-action gap-3">
                             @if ($appointment->status == 'P')
-                                <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
+                                {{-- <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
                                     @method('patch')
                                     @csrf
                                     <input type="hidden" name="status" value="C">
@@ -61,44 +70,52 @@
                                     <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-danger-light">
                                         <i class="fas fa-times"></i> Cancel
                                     </button>
-                                </form>
+                                </form> --}}
+                                <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-warning-light">
+                                    <i class=""></i> Pendinig
+                                </button>
                             @elseif($appointment->status == 'D')
-                                 @if($appointment->cancel_by_patient=='0')
-                                <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
-                                    @method('patch')
-                                    @csrf
-                                    <input type="hidden" name="status" value="C">
-                                    <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-success-light">
-                                        <i class="fas fa-check"></i> Accept
-                                    </button>
-                                </form>
+                                @if ($appointment->cancel_by_patient == '0')
+                                    {{-- <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
+                                        @method('patch')
+                                        @csrf
+                                        <input type="hidden" name="status" value="C">
+                                        <button type="submit" href="javascript:void(0);"
+                                            class="btn btn-sm bg-success-light">
+                                            <i class="fas fa-check"></i> Accept
+                                        </button>
+                                    </form>
 
-                                <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
-                                    @method('patch')
-                                    @csrf
-                                    <input type="hidden" name="status" value="D">
+                                    <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
+                                        @method('patch')
+                                        @csrf
+                                        <input type="hidden" name="status" value="D">
+                                        <button type="submit" href="javascript:void(0);"
+                                            class="btn btn-sm bg-danger-light">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </form> --}}
                                     <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-                                        <i class="fas fa-times"></i> Cancel
+                                        <i class=""></i> Canceled
                                     </button>
-                                </form>
-
                                 @else
-                                <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+                                    <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-danger-light">
                                         <i class=""></i> Canceled by patient
                                     </button>
                                 @endif
+
                             @else
                                 <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
                                     <i class="fas fa-check"></i> Confirmed
                                 </a>
-                                <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
+                                {{-- <form method="POST" action="{{ route('update_appointment_status', $appointment) }}">
                                     @method('patch')
                                     @csrf
                                     <input type="hidden" name="status" value="D">
                                     <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-danger-light">
                                         <i class="fas fa-times"></i> Cancel
                                     </button>
-                                </form>
+                                </form> --}}
                             @endif
                         </div>
                     </div>

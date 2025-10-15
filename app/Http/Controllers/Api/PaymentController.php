@@ -72,7 +72,7 @@ class PaymentController extends Controller
                 'profile_id' => env('PAYTABS_PROFILE_ID'),
                 'tran_type' => 'sale',
                 'tran_class' => 'ecom',
-                'cart_id' => "APP-{$invoice->id}-DR-{$invoice->doctor->name}", // Visible to user
+                'cart_id' => $merchantRef, // Visible to user
                 'cart_description' => "Appointment with Dr. {$invoice->doctor->name} on {$invoice->invoice_date}", // Visible text
                 'cart_currency' => $payment->currency,
                 'cart_amount' => (float) $payment->amount,
@@ -236,40 +236,80 @@ class PaymentController extends Controller
 
         Log::info('PayTabs Webhook:', $payload);
 
-        $merchantRef = $payload['cart_id'] ?? null;
-        if (!$merchantRef) {
+        $invoice_id = $payload['invoice_id'] ?? null;
+        if (!$invoice_id) {
             return response()->json(['success' => false, 'message' => 'Invalid webhook payload'], 400);
         }
 
-        $payment = Payment::where('merchant_reference', $merchantRef)->first();
+        $payment = Payment::where('paytabs_invoice_id', $invoice_id)->first();
         if (!$payment) {
             return response()->json(['success' => false, 'message' => 'Payment not found'], 404);
         }
 
-        $status = strtolower($payload['invoice_status'] ?? $payload['payment_status'] ?? $payload['status'] ?? 'unknown');
+        $status = strtolower($payload['payment_result']['response_status']);
 
-        if (in_array($status, ['paid', 'success', 'completed'])) {
+        if ($status == 'a') {
             $payment->update([
                 'status' => 'paid',
-                'paid_at' => now(),
+                'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
                 'response_payload' => $payload,
+                'paytabs_transaction_id' => $payload['tran_ref'],
             ]);
-            $payment->invoice->update([
-                'paymentstatus	' => 'paid',
-                'paid_at' => now(),
+            if ($payment->invoice) {
+                $payment->invoice->update([
+                    'paymentstatus' => 'paid',
+                    'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
+                ]);
+                if ($payment->invoice->appointment) {
+                    $payment->invoice->appointment->update([
+                        'payment_status' => 'paid',
+                        'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
+                        'status' => 'C',
+                    ]);
+                }
+            }
+        } elseif ($status == 'c') {
+            $payment->update([
+                'status' => 'cancelled',
+                'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
+                'response_payload' => $payload,
+                'paytabs_transaction_id' => $payload['tran_ref'],
             ]);
-            $payment->invoice->appointment->update([
-                'payment_status	' => 'paid',
-                'payment_date' => now(),
-                'status' => 'C',
-            ]);
-        } elseif (in_array($status, ['unpaid', 'pending'])) {
-            $payment->update(['status' => 'pending']);
-            $payment->invoice->update(['paymentstatus' => 'pending']);
+            if ($payment->invoice) {
+                $payment->invoice->update([
+                    'paymentstatus' => 'cancelled',
+                    'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
+                ]);
+                if ($payment->invoice->appointment) {
+                    $payment->invoice->appointment->update([
+                        'payment_status' => 'cancelled',
+                        'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
+                        'status' => 'D',
+                    ]);
+                }
+            }
         } else {
-            $payment->update(['status' => 'failed']);
-            $payment->invoice->update(['paymentstatus' => 'failed']);
+            $payment->update([
+                'status' => 'failed',
+                'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
+                'response_payload' => $payload,
+                'paytabs_transaction_id' => $payload['tran_ref'],
+            ]);
+            if ($payment->invoice) {
+                $payment->invoice->update([
+                    'paymentstatus' => 'failed',
+                    'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
+                ]);
+                if ($payment->invoice->appointment) {
+                    $payment->invoice->appointment->update([
+                        'payment_status' => 'failed',
+                        'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
+                        'status' => 'D',
+                    ]);
+                }
+            }
         }
+
 
         return response()->json(['success' => true]);
     }
@@ -330,11 +370,11 @@ class PaymentController extends Controller
 
     public function return(Request $request)
     {
-        $payload = $request->all(); // PayTabs redirects with GET/POST mixed, use all()
+        $payload = $request->all();
 
         Log::info('PayTabs Return Payload:', $payload);
 
-        $merchantRef = $payload['cart_id'] ?? null;
+        $merchantRef = $payload['cartId'] ?? null;
         if (!$merchantRef) {
             return response()->json(['success' => false, 'message' => 'Invalid return payload'], 400);
         }
@@ -345,17 +385,24 @@ class PaymentController extends Controller
             return response()->json(['success' => false, 'message' => 'Payment not found'], 404);
         }
 
-        $status = strtolower($payload['invoice_status'] ?? $payload['payment_status'] ?? $payload['status'] ?? 'unknown');
+        $status = strtolower($payload['respStatus'] ?? $payload['status'] ?? 'unknown');
 
-        if (in_array($status, ['paid', 'success', 'completed'])) {
-            $payment->update(['status' => 'paid']);
-        } elseif (in_array($status, ['unpaid', 'pending'])) {
-            $payment->update(['status' => 'pending']);
+        if ($status == 'a') {
+            return response()->json([
+            'success' => true,
+            'message' => 'Payment successful. Appointment confirmed.',
+            ]);
+        } elseif ($status == 'c') {
+            return response()->json([
+            'success' => false,
+            'message' => 'Payment cancelled. Appointment is cancelled.',
+            ]);
         } else {
-            $payment->update(['status' => 'failed']);
+            return response()->json([
+            'success' => false,
+            'message' => 'Payment failed. Appointment is cancelled.',
+            ]);
         }
-
-        return redirect()->route('api.payments.show', $payment->id);
     }
 
 
