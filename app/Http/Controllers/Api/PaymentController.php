@@ -28,7 +28,7 @@ class PaymentController extends Controller
     public function initiate(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'invoice_id' => 'required|exists:invoices,id',
+            'appointment_id' => 'required|exists:appointments,id',
             // 'amount' => 'required|numeric|min:0.1',
             'currency' => 'nullable|string|size:3',
         ]);
@@ -36,7 +36,13 @@ class PaymentController extends Controller
             return response()->json(['error' => $validator->errors(), 'status' => 422]);
         }
         $data = $request->all();
-        $invoice = Invoice::findOrFail($data['invoice_id']);
+        $invoice = Invoice::where('appointment_id', $data['appointment_id'])->first();
+        if (!$invoice) {
+            return response()->json([
+            'success' => false,
+            'message' => 'Invoice not found for the given appointment.',
+            ], 404);
+        }
 
         // Check appointment status and invoice payment info
         $appointment = $invoice->appointment;

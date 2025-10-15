@@ -195,7 +195,8 @@ class AppointController extends Controller
                     'appointments.appointment_date',
                     'appointments.appointment_time',
                     'appointments.appointment_type',
-                    'appointments.description'
+                    'appointments.description',
+                    'appointments.id',
                 )
                 ->first();
 
