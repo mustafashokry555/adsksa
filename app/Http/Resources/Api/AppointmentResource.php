@@ -15,9 +15,11 @@ class AppointmentResource extends JsonResource
     public function toArray($request)
     {
         $status = null;
+        $payment_link = null;
         switch ($this->status) {
             case 'P':
                 $status = 'Pending';
+                $payment_link = $this->invoice ? $this->invoice->payment_link : null;
                 break;
 
             case 'C':
@@ -66,6 +68,7 @@ class AppointmentResource extends JsonResource
             'doctor' => $this->doctor ? DoctorResource::make($this->doctor) : null,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'payment_link' => $payment_link,
         ];
     }
 }
