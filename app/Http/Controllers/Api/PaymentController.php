@@ -26,12 +26,12 @@ class PaymentController extends Controller
      */
     public function initiate(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
             // 'amount' => 'required|numeric|min:0.1',
             'currency' => 'nullable|string|size:3',
         ]);
-
+        $data = $request->all();
         $invoice = Invoice::findOrFail($data['invoice_id']);
 
         // Check appointment status and invoice payment info
