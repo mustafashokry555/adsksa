@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\OfferTypesController;
 use App\Http\Controllers\Api\PatientInsuranceController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\WishlistController;
@@ -85,7 +86,16 @@ Route::get('help',[SettingController::class,'help']);
 Route::post('test-try-donot-use',[HomeController::class,'test_try_donot_use']);
 Route::get('down/file',[HomeController::class,'downBackup']);
 
+// Public endpoints for PayTabs callbacks (no auth) — ensure HTTPS and IP protection via signature
+Route::post('payments/webhook', [PaymentController::class, 'webhook'])->name('api.payments.webhook');
+Route::post('payments/return', [PaymentController::class, 'return'])->name('api.payments.return');
+
 Route::middleware(['auth:sanctum','patient'])->group( function () {
+
+    // payments
+    Route::post('payments/initiate', [PaymentController::class, 'initiate'])->name('api.payments.initiate');
+    Route::get('payments/{id}', [PaymentController::class, 'show'])->name('api.payments.show');
+
     // patient app setting
     Route::post('app-setting',[SettingController::class,'updateOrCreateAppSetting']);
 

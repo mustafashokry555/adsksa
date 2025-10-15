@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\AppointmentResource;
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\Notification;
+use App\Models\Settings;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -93,9 +95,9 @@ class AppointController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'doctor_id' => 'required',
-            'integer',
+            // 'integer',
             // 'hospital_id' => 'required',
-            'integer',
+            // 'integer',
             'appointment_date' => 'required|date_format:Y-m-d',
             'appointment_time' => 'required|date_format:H:i',
         ]);
@@ -138,6 +140,23 @@ class AppointController extends Controller
             $a->fee = $doctor->pricing;
 
             $a->save();
+
+            // Create invoice after appointment is saved
+            $setting = Settings::first();
+            $invoice = Invoice::create([
+                'appointment_id'   => $a->id,
+                'doctor_id'        => $a->doctor_id,
+                'patient_id'       => $a->patient_id,
+                'hospital_id'      => $a->hospital_id,
+                'invoice_number'   => 'INV' . str_pad($a->id, 6, '0', STR_PAD_LEFT),
+                'company_name'     => $setting?->website_name ?? '',
+                'company_address'  => $setting?->address_line_1 ?? '',
+                'invoice_date'     => now(),
+                'tax_number'       => $setting?->tax_number,
+                'subtotal'         => $a->fee,
+                'vat'              => $setting?->vat ?? 0.0,
+                'paymentstatus'    => 'Pending',
+            ]);
             Notification::create([
                 'from_id' => $a->patient_id,
                 'to_id' => $a->doctor_id,

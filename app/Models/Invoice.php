@@ -20,16 +20,25 @@ class Invoice extends Model
         'tax_number',
         'subtotal',
         'vat',
+        'payment_id',
+        'paymentstatus',
+        'payment_link',
+        'paid_at',
     ];
 
     protected $casts = [
         'invoice_date' => 'datetime',
+        'paid_at' => 'datetime',
     ];
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);
     }
 
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');
