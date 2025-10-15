@@ -10,6 +10,7 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class PaymentController extends Controller
 {
@@ -26,11 +27,14 @@ class PaymentController extends Controller
      */
     public function initiate(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'invoice_id' => 'required|exists:invoices,id',
             // 'amount' => 'required|numeric|min:0.1',
             'currency' => 'nullable|string|size:3',
         ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors(), 'status' => 422]);
+        }
         $data = $request->all();
         $invoice = Invoice::findOrFail($data['invoice_id']);
 
