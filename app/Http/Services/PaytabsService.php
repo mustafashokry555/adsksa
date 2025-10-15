@@ -63,4 +63,38 @@ class PaytabsService
             'body' => $response->json(),
         ];
     }
+
+    // cancel invoice
+    public function cancelInvoice($invoiceId): array
+    {
+        $url = $this->baseUrl . '/payment/invoice/cancel'; // adjust per PayTabs docs if necessary
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => $this->serverKey,
+        ];
+
+        $payload = [
+            'invoice_id' => $invoiceId,
+            'profile_id' => $this->profileId,
+        ];
+
+        $response = Http::withHeaders($headers)
+            ->timeout(30)
+            ->post($url, $payload);
+
+        if ($response->failed()) {
+            return [
+                'success' => false,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'status' => $response->status(),
+            'body' => $response->json(),
+        ];
+    }
 }

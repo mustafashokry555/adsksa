@@ -298,6 +298,8 @@ class PaymentController extends Controller
                     ]);
                 }
             }
+            // Optionally: cancel the invoice in PayTabs system
+            $this->paytabs->cancelInvoice($payment->paytabs_invoice_id);
         } else {
             $payment->update([
                 'status' => 'failed',
@@ -318,6 +320,8 @@ class PaymentController extends Controller
                     ]);
                 }
             }
+            // Optionally: cancel the invoice in PayTabs system
+            $this->paytabs->cancelInvoice($payment->paytabs_invoice_id);
         }
 
 
