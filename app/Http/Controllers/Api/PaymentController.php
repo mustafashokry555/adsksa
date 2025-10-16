@@ -270,7 +270,7 @@ class PaymentController extends Controller
                 ]);
                 if ($payment->invoice->appointment) {
                     $payment->invoice->appointment->update([
-                        'payment_status' => 'paid',
+                        'payment_status' => 'Paid',
                         'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
                         'status' => 'C',
                     ]);
