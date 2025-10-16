@@ -140,7 +140,7 @@ class PaymentController extends Controller
             Log::info('PayTabs create payment page response', ['response' => $body]);
             // PayTabs returns an object with a field containing the redirect URL (varies by API version)
             // We attempt to extract it sanitely; adapt keys to your PayTabs API version.
-            $paymentPageUrl = $body['invoice_link'] ?? $body['payment_url'] ?? $body['payment_page_url'] ?? ($body['data']['redirect_url'] ?? null);
+            $paymentPageUrl = $body['invoice_link'] ?? $body['payment_url'] ?? $body['payment_page_url'] ?? ($body['redirect_url'] ?? null);
 
             $payment->update([
                 'payment_page_url' => $paymentPageUrl,

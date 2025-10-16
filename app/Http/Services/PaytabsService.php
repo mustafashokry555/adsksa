@@ -37,7 +37,7 @@ class PaytabsService
     public function createPaymentPage(array $payload): array
     {
         // set auth header
-        $url = $this->baseUrl . '/payment/invoice/new'; // keep configurable; adjust per PayTabs docs if necessary
+        $url = $this->baseUrl . '/payment/request'; // keep configurable; adjust per PayTabs docs if necessary
 
         $headers = [
             'Content-Type' => 'application/json',
