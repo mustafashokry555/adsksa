@@ -126,6 +126,8 @@ class AppointController extends Controller
                     'errors' => 'Doctor not Exist'
                 ], 422);
             }
+            $setting = Settings::first();
+
             $a = new Appointment();
             $a->doctor_id = $request->doctor_id;
             $a->patient_id = $request->user()->id;
@@ -138,11 +140,12 @@ class AppointController extends Controller
             $a->status = "P";
             $a->description = $request->description;
             $a->fee = $doctor->pricing;
+            $a->vat = $setting?->vat ?? 0.0;
+
 
             $a->save();
 
             // Create invoice after appointment is saved
-            $setting = Settings::first();
             $invoice = Invoice::create([
                 'appointment_id'   => $a->id,
                 'doctor_id'        => $a->doctor_id,
