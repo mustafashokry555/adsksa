@@ -118,9 +118,7 @@ class PaymentController extends Controller
             ];
 
             $result = $this->paytabs->createPaymentPage($payload);
-            log::info([
-                "payment" => $result['body']
-            ]);
+
             if (!$result['success']) {
                 // store error on payment and rollback
                 // $payment->update([
@@ -137,15 +135,15 @@ class PaymentController extends Controller
             }
 
             $body = $result['body'];
-            Log::info('PayTabs create payment page response', ['response' => $body]);
             // PayTabs returns an object with a field containing the redirect URL (varies by API version)
             // We attempt to extract it sanitely; adapt keys to your PayTabs API version.
             $paymentPageUrl = $body['invoice_link'] ?? $body['payment_url'] ?? $body['payment_page_url'] ?? ($body['redirect_url'] ?? null);
+            $paytabs_invoice_id = $body['invoice']['id'] ?? null;
 
             $payment->update([
                 'payment_page_url' => $paymentPageUrl,
                 'response_payload' => $body,
-                'paytabs_invoice_id' => $body['invoice_id'] ?? null,
+                'paytabs_invoice_id' => $paytabs_invoice_id,
                 'status' => 'pending',
             ]);
 
@@ -153,7 +151,7 @@ class PaymentController extends Controller
                 'payment_link' => $paymentPageUrl,
                 'payment_id' => $payment->id,
                 'paymentstatus' => 'pending',
-                'invoice_number' => $body['invoice_id'] ?? $invoice->invoice_number,
+                'invoice_number' => $paytabs_invoice_id ?? $invoice->invoice_number,
             ]);
 
             DB::commit();
