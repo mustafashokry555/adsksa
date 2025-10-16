@@ -12,6 +12,9 @@ class Appointment extends Model
     protected $fillable = ['doctor_id','insurance_id', 'patient_id','fee', 'vat',
     'hospital_id', 'appointment_time', 'status', 'appointment_date','cancel_by_patient', 'payment_date', 'payment_status'];
 
+    protected $casts = [
+        'payment_date' => 'datetime',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);
