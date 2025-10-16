@@ -28,7 +28,7 @@ class PaymentController extends Controller
     public function initiate(Request $request)
     {
         $validator = Validator::make($request->all(), [
-w            'appointment_id' => 'required|exists:appointments,id',
+            'appointment_id' => 'required|exists:appointments,id',
             // 'amount' => 'required|numeric|min:0.1',
             'currency' => 'nullable|string|size:3',
         ]);
@@ -105,7 +105,6 @@ w            'appointment_id' => 'required|exists:appointments,id',
                 'paypage_lang' => 'ar',
                 'payment_methods' => ['all'],
                 'hide_shipping' => true,
-                'framed' => false,
                 'customer_details' => [
                     'name' => $payment->user->name ?? 'Guest',
                     'email' => $payment->user->email ?? ($request->user()->email ?? null),
