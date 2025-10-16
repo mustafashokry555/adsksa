@@ -290,7 +290,6 @@ class PaymentController extends Controller
                 ]);
                 if ($payment->invoice->appointment) {
                     $payment->invoice->appointment->update([
-                        'payment_status' => 'cancelled',
                         'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
                         'status' => 'D',
                     ]);
