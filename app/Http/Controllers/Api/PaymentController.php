@@ -289,10 +289,12 @@ class PaymentController extends Controller
                     'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
                 ]);
                 if ($payment->invoice->appointment) {
+                    Log::info('Appointment cancelled due to payment cancellation.', ['appointment_id' => $payment->invoice->appointment->id]);
                     $test = $payment->invoice->appointment->update([
                         'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
                         'status' => 'D',
                     ]);
+                    Log::info('Appointment update result:', ['result' => $test]);
                 }
             }
             // Optionally: cancel the invoice in PayTabs system
