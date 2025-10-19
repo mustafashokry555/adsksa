@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Patient;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\PaytabsService;
 use App\Models\Appointment;
 use App\Models\Invoice;
 use App\Models\Notification;
@@ -21,12 +22,19 @@ use App\Models\Unavailability;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use SimpleXMLElement;
 
 class AppointmentController extends Controller
 {
+    protected $paytabs;
+
+    public function __construct(PaytabsService $paytabs)
+    {
+        $this->paytabs = $paytabs;
+    }
     public function create_appointment($id)
     {
         if (Auth::user()->is_patient()) {
@@ -138,17 +146,38 @@ class AppointmentController extends Controller
         $doctor = User::where('id', $request->doctor_id)->first();
         $dateTime = CarbonImmutable::parse($request->selected_slot);
         // VAT
-        // $invoiceSettings = GenralSettings::where('parent', 'invoice')->get();
-        // $invoiceSettings = GenralSettings::makeFlat($invoiceSettings);
+        $setting = Settings::first();
         $request->merge([
             "appointment_date" => $dateTime->format("Y-m-d"),
             "appointment_time" => $dateTime->format("H:i:s"),
             "fee" => $doctor->pricing,
-            "status" => 'P'
+            "status" => 'P',
             // "insurance_id"=> $insurance
-            // "vat" => $invoiceSettings->get("vat", 0.0),
+            "vat" =>  $setting?->vat ?? 0.0,
         ]);
         $appointment = Appointment::create($request->except("selected_slot"));
+        // Create invoice after appointment is saved
+        $invoice = Invoice::create([
+            'appointment_id'   => $appointment->id,
+            'doctor_id'        => $appointment->doctor_id,
+            'patient_id'       => $appointment->patient_id,
+            'hospital_id'      => $appointment->hospital_id,
+            'invoice_number'   => 'INV' . str_pad($appointment->id, 6, '0', STR_PAD_LEFT),
+            'company_name'     => $setting?->website_name ?? '',
+            'company_address'  => $setting?->address_line_1 ?? '',
+            'invoice_date'     => now(),
+            'tax_number'       => $setting?->tax_number,
+            'subtotal'         => $appointment->fee,
+            'vat'              => $setting?->vat ?? 0.0,
+            'paymentstatus'    => 'Pending',
+        ]);
+        $payment = $this->paytabs->initiate($appointment->id, 'SAR');
+        Log::info('Payment initiation response: ', $payment);
+        if(!$payment['success']){
+            $appointment->delete();
+            $invoice->delete();
+            return redirect()->back()->with('error', 'Payment initiation failed please try again later.');
+        }
         Notification::create([
             'from_id' => $appointment->patient_id,
             'to_id' => $appointment->doctor_id,
@@ -161,9 +190,7 @@ class AppointmentController extends Controller
             'message_en' => 'New Appointment (#' . $appointment->id . ') is waiting for approval',
         ]);
 
-        return redirect()
-            ->route('appointments')
-            ->with('flash', ['type', 'success', 'message' => 'Appointment create Successfully']);
+        return redirect()->to($payment['payment_page_url']);
     }
     public function manage_appointments(Request $request)
     {

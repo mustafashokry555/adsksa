@@ -169,75 +169,6 @@ class PaymentController extends Controller
         }
     }
 
-    /**
-     * IPN / webhook (server-to-server). PayTabs will POST full transaction details to this URL.
-     * We must verify the HMAC signature header and update our payment state.
-     */
-    public function webhook2(Request $request)
-    {
-        // raw body
-        $raw = $request->getContent();
-        $signature = $request->header('Signature') ?? $request->header('signature');
-
-        if (!$this->paytabs->verifySignature($raw, $signature)) {
-            Log::warning('PayTabs webhook signature verification failed.', [
-                'signature_header' => $signature,
-                'body' => $raw,
-            ]);
-            return response()->json(['message' => 'Invalid signature'], 403);
-        }
-
-        $payload = $request->json()->all();
-
-        // Basic safe update logic:
-        $merchantRef = $payload['cart_id'] ?? $payload['merchant_reference'] ?? ($payload['cart_id'] ?? null);
-        $transactionId = $payload['transaction_id'] ?? $payload['tran_ref'] ?? $payload['payment_reference'] ?? null;
-        $status = strtolower($payload['transaction_status'] ?? $payload['status'] ?? $payload['tran_status'] ?? 'unknown');
-
-        // find by merchant_reference or use user_defined.payment_id
-        $payment = null;
-        if (!empty($merchantRef)) {
-            $payment = Payment::where('merchant_reference', $merchantRef)->first();
-        }
-
-        if (!$payment && !empty($payload['user_defined']['payment_id'] ?? null)) {
-            $payment = Payment::find($payload['user_defined']['payment_id']);
-        }
-
-        if (!$payment) {
-            Log::error('PayTabs webhook: Payment record not found.', ['payload' => $payload]);
-            return response()->json(['message' => 'Payment not found'], 404);
-        }
-
-        // Map statuses (adjust per PayTabs status values)
-        $newStatus = $payment->status;
-        if (in_array($status, ['completed', 'paid', 'success'])) {
-            $newStatus = 'paid';
-        } elseif (in_array($status, ['failed', 'declined', 'error'])) {
-            $newStatus = 'failed';
-        } elseif (in_array($status, ['pending', 'initiated'])) {
-            $newStatus = 'pending';
-        } elseif (in_array($status, ['cancelled'])) {
-            $newStatus = 'cancelled';
-        }
-
-        $payment->update([
-            'paytabs_transaction_id' => $transactionId,
-            'status' => $newStatus,
-            'response_payload' => $payload,
-            'paid_at' => $newStatus === 'paid' ? now() : $payment->paid_at,
-        ]);
-
-        // App-specific: mark appointment paid if paid
-        if ($newStatus === 'paid' && $payment->appointment) {
-            $payment->appointment->update(['paid' => true, 'status' => 'confirmed']);
-            // send notifications, emails, generate invoice, etc. (implement as needed)
-        }
-
-        // return 200 OK so PayTabs knows we received it
-        return response()->json(['message' => 'OK']);
-    }
-
     public function webhook(Request $request)
     {
         $payload = $request->all();
@@ -327,60 +258,6 @@ class PaymentController extends Controller
         return response()->json(['success' => true]);
     }
 
-
-    /**
-     * Return URL: where PayTabs redirects the user's browser after payment.
-     * This receives a POST (or GET) with a limited payload. We still verify signature if provided.
-     */
-    public function return2(Request $request)
-    {
-        $raw = $request->getContent();
-        $signature = $request->header('Signature') ?? $request->input('signature') ?? $request->input('Signature');
-
-        if (!$this->paytabs->verifySignature($raw, $signature)) {
-            // Some PayTabs versions provide query param signature; if signature absent, perform best-effort
-            Log::info('PayTabs return: signature missing or failed; continuing with caution.');
-        }
-
-        $payload = $request->all();
-
-        // find payment via cart_id or user_defined.payment_id
-        $merchantRef = $payload['cart_id'] ?? ($payload['merchant_reference'] ?? null);
-        $payment = null;
-        if ($merchantRef) {
-            $payment = Payment::where('merchant_reference', $merchantRef)->first();
-        }
-        if (!$payment && $payload['user_defined']['payment_id'] ?? null) {
-            $payment = Payment::find($payload['user_defined']['payment_id']);
-        }
-
-        if (!$payment) {
-            // show friendly page for web; for api/mobile you might want to return json
-            return response()->json(['message' => 'Payment not found'], 404);
-        }
-
-        // Optionally: check status and show success/fail page
-        $status = strtolower($payload['transaction_status'] ?? $payload['status'] ?? 'unknown');
-        if (in_array($status, ['completed', 'paid', 'success'])) {
-            $payment->update([
-                'status' => 'paid',
-                'response_payload' => $payload,
-                'paid_at' => now(),
-            ]);
-            if ($payment->appointment) {
-                $payment->appointment->update(['paid' => true, 'status' => 'confirmed']);
-            }
-            // Redirect to appointment success page in web set-up:
-            return redirect()->to(config('app.url') . '/appointments/' . $payment->appointment_id . '?payment=success');
-        } else {
-            $payment->update([
-                'status' => 'failed',
-                'response_payload' => $payload,
-            ]);
-            return redirect()->to(config('app.url') . '/appointments/' . $payment->appointment_id . '?payment=failed');
-        }
-    }
-
     public function return(Request $request)
     {
         $payload = $request->all();
@@ -418,13 +295,6 @@ class PaymentController extends Controller
         }
     }
 
-
-    public function show2($id)
-    {
-        $payment = Payment::with('appointment', 'user')->findOrFail($id);
-        return response()->json(['data' => $payment]);
-    }
-
     public function show($id)
     {
         $payment = Payment::findOrFail($id);
@@ -434,4 +304,128 @@ class PaymentController extends Controller
             'payment' => $payment,
         ]);
     }
+
+    /**
+     * IPN / webhook (server-to-server). PayTabs will POST full transaction details to this URL.
+     * We must verify the HMAC signature header and update our payment state.
+     */
+    // public function webhook2(Request $request)
+    // {
+    //     // raw body
+    //     $raw = $request->getContent();
+    //     $signature = $request->header('Signature') ?? $request->header('signature');
+
+    //     if (!$this->paytabs->verifySignature($raw, $signature)) {
+    //         Log::warning('PayTabs webhook signature verification failed.', [
+    //             'signature_header' => $signature,
+    //             'body' => $raw,
+    //         ]);
+    //         return response()->json(['message' => 'Invalid signature'], 403);
+    //     }
+
+    //     $payload = $request->json()->all();
+
+    //     // Basic safe update logic:
+    //     $merchantRef = $payload['cart_id'] ?? $payload['merchant_reference'] ?? ($payload['cart_id'] ?? null);
+    //     $transactionId = $payload['transaction_id'] ?? $payload['tran_ref'] ?? $payload['payment_reference'] ?? null;
+    //     $status = strtolower($payload['transaction_status'] ?? $payload['status'] ?? $payload['tran_status'] ?? 'unknown');
+
+    //     // find by merchant_reference or use user_defined.payment_id
+    //     $payment = null;
+    //     if (!empty($merchantRef)) {
+    //         $payment = Payment::where('merchant_reference', $merchantRef)->first();
+    //     }
+
+    //     if (!$payment && !empty($payload['user_defined']['payment_id'] ?? null)) {
+    //         $payment = Payment::find($payload['user_defined']['payment_id']);
+    //     }
+
+    //     if (!$payment) {
+    //         Log::error('PayTabs webhook: Payment record not found.', ['payload' => $payload]);
+    //         return response()->json(['message' => 'Payment not found'], 404);
+    //     }
+
+    //     // Map statuses (adjust per PayTabs status values)
+    //     $newStatus = $payment->status;
+    //     if (in_array($status, ['completed', 'paid', 'success'])) {
+    //         $newStatus = 'paid';
+    //     } elseif (in_array($status, ['failed', 'declined', 'error'])) {
+    //         $newStatus = 'failed';
+    //     } elseif (in_array($status, ['pending', 'initiated'])) {
+    //         $newStatus = 'pending';
+    //     } elseif (in_array($status, ['cancelled'])) {
+    //         $newStatus = 'cancelled';
+    //     }
+
+    //     $payment->update([
+    //         'paytabs_transaction_id' => $transactionId,
+    //         'status' => $newStatus,
+    //         'response_payload' => $payload,
+    //         'paid_at' => $newStatus === 'paid' ? now() : $payment->paid_at,
+    //     ]);
+
+    //     // App-specific: mark appointment paid if paid
+    //     if ($newStatus === 'paid' && $payment->appointment) {
+    //         $payment->appointment->update(['paid' => true, 'status' => 'confirmed']);
+    //         // send notifications, emails, generate invoice, etc. (implement as needed)
+    //     }
+
+    //     // return 200 OK so PayTabs knows we received it
+    //     return response()->json(['message' => 'OK']);
+    // }
+
+
+
+    /**
+     * Return URL: where PayTabs redirects the user's browser after payment.
+     * This receives a POST (or GET) with a limited payload. We still verify signature if provided.
+     */
+    // public function return2(Request $request)
+    // {
+    //     $raw = $request->getContent();
+    //     $signature = $request->header('Signature') ?? $request->input('signature') ?? $request->input('Signature');
+
+    //     if (!$this->paytabs->verifySignature($raw, $signature)) {
+    //         // Some PayTabs versions provide query param signature; if signature absent, perform best-effort
+    //         Log::info('PayTabs return: signature missing or failed; continuing with caution.');
+    //     }
+
+    //     $payload = $request->all();
+
+    //     // find payment via cart_id or user_defined.payment_id
+    //     $merchantRef = $payload['cart_id'] ?? ($payload['merchant_reference'] ?? null);
+    //     $payment = null;
+    //     if ($merchantRef) {
+    //         $payment = Payment::where('merchant_reference', $merchantRef)->first();
+    //     }
+    //     if (!$payment && $payload['user_defined']['payment_id'] ?? null) {
+    //         $payment = Payment::find($payload['user_defined']['payment_id']);
+    //     }
+
+    //     if (!$payment) {
+    //         // show friendly page for web; for api/mobile you might want to return json
+    //         return response()->json(['message' => 'Payment not found'], 404);
+    //     }
+
+    //     // Optionally: check status and show success/fail page
+    //     $status = strtolower($payload['transaction_status'] ?? $payload['status'] ?? 'unknown');
+    //     if (in_array($status, ['completed', 'paid', 'success'])) {
+    //         $payment->update([
+    //             'status' => 'paid',
+    //             'response_payload' => $payload,
+    //             'paid_at' => now(),
+    //         ]);
+    //         if ($payment->appointment) {
+    //             $payment->appointment->update(['paid' => true, 'status' => 'confirmed']);
+    //         }
+    //         // Redirect to appointment success page in web set-up:
+    //         return redirect()->to(config('app.url') . '/appointments/' . $payment->appointment_id . '?payment=success');
+    //     } else {
+    //         $payment->update([
+    //             'status' => 'failed',
+    //             'response_payload' => $payload,
+    //         ]);
+    //         return redirect()->to(config('app.url') . '/appointments/' . $payment->appointment_id . '?payment=failed');
+    //     }
+    // }
 }
