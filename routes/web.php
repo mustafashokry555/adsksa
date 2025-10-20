@@ -89,7 +89,7 @@ Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.citie
 Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
 Route::get('get-specialities', [SpecialityController::class, 'get_specialities'])->name('get.specialities');
 
-Route::get('appointment/payment/return', [AppointmentController::class, 'return'])->name('payment.return');
+Route::post('appointment/payment/return', [AppointmentController::class, 'return'])->name('payment.return');
 
 
 Route::middleware(['auth'])->group(function () {
