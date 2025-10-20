@@ -24,8 +24,16 @@
 
                         <div class="row">
                             <div class="tab-content pt-0">
-                                @if (session()->has('flash'))
-                                    <x-alert>{{ session('flash')['message'] }}</x-alert>
+                                @if (session('success'))
+                                    <div class="alert alert-success">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
+
+                                @if (session('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session('error') }}
+                                    </div>
                                 @endif
                                 <div id="pat_appointments" class="tab-pane fade show active">
                                     <div class="card card-table mb-0">
@@ -54,14 +62,14 @@
                                                                     ->first();
                                                             @endphp
                                                             <tr>
-                                                                <td>{{$appointment->id}}</td>
+                                                                <td>{{ $appointment->id }}</td>
 
                                                                 <td>
                                                                     <h2 class="table-avatar">
                                                                         <a href="{{ route('doctor_profile', $doctor?->id) }}"
                                                                             class="avatar avatar-sm me-2">
                                                                             <img class="avatar-img rounded-circle"
-                                                                                src="{{ asset( $doctor?->profile_image) }}"
+                                                                                src="{{ asset($doctor?->profile_image) }}"
                                                                                 alt="User Image">
                                                                         </a>
                                                                         <a
@@ -71,9 +79,9 @@
                                                                     </h2>
                                                                 </td>
 
-                                                                <td>{{$doctor?->hospital?->hospital_name}}</td>
+                                                                <td>{{ $doctor?->hospital?->hospital_name }}</td>
 
-                                                                <td>{{ $appointment->insurance?->name??'N/A' }}</td>
+                                                                <td>{{ $appointment->insurance?->name ?? 'N/A' }}</td>
 
                                                                 <td>{{ date('d M Y', strtotime($appointment->appointment_date)) }}
                                                                     <span
@@ -84,7 +92,7 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    {{ @$appointment->fee? 'SAR '.@$appointment->fee:'FREE'}}
+                                                                    {{ @$appointment->fee ? 'SAR ' . @$appointment->fee : 'FREE' }}
                                                                 </td>
 
                                                                 @if ($appointment->status == 'P')
@@ -104,9 +112,10 @@
                                                                 @endif
 
                                                                 @if ($appointment->status == 'D')
-                                                                    <td >
-                                                                        <div class="text-end d-flex justify-content-between">
-                                                                        {{-- <form method="GET" action="{{ route('update_appointment_status', $appointment)}}">
+                                                                    <td>
+                                                                        <div
+                                                                            class="text-end d-flex justify-content-between">
+                                                                            {{-- <form method="GET" action="{{ route('update_appointment_status', $appointment)}}">
                                                                 @method('patch')
                                                                 @csrf
                                                                 <input type="hidden" name="status" value="P">
@@ -115,51 +124,51 @@
                                                                 </button>
                                                             </form> --}}
 
-                                                                        <a class="btn btn-sm bg-success-light me-2"
-                                                                            href="{{ route('update-appointment', $appointment->id) }}">
-                                                                            {{-- <button type="submit"
+                                                                            <a class="btn btn-sm bg-success-light me-2"
+                                                                                href="{{ route('update-appointment', $appointment->id) }}">
+                                                                                {{-- <button type="submit"
                                                                                 href="javascript:void(0);"
                                                                                 class="btn btn-sm bg-success-light">
                                                                             </button> --}}
-                                                                            <i class="fas fa-check"></i> Book Again
-                                                                        </a>
+                                                                                <i class="fas fa-check"></i> Book Again
+                                                                            </a>
 
-                                                                        <form method="POST"
-                                                                            action="{{ route('update_appointment_status', $appointment) }}">
-                                                                            @method('patch')
-                                                                            @csrf
-                                                                            <input type="hidden" name="status"
-                                                                                value="D">
-                                                                            <button type="submit"
-                                                                                href="javascript:void(0);"
-                                                                                class="btn btn-sm bg-danger-light">
-                                                                                <i class="fas fa-times"></i> Cancel
-                                                                            </button>
-                                                                        </form>
+                                                                            <form method="POST"
+                                                                                action="{{ route('update_appointment_status', $appointment) }}">
+                                                                                @method('patch')
+                                                                                @csrf
+                                                                                <input type="hidden" name="status"
+                                                                                    value="D">
+                                                                                <button type="submit"
+                                                                                    href="javascript:void(0);"
+                                                                                    class="btn btn-sm bg-danger-light">
+                                                                                    <i class="fas fa-times"></i> Cancel
+                                                                                </button>
+                                                                            </form>
                                                                         </div>
                                                                     </td>
                                                                 @else
-                                                                    <td >
-                                                                        <div class="text-end d-flex justify-content-between">
-                                                                        <form method="POST"
-                                                                            action="{{ route('update_appointment_status', $appointment) }}">
-                                                                            @method('patch')
-                                                                            @csrf
-                                                                            <input type="hidden" name="status"
-                                                                                value="D">
-                                                                            <button type="submit"
-                                                                                href="javascript:void(0);"
-                                                                                class="btn btn-sm bg-danger-light">
-                                                                                <i class="fas fa-times"></i> Cancel
-                                                                            </button>
-                                                                        </form>
+                                                                    <td>
+                                                                        <div
+                                                                            class="text-end d-flex justify-content-between">
+                                                                            <form method="POST"
+                                                                                action="{{ route('update_appointment_status', $appointment) }}">
+                                                                                @method('patch')
+                                                                                @csrf
+                                                                                <input type="hidden" name="status"
+                                                                                    value="D">
+                                                                                <button type="submit"
+                                                                                    href="javascript:void(0);"
+                                                                                    class="btn btn-sm bg-danger-light">
+                                                                                    <i class="fas fa-times"></i> Cancel
+                                                                                </button>
+                                                                            </form>
                                                                         </div>
                                                                     </td>
                                                                 @endif
 
                                                             </tr>
                                                         @empty
-
                                                         @endforelse
                                                     </tbody>
                                                 </table>
