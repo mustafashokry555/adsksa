@@ -178,7 +178,7 @@ class AppointmentController extends Controller
             'invoice_date'     => now(),
             'tax_number'       => $setting?->tax_number,
             'subtotal'         => $appointment->fee,
-            'vat'              => $setting?->vat ?? 0.0,
+            'vat'              => $vat,
             'paymentstatus'    => 'Pending',
         ]);
         $payment = $this->paytabs->initiate($appointment->id, 'SAR');

@@ -165,7 +165,7 @@ class AppointController extends Controller
                 'invoice_date'     => now(),
                 'tax_number'       => $setting?->tax_number,
                 'subtotal'         => $a->fee,
-                'vat'              => $setting?->vat ?? 0.0,
+                'vat'              => $vat,
                 'paymentstatus'    => 'Pending',
             ]);
             Notification::create([
