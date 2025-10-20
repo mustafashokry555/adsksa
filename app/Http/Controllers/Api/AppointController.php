@@ -127,6 +127,14 @@ class AppointController extends Controller
                 ], 422);
             }
             $setting = Settings::first();
+            $user = $request->user();
+            $vat = $setting?->vat ?? 0.0;
+            if ($user->id_number) {
+                $first_digit = substr($user->id_number, 0, 1);
+                if ($first_digit == '1') {
+                    $vat = 0.0;
+                }
+            }
 
             $a = new Appointment();
             $a->doctor_id = $request->doctor_id;
@@ -140,7 +148,7 @@ class AppointController extends Controller
             $a->status = "P";
             $a->description = $request->description;
             $a->fee = $doctor->pricing;
-            $a->vat = $setting?->vat ?? 0.0;
+            $a->vat = $vat;
 
 
             $a->save();

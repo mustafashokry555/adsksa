@@ -148,13 +148,22 @@ class AppointmentController extends Controller
         $dateTime = CarbonImmutable::parse($request->selected_slot);
         // VAT
         $setting = Settings::first();
+        // check if the user id number start with 1 or 2 to determine if he is saudi or not
+        $user = Auth::user();
+        $vat = $setting?->vat ?? 0.0;
+        if ($user->id_number) {
+            $first_digit = substr($user->id_number, 0, 1);
+            if ($first_digit == '1') {
+                $vat = 0.0;
+            }
+        }
         $request->merge([
             "appointment_date" => $dateTime->format("Y-m-d"),
             "appointment_time" => $dateTime->format("H:i:s"),
             "fee" => $doctor->pricing,
             "status" => 'P',
             // "insurance_id"=> $insurance
-            "vat" =>  $setting?->vat ?? 0.0,
+            "vat" =>  $vat,
         ]);
         $appointment = Appointment::create($request->except("selected_slot"));
         // Create invoice after appointment is saved
