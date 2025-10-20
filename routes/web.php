@@ -89,7 +89,7 @@ Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.citie
 Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
 Route::get('get-specialities', [SpecialityController::class, 'get_specialities'])->name('get.specialities');
 
-
+Route::post('appointment/payment/return', [AppointmentController::class, 'return'])->name('payment.return');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -252,8 +252,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('appointments', [AppointmentController::class, 'manage_appointments'])->name('appointments');
     Route::patch('appointments/{appointment}/update', [AppointmentController::class, 'update_apt_status'])->name('update_appointment_status');
     Route::get('appointment/{doctor}/availability', [AppointmentController::class, 'get_availability'])->name('get_availability');
-
-    Route::post('appointment/payment/return', [AppointmentController::class, 'return'])->name('payment.return');
 
 
     Route::get('update-appointment/{id}', [AppointmentController::class, 'update_appointment'])->name('update-appointment');
