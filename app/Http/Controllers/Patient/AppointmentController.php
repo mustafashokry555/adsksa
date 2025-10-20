@@ -12,6 +12,7 @@ use App\Models\Review;
 use App\Models\User;
 use App\Models\Insurance;
 use App\Models\Hospital;
+use App\Models\Payment;
 use App\Models\Settings;
 use App\Models\Speciality;
 use Carbon\CarbonInterval;
@@ -192,6 +193,41 @@ class AppointmentController extends Controller
 
         return redirect()->to($payment['payment_page_url']);
     }
+
+    public function return(Request $request)
+    {
+        $payload = $request->all();
+
+        Log::info('PayTabs Return Payload:', $payload);
+
+        $merchantRef = $payload['cartId'] ?? null;
+        if (!$merchantRef) {
+            return response()->json(['success' => false, 'message' => 'Invalid return payload'], 400);
+        }
+
+        // Find payment by merchant reference
+        $payment = Payment::where('merchant_reference', $merchantRef)->first();
+        if (!$payment) {
+            return response()->json(['success' => false, 'message' => 'Payment not found'], 404);
+        }
+
+        $status = strtolower($payload['respStatus'] ?? $payload['status'] ?? 'unknown');
+
+        if ($status == 'a') {
+            return redirect()
+            ->route('appointments')
+            ->with('flash', ['type', 'success', 'message' => 'Payment successful. Appointment confirmed.']);
+        } elseif ($status == 'c') {
+            return redirect()
+            ->route('appointments')
+            ->with('flash', ['type', 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
+        } else {
+            return redirect()
+            ->route('appointments')
+            ->with('flash', ['type', 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
+        }
+    }
+
     public function manage_appointments(Request $request)
     {
         if (Auth::user()->is_patient()) {

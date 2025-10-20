@@ -135,7 +135,7 @@ class PaytabsService
         $total = $invoice->subtotal + $vat_amount;
         DB::beginTransaction();
         try {
-            $merchantRef = $this->generateMerchantReference('APP');
+            $merchantRef = $this->generateMerchantReference('WEB');
             $user = Auth::user();
             $payment = Payment::create([
                 'user_id' => $user?->id ?? $invoice->user_id,
@@ -170,7 +170,7 @@ class PaytabsService
                 ],
                 // return and callback URLs:
                 'return' => route('api.payments.return'),    // browser redirect after payment
-                'callback' => route('api.payments.webhook'),  // server to server (IPN)
+                'callback' => route('payment.return'),  // server to server (IPN)
                 'paypage_lang' => 'ar',
                 'payment_methods' => ['all'],
                 'hide_shipping' => true,
