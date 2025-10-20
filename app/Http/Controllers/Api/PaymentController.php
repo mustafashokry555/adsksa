@@ -317,15 +317,15 @@ class PaymentController extends Controller
         if ($status == 'a') {
             return redirect()
             ->route('appointments')
-            ->with('flash', ['type', 'success', 'message' => 'Payment successful. Appointment confirmed.']);
+            ->with('flash', ['type'=> 'success', 'message' => 'Payment successful. Appointment confirmed.']);
         } elseif ($status == 'c') {
             return redirect()
             ->route('appointments')
-            ->with('flash', ['type', 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
+            ->with('flash', ['type'=> 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
         } else {
             return redirect()
             ->route('appointments')
-            ->with('flash', ['type', 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
+            ->with('flash', ['type'=> 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
         }
     }
 
