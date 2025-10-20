@@ -89,6 +89,7 @@ Route::get('down/file',[HomeController::class,'downBackup']);
 // Public endpoints for PayTabs callbacks (no auth) — ensure HTTPS and IP protection via signature
 Route::post('payments/webhook', [PaymentController::class, 'webhook'])->name('api.payments.webhook');
 Route::post('payments/return', [PaymentController::class, 'return'])->name('api.payments.return');
+Route::post('payments/return-web', [PaymentController::class, 'returnWeb'])->name('api.payments.returnWeb');
 
 Route::middleware(['auth:sanctum','patient'])->group( function () {
 

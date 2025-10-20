@@ -169,7 +169,7 @@ class PaytabsService
                     ]
                 ],
                 // return and callback URLs:
-                'return' => route('payment.return'),    // browser redirect after payment
+                'return' => route('api.payments.returnWeb'),    // browser redirect after payment
                 'callback' => route('api.payments.webhook'),  // server to server (IPN)
                 'paypage_lang' => 'ar',
                 'payment_methods' => ['all'],

@@ -295,6 +295,40 @@ class PaymentController extends Controller
         }
     }
 
+    public function returnWeb(Request $request)
+    {
+        $payload = $request->all();
+
+        Log::info('PayTabs Return Payload:', $payload);
+
+        $merchantRef = $payload['cartId'] ?? null;
+        if (!$merchantRef) {
+            return response()->json(['success' => false, 'message' => 'Invalid return payload'], 400);
+        }
+
+        // Find payment by merchant reference
+        $payment = Payment::where('merchant_reference', $merchantRef)->first();
+        if (!$payment) {
+            return response()->json(['success' => false, 'message' => 'Payment not found'], 404);
+        }
+
+        $status = strtolower($payload['respStatus'] ?? $payload['status'] ?? 'unknown');
+
+        if ($status == 'a') {
+            return redirect()
+            ->route('appointments')
+            ->with('flash', ['type', 'success', 'message' => 'Payment successful. Appointment confirmed.']);
+        } elseif ($status == 'c') {
+            return redirect()
+            ->route('appointments')
+            ->with('flash', ['type', 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
+        } else {
+            return redirect()
+            ->route('appointments')
+            ->with('flash', ['type', 'error', 'message' => 'Payment cancelled. Appointment is cancelled.']);
+        }
+    }
+
     public function show($id)
     {
         $payment = Payment::findOrFail($id);
