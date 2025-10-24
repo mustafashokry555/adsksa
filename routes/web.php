@@ -283,11 +283,11 @@ Route::middleware(['auth'])->group(function () {
 require __DIR__ . '/auth.php';
 
 // new page
-Route::get('new-home', function () {
-    return view('web.home',[
-        'insurances' => Insurance::orderByDesc('id')->get(),
-        'specialities' => Speciality::orderByDesc('id')->get(),
-        'countries' => Country::orderByDesc('id')->get(),
-    ]);
-});
+// Route::get('new-home', function () {
+//     return view('web.home',[
+//         'insurances' => Insurance::orderByDesc('id')->get(),
+//         'specialities' => Speciality::orderByDesc('id')->get(),
+//         'countries' => Country::orderByDesc('id')->get(),
+//     ]);
+// });
 
