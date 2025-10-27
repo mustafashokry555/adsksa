@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <!-- saved from url=(0033)https://arabcares.com/services-1/ -->
 <html dir="ltr" lang="en-US" prefix="og: https://ogp.me/ns#" class="no-js">
+
 <head>
     @include('web.layout.head')
     @yield('style')
 </head>
+
 <body
     class="wp-singular page-template-default page page-id-847 wp-custom-logo wp-theme-anomica truebooker eio-default tm-headerstyle-classicinfo themetechmount-footer-default themetechmount-topbar-no themetechmount-wide themetechmount-page-full-width tm-empty-sidebar elementor-default elementor-kit-8 elementor-page elementor-page-847 e--ua-blink e--ua-chrome e--ua-webkit"
     data-elementor-device-mode="desktop" style="">
@@ -15,8 +17,7 @@
             <header id="masthead"
                 class=" tm-header-style-classicinfo tm-main-menu-total-25 tm-main-menu-more-than-six tm-header-overlay">
                 <div class="tm-header-block  tm-mmenu-active-color-skin tm-dmenu-active-color-skin tm-dmenu-sep-grey">
-                    <div id="tm-stickable-header-w" class="tm-stickable-header-w tm-bgcolor-custom"
-                        style="height:67px">
+                    <div id="tm-stickable-header-w" class="tm-stickable-header-w tm-bgcolor-custom" style="height:67px">
                         <div id="site-header"
                             class="site-header tm-bgcolor-custom tm-sticky-bgcolor-white tm-responsive-icon-dark tm-mmmenu-override-yes tm-above-content-yes tm-stickable-header"
                             style="">
@@ -41,11 +42,11 @@
                                         <div class="tm_top_details">
                                             <ul class="top-contact">
                                                 <li>
-                                                    <i class="fa fa-map-marker"></i>Ibn El saudi st Jeddah 23456
+                                                    <i class="fa fa-phone-alt"></i>{{ $setting->phone }}
                                                 </li>
                                                 <li>
                                                     <i class="fa fa-envelope-o"></i><a
-                                                        href="mailto:info@arabcares.com">info@arabcares.com</a>
+                                                        href="mailto:info@arabcares.com">{{ $setting->email }}</a>
                                                 </li>
                                                 <li>
                                                     <i class="fa fa-clock-o"></i>Office Hour: 08:00am - 6:00pm
@@ -53,7 +54,7 @@
                                             </ul>
                                         </div>
 
-                                        <div class="themetechmount-social-links-wrapper">
+                                        {{-- <div class="themetechmount-social-links-wrapper">
                                             <ul class="social-icons">
                                                 <li class="tm-social-facebook">
                                                     <a class=" tooltip-top" target="_blank"
@@ -88,7 +89,7 @@
                                                     </a>
                                                 </li>
                                             </ul>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     <nav id="site-navigation" class="main-navigation" aria-label="Primary Menu"
                                         data-sticky-height="70">
@@ -110,8 +111,10 @@
                                                                     <input type="search" class="field searchform-s"
                                                                         name="s"
                                                                         placeholder="Type Word Then Enter..">
-                                                                    <button type="submit"><span
-                                                                            class="tm-anomica-icon-search"></span></button>
+                                                                    <button type="submit">
+                                                                        <span class="tm-anomica-icon-search">
+                                                                        </span>
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -120,8 +123,7 @@
                                             </div>
                                         </div>
                                         <button id="menu-toggle" class="menu-toggle">
-                                            <span class="tm-hide">Toggle menu</span><i
-                                                class="tm-anomica-icon-bars"></i>
+                                            <span class="tm-hide">Toggle menu</span><i class="tm-anomica-icon-bars"></i>
                                         </button>
 
                                         <div class="nav-menu">
@@ -177,7 +179,7 @@
                                     <div class="container">
                                         <div class="container">
                                             <div class="tm-titlebar-main-inner">
-                                                @yield('content')
+                                                @yield('main-content')
                                             </div>
                                         </div>
                                     </div><!-- .tm-titlebar-main -->
@@ -187,7 +189,9 @@
                     </div><!-- .tm-titlebar-wrapper -->
                 </div>
             </header><!-- .site-header -->
-            {{-- <br><br><br><br><br><br><br><br><br> --}}
+            <main>
+                @yield('content')
+                {{-- <br><br><br><br><br><br><br><br><br> --}}
             </main>
         </div><!-- #primary .content-area -->
     </div><!-- .site-content-inner -->

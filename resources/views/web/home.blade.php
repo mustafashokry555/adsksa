@@ -1,5 +1,5 @@
 @extends('web.layout.layout')
-@section('content')
+@section('main-content')
     <style>
         .search_bar {
             display: flex;

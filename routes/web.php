@@ -32,6 +32,7 @@ use App\Http\Controllers\Patient\AppointmentController;
 use App\Http\Controllers\Patient\ReviewController;
 use App\Http\Controllers\PrivacyAndTermsConditionController;
 use App\Http\Controllers\Hospital\DoctorScheduleController;
+use App\Http\Controllers\NewHomeController;
 use App\Models\Country;
 use App\Models\Insurance;
 use App\Models\Speciality;
@@ -40,48 +41,46 @@ use Illuminate\Support\Facades\Route;
 Route::get('/lang/change/{lang}', [HomeController::class, 'changeLang'])->name('changeLang');
 
 Route::get('/', [HomeController::class, 'welcome']);
-Route::get('/about-us', function () {
-    return view('about-us');
-})->name('about-us');
 
-Route::get('/blog-list', [HomeBlogController::class, 'index'])->name('blog-list');
-Route::get('/blog/{slug}',  [HomeBlogController::class, 'blogBySlug'])->name('blog');
+// Route::get('/about-us', function () {
+//     return view('about-us');
+// })->name('about-us');
+// Route::get('/blog-list', [HomeBlogController::class, 'index'])->name('blog-list');
+// Route::get('/blog/{slug}',  [HomeBlogController::class, 'blogBySlug'])->name('blog');
+// Route::get('/blog-details', function () {
+//     return view('patient.blog.show');
+// })->name('blog_details');
+// Route::get('/contact-us', function () {
+//     return view('contact-us');
+// })->name('contact-us');
+// Route::get('/optimize', [HomeController::class, 'optimize']);
+// Route::get('/migrate', [HomeController::class, 'migrate']);
+// Route::post('/contactus', [PrivacyAndTermsConditionController::class, 'contactus'])->name('contactus');
 
-Route::get('/blog-details', function () {
-    return view('patient.blog.show');
-})->name('blog_details');
+// Route::get('link-storage', function () {
+//     $targetFolder = storage_path('app/public');
 
-Route::get('/contact-us', function () {
-    return view('contact-us');
-})->name('contact-us');
-Route::get('/optimize', [HomeController::class, 'optimize']);
-Route::get('/migrate', [HomeController::class, 'migrate']);
+//     $linkFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
 
-Route::get('link-storage', function () {
-    $targetFolder = storage_path('app/public');
-
-    $linkFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
-
-    symlink($targetFolder, $linkFolder);
-});
+//     symlink($targetFolder, $linkFolder);
+// });
 
 // policy, terms and conditions routes
 
-Route::post('/contactus', [PrivacyAndTermsConditionController::class, 'contactus'])->name('contactus');
 Route::get('/privacy_policy', [PrivacyAndTermsConditionController::class, 'privacy'])->name('privacy');
 Route::get('/terms_conditions', [PrivacyAndTermsConditionController::class, 'termsAndconditions'])->name('terms-conditions');
 
 // Patient Routes
 Route::get('single-doctor', [HomeController::class, 'single_search_doctor'])->name('single_search_doctor');
 Route::get('search-doctor', [HomeController::class, 'search_doctor'])->name('search_doctor');
-Route::get('search-doctor-index', [HomeController::class, 'search_doctor_index'])->name('search_doctor_index');
-Route::get('search-pharmacy', [HomeController::class, 'search_pharmacy'])->name('search_pharmacy');
+// Route::get('search-doctor-index', [HomeController::class, 'search_doctor_index'])->name('search_doctor_index');
+// Route::get('search-pharmacy', [HomeController::class, 'search_pharmacy'])->name('search_pharmacy');
 Route::get('doctors/{doctor}/profile', [HomeController::class, 'doctor_profile'])->name('doctor_profile');
 Route::get('hospitals/{hospital}/profile', [HomeController::class, 'hospital_profile'])->name('hospital_profile');
 Route::get('hospitals/{hospital}/doctors', [HomeController::class, 'hospital_doctors'])->name('hospital_doctors');
 Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital_specialties'])->name('hospital_specialties');
 Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
-Route::post('/subscribe_newsletter', [HomeController::class, 'subscribeNewsletter']);
+// Route::post('/subscribe_newsletter', [HomeController::class, 'subscribeNewsletter']);
 
 // main search
 Route::get('get-states', [StateController::class, 'get_states'])->name('get.states');
@@ -282,12 +281,17 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__ . '/auth.php';
 
-// new page
-// Route::get('new-home', function () {
-//     return view('web.home',[
-//         'insurances' => Insurance::orderByDesc('id')->get(),
-//         'specialities' => Speciality::orderByDesc('id')->get(),
-//         'countries' => Country::orderByDesc('id')->get(),
-//     ]);
-// });
+// new pages.
+Route::name('new.')->prefix('new')->group(function () {
+    Route::get('/', [NewHomeController::class, 'welcome']);
+    Route::get('/privacy_policy', [PrivacyAndTermsConditionController::class, 'privacy'])->name('privacy');
+    Route::get('/terms_conditions', [PrivacyAndTermsConditionController::class, 'termsAndconditions'])->name('terms-conditions');
 
+    Route::get('single-doctor', [HomeController::class, 'single_search_doctor'])->name('single_search_doctor');
+    Route::get('search-doctor', [HomeController::class, 'search_doctor'])->name('search_doctor');
+    Route::get('doctors/{doctor}/profile', [HomeController::class, 'doctor_profile'])->name('doctor_profile');
+    Route::get('hospitals/{hospital}/profile', [HomeController::class, 'hospital_profile'])->name('hospital_profile');
+    Route::get('hospitals/{hospital}/doctors', [HomeController::class, 'hospital_doctors'])->name('hospital_doctors');
+    Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital_specialties'])->name('hospital_specialties');
+    Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
+});
