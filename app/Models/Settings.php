@@ -35,4 +35,12 @@ class Settings extends Model
         }
         return $this->terms_en;
     }
+
+    public function getAddressAttribute()
+    {
+        if (app()->getLocale() == 'ar' && $this->address_line_1 != NULL) {
+            return $this->address_line_2;
+        }
+        return $this->address_line_1;
+    }
 }

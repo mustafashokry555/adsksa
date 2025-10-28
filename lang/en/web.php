@@ -127,6 +127,7 @@ return [
     'terms_of_service' => 'terms of service',
     'and' => 'and',
     'privacy_policy' => 'privacy policy',
+    'terms_conditions' => 'Terms & Conditions',
     'register' => 'Register',
     'already_have_account' => 'Already have an account?',
     'enter_password' => 'Enter Password',

@@ -5,7 +5,141 @@
 <head>
     @include('web.layout.head')
     @yield('style')
+    <style>
+        .flag-icon {
+            width: 20px;
+            margin-right: 5px;
+        }
+
+        .wrapper-dropdown-5 {
+            /* Size & position */
+            position: relative;
+            width: 140px;
+            margin: 10px 0 0 20px;
+            padding: 8px 10px;
+
+            /* Styles */
+            background: #fff;
+            border-radius: 5px;
+            border: 1px solid #0071DC;
+            color: #0071DC;
+            /* box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2); */
+            cursor: pointer;
+            outline: none;
+            -webkit-transition: all 0.3s ease-out;
+            -moz-transition: all 0.3s ease-out;
+            -ms-transition: all 0.3s ease-out;
+            -o-transition: all 0.3s ease-out;
+            transition: all 0.3s ease-out;
+        }
+
+        .wrapper-dropdown-5:after {
+            /* Little arrow */
+            content: "";
+            width: 0;
+            height: 0;
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            margin-top: -3px;
+            border-width: 6px 6px 0 6px;
+            border-style: solid;
+            border-color: #0071DC transparent;
+        }
+
+        .wrapper-dropdown-5 .dropdown {
+            /* Size & position */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            padding: 0;
+
+            /* Styles */
+            background: #fff;
+            border-radius: 0 0 5px 5px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-top: none;
+            border-bottom: none;
+            list-style: none;
+            -webkit-transition: all 0.3s ease-out;
+            -moz-transition: all 0.3s ease-out;
+            -ms-transition: all 0.3s ease-out;
+            -o-transition: all 0.3s ease-out;
+            transition: all 0.3s ease-out;
+
+            /* Hiding */
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .wrapper-dropdown-5 .dropdown li {
+            padding: 0 10px;
+        }
+
+        .wrapper-dropdown-5 .dropdown li a {
+            display: block;
+            text-decoration: none;
+            color: #333;
+            padding: 10px 0;
+            transition: all 0.3s ease-out;
+            border-bottom: 1px solid #e6e8ea;
+        }
+
+        .wrapper-dropdown-5 .dropdown li:last-of-type a {
+            border: none;
+        }
+
+        .wrapper-dropdown-5 .dropdown li i {
+            margin-right: 5px;
+            color: inherit;
+            vertical-align: middle;
+        }
+
+        /* Hover state */
+
+        .wrapper-dropdown-5 .dropdown li:hover a {
+            color: #0071DC;
+        }
+
+        /* Active state */
+
+        .wrapper-dropdown-5.active {
+            border-radius: 5px 5px 0 0;
+            background: #0071DC;
+            box-shadow: none;
+            border-bottom: none;
+            color: white;
+        }
+
+        .wrapper-dropdown-5.active:after {
+            border-color: #0071DC transparent;
+        }
+
+        .wrapper-dropdown-5.active .dropdown {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            max-height: 400px;
+        }
+
+        @media (max-width: 992px) {
+            .wrapper-dropdown-5 {
+                margin: 5px auto;
+            }
+        }
+    </style>
 </head>
+@php
+    use Illuminate\Support\Facades\Request;
+    use Illuminate\Support\Facades\Auth;
+
+    $notifications = [];
+    if (Auth::check()) {
+        $notifications = \App\Models\Notification::query()
+            ->where('to_id', Auth::user()->id)
+            ->where('isRead', 1)
+            ->get();
+    }
+@endphp
 
 <body
     class="wp-singular page-template-default page page-id-847 wp-custom-logo wp-theme-anomica truebooker eio-default tm-headerstyle-classicinfo themetechmount-footer-default themetechmount-topbar-no themetechmount-wide themetechmount-page-full-width tm-empty-sidebar elementor-default elementor-kit-8 elementor-page elementor-page-847 e--ua-blink e--ua-chrome e--ua-webkit"
@@ -30,7 +164,7 @@
                                                 <span class="tm-sc-logo tm-sc-logo-type-image">
                                                     <img class="themetechmount-logo-img standardlogo"
                                                         alt="Arab Care ® عرب كير"
-                                                        src="{{ asset('web/assets/img/logo-Mark-1.png') }}">
+                                                        src="{{ URL::asset('images/' . $setting->logo) }}">
                                                 </span>
                                             </a>
                                         </span>
@@ -54,42 +188,39 @@
                                             </ul>
                                         </div>
 
-                                        {{-- <div class="themetechmount-social-links-wrapper">
+                                        <div class="themetechmount-social-links-wrapper">
                                             <ul class="social-icons">
                                                 <li class="tm-social-facebook">
                                                     <a class=" tooltip-top" target="_blank"
-                                                        href="https://arabcares.com/services-1/#"
-                                                        data-tooltip="Facebook">
+                                                        href="{{ $setting->facebook }}" data-tooltip="Facebook">
                                                         <i class="tm-anomica-icon-facebook"></i><span
                                                             class="tm-hide tm-socialname">Facebook</span>
                                                     </a>
                                                 </li>
                                                 <li class="tm-social-twitter">
                                                     <a class=" tooltip-top" target="_blank"
-                                                        href="https://arabcares.com/services-1/#"
-                                                        data-tooltip="Twitter">
+                                                        href="{{ $setting->twitter }}" data-tooltip="Twitter">
                                                         <i class="tm-anomica-icon-twitter"></i><span
                                                             class="tm-hide tm-socialname">Twitter</span>
                                                     </a>
                                                 </li>
-                                                <li class="tm-social-flickr">
+                                                {{-- <li class="tm-social-flickr">
                                                     <a class=" tooltip-top" target="_blank"
                                                         href="https://arabcares.com/services-1/#"
                                                         data-tooltip="Flickr"><i
                                                             class="tm-anomica-icon-flickr"></i><span
                                                             class="tm-hide tm-socialname">Flickr</span>
                                                     </a>
-                                                </li>
+                                                </li> --}}
                                                 <li class="tm-social-linkedin">
                                                     <a class=" tooltip-top" target="_blank"
-                                                        href="https://arabcares.com/services-1/"
-                                                        data-tooltip="LinkedIn"><i
+                                                        href="{{ $setting->linkedin }}" data-tooltip="LinkedIn"><i
                                                             class="tm-anomica-icon-linkedin"></i><span
                                                             class="tm-hide tm-socialname">LinkedIn</span>
                                                     </a>
                                                 </li>
                                             </ul>
-                                        </div> --}}
+                                        </div>
                                     </div>
                                     <nav id="site-navigation" class="main-navigation" aria-label="Primary Menu"
                                         data-sticky-height="70">
@@ -98,7 +229,7 @@
                                                 <!-- Visual Composer plugin not installed. Please install it to make this shortcode work. -->
                                             </div>
                                         </div>
-                                        <div class="tm-header-icons ">
+                                        {{-- <div class="tm-header-icons ">
                                             <div class="tm-header-icon tm-header-search-link">
                                                 <a href="https://arabcares.com/services-1/#" class="sclose"><i
                                                         class="tm-anomica-icon-search"></i></a>
@@ -121,7 +252,7 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <button id="menu-toggle" class="menu-toggle">
                                             <span class="tm-hide">Toggle menu</span><i class="tm-anomica-icon-bars"></i>
                                         </button>
@@ -129,38 +260,154 @@
                                         <div class="nav-menu">
                                             <ul id="menu-mymainmenu" class="nav-menu">
                                                 <li id="menu-item-4459"
-                                                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-4459">
-                                                    <a href="https://arabcares.com/">Home</a>
+                                                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-4459 {{ Request::is('new') ? 'current-menu-item current_page_item' : '' }}">
+                                                    <a href="{{ url('/') }}">{{ __('web.home') }}</a>
                                                 </li>
-                                                <li id="menu-item-4607"
-                                                    class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-847 current_page_item menu-item-4607">
-                                                    <a href="https://arabcares.com/services-1/"
-                                                        aria-current="page">Services</a>
-                                                </li>
+                                                @auth
+                                                    <li
+                                                        class="{{ Request::is('patient_dashboard') ? 'current-menu-item current_page_item' : '' }}">
+                                                        <a
+                                                            href="{{ route('patient_dashboard') }}">{{ __('web.dashboard') }}</a>
+                                                    </li>
+
+                                                    <!-- Notifications -->
+                                                    <li id="menu-item-4528"
+                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4528 lastsecond">
+                                                        <a href="{{ route('notifications') }}">
+                                                            <i class="fa fa-bell"></i>
+                                                            <span class="badge badge-danger">
+                                                                {{ $notifications ? count($notifications) : 0 }}
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                    <!-- /Notifications -->
+
+                                                    <li id="menu-item-5039"
+                                                        class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5039">
+                                                        <style>
+                                                            .profile-link_list::after {
+                                                                display: none !important;
+                                                            }
+                                                        </style>
+                                                        <a href="#" class="dropdown-toggle nav-link profile-link_list"
+                                                            data-bs-toggle="dropdown">
+                                                            <span class="user-img">
+                                                                @if (auth()->user()->profile_image ?? '')
+                                                                    <img class="rounded-circle"
+                                                                        src="{{ asset(auth()->user()->profile_image) }}"
+                                                                        width="31" alt="{{ auth()->user()->name }}">
+                                                                @else
+                                                                    <img src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
+                                                                        alt="User Image"
+                                                                        class="avatar-img rounded-circle">
+                                                                @endif
+                                                            </span>
+                                                        </a>
+                                                        <ul class="sub-menu">
+                                                            <li id="menu-item-4878"
+                                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4878">
+
+                                                                <a>
+                                                                    {{-- <div class="avatar avatar-sm"> --}}
+                                                                    @if (auth()->user()->profile_image ?? '')
+                                                                        <img src="{{ asset(auth()->user()->profile_image) }}"
+                                                                            alt="{{ auth()->user()->name }}"
+                                                                            class="avatar-img rounded-circle"
+                                                                            style="width: 10%;">
+                                                                    @else
+                                                                        <img src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
+                                                                            alt="User Image"
+                                                                            class="avatar-img rounded-circle"
+                                                                            style="width: 10%;">
+                                                                    @endif
+                                                                    <span>
+                                                                        {{ auth()?->user()?->name }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                            <li id="menu-item-5031"
+                                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5031">
+                                                                <a
+                                                                    href="{{ url('patient-dashboard') }}">{{ __('web.dashboard') }}</a>
+                                                            </li>
+                                                            <li id="menu-item-5031"
+                                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5031">
+                                                                <a
+                                                                    href="{{ route('profile.index') }}">{{ __('web.profile') }}</a>
+                                                            </li>
+                                                            <li id="menu-item-5031"
+                                                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5031">
+                                                                <a onclick="document.getElementById('formlogout').submit();"
+                                                                    href="#">{{ __('web.signOut') }}</a>
+                                                                <form id="formlogout" method="POST"
+                                                                    action="{{ route('logout') }}">
+                                                                    @csrf
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                        <span class="righticon"><i
+                                                                class="tm-anomica-icon-angle-down"></i></span>
+                                                    </li>
+                                                @else
+                                                    <li id="menu-item-4528"
+                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4528 lastsecond">
+                                                        <a class="nav-link theme-btn btn-four" href="{{ url('login') }}"
+                                                            style="height: 50px;
+                                                                margin: 10px 5px;
+                                                                align-items: center;
+                                                                display: flex;
+                                                                border: none !important;
+                                                                background-color: #18CCDC;
+                                                            ;">
+                                                            {{ __('web.signIn') }}
+                                                        </a>
+                                                    </li>
+                                                    <li id="menu-item-4528"
+                                                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4528 lastsecond">
+                                                        <a class="nav-link theme-btn btn-four register-btn"
+                                                            href="{{ url('register') }}"style="height: 50px;
+                                                                            margin: 10px 5px;
+                                                                            align-items: center;
+                                                                            display: flex;
+                                                                            border: none !important;
+                                                                            background-color: #FFFFFF
+                                                                        ;">
+                                                            {{ __('web.signUp') }}
+                                                        </a>
+                                                    </li>
+                                                @endauth
                                                 <li id="menu-item-5039"
                                                     class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5039">
-                                                    <a href="https://arabcares.com/services-1/#">Products</a>
+                                                    <a href="#">
+                                                        @if (App::getLocale() == 'ar')
+                                                            <img src="{{ asset('assets/img/Ar-flag.svg') }}"
+                                                                alt="Arabic" class="flag-icon"><span>العربية</span>
+                                                        @else
+                                                            <img src="{{ asset('assets/img/Eng-flag.svg') }}"
+                                                                alt="English" class="flag-icon"><span>English</span>
+                                                        @endif
+                                                    </a>
+                                                    {{-- <a href="https://arabcares.com/services-1/#">Products</a> --}}
                                                     <ul class="sub-menu">
                                                         <li id="menu-item-4878"
                                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4878">
-                                                            <a href="https://arabcares.com/our-product/">Arab Care
-                                                                App</a>
+                                                            <a href="{{ route('changeLang', ['lang' => 'en']) }}">
+                                                                <img src="{{ asset('assets/img/Eng-flag.svg') }}"
+                                                                    alt="English" class="flag-icon">
+                                                                English
+                                                            </a>
                                                         </li>
                                                         <li id="menu-item-5031"
                                                             class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5031">
-                                                            <a href="https://arabcares.com/profile/">Profile</a>
+                                                            <a href="{{ route('changeLang', ['lang' => 'ar']) }}">
+                                                                <img src="{{ asset('assets/img/Ar-flag.svg') }}"
+                                                                    alt="Arabic" class="flag-icon">
+                                                                العربية
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                     <span class="righticon"><i
                                                             class="tm-anomica-icon-angle-down"></i></span>
-                                                </li>
-                                                <li id="menu-item-4528"
-                                                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4528 lastsecond">
-                                                    <a href="https://arabcares.com/about-us-2/">About Us</a>
-                                                </li>
-                                                <li id="menu-item-4460"
-                                                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4460 last">
-                                                    <a href="https://arabcares.com/contact-us-2/">Contact Us</a>
                                                 </li>
                                             </ul>
                                         </div>

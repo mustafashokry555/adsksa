@@ -1,5 +1,5 @@
 <footer id="colophon" class="site-footer">
-    <div class="footer_inner_wrapper footer tm-bg tm-bgcolor-darkgrey tm-bgimage-no">
+    <div class="footer_inner_wrapper footer tm-bg tm-bgcolor-darkgrey tm-bgimage-no" style="padding: 0px">
         <div class="site-footer-bg-layer tm-bg-layer"></div>
         <div class="site-footer-w">
             <div class="footer-rows">
@@ -29,9 +29,7 @@
                                                 <span class="ti-location-pin"></span>
                                             </div>
                                             <div class="tm-righttext-box">
-                                                <h6 class="custom-heading">23456
-                                                    Jeddah<br>
-                                                    Saudi Arabia</h6>
+                                                <h6 class="custom-heading">{{ $setting->address }}</h6>
                                                 <p></p>
                                             </div>
                                         </div>
@@ -44,7 +42,7 @@
                                                         class="elementor-element tm-btn-color-white tm-btn-style-outline tm-btn-shape-square tm-icon-align-left elementor-widget elementor-widget-button">
                                                         <div class="elementor-widget-container">
                                                             <div class="elementor-button-wrapper"><a
-                                                                    href="mailto:info@arabcares.com"
+                                                                    href="mailto:{{ $setting->email }}"
                                                                     class="elementor-button-link elementor-button elementor-size-sm"
                                                                     role="button"><span
                                                                         class="elementor-button-content-wrapper"><span
@@ -52,7 +50,7 @@
                                                                                 aria-hidden="true"
                                                                                 class="far fa-envelope"></i></span><span
                                                                             class="elementor-button-text">
-                                                                            Info@arabcares.com</span></span></a></div>
+                                                                            {{ $setting->email }}</span></span></a></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -61,7 +59,7 @@
                                                         class="elementor-element tm-btn-color-white tm-btn-style-outline tm-btn-shape-square tm-icon-align-left elementor-widget elementor-widget-button">
                                                         <div class="elementor-widget-container">
                                                             <div class="elementor-button-wrapper"><a
-                                                                    href="tel:0569902444"
+                                                                    href="tel:{{ $setting->phone }}"
                                                                     class="elementor-button-link elementor-button elementor-size-sm"
                                                                     role="button"><span
                                                                         class="elementor-button-content-wrapper"><span
@@ -69,7 +67,7 @@
                                                                                 aria-hidden="true"
                                                                                 class="fas fa-phone-alt"></i></span><span
                                                                             class="elementor-button-text">
-                                                                            0569902444</span></span></a></div>
+                                                                            {{ $setting->phone }}</span></span></a></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -98,7 +96,7 @@
                                             </div>
                                             <div class="tm-righttext-box">
                                                 <p>Talk To Our Support</p>
-                                                <h5 class="custom-heading">0569902444</h5>
+                                                <h5 class="custom-heading">{{ $setting->phone }}</h5>
                                                 <p></p>
                                             </div>
                                         </div>
@@ -112,13 +110,10 @@
                                                     <li
                                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-4693">
                                                         <a rel="privacy-policy"
-                                                            href="https://arabcares.com/privacy-policy/">Privacy
-                                                            Policy</a></li>
+                                                            href="{{ route('privacy') }}">{{ __('web.privacy_policy') }}</a></li>
                                                     <li
                                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4701">
-                                                        <a href="https://arabcares.com/terms-and-conditions/">Terms
-                                                            and
-                                                            Conditions</a></li>
+                                                        <a href="{{ route('terms-conditions') }}">{{ __('web.terms_conditions') }}</a></li>
                                                 </ul>
                                             </div>
                                         </aside>
@@ -165,7 +160,7 @@
                             </div><!--.footer menu -->
                             <div class="col-xs-12 col-sm-6 tm-footer2-right ">
                                 <div class="tm-footer-left-nav-menu">
-                                    <ul class="footer-nav-menu">
+                                    {{-- <ul class="footer-nav-menu">
                                         <li
                                             class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item menu-item-3985">
                                             <a href="https://arabcares.com/services-1/">Services</a>
@@ -178,7 +173,7 @@
                                             class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3984">
                                             <a href="https://arabcares.com/contact-us-2/">contact Us</a>
                                         </li>
-                                    </ul>
+                                    </ul> --}}
                                     <img class="wp-image-4514 alignright"
                                         src="{{ asset('web/assets/img/mada-300x51.png') }}"
                                         alt width="165" height="28">

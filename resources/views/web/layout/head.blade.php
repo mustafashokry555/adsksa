@@ -25,8 +25,8 @@
 <meta name="twitter:description"
     content="عرب كير - Arab care - عرب كير تطبيق الخدمة الذاتية للمريض تعمل كبديل لقسم الاستقبال في المستشفى تسجل بيانات المريض تحجز مواعيد تصدر فواتير - منصة عرب كير">
 <script type="application/ld+json" class="aioseo-schema">
-        {"@context":"https:\/\/schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https:\/\/arabcares.com\/services-1\/#breadcrumblist","itemListElement":[{"@type":"ListItem","@id":"https:\/\/arabcares.com#listItem","position":1,"name":"Home","item":"https:\/\/arabcares.com","nextItem":{"@type":"ListItem","@id":"https:\/\/arabcares.com\/services-1\/#listItem","name":""}},{"@type":"ListItem","@id":"https:\/\/arabcares.com\/services-1\/#listItem","position":2,"name":"","previousItem":{"@type":"ListItem","@id":"https:\/\/arabcares.com#listItem","name":""}}]},{"@type":"Organization","@id":"https:\/\/arabcares.com\/#organization","name":"Arab Care \u00ae \u0639\u0631\u0628 \u0643\u064a\u0631","description":"IT solution provider \u0639\u0631\u0628 \u0643\u064a\u0631","url":"https:\/\/arabcares.com\/"},{"@type":"WebPage","@id":"https:\/\/arabcares.com\/services-1\/#webpage","url":"https:\/\/arabcares.com\/services-1\/","name":"\u0639\u0631\u0628 \u0643\u064a\u0631 Arab care - \u0639\u0631\u0628 \u0643\u064a\u0631 \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u062e\u062f\u0645\u0629 \u0627\u0644\u0630\u0627\u062a\u064a\u0629 \u0644\u0644\u0645\u0631\u064a\u0636","description":"\u0639\u0631\u0628 \u0643\u064a\u0631 - Arab care - \u0639\u0631\u0628 \u0643\u064a\u0631 \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u062e\u062f\u0645\u0629 \u0627\u0644\u0630\u0627\u062a\u064a\u0629 \u0644\u0644\u0645\u0631\u064a\u0636 \u062a\u0639\u0645\u0644 \u0643\u0628\u062f\u064a\u0644 \u0644\u0642\u0633\u0645 \u0627\u0644\u0627\u0633\u062a\u0642\u0628\u0627\u0644 \u0641\u064a \u0627\u0644\u0645\u0633\u062a\u0634\u0641\u0649 \u062a\u0633\u062c\u0644 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0631\u064a\u0636 \u062a\u062d\u062c\u0632 \u0645\u0648\u0627\u0639\u064a\u062f \u062a\u0635\u062f\u0631 \u0641\u0648\u0627\u062a\u064a\u0631 - \u0645\u0646\u0635\u0629 \u0639\u0631\u0628 \u0643\u064a\u0631","inLanguage":"en-US","isPartOf":{"@id":"https:\/\/arabcares.com\/#website"},"breadcrumb":{"@id":"https:\/\/arabcares.com\/services-1\/#breadcrumblist"},"datePublished":"2019-09-11T06:08:33+00:00","dateModified":"2025-09-22T07:10:58+00:00"},{"@type":"WebSite","@id":"https:\/\/arabcares.com\/#website","url":"https:\/\/arabcares.com\/","name":"Arab Care \u00ae \u0639\u0631\u0628 \u0643\u064a\u0631","description":"IT solution provider \u0639\u0631\u0628 \u0643\u064a\u0631","inLanguage":"en-US","publisher":{"@id":"https:\/\/arabcares.com\/#organization"}}]}
-    </script>
+    {"@context":"https:\/\/schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https:\/\/arabcares.com\/services-1\/#breadcrumblist","itemListElement":[{"@type":"ListItem","@id":"https:\/\/arabcares.com#listItem","position":1,"name":"Home","item":"https:\/\/arabcares.com","nextItem":{"@type":"ListItem","@id":"https:\/\/arabcares.com\/services-1\/#listItem","name":""}},{"@type":"ListItem","@id":"https:\/\/arabcares.com\/services-1\/#listItem","position":2,"name":"","previousItem":{"@type":"ListItem","@id":"https:\/\/arabcares.com#listItem","name":""}}]},{"@type":"Organization","@id":"https:\/\/arabcares.com\/#organization","name":"Arab Care \u00ae \u0639\u0631\u0628 \u0643\u064a\u0631","description":"IT solution provider \u0639\u0631\u0628 \u0643\u064a\u0631","url":"https:\/\/arabcares.com\/"},{"@type":"WebPage","@id":"https:\/\/arabcares.com\/services-1\/#webpage","url":"https:\/\/arabcares.com\/services-1\/","name":"\u0639\u0631\u0628 \u0643\u064a\u0631 Arab care - \u0639\u0631\u0628 \u0643\u064a\u0631 \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u062e\u062f\u0645\u0629 \u0627\u0644\u0630\u0627\u062a\u064a\u0629 \u0644\u0644\u0645\u0631\u064a\u0636","description":"\u0639\u0631\u0628 \u0643\u064a\u0631 - Arab care - \u0639\u0631\u0628 \u0643\u064a\u0631 \u062a\u0637\u0628\u064a\u0642 \u0627\u0644\u062e\u062f\u0645\u0629 \u0627\u0644\u0630\u0627\u062a\u064a\u0629 \u0644\u0644\u0645\u0631\u064a\u0636 \u062a\u0639\u0645\u0644 \u0643\u0628\u062f\u064a\u0644 \u0644\u0642\u0633\u0645 \u0627\u0644\u0627\u0633\u062a\u0642\u0628\u0627\u0644 \u0641\u064a \u0627\u0644\u0645\u0633\u062a\u0634\u0641\u0649 \u062a\u0633\u062c\u0644 \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0631\u064a\u0636 \u062a\u062d\u062c\u0632 \u0645\u0648\u0627\u0639\u064a\u062f \u062a\u0635\u062f\u0631 \u0641\u0648\u0627\u062a\u064a\u0631 - \u0645\u0646\u0635\u0629 \u0639\u0631\u0628 \u0643\u064a\u0631","inLanguage":"en-US","isPartOf":{"@id":"https:\/\/arabcares.com\/#website"},"breadcrumb":{"@id":"https:\/\/arabcares.com\/services-1\/#breadcrumblist"},"datePublished":"2019-09-11T06:08:33+00:00","dateModified":"2025-09-22T07:10:58+00:00"},{"@type":"WebSite","@id":"https:\/\/arabcares.com\/#website","url":"https:\/\/arabcares.com\/","name":"Arab Care \u00ae \u0639\u0631\u0628 \u0643\u064a\u0631","description":"IT solution provider \u0639\u0631\u0628 \u0643\u064a\u0631","inLanguage":"en-US","publisher":{"@id":"https:\/\/arabcares.com\/#organization"}}]}
+</script>
 <!-- All in One SEO -->
 
 <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
@@ -162,10 +162,9 @@
     }((window, document), window._wpemojiSettings);
     /* ]]> */
 </script>
-<link rel="stylesheet" id="sbi_styles-css"
-    href="{{ asset('web/assets/css/sbi-styles.min.css') }}" media="all">
-<link rel="stylesheet" id="themetechmount-anomica-extra-icons-css"
-    href="{{ asset('web/assets/css/flaticon.css') }}" media="all">
+<link rel="stylesheet" id="sbi_styles-css" href="{{ asset('web/assets/css/sbi-styles.min.css') }}" media="all">
+<link rel="stylesheet" id="themetechmount-anomica-extra-icons-css" href="{{ asset('web/assets/css/flaticon.css') }}"
+    media="all">
 <style id="wp-emoji-styles-inline-css">
     img.wp-smiley,
     img.emoji {
@@ -523,52 +522,36 @@
         line-height: 1.6;
     }
 </style>
-<link rel="stylesheet" id="contact-form-7-css"
-    href="{{ asset('web/assets/css/styles.css') }}" media="all">
-<link rel="stylesheet" id="sr7css-css" href="{{ asset('web/assets/css/sr7.css') }}"
+<link rel="stylesheet" id="contact-form-7-css" href="{{ asset('web/assets/css/styles.css') }}" media="all">
+<link rel="stylesheet" id="sr7css-css" href="{{ asset('web/assets/css/sr7.css') }}" media="all">
+<link rel="stylesheet" id="truebooker-front-css" href="{{ asset('web/assets/css/truebooker_front.css') }}"
     media="all">
-<link rel="stylesheet" id="truebooker-front-css"
-    href="{{ asset('web/assets/css/truebooker_front.css') }}" media="all">
-<link rel="stylesheet" id="truebooker-variables-css"
-    href="{{ asset('web/assets/css/truebooker_variables.css') }}" media="all">
-<link rel="stylesheet" id="intlTelInput-css"
-    href="{{ asset('web/assets/css/intlTelInput.css') }}" media="all">
-<link rel="stylesheet" id="truebooker-bootstrap-css"
-    href="{{ asset('web/assets/css/bootstrap.css') }}" media="all">
-<link rel="stylesheet" id="add_google_fonts-css"
-    href="{{ asset('web/assets/css/css2.css') }}" media="all">
-<link rel="stylesheet" id="font-awesome-css"
-    href="{{ asset('web/assets/css/font-awesome.min.css') }}" media="all">
-<link rel="stylesheet" id="perfect-scrollbar-css"
-    href="{{ asset('web/assets/css/perfect-scrollbar.min.css') }}" media="all">
-<link rel="stylesheet" id="chrisbracco-tooltip-css"
-    href="{{ asset('web/assets/css/chrisbracco-tooltip.min.css') }}" media="all">
-<link rel="stylesheet" id="multi-columns-row-css"
-    href="{{ asset('web/assets/css/multi-columns-row.css') }}" media="all">
-<link rel="stylesheet" id="select2-css"
-    href="{{ asset('web/assets/css/select2.min.css') }}" media="all">
-<link rel="stylesheet" id="flexslider-css"
-    href="{{ asset('web/assets/css/flexslider.css') }}" media="all">
+<link rel="stylesheet" id="truebooker-variables-css" href="{{ asset('web/assets/css/truebooker_variables.css') }}"
+    media="all">
+<link rel="stylesheet" id="intlTelInput-css" href="{{ asset('web/assets/css/intlTelInput.css') }}" media="all">
+<link rel="stylesheet" id="truebooker-bootstrap-css" href="{{ asset('web/assets/css/bootstrap.css') }}" media="all">
+<link rel="stylesheet" id="add_google_fonts-css" href="{{ asset('web/assets/css/css2.css') }}" media="all">
+<link rel="stylesheet" id="font-awesome-css" href="{{ asset('web/assets/css/font-awesome.min.css') }}" media="all">
+<link rel="stylesheet" id="perfect-scrollbar-css" href="{{ asset('web/assets/css/perfect-scrollbar.min.css') }}"
+    media="all">
+<link rel="stylesheet" id="chrisbracco-tooltip-css" href="{{ asset('web/assets/css/chrisbracco-tooltip.min.css') }}"
+    media="all">
+<link rel="stylesheet" id="multi-columns-row-css" href="{{ asset('web/assets/css/multi-columns-row.css') }}"
+    media="all">
+<link rel="stylesheet" id="select2-css" href="{{ asset('web/assets/css/select2.min.css') }}" media="all">
+<link rel="stylesheet" id="flexslider-css" href="{{ asset('web/assets/css/flexslider.css') }}" media="all">
 <link rel="stylesheet" id="themetechmount-anomica-icons-css"
     href="{{ asset('web/assets/css/tm-anomica-icons.css') }}" media="all">
-<link rel="stylesheet" id="slick-css"
-    href="{{ asset('web/assets/css/slick.css') }}" media="all">
-<link rel="stylesheet" id="slick-theme-css"
-    href="{{ asset('web/assets/css/slick-theme.css') }}" media="all">
-<link rel="stylesheet" id="prettyphoto-css"
-    href="{{ asset('web/assets/css/prettyPhoto.css') }}" media="all">
-<link rel="stylesheet" id="dflip-style-css"
-    href="{{ asset('web/assets/css/dflip.min.css') }}" media="all">
-<link rel="stylesheet" id="bootstrap-css"
-    href="{{ asset('web/assets/css/bootstrap.min.css') }}" media="all">
-<link rel="stylesheet" id="bootstrap-theme-css"
-    href="{{ asset('web/assets/css/bootstrap-theme.min.css') }}" media="all">
-<link rel="stylesheet" id="themify-css"
-    href="{{ asset('web/assets/css/themify-icons.css') }}" media="all">
-<link rel="stylesheet" id="anomica-base-style-css"
-    href="{{ asset('web/assets/css/base.css') }}" media="all">
-<link rel="stylesheet" id="anomica-main-style-css"
-    href="{{ asset('web/assets/css/main.css') }}" media="all">
+<link rel="stylesheet" id="slick-css" href="{{ asset('web/assets/css/slick.css') }}" media="all">
+<link rel="stylesheet" id="slick-theme-css" href="{{ asset('web/assets/css/slick-theme.css') }}" media="all">
+<link rel="stylesheet" id="prettyphoto-css" href="{{ asset('web/assets/css/prettyPhoto.css') }}" media="all">
+<link rel="stylesheet" id="dflip-style-css" href="{{ asset('web/assets/css/dflip.min.css') }}" media="all">
+<link rel="stylesheet" id="bootstrap-css" href="{{ asset('web/assets/css/bootstrap.min.css') }}" media="all">
+<link rel="stylesheet" id="bootstrap-theme-css" href="{{ asset('web/assets/css/bootstrap-theme.min.css') }}"
+    media="all">
+<link rel="stylesheet" id="themify-css" href="{{ asset('web/assets/css/themify-icons.css') }}" media="all">
+<link rel="stylesheet" id="anomica-base-style-css" href="{{ asset('web/assets/css/base.css') }}" media="all">
+<link rel="stylesheet" id="anomica-main-style-css" href="{{ asset('web/assets/css/main.css') }}" media="all">
 <style id="anomica-main-style-inline-css">
     /*------------------------------------------------------------------
         * dynamic-style.php index *
@@ -5002,37 +4985,27 @@
 </style>
 <link rel="stylesheet" id="anomica-servicebox-animation-css"
     href="{{ asset('web/assets/css/servicebox-animation.css') }}" media="all">
-<link rel="stylesheet" id="anomica-responsive-style-css"
-    href="{{ asset('web/assets/css/responsive.css') }}" media="all">
-<link rel="stylesheet" id="anomica-last-checkpoint-css"
-    href="{{ asset('web/assets/css/anomica-last-checkpoint.min.css') }}"
+<link rel="stylesheet" id="anomica-responsive-style-css" href="{{ asset('web/assets/css/responsive.css') }}"
     media="all">
-<link rel="stylesheet" id="elementor-frontend-css"
-    href="{{ asset('web/assets/css/frontend.min.css') }}" media="all">
-<link rel="stylesheet" id="elementor-post-8-css"
-    href="{{ asset('web/assets/css/post-8.css') }}" media="all">
-<link rel="stylesheet" id="font-awesome-5-all-css"
-    href="{{ asset('web/assets/css/all.min.css') }}" media="all">
-<link rel="stylesheet" id="font-awesome-4-shim-css"
-    href="{{ asset('web/assets/css/v4-shims.min.css') }}" media="all">
-<link rel="stylesheet" id="sbistyles-css"
-    href="{{ asset('web/assets/css/sbi-styles.min.css') }}" media="all">
-<link rel="stylesheet" id="elementor-post-847-css"
-    href="{{ asset('web/assets/css/post-847.css') }}" media="all">
-<link rel="stylesheet" id="elementor-gf-roboto-css"
-    href="{{ asset('web/assets/css/css.css') }}" media="all">
-<link rel="stylesheet" id="elementor-gf-robotoslab-css"
-    href="{{ asset('web/assets/css/css(1).css') }}" media="all">
-<script src="{{ asset('web/assets/js/tptools.js') }}" id="tp-tools-js"
-    async="async" data-wp-strategy="async"></script>
-<script src="{{ asset('web/assets/js/sr7.js') }}" id="sr7-js" async="async"
-    data-wp-strategy="async"></script>
-<script src="{{ asset('web/assets/js/jquery.min.js') }}"
-    id="jquery-core-js"></script>
-<script src="{{ asset('web/assets/js/jquery-migrate.min.js') }}"
-    id="jquery-migrate-js"></script>
-<script src="{{ asset('web/assets/js/jquery-resize.min.js') }}"
-    id="jquery-resize-js"></script>
+<link rel="stylesheet" id="anomica-last-checkpoint-css"
+    href="{{ asset('web/assets/css/anomica-last-checkpoint.min.css') }}" media="all">
+<link rel="stylesheet" id="elementor-frontend-css" href="{{ asset('web/assets/css/frontend.min.css') }}"
+    media="all">
+<link rel="stylesheet" id="elementor-post-8-css" href="{{ asset('web/assets/css/post-8.css') }}" media="all">
+<link rel="stylesheet" id="font-awesome-5-all-css" href="{{ asset('web/assets/css/all.min.css') }}" media="all">
+<link rel="stylesheet" id="font-awesome-4-shim-css" href="{{ asset('web/assets/css/v4-shims.min.css') }}"
+    media="all">
+<link rel="stylesheet" id="sbistyles-css" href="{{ asset('web/assets/css/sbi-styles.min.css') }}" media="all">
+<link rel="stylesheet" id="elementor-post-847-css" href="{{ asset('web/assets/css/post-847.css') }}"
+    media="all">
+<link rel="stylesheet" id="elementor-gf-roboto-css" href="{{ asset('web/assets/css/css.css') }}" media="all">
+<link rel="stylesheet" id="elementor-gf-robotoslab-css" href="{{ asset('web/assets/css/css(1).css') }}"
+    media="all">
+<script src="{{ asset('web/assets/js/tptools.js') }}" id="tp-tools-js" async="async" data-wp-strategy="async"></script>
+<script src="{{ asset('web/assets/js/sr7.js') }}" id="sr7-js" async="async" data-wp-strategy="async"></script>
+<script src="{{ asset('web/assets/js/jquery.min.js') }}" id="jquery-core-js"></script>
+<script src="{{ asset('web/assets/js/jquery-migrate.min.js') }}" id="jquery-migrate-js"></script>
+<script src="{{ asset('web/assets/js/jquery-resize.min.js') }}" id="jquery-resize-js"></script>
 <script id="jquery-front-js-extra">
     /* <![CDATA[ */
     var truebookerPluginData = {
@@ -5041,16 +5014,11 @@
     };
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/truebooker_front.js') }}"
-    id="jquery-front-js"></script>
-<script src="{{ asset('web/assets/js/jquery-ui.js') }}" id="jquery-ui-js">
-</script>
-<script src="{{ asset('web/assets/js/jquery.timepicker.min.js') }}"
-    id="jquery-timepicker-js"></script>
-<script src="{{ asset('web/assets/js/intlTelInput.js') }}"
-    id="intlTelInput-js"></script>
-<script src="{{ asset('web/assets/js/intlTelInput-jquery.min.js') }}"
-    id="intlTelInput-jquery-min-js"></script>
+<script src="{{ asset('web/assets/js/truebooker_front.js') }}" id="jquery-front-js"></script>
+<script src="{{ asset('web/assets/js/jquery-ui.js') }}" id="jquery-ui-js"></script>
+<script src="{{ asset('web/assets/js/jquery.timepicker.min.js') }}" id="jquery-timepicker-js"></script>
+<script src="{{ asset('web/assets/js/intlTelInput.js') }}" id="intlTelInput-js"></script>
+<script src="{{ asset('web/assets/js/intlTelInput-jquery.min.js') }}" id="intlTelInput-jquery-min-js"></script>
 <script id="utils-js-extra">
     /* <![CDATA[ */
     var userSettings = {
@@ -5061,19 +5029,13 @@
     };
     /* ]]> */
 </script>
-<script src="{{ asset('web/assets/js/utils.min.js') }}" id="utils-js">
-</script>
+<script src="{{ asset('web/assets/js/utils.min.js') }}" id="utils-js"></script>
 <script src="{{ asset('web/assets/js/gsap.js') }}" id="gsap-js-js"></script>
-<script src="{{ asset('web/assets/js/scrolltrigger.js') }}"
-    id="scrolltrigger-js"></script>
-<script src="{{ asset('web/assets/js/SplitText.js') }}" id="splittext-js">
-</script>
-<script src="{{ asset('web/assets/js/gsap-animation.js') }}"
-    id="gsap-animation-js"></script>
-<script src="{{ asset('web/assets/js/throwable.js') }}" id="throwable-js">
-</script>
-<script src="{{ asset('web/assets/js/v4-shims.min.js') }}"
-    id="font-awesome-4-shim-js"></script>
+<script src="{{ asset('web/assets/js/scrolltrigger.js') }}" id="scrolltrigger-js"></script>
+<script src="{{ asset('web/assets/js/SplitText.js') }}" id="splittext-js"></script>
+<script src="{{ asset('web/assets/js/gsap-animation.js') }}" id="gsap-animation-js"></script>
+<script src="{{ asset('web/assets/js/throwable.js') }}" id="throwable-js"></script>
+<script src="{{ asset('web/assets/js/v4-shims.min.js') }}" id="font-awesome-4-shim-js"></script>
 <link rel="https://api.w.org/" href="https://arabcares.com/wp-json/">
 <link rel="alternate" title="JSON" type="application/json" href="https://arabcares.com/wp-json/wp/v2/pages/847">
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://arabcares.com/xmlrpc.php?rsd">
@@ -5483,5 +5445,53 @@
             }
     }();
 </script>
-<script src="{{ asset('web/assets/js/wp-emoji-release.min.js') }}" defer="">
-</script>
+<script src="{{ asset('web/assets/js/wp-emoji-release.min.js') }}" defer=""></script>
+
+
+<!-- Favicons -->
+<link type="image/x-icon" href="{{ asset('images/' . $setting->favicon) }}" rel="icon">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{{ asset('assets/libs/bootstrap/css/bootstrap.min.css') }}">
+<!-- Fontawesome CSS -->
+<link rel="stylesheet" href="{{ asset('assets/libs/fontawesome/css/fontawesome.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/libs/fontawesome/css/all.min.css') }}">
+<!-- Feathericon CSS -->
+<link rel="stylesheet" href="{{ asset('assets/libs/feather/feather.css') }}">
+<!-- Owl carousel CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/css/owl.carousel.min.css') }}">
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/swiper/css/swiper.min.css') }}">
+<!-- Daterangepicker CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/daterangepicker/daterangepicker.css') }}">
+<!-- Datetimepicker CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/css/bootstrap-datetimepicker.min.css') }}">
+<!-- Full Calendar CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/fullcalendar/fullcalendar.min.css') }}">
+<!-- Select2 CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/select2/dist/css/select2.min.css') }}">
+<!-- Apecharts CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/apex/apexcharts.css') }}">
+<!-- Jquery-ui CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/css/jquery-ui.min.css') }}">
+<!-- Fancybox  CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/fancybox/jquery.fancybox.min.css') }}">
+<!-- Bootstrap Tagsinput CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/bootstrap-tagsinput/bootstrap-tagsinput.css') }}">
+<!-- Dropzone CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/dropzone/dropzone.css') }}">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick-theme.min.css">
+
+@if (Route::is(['onboarding-phone', 'patient-phone']))
+    <!-- IntlTelInput CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/intlTelInput.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
+@endif
+<!-- Animation CSS -->
+<link rel="stylesheet" href="{{ asset('/assets/libs/aos/aos.css') }}">
+<!-- Main CSS -->
+<link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+
+<!-- Datatables css -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">

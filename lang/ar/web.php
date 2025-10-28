@@ -127,6 +127,7 @@ return [
     'terms_of_service' => 'شروط الخدمة',
     'and' => 'و',
     'privacy_policy' => 'سياسة الخصوصية',
+    'terms_conditions' => 'الشروط والأحكام',
     'register' => 'تسجيل',
     'already_have_account' => 'هل لديك حساب؟',
     'enter_password' => 'أدخل كلمة المرور',

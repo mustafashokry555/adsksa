@@ -53,15 +53,15 @@
             margin-left: 391px;
         }
     </style>
-    <section class="home" style="margin: 50px 0 0 0;">
-        <div class="content" style="min-height: 273.9px; height: 40vh;;">
+    <section class="home" style="margin: 50px 0 ;">
+        <div class="content" style="min-height: 273.9px; height: 40vh;">
             <div class="container-fluid">
                 <div class="row " style="display: flex; justify-content: center;">
                     <div class="col-md-12 mx-auto">
                         <div class="account-content">
                             <div class="row align-items-center justify-content-center">
                                 <div class="col-lg-12 col-md-12">
-                                    <div class="home-four-doctor">
+                                    <div class="home-four-doctor" style="padding: 20px 0;">
                                         <div class="home-four-header">
                                             <!-- <h2 style="color: #272b41">{{ __('web.Search Doctor, Make an') }} <span>{{ __('web.Appointment') }}</span></h2> -->
                                             <h2 style="color: #009eff">{{ __('Find Doctor') }} <span
@@ -75,7 +75,7 @@
                                                 <div class="drop_down_wrap">
                                                     <label>{{ __('web.Enter_country') }}</label>
                                                     <div class="dropdown">
-                                                        <select id="countrySelect" name="country"
+                                                        <select id="countrySelect2" name="country"
                                                             class="select form-control">
                                                             <option selected disabled>{{ __('web.Enter_country') }}</option>
                                                             <option value='all'>{{ __('web.All') }}</option>
@@ -150,15 +150,18 @@
         <x-alert>{{ session('flash')['message'] }}</x-alert>
     @endif
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Add event listener for country select
-        document.getElementById('countrySelect').addEventListener('change', function() {
+        $('#countrySelect2').on('change', function() {
+            console.log("kdgfkjhs");
+
             loadStates(this.value);
             loadCities(this.value, null);
         });
 
         // Add event listener for country select
-        document.getElementById('stateSelect').addEventListener('change', function() {
+        $('#stateSelect').on('change', function() {
             loadCities(null, this.value);
         });
 
