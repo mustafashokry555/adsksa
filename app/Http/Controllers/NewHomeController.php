@@ -49,7 +49,66 @@ class NewHomeController extends Controller
         return view('web.privacy-policy.terms-and-conditions');
     }
 
+    public function single_search_doctor()
+    {
 
+        $query = User::query()
+            ->where('user_type', '=', 'D');
+
+        $hospital_query = Hospital::query();
+
+        // City and Country
+        if (request('country') && request('country') != 'all') {
+            if (request('city') && request('city') != 'all') {
+                $hospital_query->where('state_id', request('city'));
+            } else {
+                $state_ids = State::where('country_id', request('country'))->pluck('id');
+                $hospital_query->whereIn('state_id', $state_ids);
+            }
+        } elseif (request('city') && request('city') != 'all') {
+            $hospital_query->where('state_id', request('city'));
+        }
+
+        // Insurance
+        if (request('insurance') && request('insurance') != 'all') {
+            $hospital_query = Hospital::whereHas('insurances', function ($query) {
+                $query->where('insurance_id', request('insurance'));
+            });
+        }
+        $hospitals_ids = $hospital_query->active()->pluck('id');
+        $query->whereIn('hospital_id', $hospitals_ids);
+
+        // Speciality
+        // return request();
+        if (request('speciality') && request('speciality') != 'all') {
+
+            $query->whereIn('speciality_id', (array)request('speciality'));
+        }
+
+        // search Old
+        if (request('search')) {
+            $query->where(function ($query) {
+                $query->where('name_en', 'like', '%' . request('search') . '%')
+                    ->orWhere('name_ar', 'like', '%' . request('search') . '%');
+            });
+        }
+        if (request('area')) {
+            $query->where('address', 'like', '%' . request('area') . '%');
+        }
+        if (request('gender')) {
+            $query->whereIn('gender', request('gender'));
+        }
+
+
+        $doctors = $query->paginate(10);
+        return view('web.search',
+            [
+                'doctors' => $doctors,
+                'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
+                'queryParams' => request()->query(),
+            ]
+        );
+    }
 
 
 
@@ -531,8 +590,7 @@ class NewHomeController extends Controller
                 $q->where('is_active', 1);
             })
             ->paginate(10);
-        return view(
-            'patient.doctor.search',
+        return view('patient.doctor.search',
             [
                 'doctors' => $doctors,
                 'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
@@ -540,67 +598,7 @@ class NewHomeController extends Controller
             ]
         );
     }
-    public function single_search_doctor()
-    {
 
-        $query = User::query()
-            ->where('user_type', '=', 'D');
-
-        $hospital_query = Hospital::query();
-
-        // City and Country
-        if (request('country') && request('country') != 'all') {
-            if (request('city') && request('city') != 'all') {
-                $hospital_query->where('state_id', request('city'));
-            } else {
-                $state_ids = State::where('country_id', request('country'))->pluck('id');
-                $hospital_query->whereIn('state_id', $state_ids);
-            }
-        } elseif (request('city') && request('city') != 'all') {
-            $hospital_query->where('state_id', request('city'));
-        }
-
-        // Insurance
-        if (request('insurance') && request('insurance') != 'all') {
-            $hospital_query = Hospital::whereHas('insurances', function ($query) {
-                $query->where('insurance_id', request('insurance'));
-            });
-        }
-        $hospitals_ids = $hospital_query->active()->pluck('id');
-        $query->whereIn('hospital_id', $hospitals_ids);
-
-        // Speciality
-        // return request();
-        if (request('speciality') && request('speciality') != 'all') {
-
-            $query->whereIn('speciality_id', (array)request('speciality'));
-        }
-
-        // search Old
-        if (request('search')) {
-            $query->where(function ($query) {
-                $query->where('name_en', 'like', '%' . request('search') . '%')
-                    ->orWhere('name_ar', 'like', '%' . request('search') . '%');
-            });
-        }
-        if (request('area')) {
-            $query->where('address', 'like', '%' . request('area') . '%');
-        }
-        if (request('gender')) {
-            $query->whereIn('gender', request('gender'));
-        }
-
-
-        $doctors = $query->paginate(10);
-        return view(
-            'patient.doctor.search',
-            [
-                'doctors' => $doctors,
-                'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
-                'queryParams' => request()->query(),
-            ]
-        );
-    }
 
     public function search_doctor_index()
     {

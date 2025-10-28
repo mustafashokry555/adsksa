@@ -289,13 +289,13 @@ Route::name('new.')->prefix('new')->group(function () {
     Route::get('/privacy_policy', [NewHomeController::class, 'privacy'])->name('privacy');
     Route::get('/terms_conditions', [NewHomeController::class, 'termsAndconditions'])->name('terms-conditions');
 
-    Route::get('single-doctor', [HomeController::class, 'single_search_doctor'])->name('single_search_doctor');
-    Route::get('search-doctor', [HomeController::class, 'search_doctor'])->name('search_doctor');
-    Route::get('doctors/{doctor}/profile', [HomeController::class, 'doctor_profile'])->name('doctor_profile');
-    Route::get('hospitals/{hospital}/profile', [HomeController::class, 'hospital_profile'])->name('hospital_profile');
-    Route::get('hospitals/{hospital}/doctors', [HomeController::class, 'hospital_doctors'])->name('hospital_doctors');
-    Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital_specialties'])->name('hospital_specialties');
-    Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
+    Route::get('single-doctor', [NewHomeController::class, 'single_search_doctor'])->name('single_search_doctor');
+    Route::get('search-doctor', [NewHomeController::class, 'search_doctor'])->name('search_doctor');
+    Route::get('doctors/{doctor}/profile', [NewHomeController::class, 'doctor_profile'])->name('doctor_profile');
+    Route::get('hospitals/{hospital}/profile', [NewHomeController::class, 'hospital_profile'])->name('hospital_profile');
+    Route::get('hospitals/{hospital}/doctors', [NewHomeController::class, 'hospital_doctors'])->name('hospital_doctors');
+    Route::get('hospitals/{hospital}/specialties', [NewHomeController::class, 'hospital_specialties'])->name('hospital_specialties');
+    Route::get('hospitals/{hospital}/offers', [NewHomeController::class, 'hospital_offers'])->name('hospital_offers');
 
     Route::middleware('guest')->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])
