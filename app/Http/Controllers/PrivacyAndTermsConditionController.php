@@ -17,7 +17,6 @@ class PrivacyAndTermsConditionController extends Controller
     }
 
     public function contactus(Request $request){
-       
         ContactUs::create($request->all());
         return redirect()->back()->with('flash', ['type', 'success', 'message' => 'Your information send successfully!']);
     }

@@ -28,7 +28,7 @@ class Settings extends Model
         return $this->return_policy_en;
     }
 
-    public function getTremsAttribute()
+    public function getTermsAttribute()
     {
         if (app()->getLocale() == 'ar' && $this->terms_ar != NULL) {
             return $this->terms_ar;

@@ -126,6 +126,8 @@ return [
     'terms_agree' => 'I agree to the',
     'terms_of_service' => 'terms of service',
     'and' => 'and',
+    'make_an' => 'Make an',
+    'Find_Doctor' => 'Find Doctor',
     'privacy_policy' => 'privacy policy',
     'terms_conditions' => 'Terms & Conditions',
     'register' => 'Register',
@@ -141,7 +143,7 @@ return [
     'account_deleted' => 'Your account has been successfully deleted',
     'cancel' => 'Cancel',
     'account_inactive' => 'Your account is inactive',
-
+    'privacy_policy_p' => 'Please review our privacy policy to understand how we collect, use, and protect your personal information when you use our website and services.',
     'gender' => "Gender",
     'select_gender' => 'Select Gender',
     'male' => "Mall",

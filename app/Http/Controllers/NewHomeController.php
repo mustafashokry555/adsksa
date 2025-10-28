@@ -29,6 +29,7 @@ use Symfony\Component\Process\Process;
 
 class NewHomeController extends Controller
 {
+    // new
     public function welcome()
     {
 
@@ -40,6 +41,23 @@ class NewHomeController extends Controller
             'countries' => Country::orderByDesc('id')->get(),
         ]);
     }
+    public function privacy(){
+        return view('web.privacy-policy.privacy-policy');
+    }
+
+    public function termsAndconditions(){
+        return view('web.privacy-policy.terms-and-conditions');
+    }
+
+
+
+
+
+
+
+
+
+
 
     public function index()
     {
@@ -921,4 +939,5 @@ class NewHomeController extends Controller
 
         return redirect()->route('login')->with('success', __('web.account_deleted'));
     }
+
 }

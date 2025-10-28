@@ -159,7 +159,7 @@
                                 <div class="site-branding tm-wrap-cell">
                                     <div class="headerlogo themetechmount-logotype-image tm-stickylogo-no">
                                         <span class="site-title">
-                                            <a class="home-link" href="https://arabcares.com/"
+                                            <a class="home-link" href="{{ url('/new') }}"
                                                 title="Arab Care ® عرب كير" rel="home">
                                                 <span class="tm-sc-logo tm-sc-logo-type-image">
                                                     <img class="themetechmount-logo-img standardlogo"
@@ -261,7 +261,7 @@
                                             <ul id="menu-mymainmenu" class="nav-menu">
                                                 <li id="menu-item-4459"
                                                     class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-4459 {{ Request::is('new') ? 'current-menu-item current_page_item' : '' }}">
-                                                    <a href="{{ url('/') }}">{{ __('web.home') }}</a>
+                                                    <a href="{{ url('/new') }}">{{ __('web.home') }}</a>
                                                 </li>
                                                 @auth
                                                     <li
@@ -351,7 +351,7 @@
                                                 @else
                                                     <li id="menu-item-4528"
                                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4528 lastsecond">
-                                                        <a class="nav-link theme-btn btn-four" href="{{ url('login') }}"
+                                                        <a class="nav-link theme-btn btn-four" href="{{ route('new.login') }}"
                                                             style="height: 50px;
                                                                 margin: 10px 5px;
                                                                 align-items: center;
@@ -365,7 +365,7 @@
                                                     <li id="menu-item-4528"
                                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4528 lastsecond">
                                                         <a class="nav-link theme-btn btn-four register-btn"
-                                                            href="{{ url('register') }}"style="height: 50px;
+                                                            href="{{ route('new.register') }}"style="height: 50px;
                                                                             margin: 10px 5px;
                                                                             align-items: center;
                                                                             display: flex;

@@ -26,6 +26,8 @@ use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\OfferTypesController;
 use App\Http\Controllers\Admin\PatientInsuranceController;
 use App\Http\Controllers\Admin\ReligionsController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BlogController as HomeBlogController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Patient\AppointmentController;
@@ -284,8 +286,8 @@ require __DIR__ . '/auth.php';
 // new pages.
 Route::name('new.')->prefix('new')->group(function () {
     Route::get('/', [NewHomeController::class, 'welcome']);
-    Route::get('/privacy_policy', [PrivacyAndTermsConditionController::class, 'privacy'])->name('privacy');
-    Route::get('/terms_conditions', [PrivacyAndTermsConditionController::class, 'termsAndconditions'])->name('terms-conditions');
+    Route::get('/privacy_policy', [NewHomeController::class, 'privacy'])->name('privacy');
+    Route::get('/terms_conditions', [NewHomeController::class, 'termsAndconditions'])->name('terms-conditions');
 
     Route::get('single-doctor', [HomeController::class, 'single_search_doctor'])->name('single_search_doctor');
     Route::get('search-doctor', [HomeController::class, 'search_doctor'])->name('search_doctor');
@@ -294,4 +296,11 @@ Route::name('new.')->prefix('new')->group(function () {
     Route::get('hospitals/{hospital}/doctors', [HomeController::class, 'hospital_doctors'])->name('hospital_doctors');
     Route::get('hospitals/{hospital}/specialties', [HomeController::class, 'hospital_specialties'])->name('hospital_specialties');
     Route::get('hospitals/{hospital}/offers', [HomeController::class, 'hospital_offers'])->name('hospital_offers');
+
+    Route::middleware('guest')->group(function () {
+        Route::get('register', [RegisteredUserController::class, 'create'])
+            ->name('register');
+        Route::get('login', [AuthenticatedSessionController::class, 'create'])
+            ->name('login');
+    });
 });
