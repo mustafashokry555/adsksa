@@ -133,6 +133,7 @@ return [
     'register' => 'Register',
     'already_have_account' => 'Already have an account?',
     'enter_password' => 'Enter Password',
+    'select' => 'Select',
 
     'delete_account' => 'Delete Account',
     'delete_account_warning' => 'Warning: This action cannot be undone. All your data will be permanently deleted.',

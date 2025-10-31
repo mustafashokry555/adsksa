@@ -14,6 +14,7 @@ use App\Models\Country;
 use App\Models\Hospital;
 use App\Models\HospitalReview;
 use App\Models\Insurance;
+use App\Models\Religion;
 use App\Models\ScheduleSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -110,8 +111,94 @@ class NewHomeController extends Controller
         );
     }
 
+    public function create()
+    {
+        $religions = Religion::all();
+        return view('web.auth.register', compact('religions'));
+    }
+
+    public function createLogin()
+    {
+        return view('web.auth.login');
+    }
 
 
+    public function create_appointment($id)
+    {
+        if (Auth::user()->is_patient()) {
+            $doctor = User::find($id);
+            $hospital = Hospital::findOrFail($doctor->hospital_id);
+            $insurances = $hospital->insurances;
+
+
+            // if ($intervals ?? '')
+            return view('web.doctor.create', [
+                'doctor' => User::find($id),
+                'insurances' => $insurances
+
+            ]);
+        } else {
+            abort(401);
+        }
+    }
+
+    public function doctor_profile($id)
+    {
+        $reviews = Review::query()->where('doctor_id', $id)->get();
+        $review_sum = Review::where('doctor_id', $id)->sum('star_rated');
+        if ($reviews->count() > 0) {
+            $review_value = $review_sum / $reviews->count();
+        } else {
+            $review_value = 0;
+        }
+        $todayDay =  strtolower(\Carbon\Carbon::now()->format('l'));
+        // dd($todayDay);
+        $regularAvailability = RegularAvailability::where('doctor_id', $id)->get();
+        $todaysAvailability =  RegularAvailability::where('doctor_id', $id)->where('week_day', $todayDay)->first();
+        // dd($todaysAvailability);
+        // dd($regularAvailability[0]->slots[0]['start_time']);
+        return view('web.doctor.profile', [
+            'doctor' => User::find($id),
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+            'regularAvailability' => $regularAvailability,
+            'todaysAvailability' => $todaysAvailability,
+        ]);
+    }
+
+    public function hospital_profile($id)
+    {
+        $reviews = HospitalReview::query()->where('hospital_id', $id)->get();
+        $review_sum = HospitalReview::where('hospital_id', $id)->sum('star_rated');
+        if ($reviews->count() > 0) {
+            $review_value = $review_sum / $reviews->count();
+        } else {
+            $review_value = 0;
+        }
+        $hospital = Hospital::where('hospitals.id', $id)
+            ->with([
+                'doctors',
+                'specialities',
+                'city',
+                'country',
+                'offers' => function ($query) {
+                    $query->where('is_active', 1)
+                        ->where('start_date', '<=', now())
+                        ->where('end_date', '>=', now());
+                }
+            ])
+            ->first();
+        // return [
+        //     'hospital' => $hospital,
+        //     'reviews' => $reviews,
+        //     'review_value' => $review_value,
+        // ];
+        return view('web.doctor.hospital', [
+            'hospital' => $hospital,
+            'reviews' => $reviews,
+            'review_value' => $review_value,
+        ]);
+    }
 
 
 
@@ -612,63 +699,7 @@ class NewHomeController extends Controller
         return view('patient.pharmacy.search');
     }
 
-    public function doctor_profile($id)
-    {
-        $reviews = Review::query()->where('doctor_id', $id)->get();
-        $review_sum = Review::where('doctor_id', $id)->sum('star_rated');
-        if ($reviews->count() > 0) {
-            $review_value = $review_sum / $reviews->count();
-        } else {
-            $review_value = 0;
-        }
-        $todayDay =  strtolower(\Carbon\Carbon::now()->format('l'));
-        // dd($todayDay);
-        $regularAvailability = RegularAvailability::where('doctor_id', $id)->get();
-        $todaysAvailability =  RegularAvailability::where('doctor_id', $id)->where('week_day', $todayDay)->first();
-        // dd($todaysAvailability);
-        // dd($regularAvailability[0]->slots[0]['start_time']);
-        return view('patient.doctor.profile', [
-            'doctor' => User::find($id),
-            'reviews' => $reviews,
-            'review_value' => $review_value,
-            'regularAvailability' => $regularAvailability,
-            'todaysAvailability' => $todaysAvailability,
-        ]);
-    }
 
-    public function hospital_profile($id)
-    {
-        $reviews = HospitalReview::query()->where('hospital_id', $id)->get();
-        $review_sum = HospitalReview::where('hospital_id', $id)->sum('star_rated');
-        if ($reviews->count() > 0) {
-            $review_value = $review_sum / $reviews->count();
-        } else {
-            $review_value = 0;
-        }
-        $hospital = Hospital::where('hospitals.id', $id)
-            ->with([
-                'doctors',
-                'specialities',
-                'city',
-                'country',
-                'offers' => function ($query) {
-                    $query->where('is_active', 1)
-                        ->where('start_date', '<=', now())
-                        ->where('end_date', '>=', now());
-                }
-            ])
-            ->first();
-        // return [
-        //     'hospital' => $hospital,
-        //     'reviews' => $reviews,
-        //     'review_value' => $review_value,
-        // ];
-        return view('patient.doctor.hospital', [
-            'hospital' => $hospital,
-            'reviews' => $reviews,
-            'review_value' => $review_value,
-        ]);
-    }
 
     public function hospital_doctors($id)
     {

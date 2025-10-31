@@ -293,14 +293,20 @@ Route::name('new.')->prefix('new')->group(function () {
     Route::get('search-doctor', [NewHomeController::class, 'search_doctor'])->name('search_doctor');
     Route::get('doctors/{doctor}/profile', [NewHomeController::class, 'doctor_profile'])->name('doctor_profile');
     Route::get('hospitals/{hospital}/profile', [NewHomeController::class, 'hospital_profile'])->name('hospital_profile');
-    Route::get('hospitals/{hospital}/doctors', [NewHomeController::class, 'hospital_doctors'])->name('hospital_doctors');
-    Route::get('hospitals/{hospital}/specialties', [NewHomeController::class, 'hospital_specialties'])->name('hospital_specialties');
-    Route::get('hospitals/{hospital}/offers', [NewHomeController::class, 'hospital_offers'])->name('hospital_offers');
+    // Route::get('hospitals/{hospital}/doctors', [NewHomeController::class, 'hospital_doctors'])->name('hospital_doctors');
+    // Route::get('hospitals/{hospital}/specialties', [NewHomeController::class, 'hospital_specialties'])->name('hospital_specialties');
+    // Route::get('hospitals/{hospital}/offers', [NewHomeController::class, 'hospital_offers'])->name('hospital_offers');
 
     Route::middleware('guest')->group(function () {
-        Route::get('register', [RegisteredUserController::class, 'create'])
+        Route::get('register', [NewHomeController::class, 'create'])
             ->name('register');
-        Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        Route::get('login', [NewHomeController::class, 'createLogin'])
             ->name('login');
     });
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('appointment/{doctor}/create', [NewHomeController::class, 'create_appointment'])->name('create_appointment');
+
+    });
+
 });
