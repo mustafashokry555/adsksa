@@ -9,11 +9,11 @@ use App\Models\ContactUs;
 class PrivacyAndTermsConditionController extends Controller
 {
     public function privacy(){
-        return view('privacy-policy.privacy-policy');
+        return view('web.privacy-policy.privacy-policy');
     }
 
     public function termsAndconditions(){
-        return view('privacy-policy.terms-and-conditions');
+        return view('web.privacy-policy.terms-and-conditions');
     }
 
     public function contactus(Request $request){

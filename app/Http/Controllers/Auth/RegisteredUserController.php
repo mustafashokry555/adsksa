@@ -26,7 +26,7 @@ class RegisteredUserController extends Controller
     public function create()
     {
         $religions = Religion::all();
-        return view('auth.register', compact('religions'));
+        return view('web.auth.register', compact('religions'));
     }
 
     /**
@@ -83,12 +83,12 @@ class RegisteredUserController extends Controller
             //     $user->notify(new SendOtpEmail($otp, 'Virefiy Email OTP', 'an email verification'));
             // }
 
-            return view('auth.verify-email');
+            return view('web.auth.verify-email');
         }
 
         // Auth::login($user);
         // dd(Auth::user());
-        
+
         // if(Auth::user()->user_type=='U'){
             // return redirect(RouteServiceProvider::DASHBOARD);
         // }

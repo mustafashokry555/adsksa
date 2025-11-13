@@ -67,7 +67,7 @@
                                                     style="color: #12b3ab">{{ __('web.make_an') }}<span
                                                         style="color: #1aeebe">{{ __('web.Appointment') }}</span></h2>
                                         </div>
-                                        <form method="GET" action="{{ route('new.single_search_doctor') }}"
+                                        <form method="GET" action="{{ route('single_search_doctor') }}"
                                             class="banner-four-search">
                                             <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="search_bar"
                                                 style="background-color:white">

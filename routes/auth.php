@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
     //     ->middleware(['signed', 'throttle:6,1'])
     //     ->name('verification.verify');
 
-    
+
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');

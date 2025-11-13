@@ -1,111 +1,96 @@
-{{-- <x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
-
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-        </div>
-
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Email Password Reset Link') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout> --}}
-
-
-<?php $page = "index-13"; ?>
-@extends('layout.mainlayout_index1')
+<?php $page = 'index-13'; ?>
+@extends('web.layout.layout')
 @section('title', 'Forget Password')
-@section('content')
-<!-- Header -->
-@include('components.patient_header')
-<!-- /Header -->
 
-<div class="row align-items-center mt-4">
+@section('main-content')
+    <style>
+        .forgot-password .card {
+            transition: all 0.3s ease-in-out;
+        }
 
-</div>
-</div>
-</section>
-<!-- /Home Banner -->
-<section class="login">
-    <div class="content" style="min-height:205px;">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <div class="account-content">
-                        <div class="row align-items-center justify-content-center">
-                            <div class="col-md-7 col-lg-6 login-left">
-                                <img src="{{ URL::asset('/assets/img/login-banner.png')}}" class="img-fluid" alt="Doccure Login">
-                            </div>
-                            <div  class="col-md-12 col-lg-6 login-right">
-                                <div  dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="login-header">
-                                    <h3>{{ __('web.forget_password') }}</h3>
-                                    <p>{{ __('web.forget_password_subtitle') ?? 'Enter your email to receive a reset OTP.' }}</p>
+        .forgot-password .card:hover {
+            transform: scale(1.01);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+    <section class="forgot-password py-5" style="background: #f4f8fb;">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="row g-0">
+                            <!-- Left Image -->
+                            <div class="col-lg-6 d-none d-lg-block bg-light position-relative">
+                                <div class="p-5 text-center">
+                                    <img src="{{ URL::asset('/assets/img/login-banner.png') }}" alt="Forgot Password Illustration"
+                                        class="img-fluid rounded-3" style="max-height: 400px; object-fit: contain;">
+                                    <h4 class="mt-4 text-primary fw-bold">{{ __('web.forget_password') }}</h4>
+                                    <p class="text-muted">
+                                        {{ __('web.forget_password_subtitle') ?? 'Enter your email to receive a reset OTP.' }}
+                                    </p>
                                 </div>
-                                <form method="POST" action="{{ route('password.email') }}">
-                                    @csrf
-                                    <div  class="form-group form-focus">
-                                        <input  type="text" class="form-control floating" name="email" value="{{ old('email', request('email')) }}" id="Email">
-                                        <label class="focus-label">{{ __('web.email') }}</label>
-                                        @error('email')
-                                            <div class="text-danger my-2">
-                                                {{$message}}
-                                            </div>
-                                        @enderror
-                                    </div>
-                                    <input type="hidden" class="form-control floating pass-input" name="timezone" id="timezone" value="">
-                                    
-                                    <div class="d-grid">
-                                        <button class="btn btn-primary" type="submit">{{ __('web.send_reset_otp') ?? 'Send Password Reset OTP' }}</button>
-                                    </div>
-                                    <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dont-have">
-                                        {{ __('web.remember_password') ?? 'Remember your password?' }}
-                                        <a href="{{ route('login') }}">{{ __('web.login') }}</a>
-                                    </div>
-                                    <div class="login-or">
-                                        <span class="or-line"></span>
-                                    </div>
-                                </form>
                             </div>
+
+                            <!-- Right Form -->
+                            <div class="col-lg-6 bg-white">
+                                <div class="p-5">
+                                    <div dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="text-center mb-4">
+                                        <h3 class="fw-bold">{{ __('web.forget_password') }}</h3>
+                                        <p class="text-muted">
+                                            {{ __('web.forget_password_subtitle') ?? 'We’ll send a password reset link to your email.' }}
+                                        </p>
+                                    </div>
+
+                                    @if (session('status'))
+                                        <div class="alert alert-success">{{ session('status') }}</div>
+                                    @endif
+                                    @if (session('error'))
+                                        <div class="alert alert-danger">{{ session('error') }}</div>
+                                    @endif
+
+                                    <form method="POST" action="{{ route('password.email') }}">
+                                        @csrf
+
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ __('web.email') }}</label>
+                                            <input type="email" class="form-control form-control-lg" name="email"
+                                                value="{{ old('email', request('email')) }}" placeholder="example@email.com">
+                                            @error('email')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+
+                                        <input type="hidden" name="timezone" id="timezone" value="">
+
+                                        <div class="d-grid">
+                                            <button class="btn btn-primary btn-lg rounded-3" type="submit">
+                                                {{ __('web.send_reset_otp') ?? 'Send Password Reset OTP' }}
+                                            </button>
+                                        </div>
+
+                                        <div class="text-center mt-4">
+                                            <small class="text-muted">{{ __('web.remember_password') ?? 'Remember your password?' }}</small>
+                                            <a href="{{ route('login') }}" class="fw-semibold text-primary">
+                                                {{ __('web.login') }}
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- End Right Form -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<!-- /Page Content -->
-
+    </section>
 @endsection
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        var inputElement = document.getElementById('timezone');
-
-        // Set the value of the input element
-        inputElement.value = userTimezone;
+        var timezoneInput = document.getElementById('timezone');
+        if (timezoneInput) timezoneInput.value = userTimezone;
     });
 </script>

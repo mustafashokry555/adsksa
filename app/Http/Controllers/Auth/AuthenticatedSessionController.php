@@ -17,7 +17,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        return view('auth.login');
+        return view('web.auth.login');
     }
 
     /**
@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
             ])->withInput($request->except('password'));
         }
         if($user && $user->is_patient() && $user->email_verified_at == null){
-            return view('auth.verify-email');
+            return view('web.auth.verify-email');
         }
         $request->authenticate();
 

@@ -245,7 +245,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('patient/insurance-details/{patient_id}', [PatientInsuranceController::class, 'show'])->name('patient_insurance.show');
     Route::patch('patient/insurance-details/{patient_id}', [PatientInsuranceController::class, 'update'])->name('patient_insurance.update');
 
-
     // Patient Appointments
     Route::get('appointment/{doctor}/create', [AppointmentController::class, 'create_appointment'])->name('create_appointment');
     Route::post('store-appointment', [AppointmentController::class, 'store_appointment'])->name('store_appointment');
@@ -253,12 +252,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('appointments/{appointment}/update', [AppointmentController::class, 'update_apt_status'])->name('update_appointment_status');
     Route::get('appointment/{doctor}/availability', [AppointmentController::class, 'get_availability'])->name('get_availability');
 
-
     Route::get('update-appointment/{id}', [AppointmentController::class, 'update_appointment'])->name('update-appointment');
     Route::put('update-appointment/{id}', [AppointmentController::class, 'save_update_appointment'])->name('save_update_appointment');
-
-
-    // Route::resource('patient-profile', AppointmentController::class);
 
     // Invoice Routes
     Route::get('invoices', [AppointmentController::class, 'invoice'])->name('invoices');
@@ -267,11 +262,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoices/qrcode', [AppointmentController::class, 'qrcode'])->name('invoice.qrcode');
     Route::get('admin/invoices/{invoice}/download-xml', [AppointmentController::class, 'downloadXml'])->name('invoice.download.xml');
 
-
-    // Patient Dashboard
-    // Route::get('/patient-dashboard', function (){
-    //     return view('patient.patient-dashboard');
-    // })->name('patient_dashboard');
     Route::get('/patient-dashboard', [HomeController::class, 'patientDashboard'])->name('patient_dashboard');
     Route::get('/patient-dashboard/insurance-details', [PatientInsuranceController::class, 'showForPatient'])->name('patient_dashboard.insurance_details');
 
@@ -282,31 +272,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-
-// new pages.
-Route::name('new.')->prefix('new')->group(function () {
-    Route::get('/', [NewHomeController::class, 'welcome']);
-    Route::get('/privacy_policy', [NewHomeController::class, 'privacy'])->name('privacy');
-    Route::get('/terms_conditions', [NewHomeController::class, 'termsAndconditions'])->name('terms-conditions');
-
-    Route::get('single-doctor', [NewHomeController::class, 'single_search_doctor'])->name('single_search_doctor');
-    Route::get('search-doctor', [NewHomeController::class, 'search_doctor'])->name('search_doctor');
-    Route::get('doctors/{doctor}/profile', [NewHomeController::class, 'doctor_profile'])->name('doctor_profile');
-    Route::get('hospitals/{hospital}/profile', [NewHomeController::class, 'hospital_profile'])->name('hospital_profile');
-    // Route::get('hospitals/{hospital}/doctors', [NewHomeController::class, 'hospital_doctors'])->name('hospital_doctors');
-    // Route::get('hospitals/{hospital}/specialties', [NewHomeController::class, 'hospital_specialties'])->name('hospital_specialties');
-    // Route::get('hospitals/{hospital}/offers', [NewHomeController::class, 'hospital_offers'])->name('hospital_offers');
-
-    Route::middleware('guest')->group(function () {
-        Route::get('register', [NewHomeController::class, 'create'])
-            ->name('register');
-        Route::get('login', [NewHomeController::class, 'createLogin'])
-            ->name('login');
-    });
-
-    Route::middleware(['auth'])->group(function () {
-        Route::get('appointment/{doctor}/create', [NewHomeController::class, 'create_appointment'])->name('create_appointment');
-
-    });
-
-});

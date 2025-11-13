@@ -32,7 +32,7 @@ class HomeController extends Controller
     public function welcome()
     {
 
-        return view('welcome', [
+        return view('web.home', [
             // 'blogs' => Blog::with('user')->inRandomOrder()->latest()->take(3)->get(),
             // 'setting' => Settings::query()->first(),
             'insurances' => Insurance::orderByDesc('id')->get(),
@@ -512,8 +512,7 @@ class HomeController extends Controller
                 $q->where('is_active', 1);
             })
             ->paginate(10);
-        return view(
-            'patient.doctor.search',
+        return view('web.search',
             [
                 'doctors' => $doctors,
                 'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
@@ -573,8 +572,7 @@ class HomeController extends Controller
 
 
         $doctors = $query->paginate(10);
-        return view(
-            'patient.doctor.search',
+        return view('web.search',
             [
                 'doctors' => $doctors,
                 'specialities' => Speciality::query()->orderBy("name_{$this->getLang()}")->get(),
@@ -610,7 +608,7 @@ class HomeController extends Controller
         $todaysAvailability =  RegularAvailability::where('doctor_id', $id)->where('week_day', $todayDay)->first();
         // dd($todaysAvailability);
         // dd($regularAvailability[0]->slots[0]['start_time']);
-        return view('patient.doctor.profile', [
+        return view('web.doctor.profile', [
             'doctor' => User::find($id),
             'reviews' => $reviews,
             'review_value' => $review_value,
@@ -646,7 +644,7 @@ class HomeController extends Controller
         //     'reviews' => $reviews,
         //     'review_value' => $review_value,
         // ];
-        return view('patient.doctor.hospital', [
+        return view('web.doctor.hospital', [
             'hospital' => $hospital,
             'reviews' => $reviews,
             'review_value' => $review_value,
@@ -669,7 +667,7 @@ class HomeController extends Controller
                 'country',
             ])
             ->first();
-        return view('patient.doctor.hospital_doctors', [
+        return view('web.patient.hospital_doctors', [
             'hospital' => $hospital,
             'reviews' => $reviews,
             'review_value' => $review_value,
@@ -692,7 +690,7 @@ class HomeController extends Controller
                 'country',
             ])
             ->first();
-        return view('patient.doctor.hospital_specialities', [
+        return view('web.patient.hospital_specialities', [
             'hospital' => $hospital,
             'reviews' => $reviews,
             'review_value' => $review_value,
@@ -719,7 +717,7 @@ class HomeController extends Controller
                 'country',
             ])
             ->first();
-        return view('patient.doctor.hospital_offers', [
+        return view('web.patient.hospital_offers', [
             'hospital' => $hospital,
             'reviews' => $reviews,
             'review_value' => $review_value,

@@ -28,7 +28,7 @@ class NewPasswordController extends Controller
             ->route('password.request') // Forgot Password route
             ->withErrors(['email' => __('This email does not exist in our records.')]);
         }
-        return view('auth.reset-password', ['email' => $request->email]);
+        return view('web.auth.reset-password', ['email' => $request->email]);
     }
 
     /**

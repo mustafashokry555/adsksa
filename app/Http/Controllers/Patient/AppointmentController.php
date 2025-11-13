@@ -89,7 +89,7 @@ class AppointmentController extends Controller
 
 
             // if ($intervals ?? '')
-            return view('patient.appointment.create', [
+            return view('web.patient.appointment.create', [
                 'doctor' => User::find($id),
                 // 'intervals' => $intervals,
                 // 'date' => today(),

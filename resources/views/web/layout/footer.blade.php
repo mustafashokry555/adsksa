@@ -110,10 +110,10 @@
                                                     <li
                                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-4693">
                                                         <a rel="privacy-policy"
-                                                            href="{{ route('new.privacy') }}">{{ __('web.privacy_policy') }}</a></li>
+                                                            href="{{ route('privacy') }}">{{ __('web.privacy_policy') }}</a></li>
                                                     <li
                                                         class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4701">
-                                                        <a href="{{ route('new.terms-conditions') }}">{{ __('web.terms_conditions') }}</a></li>
+                                                        <a href="{{ route('terms-conditions') }}">{{ __('web.terms_conditions') }}</a></li>
                                                 </ul>
                                             </div>
                                         </aside>
@@ -155,7 +155,7 @@
                     <div class="bottom-footer-inner">
                         <div class="row multi-columns-row">
                             <div class="col-xs-12 col-sm-6 tm-footer2-left ">
-                                Copyright © 2025 <a href="{{ url('/new') }}">Arab Care ®
+                                Copyright © 2025 <a href="{{ url('/') }}">Arab Care ®
                                     عرب كير </a>. All rights reserved.
                             </div><!--.footer menu -->
                             <div class="col-xs-12 col-sm-6 tm-footer2-right ">
