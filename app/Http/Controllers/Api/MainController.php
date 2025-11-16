@@ -10,6 +10,7 @@ use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\HospitalTypeResource;
 use App\Http\Resources\Api\InsuranceResource;
 use App\Http\Resources\Api\OfferResource;
+use App\Http\Resources\Api\OfferTypeResource;
 use App\Http\Resources\Api\ReligionResource;
 use App\Http\Resources\Api\SpecialityResource;
 use App\Http\Resources\Api\StateResource;
@@ -26,6 +27,7 @@ use App\Models\Country;
 use App\Models\HospitalType;
 use App\Models\Notification;
 use App\Models\Offer;
+use App\Models\OfferType;
 use App\Models\Religion;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
@@ -68,14 +70,15 @@ class MainController extends Controller
                 ->orderByDesc('hospital_reviews_avg_star_rated')
                 ->limit(8)
                 ->get();
-            // Offers
-            $offers = Offer::where('is_active', 1)->whereHas('hospital', function ($q) {
-                $q->where('is_active', 1);
-            })
-                ->where('start_date', '<=', now())
-                ->where('end_date', '>=', now())
-                ->get();
-            $offers = OfferResource::collection($offers);
+            // Offers types
+            // $offers = Offer::where('is_active', 1)->whereHas('hospital', function ($q) {
+            //     $q->where('is_active', 1);
+            // })
+            // ->where('start_date', '<=', now())
+            // ->where('end_date', '>=', now())
+            // ->get();
+            $offers_type = OfferType::active()->get();
+            $offers_type = OfferTypeResource::collection($offers_type);
             // Cats
             $specialities = Speciality::limit(8)->get();
             $specialities = SpecialityResource::collection($specialities);
@@ -130,7 +133,7 @@ class MainController extends Controller
                 'banners' => $banners ? BannerResource::collection($banners) : [],
                 'hospital_types' => $hospital_types,
                 'hospitals' => $hospitals ? HospitalResource::collection($hospitals) : [],
-                'offers' => $offers,
+                'offer_types' => $offers_type,
                 'specialities' => $specialities,
                 'doctors' => $doctors ? DoctorResource::collection($doctors) : [],
                 'unread_notification' => $unread_notification,

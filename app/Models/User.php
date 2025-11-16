@@ -58,6 +58,7 @@ class User extends Authenticatable
         'id_number',
         'degree_id',
         'currency_id',
+        'device_token',
 
     ];
     protected $appends = ['name'];
@@ -114,6 +115,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(FavouriteOffer::class);
     }
+    public function isOfferFavourited($offerId)
+    {
+        return $this->favouriteOffers()->where('offer_id', $offerId)->exists();
+    }
+    public function addFavouriteOffer($offerId)
+    {
+        return $this->favouriteOffers()->firstOrCreate([
+            'offer_id' => $offerId
+        ]);
+    }
+    public function removeFavouriteOffer($offerId)
+    {
+        return $this->favouriteOffers()->where('offer_id', $offerId)->delete();
+    }
+
     // Check if doctor is favorited by patient
     public function isFavoriteDoctor($doctorId)
     {
