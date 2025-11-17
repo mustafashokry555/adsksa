@@ -42,7 +42,7 @@
                             </div>
                             <div class="form-group row">
                                 <label for="status"
-                                    class="col-form-label col-md-2">City</label>
+                                    class="col-form-label col-md-2">Status</label>
                                 <div class="col-md-10">
                                     <select id="status" name="status" class="form-select select" required>
                                         <option value="">-- Select Status --</option>

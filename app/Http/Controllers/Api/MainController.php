@@ -77,7 +77,13 @@ class MainController extends Controller
             // ->where('start_date', '<=', now())
             // ->where('end_date', '>=', now())
             // ->get();
-            $offers_type = OfferType::active()->get();
+            $offers_type = OfferType::where('status',1)->where( function ($q) {
+                $q->whereHas('offers', function ($q2) {
+                    $q2->where('is_active', 1)
+                        ->where('start_date', '<=', now())
+                        ->where('end_date', '>=', now());
+                });
+            })->get();
             $offers_type = OfferTypeResource::collection($offers_type);
             // Cats
             $specialities = Speciality::limit(8)->get();

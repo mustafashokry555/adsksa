@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
+use App\Http\Resources\Api\OfferResource;
 use App\Models\Hospital;
+use App\Models\Offer;
 use App\Models\User;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
@@ -163,9 +165,15 @@ class WishlistController extends Controller
         $doctors = DoctorResource::collection($doctors);
         $hospitals = HospitalResource::collection($hospitals);
 
+        // Offers
+        $offers_ids = $request->user()->favouriteOffers()->pluck('offer_id');
+        $offers = Offer::whereIn('id', $offers_ids)->get();
+        $offers = OfferResource::collection($offers);
+
         $data = [
             'doctors' => $doctors,
-            'hospitals' => $hospitals
+            'hospitals' => $hospitals,
+            'offers' => $offers,
         ];
         return $this->SuccessResponse(200, 'Wishlist Data', $data);
     }
