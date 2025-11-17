@@ -151,9 +151,7 @@
                                                 </form>
                                             </tr>
                                         @empty
-                                            <tr>
-                                                <td></td>
-                                            </tr>
+
                                         @endforelse
                                     </tbody>
                                 </table>
