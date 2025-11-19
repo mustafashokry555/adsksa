@@ -128,7 +128,7 @@ class OfferScheduleController extends Controller
         $offer->regularAvailabilities()
             ->where(['week_day' => $request->weekDay, 'offer_id' => $offer->id])
             ->update($request->except("weekDay", "_token"));
-        return redirect()->route("offer.edit", $offer->id)->with('flash', ['type', 'success', 'message' => 'Regular Schedule has been updated']);
+        return redirect()->route("offers.edit", $offer->id)->with('flash', ['type', 'success', 'message' => 'Regular Schedule has been updated']);
     }
 
     public function regularAvailabiltiyDestroy(Request $request, Offer $offer)
