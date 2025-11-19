@@ -232,6 +232,15 @@ class User extends Authenticatable
             ->where('user_type', 'D');
     }
 
+    public function offers()
+    {
+        if ($this->is_hospital()) {
+            return $this->hasMany(Offer::class, 'hospital_id', 'hospital_id');
+        }
+        return $this->hasMany(Offer::class, 'hospital_id', 'hospital_id')
+            ->whereRaw('1 = 0');
+    }
+
     public function speciality()
     {
         return $this->belongsTo(Speciality::class, "speciality_id");

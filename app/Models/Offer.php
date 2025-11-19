@@ -88,4 +88,21 @@ class Offer extends Model
         }
         return $value;
     }
+
+
+
+    public function regularAvailabilities()
+    {
+        return $this->hasMany(RegularAvailability::class, "offer_id", "id");
+    }
+    public function unavailailities()
+    {
+        return $this->hasMany(Unavailability::class, "offer_id", "id");
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, "offer_id");
+    }
+
 }

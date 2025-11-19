@@ -360,4 +360,5 @@ class AppointController extends Controller
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
+
 }

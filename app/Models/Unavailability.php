@@ -12,5 +12,5 @@ class Unavailability extends Model
     protected $primaryKey = null;
     public $incrementing = false;
     public $timestamps = false;
-    protected $fillable = ["date", "hospital_id", "doctor_id"];
+    protected $fillable = ["date", 'offer_id', "hospital_id", "doctor_id"];
 }

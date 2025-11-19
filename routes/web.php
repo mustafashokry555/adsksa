@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\ReligionsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\BlogController as HomeBlogController;
+use App\Http\Controllers\Hospital\OfferScheduleController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Patient\AppointmentController;
 use App\Http\Controllers\Patient\ReviewController;
@@ -208,6 +209,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/hospital/{doctor}/doctor-schedule/unvailability/{date}/edit", [DoctorScheduleController::class, "unAvailabiltiyEdit"])->name("hospital.doctor-schedule.unavailability.edit");
     Route::post("/hospital/{doctor}/doctor-schedule/unvailability/{date}/update", [DoctorScheduleController::class, "unAvailabiltiyUpdate"])->name("hospital.doctor-schedule.unavailability.update");
     Route::post("/hospital/{doctor}/doctor-schedule/unvailability/{date}/delete", [DoctorScheduleController::class, "unAvailabiltiyDestroy"])->name("hospital.doctor-schedule.unavailability.delete");
+
+    // offer schdule
+    Route::get("/hospital/{offer}/offer-schedule", [OfferScheduleController::class, "regularAvailabiltiyCreate"])->name("hospital.offer-schedule.regular");
+    Route::post("/hospital/{offer}/offer-schedule", [OfferScheduleController::class, "regularAvailabiltiySave"]);
+    Route::get("/hospital/{offer}/offer-schedule/edit", [OfferScheduleController::class, "regularAvailabiltiyEdit"])->name("hospital.offer-schedule.regular.edit");
+    Route::post("/hospital/{offer}/offer-schedule/update", [OfferScheduleController::class, "regularAvailabiltiyUpdate"])->name("hospital.offer-schedule.regular.update");
+    Route::post("/hospital/{offer}/offer-schedule/clear-all", [OfferScheduleController::class, "regularAvailabiltiyDestroy"])->name("hospital.offer-schedule.regular.destroy");
+
+    // Unvailability Schdule
+    Route::get("/hospital/{offer}/offer-schedule/unvailability", [OfferScheduleController::class, "unAvailabiltiyCreate"])->name("hospital.offer-schedule.unavailability");
+    Route::post("/hospital/{offer}/offer-schedule/unvailability", [OfferScheduleController::class, "unAvailabiltiySave"]);
+    Route::get("/hospital/{offer}/offer-schedule/unvailability/{date}/edit", [OfferScheduleController::class, "unAvailabiltiyEdit"])->name("hospital.offer-schedule.unavailability.edit");
+    Route::post("/hospital/{offer}/offer-schedule/unvailability/{date}/update", [OfferScheduleController::class, "unAvailabiltiyUpdate"])->name("hospital.offer-schedule.unavailability.update");
+    Route::post("/hospital/{offer}/offer-schedule/unvailability/{date}/delete", [OfferScheduleController::class, "unAvailabiltiyDestroy"])->name("hospital.offer-schedule.unavailability.delete");
     //FOR ADMIN and HOSPITAL END
 
     //FOR DOCTOR start

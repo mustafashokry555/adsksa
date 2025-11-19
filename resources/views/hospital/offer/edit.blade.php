@@ -69,7 +69,8 @@
                                 <div class="form-group col-md-6 row">
                                     <label for="start_date" class="col-form-label col-md-4">Sart Date</label>
                                     <div class="col-md-8">
-                                        <input id="start_date" value="{{ old('start_date', $offer->start_date) }}" name="start_date" type="date" class="form-control" required>
+                                        <input id="start_date" value="{{ old('start_date', $offer->start_date) }}"
+                                            name="start_date" type="date" class="form-control" required>
                                         @error('start_date')
                                             <div class="text-danger pt-2">
                                                 {{ $message }}
@@ -80,7 +81,8 @@
                                 <div class="form-group col-md-6 row">
                                     <label for="end_date" class="col-form-label col-md-4">End Date</label>
                                     <div class="col-md-8">
-                                        <input id="end_date" value="{{ old('end_date', $offer->end_date) }}" name="end_date" type="date" class="form-control" required>
+                                        <input id="end_date" value="{{ old('end_date', $offer->end_date) }}"
+                                            name="end_date" type="date" class="form-control" required>
                                         @error('end_date')
                                             <div class="text-danger pt-2">
                                                 {{ $message }}
@@ -91,14 +93,15 @@
                             </div>
 
                             <div class="form-group row">
-                                <label for="offer_type_id"
-                                    class="col-form-label col-md-2">Offer Type</label>
+                                <label for="offer_type_id" class="col-form-label col-md-2">Offer Type</label>
                                 <div class="col-md-10">
                                     <select id="offer_type_id" name="offer_type_id" class="form-select select" required>
                                         <option value="">-- Select Offer Type --</option>
                                         @foreach ($offerTypes as $type)
-                                            <option value="{{ $type->id }}" {{ old('offer_type_id', $offer->offer_type_id) == $type->id ? 'selected' : '' }}>
-                                                {{ $type->name_en }} < {{ $type->name_ar }} ></option>
+                                            <option value="{{ $type->id }}"
+                                                {{ old('offer_type_id', $offer->offer_type_id) == $type->id ? 'selected' : '' }}>
+                                                {{ $type->name_en }} < {{ $type->name_ar }}>
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('offer_type_id')
@@ -133,7 +136,9 @@
                             <div class="form-group row">
                                 <label for="price" class="col-form-label col-md-2">Price</label>
                                 <div class="col-md-10">
-                                    <input id="price" name="price" value="{{ old('price', $offer->price) }}" type="number" step="0.01" class="form-control" placeholder="Offer Price" required>
+                                    <input id="price" name="price" value="{{ old('price', $offer->price) }}"
+                                        type="number" step="0.01" class="form-control" placeholder="Offer Price"
+                                        required>
                                     @error('price')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -143,25 +148,6 @@
                             </div>
 
                             {{-- is Active --}}
-                            {{-- <div class="form-group row">
-                                <label for="is_active" class="col-form-label col-md-2">Status</label>
-                                <div class="col-md-10">
-                                    <select id="is_active" name="is_active" class="form-control" required>
-                                        <option value="" disabled selected>Offer Status</option>
-                                        <option value="0"
-                                            {{ old('is_active', $offer->is_active) == false ? 'selected' : '' }}>
-                                            Not Active</option>
-                                        <option value="1"
-                                            {{ old('is_active', $offer->is_active) == true ? 'selected' : '' }}>
-                                            Active</option>
-                                    </select>
-                                    @error('type')
-                                        <div class="text-danger pt-2">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div> --}}
 
                             <!-- videolink -->
                             <div class="form-group row">
@@ -230,6 +216,569 @@
                                 Update Offer
                             </button>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card flex-fill">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h5 class="card-title">{{ __('admin.doctor.doctor_schedule') }}</h5>
+                            </div>
+                            <div class="col-auto d-flex">
+                                <ul role="tablist" class="nav nav-pills card-header-pills float-end">
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#regular-avail" data-bs-toggle="tab" class="nav-link active"
+                                            aria-selected="true"
+                                            role="tab">{{ __('admin.doctor.regular_availability') }}</a>
+                                    </li>
+                                    <!-- <li class="nav-item" role="presentation">
+                                            <a href="#onetime-avail" data-bs-toggle="tab" class="nav-link" aria-selected="false" role="tab" tabindex="-1">One-time Availability</a>
+                                        </li> -->
+                                    <li class="nav-item" role="presentation">
+                                        <a href="#unavail" data-bs-toggle="tab" class="nav-link" aria-selected="false"
+                                            tabindex="-1" role="tab">{{ __('admin.doctor.unavailability') }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content pt-0">
+                            <div role="tabpanel" id="regular-avail" class="tab-pane fade active show">
+                                <div class="profile-box">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card schedule-widget mb-0">
+
+                                                <!-- Schedule Header -->
+                                                <div class="schedule-header">
+
+                                                    <!-- Schedule Nav -->
+                                                    <div class="schedule-nav">
+                                                        <ul class="nav nav-tabs nav-tabs-solid nav-justified"
+                                                            role="tablist">
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    href="#slot_sunday" aria-selected="false"
+                                                                    tabindex="-1"
+                                                                    role="tab">{{ __('admin.doctor.sunday') }}</a>
+                                                            </li>
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link active" data-bs-toggle="tab"
+                                                                    href="#slot_monday" aria-selected="true"
+                                                                    role="tab">{{ __('admin.doctor.monday') }}</a>
+                                                            </li>
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    href="#slot_tuesday" aria-selected="false"
+                                                                    tabindex="-1"
+                                                                    role="tab">{{ __('admin.doctor.tuesday') }}</a>
+                                                            </li>
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    href="#slot_wednesday" aria-selected="false"
+                                                                    tabindex="-1"
+                                                                    role="tab">{{ __('admin.doctor.wednesday') }}</a>
+                                                            </li>
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    href="#slot_thursday" aria-selected="false"
+                                                                    tabindex="-1"
+                                                                    role="tab">{{ __('admin.doctor.thursday') }}</a>
+                                                            </li>
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    href="#slot_friday" aria-selected="false"
+                                                                    tabindex="-1"
+                                                                    role="tab">{{ __('admin.doctor.friday') }}</a>
+                                                            </li>
+                                                            <li class="nav-item" role="presentation">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    href="#slot_saturday" aria-selected="false"
+                                                                    tabindex="-1"
+                                                                    role="tab">{{ __('admin.doctor.saturday') }}</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!-- /Schedule Nav -->
+
+                                                </div>
+                                                <!-- /Schedule Header -->
+
+                                                <!-- Schedule Content -->
+                                                <div class="tab-content schedule-cont p-5">
+
+                                                    <!-- Sunday Slot -->
+                                                    <div id="slot_sunday" class="tab-pane fade" role="tabpanel">
+                                                        @php
+                                                            $sundaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'sunday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            <div>
+                                                                @if ($sundaySlots)
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'sunday']) }}">
+                                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                                    </a>
+                                                                    <a class="text-danger" href=""
+                                                                        onclick="event.preventDefault();document.getElementById('clear_sun').submit();">
+                                                                        <i class="fa fa-trash me-1"></i>Clear All
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'sunday']) }}"
+                                                                        id="clear_sun" method="POST">@csrf</form>
+                                                                @else
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'sunday']) }}">
+                                                                        <i class="fa fa-plus-circle"></i> Add Slot
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </h4>
+                                                        @if ($sundaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($sundaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- /Sunday Slot -->
+
+                                                    <!-- Monday Slot -->
+                                                    <div id="slot_monday" class="tab-pane fade show active"
+                                                        role="tabpanel">
+                                                        @php
+                                                            $mondaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'monday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            <div>
+                                                                @if ($mondaySlots)
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'monday']) }}">
+                                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                                    </a>
+                                                                    <a class="text-danger" href=""
+                                                                        onclick="event.preventDefault();document.getElementById('clear_mon').submit();">
+                                                                        <i class="fa fa-trash me-1"></i>Clear All
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'monday']) }}"
+                                                                        id="clear_mon" method="POST">@csrf</form>
+                                                                @else
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'monday']) }}">
+                                                                        <i class="fa fa-plus-circle"></i> Add Slot
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </h4>
+
+                                                        @if ($mondaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($mondaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+
+                                                    </div>
+                                                    <!-- /Monday Slot -->
+
+                                                    <!-- Tuesday Slot -->
+                                                    <div id="slot_tuesday" class="tab-pane fade" role="tabpanel">
+                                                        @php
+                                                            $tuesdaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'tuesday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            <div>
+                                                                @if ($tuesdaySlots)
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'tuesday']) }}">
+                                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                                    </a>
+                                                                    <a class="text-danger" href=""
+                                                                        onclick="event.preventDefault();document.getElementById('clear_tues').submit();">
+                                                                        <i class="fa fa-trash me-1"></i>Clear All
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'tuesday']) }}"
+                                                                        id="clear_tues" method="POST">@csrf</form>
+                                                                @else
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'tuesday']) }}">
+                                                                        <i class="fa fa-plus-circle"></i> Add Slot
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </h4>
+                                                        @if ($tuesdaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($tuesdaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- /Tuesday Slot -->
+
+                                                    <!-- Wednesday Slot -->
+                                                    <div id="slot_wednesday" class="tab-pane fade" role="tabpanel">
+                                                        @php
+                                                            $wednesdaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'wednesday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            <div>
+                                                                @if ($wednesdaySlots)
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'wednesday']) }}">
+                                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                                    </a>
+                                                                    <a class="text-danger" href=""
+                                                                        onclick="event.preventDefault();document.getElementById('clear_wed').submit();">
+                                                                        <i class="fa fa-trash me-1"></i>Clear All
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'wednesday']) }}"
+                                                                        id="clear_wed" method="POST">@csrf</form>
+                                                                @else
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'wednesday']) }}">
+                                                                        <i class="fa fa-plus-circle"></i> Add Slot
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </h4>
+                                                        @if ($wednesdaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($wednesdaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- /Wednesday Slot -->
+
+                                                    <!-- Thursday Slot -->
+                                                    <div id="slot_thursday" class="tab-pane fade" role="tabpanel">
+                                                        @php
+                                                            $thursdaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'thursday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            <div>
+                                                                @if ($thursdaySlots)
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'thursday']) }}">
+                                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                                    </a>
+                                                                    <a class="text-danger" href=""
+                                                                        onclick="event.preventDefault();document.getElementById('clear_thurs').submit();">
+                                                                        <i class="fa fa-trash me-1"></i>Clear All
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'thursday']) }}"
+                                                                        id="clear_thurs" method="POST">@csrf</form>
+                                                                @else
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'thursday']) }}">
+                                                                        <i class="fa fa-plus-circle"></i> Add Slot
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </h4>
+                                                        @if ($thursdaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($thursdaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- /Thursday Slot -->
+
+                                                    <!-- Friday Slot -->
+                                                    <div id="slot_friday" class="tab-pane fade" role="tabpanel">
+                                                        @php
+                                                            $fridaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'friday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            <div>
+                                                                @if ($fridaySlots)
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'friday']) }}">
+                                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                                    </a>
+                                                                    <a class="text-danger" href=""
+                                                                        onclick="event.preventDefault();document.getElementById('clear_fri').submit();">
+                                                                        <i class="fa fa-trash me-1"></i>Clear All
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'friday']) }}"
+                                                                        id="clear_fri" method="POST">@csrf</form>
+                                                                @else
+                                                                    <a class="edit-link"
+                                                                        href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'friday']) }}">
+                                                                        <i class="fa fa-plus-circle"></i> Add Slot
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </h4>
+                                                        @if ($fridaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($fridaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- /Friday Slot -->
+
+                                                    <!-- Saturday Slot -->
+                                                    <div id="slot_saturday" class="tab-pane fade" role="tabpanel">
+                                                        @php
+                                                            $saturdaySlots = $offer->regularAvailabilities->firstWhere(
+                                                                'week_day',
+                                                                'saturday',
+                                                            );
+                                                        @endphp
+                                                        <h4 class="card-title d-flex justify-content-between">
+                                                            <span>Time Slots</span>
+                                                            @if ($saturdaySlots)
+                                                                <a class="edit-link"
+                                                                    href="{{ route('hospital.offer-schedule.regular.edit', ['offer' => $offer, 'week_day' => 'saturday']) }}">
+                                                                    <i class="fa fa-edit me-1"></i>Edit
+                                                                </a>
+                                                                <a class="text-danger" href=""
+                                                                    onclick="event.preventDefault();document.getElementById('clear_sat').submit();">
+                                                                    <i class="fa fa-trash me-1"></i>Clear All
+                                                                </a>
+                                                                <form
+                                                                    action="{{ route('hospital.offer-schedule.regular.destroy', ['offer' => $offer, 'week_day' => 'saturday']) }}"
+                                                                    id="clear_sat" method="POST">@csrf</form>
+                                                            @else
+                                                                <a class="edit-link"
+                                                                    href="{{ route('hospital.offer-schedule.regular', ['offer' => $offer, 'week_day' => 'saturday']) }}">
+                                                                    <i class="fa fa-plus-circle"></i> Add Slot
+                                                                </a>
+                                                            @endif
+                                                        </h4>
+                                                        @if ($saturdaySlots)
+                                                            <!-- Slot List -->
+                                                            <div class="doc-times">
+                                                                @foreach ($saturdaySlots->slots as $slot)
+                                                                    <button type="button"
+                                                                        class="btn mx-1 btn-sm btn-outline-secondary">{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                        -
+                                                                        {{ date('h:i A', strtotime($slot['end_time'])) }}</button>
+                                                                @endforeach
+                                                            </div>
+                                                            <!-- /Slot List -->
+                                                        @else
+                                                            <p class="text-muted mb-0">Not Available</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- /Saturday Slot -->
+
+                                                </div>
+                                                <!-- /Schedule Content -->
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- <div role="tabpanel" id="onetime-avail" class="tab-pane fade">
+                                <div class="card">
+                                    <div class="card-header border-bottom-0">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h5 class="card-title"></h5>
+                                            </div>
+                                            <div class="col-auto d-flex">
+                                                <a class="edit-link"
+                                                    href="{{ route('hospital.offer-schedule.onetime', ['offer' => $offer]) }}">
+                                                    <i class="fa fa-plus-circle"></i> Add Availability
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless hover-table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>SR.</th>
+                                                        <th>Date</th>
+                                                        <th>Time Interval</th>
+                                                        <th>Slots</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $items = $offer->oneTimeailabilities->sortBy('date')->values();
+                                                    @endphp
+                                                    @foreach ($items as $key => $item)
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            <td>{{ date('d-m-Y', strtotime($item->date)) }}</td>
+                                                            <td>{{ $item->time_interval }}</td>
+                                                            <td class="doc-times">
+                                                                @foreach ($item->slots as $slot)
+                                                                    <div class="doc-slot-list">
+                                                                        <small>{{ date('h:i A', strtotime($slot['start_time'])) }}
+                                                                            -
+                                                                            {{ date('h:i A', strtotime($slot['end_time'])) }}</small>
+                                                                    </div>
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                <a class="text-black"
+                                                                    href="{{ route('hospital.offer-schedule.onetime.edit', ['offer' => $offer, $item->date]) }}">
+                                                                    <i class="feather-edit-3 me-1"></i> Edit
+                                                                </a>
+                                                                <a class="text-danger" href=""
+                                                                    onclick="event.preventDefault();document.getElementById('delet_form_{{ $key }}').submit();">
+                                                                    <i class="feather-trash-2 me-1"></i> Delete
+                                                                </a>
+                                                                <form class="d-inline"
+                                                                    action="{{ route('hospital.offer-schedule.onetime.delete', ['offer' => $offer, $item->date]) }}"
+                                                                    method="post" id="delet_form_{{ $key }}">
+                                                                    @csrf</form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
+                            <div role="tabpanel" id="unavail" class="tab-pane fade">
+                                <div class="card">
+                                    <div class="card-header border-bottom-0">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h5 class="card-title"></h5>
+                                            </div>
+                                            <div class="col-auto d-flex">
+                                                <a class="edit-link"
+                                                    href="{{ route('hospital.offer-schedule.unavailability', ['offer' => $offer]) }}">
+                                                    <i class="fa fa-plus-circle"></i> Add Unavailability
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-borderless hover-table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>SR.</th>
+                                                        <th>Date</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $items = $offer->unavailailities->sortBy('date')->values();
+                                                    @endphp
+                                                    @foreach ($items as $key => $item)
+                                                        <tr>
+                                                            <td>{{ $key + 1 }}</td>
+                                                            <td>{{ date('d-m-Y', strtotime($item->date)) }}</td>
+                                                            <td>
+                                                                <a class="text-black"
+                                                                    href="{{ route('hospital.offer-schedule.unavailability.edit', ['offer' => $offer, $item->date]) }}">
+                                                                    <i class="feather-edit-3 me-1"></i> Edit
+                                                                </a>
+                                                                <a class="text-danger" href=""
+                                                                    onclick="event.preventDefault();document.getElementById('delet_form_un{{ $key }}').submit();">
+                                                                    <i class="feather-trash-2 me-1"></i> Delete
+                                                                </a>
+                                                                <form class="d-inline"
+                                                                    action="{{ route('hospital.offer-schedule.unavailability.delete', ['offer' => $offer, $item->date]) }}"
+                                                                    method="post" id="delet_form_un{{ $key }}">
+                                                                    @csrf</form>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
