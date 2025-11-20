@@ -57,8 +57,8 @@ class AuthController extends Controller
                 }
                 return $this->ErrorResponse(403, trans('auth.email_is_not_verified'), 0);
             }
-            // $user->status = 'Active';
-            // $user->save();
+            $user->device_token = $request->device_token;
+            $user->save();
             $token = $user->createToken('MyApp')->plainTextToken;
             return $this->SuccessResponse(200, trans('auth.loginGood'), $token);
         } catch (\Throwable $th) {
@@ -91,6 +91,7 @@ class AuthController extends Controller
                 return $this->ErrorResponse(403, trans('web.invalid_or_expired_otp'), null);
             }
             $user->email_verified_at = now();
+            $user->device_token = $request->device_token;
             $user->save();
             $otp->delete();
             Otp::where('email', $request->email)->where('user_id', $user->id)->where('expires_at', '<', now())->delete();
@@ -431,6 +432,8 @@ class AuthController extends Controller
             // if ($verification_check->valid) {
             $user = User::where('mobile', $data['mobile'])->update(['status' => 'Active']);
             $user = User::where('mobile', $data['mobile'])->first();
+            $user->device_token = $request->device_token;
+            $user->save();
             $user['token'] = $user->createToken('MyApp')->plainTextToken;
             return $this->SuccessResponse(200, 'Mobile number verified', $user);
             // } else {

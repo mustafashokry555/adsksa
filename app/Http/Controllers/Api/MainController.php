@@ -52,6 +52,15 @@ class MainController extends Controller
                 $tokenModel = PersonalAccessToken::findToken($token);
                 if ($tokenModel) {
                     $patient_id = $tokenModel->tokenable->id; // 'tokenable' refers to the user model
+                    if ($patient_id) {
+                        // Update device token
+                        $device_token = $request->device_token;
+                        if ($device_token) {
+                            $user = User::find($patient_id);
+                            $user->device_token = $device_token;
+                            $user->save();
+                        }
+                    }
                 }
             }
 
