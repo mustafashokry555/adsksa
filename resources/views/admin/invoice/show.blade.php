@@ -310,7 +310,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>استشاره طبية</td>
+                            @if ($invoice->doctor_id)
+                                <td>استشاره طبية</td>
+                            @elseif ($invoice->offer_id)
+                                <td>حجز العرض</td>
+                            @endif
                             <td>{{ $invoice->appointment?->appointment_date . ' ' . \Carbon\Carbon::parse($invoice->appointment?->appointment_time)->format('(A H:i)') }}
                             </td>
                             <td>{{ number_format($invoice->subtotal, 2) }}</td>
