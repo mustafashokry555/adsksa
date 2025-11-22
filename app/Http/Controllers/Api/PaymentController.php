@@ -77,13 +77,23 @@ class PaymentController extends Controller
                 'status' => 'initiated',
             ]);
 
+            $cart_description = "";
+            $description = "";
+            if($invoice->doctor_id) {
+                $cart_description = "Appointment with Dr. {$invoice->doctor->name} on {$invoice->invoice_date}";
+                $description = "استشاره طبية";
+            }elseif($invoice->offer_id) {
+                $cart_description = "Purchase of offer: {$invoice->offer->title}";
+                $description = "حجز العرض";
+            }
+
             // prepare payload for PayTabs (fields according to PayTabs docs)
             $payload = [
                 'profile_id' => env('PAYTABS_PROFILE_ID'),
                 'tran_type' => 'sale',
                 'tran_class' => 'ecom',
                 'cart_id' => $merchantRef, // Visible to user
-                'cart_description' => "Appointment with Dr. {$invoice->doctor->name} on {$invoice->invoice_date}", // Visible text
+                'cart_description' => $cart_description,
                 'cart_currency' => $payment->currency,
                 'cart_amount' => (float) $payment->amount,
                 "invoice" => [
@@ -91,7 +101,7 @@ class PaymentController extends Controller
                     'total' => (float) $payment->amount,
                     "line_items" => [
                         [
-                            "description" => "استشاره طبية",
+                            "description" => $description,
                             "unit_cost" => (float) $invoice->subtotal,
                             "quantity" => 1,
                             "tax_total" =>  $vat_amount,

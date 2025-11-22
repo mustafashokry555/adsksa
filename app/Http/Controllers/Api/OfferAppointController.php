@@ -226,7 +226,7 @@ class OfferAppointController extends Controller
         if (!$appointment) {
             return $this->ErrorResponse(404, "Appointment not found");
         }
-        $appointment->status = 'U';
+        $appointment->status = 'D';
         $appointment->cancel_reason = $request->cancel_reason;
         $appointment->save();
 

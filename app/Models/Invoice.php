@@ -11,6 +11,7 @@ class Invoice extends Model
     protected $fillable = [
         'appointment_id',
         'doctor_id',
+        'offer_id',
         'patient_id',
         'hospital_id',
         'invoice_number',
@@ -42,6 +43,11 @@ class Invoice extends Model
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');
+    }
+
+    public function offer()
+    {
+        return $this->belongsTo(Offer::class, 'offer_id');
     }
 
     public function patient()
