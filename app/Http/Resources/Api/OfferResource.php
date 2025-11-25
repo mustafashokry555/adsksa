@@ -14,6 +14,14 @@ class OfferResource extends JsonResource
      */
     public function toArray($request)
     {
+        $long = null;
+        $lat = null;
+        $address = null;
+        if ($this->hospital) {
+            $long = $this->hospital->long;
+            $lat = $this->hospital->lat;
+            $address = $this->hospital->location;
+        }
 
         return [
             'id' => $this->id,
@@ -29,6 +37,11 @@ class OfferResource extends JsonResource
             'offer_type' => $this->offerType->name ?? '',
             'end_date' => $this->end_date,
             'price' => $this->price ? (float)$this->price : $this->price,
+            'old_price' => $this->old_price ? (float)$this->old_price : $this->old_price,
+            'address' => $this->hospital ? (float)$this->old_price : $this->old_price,
+            'lat' => $lat ? (float)$lat : $lat,
+            'long' => $long ? (float)$long : $long,
+            'location' => $address,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'is_fav' => $this->isFavouritedBy(auth()->id()),

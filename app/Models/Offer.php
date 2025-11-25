@@ -21,7 +21,8 @@ class Offer extends Model
         'start_date',
         'end_date',
         'offer_type_id',
-        'price'
+        'price',
+        'old_price',
     ];
 
     protected $casts = [
