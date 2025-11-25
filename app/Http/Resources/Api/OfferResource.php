@@ -38,7 +38,6 @@ class OfferResource extends JsonResource
             'end_date' => $this->end_date,
             'price' => $this->price ? (float)$this->price : $this->price,
             'old_price' => $this->old_price ? (float)$this->old_price : $this->old_price,
-            'address' => $this->hospital ? (float)$this->old_price : $this->old_price,
             'lat' => $lat ? (float)$lat : $lat,
             'long' => $long ? (float)$long : $long,
             'location' => $address,
