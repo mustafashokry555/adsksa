@@ -293,7 +293,7 @@ class AppointController extends Controller
 
             $cancelled_appointments = Appointment::where('patient_id', $user->id)
                 ->whereIn('status', ['U', 'D']) // Both user and doctor cancellations
-                ->with(['doctor', 'hospital'])
+                ->with(['doctor', 'hospital', 'offer'])
                 ->orderBy('appointment_date', 'desc')
                 ->orderBy('appointment_time', 'desc')
                 ->get();
@@ -302,7 +302,7 @@ class AppointController extends Controller
             $long = request("long");
             if ($lat != null && $long != null) {
                 $completed_appointments->map(function ($appointment) use ($lat, $long) {
-                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                    if ($appointment->hospital?->lat != null && $appointment->hospital?->long != null && $appointment->doctor) {
                         $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                     } else {
                         $appointment->doctor->distance = null;
@@ -310,7 +310,7 @@ class AppointController extends Controller
                     return $appointment;
                 });
                 $upcoming_appointments->map(function ($appointment) use ($lat, $long) {
-                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null && $appointment->doctor) {
                         $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                     } else {
                         $appointment->doctor->distance = null;
@@ -318,7 +318,7 @@ class AppointController extends Controller
                     return $appointment;
                 });
                 $cancelled_appointments->map(function ($appointment) use ($lat, $long) {
-                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null && $appointment->doctor) {
                         $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                     } else {
                         $appointment->doctor->distance = null;
