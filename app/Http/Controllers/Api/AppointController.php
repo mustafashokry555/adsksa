@@ -348,7 +348,7 @@ class AppointController extends Controller
             $lat = request("lat");
             $long = request("long");
             if ($lat != null && $long != null) {
-                if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null && $appointment->doctor) {
                     $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                 } else {
                     $appointment->doctor->distance = null;
