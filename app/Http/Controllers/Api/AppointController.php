@@ -302,26 +302,32 @@ class AppointController extends Controller
             $long = request("long");
             if ($lat != null && $long != null) {
                 $completed_appointments->map(function ($appointment) use ($lat, $long) {
-                    if ($appointment->hospital?->lat != null && $appointment->hospital?->long != null && $appointment->doctor) {
-                        $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
-                    } else {
-                        $appointment->doctor->distance = null;
+                    if($appointment->doctor){
+                        if ($appointment->hospital?->lat != null && $appointment->hospital?->long != null) {
+                            $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                        } else {
+                            $appointment->doctor->distance = null;
+                        }
                     }
                     return $appointment;
                 });
                 $upcoming_appointments->map(function ($appointment) use ($lat, $long) {
-                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null && $appointment->doctor) {
-                        $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
-                    } else {
-                        $appointment->doctor->distance = null;
+                    if($appointment->doctor){
+                        if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                            $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                        } else {
+                            $appointment->doctor->distance = null;
+                        }
                     }
                     return $appointment;
                 });
                 $cancelled_appointments->map(function ($appointment) use ($lat, $long) {
-                    if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null && $appointment->doctor) {
-                        $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
-                    } else {
-                        $appointment->doctor->distance = null;
+                    if($appointment->doctor){
+                        if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
+                            $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
+                        } else {
+                            $appointment->doctor->distance = null;
+                        }
                     }
                     return $appointment;
                 });
@@ -347,8 +353,8 @@ class AppointController extends Controller
             // add distance to data
             $lat = request("lat");
             $long = request("long");
-            if ($lat != null && $long != null) {
-                if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null && $appointment->doctor) {
+            if ($lat != null && $long != null && $appointment->doctor) {
+                if ($appointment->doctor?->hospital?->lat != null && $appointment->doctor?->hospital?->long != null) {
                     $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                 } else {
                     $appointment->doctor->distance = null;
