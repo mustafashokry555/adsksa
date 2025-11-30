@@ -132,6 +132,21 @@
                                 </div>
                             </div>
 
+
+                            {{-- old price --}}
+                            <div class="form-group row">
+                                <label for="old_price" class="col-form-label col-md-2">Old Price</label>
+                                <div class="col-md-10">
+                                    <input id="old_price" name="old_price" value="{{ old('old_price', $offer->old_price) }}"
+                                        type="number" step="0.01" class="form-control" placeholder="Offer Old Price">
+                                    @error('old_price')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- price --}}
                             <div class="form-group row">
                                 <label for="price" class="col-form-label col-md-2">Price</label>
