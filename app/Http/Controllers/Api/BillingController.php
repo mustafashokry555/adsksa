@@ -15,7 +15,7 @@ class BillingController extends Controller
         try {
             $user = $request->user();
             $billings = Invoice::where('patient_id', $user->id)->where('paymentstatus', 'paid')->orderByDesc('created_at')
-            ->with(['hospital', 'doctor'])->get();
+            ->with(['hospital', 'doctor', 'offer'])->get();
             return $this->SuccessResponse(200, 'Billing history retrieved successfully', $billings);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
@@ -39,6 +39,8 @@ class BillingController extends Controller
 
             $data = [
                 'invoice_number' => $invoice->invoice_number,
+                'doctor_id' => $invoice->doctor_id,
+                'offer_id' => $invoice->offer_id,
                 'customer_name' => $invoice->patient?->name,
                 'customer_id_number' => $invoice->patient?->id_number,
                 'company_name' => $invoice->company_name,
