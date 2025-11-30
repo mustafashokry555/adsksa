@@ -14,7 +14,7 @@
         }
     </style>
 
-    <section class="forgot-password py-5" style="background: #f4f8fb;">
+    <section class="forgot-password py-5" >
         <div class="container">
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-10">

@@ -22,7 +22,7 @@
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
         }
     </style>
-    <section class="login py-5" style="background: #f4f8fb;">
+    <section class="login py-5" >
         <div class="container">
             <div class="row justify-content-center align-items-center">
                 <div class="col-lg-10">

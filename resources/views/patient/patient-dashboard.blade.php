@@ -112,26 +112,34 @@
                                                         <tbody>
                                                         @forelse($appointments as $appointment)
                                                             @php
-                                                                $doctor = \App\Models\User::query()
-                                                                    ->where('user_type', 'D')
-                                                                    ->where('id', $appointment->doctor_id)
-                                                                    ->first();
+                                                                $doctor = $appointment->doctor;
+                                                                $offer = $appointment->offer
                                                             @endphp
                                                             <tr>
                                                                 <td>{{$appointment->id}}</td>
 
                                                                 <td>
                                                                     <h2 class="table-avatar">
-                                                                        <a href="{{ route('doctor_profile',  $doctor->id) }}"
-                                                                            class="avatar avatar-sm me-2" target="_blank">
-                                                                            <img class="avatar-img rounded-circle"
-                                                                                src="{{ asset( $doctor->profile_image) }}"
-                                                                                alt="User Image">
-                                                                        </a>
-                                                                        <a
-                                                                            href="{{ route('doctor_profile',  $doctor->id) }}" target="_blank">Dr.
-                                                                            {{ @$doctor->name }}
-                                                                            <span>{{ @$doctor->speciality->name }}</span></a>
+                                                                        @if ($doctor)
+                                                                            <a href="{{ route('doctor_profile',  $doctor->id) }}"
+                                                                                class="avatar avatar-sm me-2" target="_blank">
+                                                                                <img class="avatar-img rounded-circle"
+                                                                                    src="{{ asset( $doctor->profile_image) }}"
+                                                                                    alt="User Image">
+                                                                            </a>
+                                                                            <a href="{{ route('doctor_profile',  $doctor->id) }}" target="_blank">
+                                                                                Dr. {{ @$doctor->name }} <span>{{ @$doctor->speciality->name }}</span>
+                                                                            </a>
+                                                                        @elseif ($offer)
+                                                                            <a class="avatar avatar-sm me-2">
+                                                                                <img class="avatar-img rounded-circle"
+                                                                                    src="{{ asset( $offer->images[0]) }}"
+                                                                                    alt="offer Image">
+                                                                            </a>
+                                                                            <a >
+                                                                                {{ @$offer->title }}
+                                                                            </a>
+                                                                        @endif
                                                                     </h2>
                                                                 </td>
 
