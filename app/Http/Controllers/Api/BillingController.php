@@ -39,8 +39,8 @@ class BillingController extends Controller
 
             $data = [
                 'invoice_number' => $invoice->invoice_number,
-                'doctor_id' => $invoice->doctor_id,
-                'offer_id' => $invoice->offer_id,
+                'doctor_id' => $invoice->doctor_id ? (int)$invoice->doctor_id : $invoice->doctor_id,
+                'offer_id' => $invoice->offer_id ? (int)$invoice->offer_id : $invoice->offer_id,
                 'customer_name' => $invoice->patient?->name,
                 'customer_id_number' => $invoice->patient?->id_number,
                 'company_name' => $invoice->company_name,
