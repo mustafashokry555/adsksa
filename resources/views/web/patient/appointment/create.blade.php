@@ -1,9 +1,9 @@
 <?php $page = 'index-13'; ?>
 @extends('web.layout.layout')
 @section('title', 'Make Appointment')
-@push('styles')
+@section('style')
     <link rel="stylesheet" href="{{ asset('assets/libs/pick-hours-availability-calendar/css/mark-your-calendar.css') }}">
-@endpush
+@endsection
 @section('main-content')
     <div class="row align-items-center mt-4">
 
@@ -118,9 +118,9 @@
 
                                                             <span class="input-group-text">Date:</span>
                                                             <div class="me-3">
-                                                                <input type="text" class="form-control"
+                                                                <input type="date" class="form-control"
                                                                     name="schedule_date" id="schedule_date"
-                                                                    value="{{ old('schedule_date', \Carbon\Carbon::now(auth()->user()->timezone)->format('d/m/Y')) }}"
+                                                                    value="{{ old('schedule_date', \Carbon\Carbon::now(auth()->user()->timezone)->format('Y-m-d')) }}"
                                                                     min="<?php echo date('Y-m-d'); ?>">
                                                             </div>
                                                             <div class="search-time-mobile">
@@ -247,104 +247,77 @@
 
 @endsection
 
-@push('scripts')
+@section('script')
     <script src="{{ asset('assets/libs/moment/moment.min.js') }}"></script>
     <script src="{{ asset('assets/libs/pick-hours-availability-calendar/js/mark-your-calendar.js') }}"></script>
+@section('script')
     <script>
-        var renderSlots = function(slots = []) {
-            var html = ``;
-            $.each(slots, function(idx, val) {
-                var dateTime = moment(val).format("YYYY-MM-DD HH:mm");
-                html += "<div class='form-check-inline visits m-1 mb-0'>\
-                                    <label class='visit-btns'>\
-                                        <input id='token_data' type='radio' class='form-check-input' data-date='" + moment(
-                        val)
-                    .format(
-                        "YYYY-MM-DD") + "' data-timezone=''\
-                                        data-start-time='" + moment(val).format("YYYY-MM-DD HH:mm") +
-                    "' data-session='1' name='selected_slot' value='" + moment(val).format("YYYY-MM-DD HH:mm") + "'>\
-                                        <span class='visit-rsn' data-bs-toggle='tooltip' data-bs-original-title='" +
-                    moment(
-                        val)
-                    .format("hh:mm A") + "'>" + moment(val).format("hh:mm A") + "</span>\
-                                    </label>\
-                                </div>";
-                // console.log(val, dateTime);
+        function renderSlots(slots = []) {
+            let html = "";
+
+            slots.forEach(function(slot) {
+                let formatted = moment(slot).format("YYYY-MM-DD HH:mm");
+
+                html += `
+                <div class="form-check-inline visits m-1 mb-0">
+                    <label class="visit-btns">
+                        <input type="radio" class="form-check-input"
+                            name="selected_slot"
+                            value="${formatted}">
+                        <span class="visit-rsn">${moment(slot).format("hh:mm A")}</span>
+                    </label>
+                </div>
+            `;
             });
-            $('#slots-wrapper').html(html);
-            // $('#selected_slot').val(selectedSlot);
+
+            $("#slots-wrapper").html(html);
         }
-    </script>
-    <script>
-        var getAvailablity = function(date) {
+
+        function getAvailability(date) {
             if (!date) {
-                return false;
+                $("#slots-wrapper").html("<h4>Please select a date</h4>");
+                return;
             }
 
-            var formatedDate = moment(date, "DD/MM/YYYY").format("YYYY-MM-DD");
+            // Convert dd/mm/yyyy → yyyy-mm-dd
             $.ajax({
                 url: "{{ route('get_availability', $doctor->id) }}",
                 method: "GET",
                 data: {
-                    selectedDate: encodeURI(formatedDate),
+                    selectedDate: date
                 },
                 success: function(resp) {
-                    // console.log('resp',resp);
-                    if (resp.status == "success") {
-                        if (!resp.data.length) {
-                            $("#slots-wrapper").html("<h3>Not Available</h3>");
-                            return false;
+
+                    if (resp.status === "success") {
+                        if (resp.data.length === 0) {
+                            $("#slots-wrapper").html("<h4>No Available Slots</h4>");
+                        } else {
+                            renderSlots(resp.data);
                         }
-                        renderSlots(resp.data);
-                    }
-                    if (resp.status == "error") {
-                        $("#slots-wrapper").html("<h3>" + resp.message + "</h3>");
-                        return false;
+                    } else {
+                        $("#slots-wrapper").html("<h4>" + resp.message + "</h4>");
                     }
                 },
-                error: function(err) {
-                    console.log('err', err);
+                error: function() {
+                    $("#slots-wrapper").html("<h4>Error loading availability</h4>");
                 }
             });
         }
-    </script>
-    <script>
+
         $(document).ready(function() {
 
-            // $('.slots-section')
-            // $('#payment-form')
+            // Load today automatically
+            let today = moment().format("YYYY-MM-DD");
 
-            // $('.next').click(function(e) {
-            //     e.preventDefault();
-            //     $('.forinputs').hide();
-            //     $('#payment-form').show();
-            //     $(this).hide();
-            // })
+            // Load today's availability
+            getAvailability(today);
 
-            // $(document).on('click', '.submit', function() {
-            //     alert("skjdhfkj");
-            //     $('.profile-box').show();
-            //     // setTimeout(function () {
-            //     $('.app-form').submit();
-            //     // },1000)
-            // });
-
-
-            var searchBtn = $("#search_availability");
-            var dateInput = $("#schedule_date");
-            var slotsWrapper = $("#slots-wrapper");
-
-            searchBtn.on("click", function(e) {
-                e.stopPropagation();
-                getAvailablity(dateInput.val());
-
+            $("#search_availability").click(function() {
+                let selected = $("#schedule_date").val();
+                console.log(selected);
+                getAvailability(selected);
             });
-
-            $("#schedule_date").datepicker({
-                minDate: 0,
-                dateFormat: "dd/mm/yy"
-            });
-            getAvailablity(dateInput.val());
         });
     </script>
-@endpush
+
+@endsection
