@@ -156,6 +156,22 @@
                                     </div>
                                 </div>
                             @endif
+                            <div class="form-group row">
+                                <label for="doctor_ids"
+                                    class="col-form-label col-md-2">Doctors</label>
+                                <div class="col-md-10">
+                                    <select id="doctor_ids" name="doctor_ids[]" type="text"
+                                        class="form-control js-example-basic-multiple" placeholder="select doctor"
+                                        multiple="multiple" required>
+                                        <option disabled>Select Hospital first</option>
+                                    </select>
+                                    @error('doctor_ids')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
 
                             {{-- type --}}
                             <div class="form-group row">
@@ -215,6 +231,52 @@
 
 @endsection
 
-
 <script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('assets/js/ckeditor.js') }}"></script>
+
+<script>
+    function getDoctors(hospitalId) {
+        // Cities
+        $.ajax({
+            url: '{{ route("get.doctors") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { hospital_id: hospitalId },
+            success: function (data) {
+            console.log('hello4');
+
+                $('#doctor_ids').empty(); // Clear the cities dropdown
+                $.each(data, function (key, doctor) {
+                    $('#doctor_ids').append('<option value="' + doctor.id + '">' + doctor.name_en +' < '+ doctor.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Doctores');
+            }
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log('hello1');
+        $('.js-example-basic-multiple').select2();
+        $('#hospital_id').on('change', function () {
+            console.log('hello2');
+            var hospital_id = $(this).val();
+            console.log(hospital_id);
+            if (hospital_id) {
+            console.log('hello3');
+
+                getDoctors(hospital_id);
+            } else {
+                $('#doctor_ids').empty(); // Clear the Doctores dropdown if no country is selected
+                $('#doctor_ids').append('<option disabled>Select Hospital first</option>');
+            }
+        });
+        ClassicEditor
+            .create(document.querySelector('#content_en'))
+            .catch(error => console.error(error));
+
+        ClassicEditor
+            .create(document.querySelector('#content_ar'))
+            .catch(error => console.error(error));
+    });
+</script>

@@ -44,10 +44,12 @@
                             </div>
 
                             {{-- Content --}}
+
                             <div class="form-group row">
                                 <label for="content_en" class="col-form-label col-md-2">Content EN</label>
                                 <div class="col-md-10">
-                                    <textarea id="content_en" name="content_en" type="text" class="form-control" placeholder="Content EN">{{ $offer->content_en }}</textarea>
+                                    {{-- <textarea id="content_en" name="content_en" type="text" class="form-control" placeholder="Content EN">{{ $offer->content_en }}</textarea> --}}
+                                    <textarea id="content_en" name="content_en" class="form-control">{{ $offer->content_en }}</textarea>
                                     @error('content_en')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -59,7 +61,8 @@
                             <div class="form-group row">
                                 <label for="content_ar" class="col-form-label col-md-2">Content AR</label>
                                 <div class="col-md-10">
-                                    <textarea id="content_ar" name="content_ar" type="text" class="form-control" placeholder="Content AR">{{ $offer->content_ar }}</textarea>
+                                    {{-- <textarea id="content_ar" name="content_ar" type="text" class="form-control" placeholder="Content AR">{{ $offer->content_ar }}</textarea> --}}
+                                    <textarea id="content_ar" name="content_ar" class="form-control">{{ $offer->content_ar }}</textarea>
                                     @error('content_ar')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
@@ -161,6 +164,31 @@
                                     </div>
                                 </div>
                             @endif
+                            <div class="form-group row">
+                                <label for="doctor_ids"
+                                    class="col-form-label col-md-2">Doctors</label>
+                                <div class="col-md-10">
+                                    <select id="doctor_ids" name="doctor_ids[]" type="text"
+                                        class="form-control js-example-basic-multiple" placeholder="select doctor"
+                                        multiple="multiple" required>
+                                        @if ($doctors)
+                                            @forelse($doctors as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ in_array($item->id, $offer->doctor_ids) ? 'selected' : '' }}>
+                                                    {{ $item->name_en }} < {{ $item->name_ar }} ></option>
+                                            @empty
+                                            @endforelse
+                                        @else
+                                            <option disabled>Select Hospital first</option>
+                                        @endif
+                                    </select>
+                                    @error('doctor_ids')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
 
                             {{-- type --}}
                             <div class="form-group row">
@@ -840,122 +868,52 @@
     <!-- /Main Wrapper -->
 
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-{{-- <script>
-    $(document).ready(function() {
+<script src="{{ asset('assets/js/ckeditor.js') }}"></script>
+
+<script>
+    function getDoctors(hospitalId) {
+        // Cities
+        $.ajax({
+            url: '{{ route("get.doctors") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { hospital_id: hospitalId },
+            success: function (data) {
+            console.log('hello4');
+
+                $('#doctor_ids').empty(); // Clear the cities dropdown
+                $.each(data, function (key, doctor) {
+                    $('#doctor_ids').append('<option value="' + doctor.id + '">' + doctor.name_en +' < '+ doctor.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Doctores');
+            }
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log('hello1');
         $('.js-example-basic-multiple').select2();
-        mapboxgl.accessToken = 'pk.eyJ1IjoiZW0yMDAwMTExIiwiYSI6ImNsajRrcXlicjA0MjMza3F6YjI5eW5pN2IifQ.bY21DI8kEvlV7z97OKlJJA';
-        initMap();
+        $('#hospital_id').on('change', function () {
+            console.log('hello2');
+            var hospital_id = $(this).val();
+            console.log(hospital_id);
+            if (hospital_id) {
+            console.log('hello3');
+
+                getDoctors(hospital_id);
+            } else {
+                $('#doctor_ids').empty(); // Clear the Doctores dropdown if no country is selected
+                $('#doctor_ids').append('<option disabled>Select Hospital first</option>');
+            }
+        });
+        ClassicEditor
+            .create(document.querySelector('#content_en'))
+            .catch(error => console.error(error));
+
+        ClassicEditor
+            .create(document.querySelector('#content_ar'))
+            .catch(error => console.error(error));
     });
-    let map;
-    let marker;
-    let selectedLocation = null;
-
-    function initMap() {
-        const initialCoords = [
-            {{ $hospital->long ?? 39.826288 }}, // Default longitude (e.g., Kaaba)
-            {{ $hospital->lat ?? 21.422438 }}  // Default latitude (e.g., Kaaba)
-        ];
-        currentLat = {{ $hospital->lat ?? null }};
-        currentLong = {{ $hospital->long ?? null }};
-        currentLocation = "{{ $hospital->location ?? null }}";
-        if (currentLat != null && currentLong != null && currentLocation != null ) {
-            $('#latitude').val(currentLat);
-            $('#longitude').val(currentLong);
-            $('#addressLocation').val(currentLocation);
-        }
-        map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: initialCoords,
-            zoom: 5
-        });
-
-        // Add navigation control (zoom in/out buttons)
-        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-        // Initialize marker
-        marker = new mapboxgl.Marker({
-            draggable: true
-        })
-        .setLngLat(initialCoords)
-        .addTo(map);
-
-        // Set the initial text under the map if the hospital's location exists
-        const initialLocation = '{{ $hospital->location ?? "Please Select A Hospital Location" }}';
-        document.getElementById('selectedLocation').textContent = `Selected Location: ${initialLocation}`;
-
-
-        // Update selectedLocation when marker is dragged
-        marker.on('dragend', onMarkerDragEnd);
-
-        // Add click event to map
-        map.on('click', onMapClick);
-
-        // Initialize the geocoder
-        const geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-            marker: false
-        });
-
-        // Add the geocoder to the map
-        document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
-
-        // Listen for the 'result' event from the geocoder
-        geocoder.on('result', function(e) {
-            const coords = e.result.center;
-            updateMarkerPosition(coords);
-        });
-    }
-
-    function onMapClick(e) {
-        updateMarkerPosition([e.lngLat.lng, e.lngLat.lat]);
-    }
-
-    function onMarkerDragEnd() {
-        const lngLat = marker.getLngLat();
-        updateMarkerPosition([lngLat.lng, lngLat.lat]);
-    }
-
-    function updateMarkerPosition(coords) {
-        marker.setLngLat(coords);
-        console.log(coords);
-
-        selectedLocation = {
-            lng: coords[0],
-            lat: coords[1]
-        };
-        getAddressFromCoordinates(coords);
-    }
-    function getAddressFromCoordinates(coords) {
-        $('#latitude').val(coords[1]);
-        $('#longitude').val(coords[0]);
-        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${mapboxgl.accessToken}`;
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (data.features && data.features.length > 0) {
-                const address = data.features[0].place_name;
-                updateSelectedLocationText(address);
-                $('#addressLocation').val(address);
-                } else {
-                    updateSelectedLocationText('Address not found');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching address:', error);
-                updateSelectedLocationText('Error fetching address');
-            });
-    }
-    function updateSelectedLocationText(address) {
-        const locationDiv = document.getElementById('selectedLocation');
-        if (selectedLocation) {
-            locationDiv.textContent = `Selected Location: ${address}`;
-        } else {
-            locationDiv.textContent = '';
-        }
-    }
-
-</script> --}}
+</script>

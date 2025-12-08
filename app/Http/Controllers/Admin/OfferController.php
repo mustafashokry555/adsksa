@@ -32,7 +32,8 @@ class OfferController extends Controller
             $hospitals = Hospital::all();
             return view('admin.offer.create', compact('hospitals', 'offerTypes'));
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
-            return view('hospital.offer.create', compact('offerTypes'));
+            $doctors = auth()->user()->hospital->doctors;
+            return view('hospital.offer.create', compact('offerTypes', 'doctors'));
         }
     }
 
@@ -48,6 +49,7 @@ class OfferController extends Controller
                 'price' => ['required', 'numeric', 'min:0'],
                 'old_price' => ['nullable', 'numeric', 'min:0'],
                 'hospital_id' => ['required', 'exists:hospitals,id'],
+                'doctor_ids' => ['required'],
                 'type' => ['required', 'in:image,video'],
                 'video_link' => ['nullable', 'required_if:type,video', 'url'],
                 'images' => ['required'],
@@ -66,6 +68,7 @@ class OfferController extends Controller
                 'title_en' => ['required', 'string', 'max:255'],
                 'price' => ['required', 'numeric', 'min:0'],
                 'old_price' => ['nullable', 'numeric', 'min:0'],
+                'doctor_ids' => ['required'],
                 'offer_type_id' => ['required', 'exists:offer_types,id'],
                 'content_ar' => ['required', 'string'],
                 'content_en' => ['required', 'string'],
@@ -98,9 +101,11 @@ class OfferController extends Controller
         $offerTypes = OfferType::active()->get();
         if( auth()->user()->user_type == User::ADMIN ) {
             $hospitals = Hospital::all();
-            return view('admin.offer.edit', compact('offer', 'hospitals' ,'offerTypes'));
+            $doctors = $offer->hospital->doctors;
+            return view('admin.offer.edit', compact('offer', 'hospitals' ,'offerTypes', 'doctors'));
         }elseif( auth()->user()->user_type == User::HOSPITAL ) {
-            return view('hospital.offer.edit', compact('offer' ,'offerTypes'));
+            $doctors = auth()->user()->hospital->doctors;
+            return view('hospital.offer.edit', compact('offer' ,'offerTypes', 'doctors'));
         }
     }
 
@@ -124,6 +129,7 @@ class OfferController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'old_price' => ['nullable', 'numeric', 'min:0'],
             'type' => ['required', 'in:image,video'],
+            'doctor_ids' => ['required'],
             'offer_type_id' => ['required', 'exists:offer_types,id'],
             'video_link' => ['nullable', 'required_if:type,video', 'url'],
             'start_date' => ['required', 'date', 'date_format:Y-m-d'],

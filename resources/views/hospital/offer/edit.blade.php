@@ -131,7 +131,31 @@
                                     @enderror
                                 </div>
                             </div>
-
+                            <div class="form-group row">
+                                <label for="doctor_ids"
+                                    class="col-form-label col-md-2">Doctors</label>
+                                <div class="col-md-10">
+                                    <select id="doctor_ids" name="doctor_ids[]" type="text"
+                                        class="form-control js-example-basic-multiple" placeholder="select doctor"
+                                        multiple="multiple" required>
+                                        @if ($doctors)
+                                            @forelse($doctors as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ in_array($item->id, $offer->doctor_ids) ? 'selected' : '' }}>
+                                                    {{ $item->name_en }} < {{ $item->name_ar }} ></option>
+                                            @empty
+                                            @endforelse
+                                        @else
+                                            <option disabled>Select Hospital first</option>
+                                        @endif
+                                    </select>
+                                    @error('doctor_ids')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
 
                             {{-- old price --}}
                             <div class="form-group row">
@@ -808,3 +832,39 @@
     <!-- /Page Content -->
     </div>
 @endsection
+<script src="{{ asset('assets/libs/jquery/jquery.min.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('assets/js/ckeditor.js') }}"></script>
+
+<script>
+    function getDoctors(hospitalId) {
+        // Cities
+        $.ajax({
+            url: '{{ route("get.doctors") }}', // Define this route in Laravel
+            type: 'GET',
+            data: { hospital_id: hospitalId },
+            success: function (data) {
+            console.log('hello4');
+
+                $('#doctor_ids').empty(); // Clear the cities dropdown
+                $.each(data, function (key, doctor) {
+                    $('#doctor_ids').append('<option value="' + doctor.id + '">' + doctor.name_en +' < '+ doctor.name_ar +' > '+'</option>');
+                });
+            },
+            error: function () {
+                alert('Error Loading Doctores');
+            }
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log('hello1');
+        $('.js-example-basic-multiple').select2();
+        ClassicEditor
+            .create(document.querySelector('#content_en'))
+            .catch(error => console.error(error));
+
+        ClassicEditor
+            .create(document.querySelector('#content_ar'))
+            .catch(error => console.error(error));
+    });
+</script>

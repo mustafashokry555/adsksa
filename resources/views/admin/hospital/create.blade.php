@@ -31,7 +31,7 @@
                             @csrf
 
                             <div class="form-group row">
-                                <label for="hospital_name"
+                                <label for="insurance"
                                     class="col-form-label col-md-2">{{ __('admin.hospital.insurance') }}</label>
                                 <div class="col-md-10">
                                     <select id="insurance" name="insurance[]" type="text"
@@ -45,7 +45,7 @@
                                         @endforelse
 
                                     </select>
-                                    @error('hospital_name')
+                                    @error('insurance')
                                         <div class="text-danger pt-2">
                                             {{ $message }}
                                         </div>

@@ -330,4 +330,13 @@ class DoctorController extends Controller
 
         return response()->json(['message' => 'Status updated successfully']);
     }
+
+
+    public function getHospitalDoctores(Request $request) {
+        $doctors = [];
+        if ($request->hospital_id && $request->hospital_id != null) {
+            $doctors = User::where('user_type', 'D')->active()->where('hospital_id', $request->hospital_id)->get();
+        }
+        return response()->json($doctors);
+    }
 }

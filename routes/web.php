@@ -90,6 +90,8 @@ Route::get('get-states', [StateController::class, 'get_states'])->name('get.stat
 Route::get('get-cities', [CityController::class, 'get_cities'])->name('get.cities');
 Route::get('get-insurances', [InsuranceController::class, 'get_insurances'])->name('get.insurances');
 Route::get('get-specialities', [SpecialityController::class, 'get_specialities'])->name('get.specialities');
+Route::get('get-doctors', [DoctorController::class, 'getHospitalDoctores'])->name('get.doctors');
+
 
 
 Route::middleware(['auth'])->group(function () {
@@ -106,6 +108,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('offers', OfferController::class);
     Route::resource('offer-types', OfferTypesController::class);
     Route::post('/offer-types/{id}/toggle-status', [OfferTypesController::class, 'toggleActive']);
+
 
 
     // notifications

@@ -8,7 +8,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">{{ __('admin.patient.add_new_patient') }}</h5>
+                        <h5 class="card-title">Add New Offer Type</h5>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('offer-types.store') }}" enctype="multipart/form-data">

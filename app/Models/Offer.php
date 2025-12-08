@@ -23,12 +23,24 @@ class Offer extends Model
         'offer_type_id',
         'price',
         'old_price',
+        'doctor_ids',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'doctor_ids' => 'array',
     ];
 
+    public function getDoctorsAttribute()
+    {
+        if (!is_array($this->doctor_ids)) {
+            return collect(); // return empty collection
+        }
+
+        return User::where('user_type', 'D')
+            ->whereIn('id', $this->doctor_ids)
+            ->get();
+    }
     public function favourites()
     {
         return $this->hasMany(FavouriteOffer::class);
@@ -105,5 +117,4 @@ class Offer extends Model
     {
         return $this->hasMany(Appointment::class, "offer_id");
     }
-
 }

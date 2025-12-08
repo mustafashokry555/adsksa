@@ -158,7 +158,7 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     Route::post('/offers/{offer}/toggle-favourite', [OfferController::class, 'toggleFavourite']);
     Route::get('/favourites', [OfferController::class, 'myFavourites']);
 
-    Route::get('offer/availability/{id}',[OfferAppointController::class,'get_availability']);
+    // Route::get('offer/availability/{id}',[OfferAppointController::class,'get_availability']);
     Route::post('offer/book-appointment',[OfferAppointController::class,'BookAppointment']);
     Route::post('offer/cancel-appointment',[OfferAppointController::class,'CancelAppointment']);
 
