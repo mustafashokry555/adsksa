@@ -95,9 +95,6 @@ class AppointController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'doctor_id' => 'required',
-            // 'integer',
-            // 'hospital_id' => 'required',
-            // 'integer',
             'appointment_date' => 'required|date_format:Y-m-d',
             'appointment_time' => 'required|date_format:H:i',
         ]);

@@ -86,6 +86,8 @@ class OfferAppointController extends Controller
     //     // return $filteredSlots;
     //     return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->all());
     // }
+
+
     // Book New Appointmentneed need alot of updates
     public function BookAppointment(Request $request)
     {

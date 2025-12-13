@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BillingController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\api\CommonController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\FilterController;
@@ -161,5 +162,10 @@ Route::middleware(['auth:sanctum','patient'])->group( function () {
     // Route::get('offer/availability/{id}',[OfferAppointController::class,'get_availability']);
     Route::post('offer/book-appointment',[OfferAppointController::class,'BookAppointment']);
     Route::post('offer/cancel-appointment',[OfferAppointController::class,'CancelAppointment']);
+
+    // Cart
+    Route::post('cart/add', [CartController::class, 'addToCart']);
+    Route::get('cart', [CartController::class, 'cart']);
+    Route::delete('cart/delete-item/{id}', [CartController::class, 'removeFromCart']);
 
 });
