@@ -25,6 +25,7 @@ class Invoice extends Model
         'paymentstatus',
         'payment_link',
         'paid_at',
+        'cart_id',
     ];
 
     protected $casts = [
@@ -36,6 +37,10 @@ class Invoice extends Model
         return $this->belongsTo(Appointment::class);
     }
 
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
     public function payment()
     {
         return $this->belongsTo(Payment::class);

@@ -63,9 +63,13 @@
                                                                             src="{{ URL::asset('/assets/img/patients/patient.jpg') }}"
                                                                             alt="User Image"></a>
                                                                 @endif
-                                                                <a
-                                                                    href="{{ route('profile.show', ['profile' => $doctor?->id]) }}">{{ $doctor?->name }}
-                                                                    <span></span></a>
+                                                                @if ($doctor)
+                                                                    <a href="{{ route('profile.show', ['profile' => $doctor?->id]) }}">
+                                                                        {{ $doctor?->name }}
+                                                                    </a>
+                                                                @else
+                                                                    <a>Unknown</a>
+                                                                @endif
                                                             </h2>
                                                         </td>
                                                         <td>

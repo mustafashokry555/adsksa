@@ -28,40 +28,65 @@ class PaymentController extends Controller
     public function initiate(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'appointment_id' => 'required|exists:appointments,id',
-            // 'amount' => 'required|numeric|min:0.1',
+            'appointment_id' => 'required_without:cart_id|exists:appointments,id',
+            'cart_id' => 'required_without:appointment_id|exists:carts,id',
             'currency' => 'nullable|string|size:3',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors(), 'status' => 422]);
         }
+        $invoice = null;
         $data = $request->all();
-        $invoice = Invoice::where('appointment_id', $data['appointment_id'])->first();
-        if (!$invoice) {
-            return response()->json([
-            'success' => false,
-            'message' => 'Invoice not found for the given appointment.',
-            ], 404);
+        if ($request->has('cart_id')) {
+            $invoice = Invoice::where('cart_id', $data['cart_id'])->first();
+            if (!$invoice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invoice not found for the given appointment.',
+                ], 404);
+            }
+            // Check appointment status and invoice payment info
+            $cart = $invoice->cart;
+            $hasNoPayment = empty($invoice->payment_id) && empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
+            $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
+
+            if (
+                !$cart ||
+                $cart->is_paid == true ||
+                !$hasNoPayment ||
+                !$noPaymentRecord
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot initiate payment: invoice or appointment not pending, or payment already exists.',
+                ], 400);
+            }
+        } elseif ($request->has('appointment_id')) {
+            $invoice = Invoice::where('appointment_id', $data['appointment_id'])->first();
+            if (!$invoice) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invoice not found for the given appointment.',
+                ], 404);
+            }
+            // Check appointment status and invoice payment info
+            $appointment = $invoice->appointment;
+            $hasNoPayment = empty($invoice->payment_id) && empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
+            $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
+
+            if (
+                !$appointment ||
+                $appointment->status !== 'P' ||
+                !$hasNoPayment ||
+                !$noPaymentRecord
+            ) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot initiate payment: invoice or appointment not pending, or payment already exists.',
+                ], 400);
+            }
         }
 
-        // Check appointment status and invoice payment info
-        $appointment = $invoice->appointment;
-        $hasNoPayment = empty($invoice->payment_id) && empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
-        $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
-
-        if (
-            !$appointment ||
-            $appointment->status !== 'P' ||
-            !$hasNoPayment ||
-            !$noPaymentRecord
-        ) {
-            // Return error if invoice is not pending, or has payment_id/paid_at,
-            // or appointment is not pending, or payment record exists for this invoice
-            return response()->json([
-                'success' => false,
-                'message' => 'Cannot initiate payment: invoice or appointment not pending, or payment already exists.',
-            ], 400);
-        }
         $vat_amount = ($invoice->subtotal * $invoice->vat) / 100;
         $total = $invoice->subtotal + $vat_amount;
         DB::beginTransaction();
@@ -79,12 +104,15 @@ class PaymentController extends Controller
 
             $cart_description = "";
             $description = "";
-            if($invoice->doctor_id) {
+            if ($invoice->doctor_id && $invoice->offer_id == null) {
                 $cart_description = "Appointment with Dr. {$invoice->doctor->name} on {$invoice->invoice_date}";
                 $description = "استشاره طبية";
-            }elseif($invoice->offer_id) {
+            } elseif ($invoice->offer_id && $invoice->cart_id == null) {
                 $cart_description = "Purchase of offer: {$invoice->offer->title}";
                 $description = "حجز العرض";
+            } elseif ($invoice->cart_id) {
+                $cart_description = "Purchase of items in cart #{$invoice->cart_id}";
+                $description = "شراء من السلة";
             }
 
             // prepare payload for PayTabs (fields according to PayTabs docs)
@@ -189,12 +217,10 @@ class PaymentController extends Controller
         if (!$invoice_id) {
             return response()->json(['success' => false, 'message' => 'Invalid webhook payload'], 400);
         }
-
         $payment = Payment::where('paytabs_invoice_id', $invoice_id)->first();
         if (!$payment) {
             return response()->json(['success' => false, 'message' => 'Payment not found'], 404);
         }
-
         $status = strtolower($payload['payment_result']['response_status']);
 
         if ($status == 'a') {
@@ -209,7 +235,21 @@ class PaymentController extends Controller
                     'paymentstatus' => 'paid',
                     'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
                 ]);
-                if ($payment->invoice->appointment) {
+                if ($payment->invoice->cart) {
+                    $payment->invoice->cart->update([
+                        'is_paid' => true,
+                    ]);
+                    // Update all cart items appointment status to completed
+                    foreach ($payment->invoice->cart->cartItems as $item) {
+                        if ($item->appointment) {
+                            $item->appointment->update([
+                                'payment_status' => 'Paid',
+                                'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
+                                'status' => 'C',
+                            ]);
+                        }
+                    }
+                } elseif ($payment->invoice->appointment) {
                     $payment->invoice->appointment->update([
                         'payment_status' => 'Paid',
                         'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
@@ -229,13 +269,25 @@ class PaymentController extends Controller
                     'paymentstatus' => 'cancelled',
                     'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
                 ]);
-                if ($payment->invoice->appointment) {
-                    Log::info('Appointment cancelled due to payment cancellation.', ['appointment_id' => $payment->invoice->appointment->id]);
-                    $test = $payment->invoice->appointment->update([
+                if ($payment->invoice->cart) {
+                    // Update all cart items appointment status to completed
+                    foreach ($payment->invoice->cart->cartItems as $item) {
+                        if ($item->appointment) {
+                            $item->appointment->update([
+                                'payment_status' => 'Unpaid',
+                                'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
+                                'status' => 'D',
+                            ]);
+                        }
+                    }
+                    $payment->invoice->cart->cartItems()->delete();
+                    $payment->invoice->cart->delete();
+                } elseif ($payment->invoice->appointment) {
+                    $payment->invoice->appointment->update([
+                        'payment_status' => 'Unpaid',
                         'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
                         'status' => 'D',
                     ]);
-                    Log::info('Appointment update result:', ['result' => $test]);
                 }
             }
             // Optionally: cancel the invoice in PayTabs system
@@ -252,9 +304,22 @@ class PaymentController extends Controller
                     'paymentstatus' => 'failed',
                     'paid_at' => $payload['payment_result']['transaction_time'] ?? now(),
                 ]);
-                if ($payment->invoice->appointment) {
+                if ($payment->invoice->cart) {
+                    // Update all cart items appointment status to completed
+                    foreach ($payment->invoice->cart->cartItems as $item) {
+                        if ($item->appointment) {
+                            $item->appointment->update([
+                                'payment_status' => 'Unpaid',
+                                'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
+                                'status' => 'D',
+                            ]);
+                        }
+                    }
+                    $payment->invoice->cart->cartItems()->delete();
+                    $payment->invoice->cart->delete();
+                } elseif ($payment->invoice->appointment) {
                     $payment->invoice->appointment->update([
-                        'payment_status' => 'failed',
+                        'payment_status' => 'Unpaid',
                         'payment_date' => $payload['payment_result']['transaction_time'] ?? now(),
                         'status' => 'D',
                     ]);
@@ -289,18 +354,18 @@ class PaymentController extends Controller
 
         if ($status == 'a') {
             return response()->json([
-            'success' => true,
-            'message' => 'Payment successful. Appointment confirmed.',
+                'success' => true,
+                'message' => 'Payment successful. Appointment confirmed.',
             ]);
         } elseif ($status == 'c') {
             return response()->json([
-            'success' => false,
-            'message' => 'Payment cancelled. Appointment is cancelled.',
+                'success' => false,
+                'message' => 'Payment cancelled. Appointment is cancelled.',
             ]);
         } else {
             return response()->json([
-            'success' => false,
-            'message' => 'Payment failed. Appointment is cancelled.',
+                'success' => false,
+                'message' => 'Payment failed. Appointment is cancelled.',
             ]);
         }
     }
@@ -326,16 +391,16 @@ class PaymentController extends Controller
 
         if ($status == 'a') {
             return redirect()
-            ->route('appointments')
-            ->with('success', 'Payment successful. Appointment confirmed.');
+                ->route('appointments')
+                ->with('success', 'Payment successful. Appointment confirmed.');
         } elseif ($status == 'c') {
             return redirect()
-            ->route('appointments')
-            ->with('error', 'Payment cancelled. Appointment is cancelled.');
+                ->route('appointments')
+                ->with('error', 'Payment cancelled. Appointment is cancelled.');
         } else {
             return redirect()
-            ->route('appointments')
-            ->with('error', 'Payment cancelled. Appointment is cancelled.');
+                ->route('appointments')
+                ->with('error', 'Payment cancelled. Appointment is cancelled.');
         }
     }
 
@@ -421,9 +486,9 @@ class PaymentController extends Controller
 
 
     /**
-     * Return URL: where PayTabs redirects the user's browser after payment.
-     * This receives a POST (or GET) with a limited payload. We still verify signature if provided.
-     */
+ * Return URL: where PayTabs redirects the user's browser after payment.
+ * This receives a POST (or GET) with a limited payload. We still verify signature if provided.
+ */
     // public function return2(Request $request)
     // {
     //     $raw = $request->getContent();

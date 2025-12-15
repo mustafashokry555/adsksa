@@ -309,18 +309,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            @if ($invoice->doctor_id)
-                                <td>استشاره طبية</td>
-                            @elseif ($invoice->offer_id)
-                                <td>حجز العرض</td>
-                            @endif
-                            <td>{{ $invoice->appointment?->appointment_date . ' ' . \Carbon\Carbon::parse($invoice->appointment?->appointment_time)->format('(A H:i)') }}
-                            </td>
-                            <td>{{ number_format($invoice->subtotal, 2) }}</td>
-                            <td>{{ number_format($vat_amount, 2) }}</td>
-                            <td>{{ number_format($total, 2) }}</td>
-                        </tr>
+                        @if ($invoice->cart)
+                            @foreach ($invoice->cart->items as $item)
+                                <tr>
+                                    <td>حجز العرض</td>
+                                    <td>{{ $item->appointment?->appointment_date . ' ' . \Carbon\Carbon::parse($item->appointment?->appointment_time)->format('(A H:i)') }}
+                                    </td>
+                                    <td>{{ number_format($item->price, 2) }}</td>
+                                    <td>{{ number_format($item->price * ($item->vat / 100), 2) }}</td>
+                                    <td>{{ number_format($item->total, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                @if ($invoice->offer_id)
+                                    <td>حجز العرض</td>
+                                @elseif ($invoice->offer_id == null && $invoice->doctor_id)
+                                    <td>استشاره طبية</td>
+                                @endif
+                                <td>{{ $invoice->appointment?->appointment_date . ' ' . \Carbon\Carbon::parse($invoice->appointment?->appointment_time)->format('(A H:i)') }}
+                                </td>
+                                <td>{{ number_format($invoice->subtotal, 2) }}</td>
+                                <td>{{ number_format($vat_amount, 2) }}</td>
+                                <td>{{ number_format($total, 2) }}</td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
 

@@ -7,6 +7,7 @@ use App\Http\Resources\Api\CartResource;
 use App\Models\Appointment;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Invoice;
 use App\Models\Offer;
 use App\Models\Settings;
 use Illuminate\Http\Request;
@@ -82,7 +83,7 @@ class CartController extends Controller
             $a = new Appointment();
             $a->offer_id = $request->offer_id;
             $a->doctor_id = $request->doctor_id;
-            $a->patient_id = $request->user()->id;
+            $a->patient_id = $user->id;
             $a->hospital_id = $offer->hospital_id;
             $a->appointment_date = $request->appointment_date;
             $a->appointment_time = $request->appointment_time;
@@ -111,13 +112,38 @@ class CartController extends Controller
             // Update total
             $cart->total = $cart->items->sum(fn($i) => $i->total);
             $cart->save();
+
+            // Create invoice after appointment is saved
+            $invoice = Invoice::where(
+                [
+                    'cart_id'          => $cart->id,
+                    'patient_id'       => $user->id,
+                    'paymentstatus'    => 'Pending',
+                ]
+            )->first();
+            if (!$invoice) {
+                $invoice = new Invoice();
+                $invoice->cart_id = $cart->id;
+                $invoice->patient_id = $user->id;
+                $invoice->paymentstatus = 'Pending';
+                $invoice->invoice_number = 'INV' . str_pad($a->id, 6, '0', STR_PAD_LEFT);
+                $invoice->company_name = $setting?->website_name ?? '';
+                $invoice->company_address = $setting?->address_line_1 ?? '';
+                $invoice->invoice_date = now();
+                $invoice->tax_number = $setting?->tax_number;
+                $invoice->subtotal = $cart->items->sum(fn($i) => $i->price);
+                $invoice->vat = $vat;
+                $invoice->save();
+            }else {
+                // update offer_id and doctor_id in case they changed
+                $invoice->subtotal = $cart->items->sum(fn($i) => $i->price);
+                $invoice->save();
+            }
             return $this->SuccessResponse(200, 'Appointment Added to cart successfully', null);
         } catch (\Throwable $th) {
-
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
-
 
     // API fro All Specialities (Done with Lang)
     public function cart()
@@ -136,18 +162,30 @@ class CartController extends Controller
 
     public function removeFromCart($itemId)
     {
-
         try {
             $item = CartItem::findOrFail($itemId);
             $cart = $item->cart;
+            // check is the cart is done paied or not
+            if ($cart->is_paid) {
+                return $this->ErrorResponse(400, 'Cannot remove item from a paid cart');
+            }
+            $appointment = $item->appointment;
+            // delete appointment
+            $appointment->delete();
+            // delete cart item
             $item->delete();
             $cart->total = $cart->items->sum(fn($i) => $i->total);
             $cart->save();
+            // update invoice total if exists
+            $invoice = Invoice::where('cart_id', $cart->id)->first();
+            if ($invoice) {
+                $invoice->subtotal = $cart->items->sum(fn($i) => $i->price);
+                $invoice->save();
+            }
             $cart = $cart->load('items.appointment');
             $cart = $cart ? CartResource::make($cart) : $cart;
             return $this->SuccessResponse(200, 'Item removed from cart successfully', $cart);
         } catch (\Throwable $th) {
-
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
