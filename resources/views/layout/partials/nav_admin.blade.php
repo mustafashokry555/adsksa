@@ -122,6 +122,10 @@
                 </li>
 
 
+                <li class="{{ Request::routeIs('notifications.create') ? 'active' : '' }}">
+                    <a href="{{ route('notifications.create') }}"><i class="feather-calendar"></i>
+                        <span>Send Notifications</span></a>
+                </li>
                 <!-- /************************************************  ********************************************************/ -->
 
 

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\FirebaseService;
 use App\Models\Notification;
+use App\Models\Offer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +30,7 @@ class NotificationController extends Controller
                 $notification->update(['isRead' => 0]);
             }
             return view('patient.notification', compact('notifications'));
-        }else{
+        } else {
             abort(401);
         }
     }
@@ -39,7 +42,25 @@ class NotificationController extends Controller
      */
     public function create()
     {
-        //
+        $offers = Offer::where('is_active', 1)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now());
+        $users = User::active()->where('user_type', 'U');
+        if (Auth::user()->is_admin()) {
+            $offers = $offers->whereHas('hospital', function ($q) {
+                $q->where('is_active', 1);
+            })->get();
+            $users = $users->get();
+            return view('admin.notification.send', compact('users', 'offers'));
+        } elseif (Auth::user()->is_hospital()) {
+            $notifications = Notification::with('reciever')->where('to_id', Auth::user()->id)->where('isRead', 1)->get();
+            foreach ($notifications as $notification) {
+                $notification->update(['isRead' => 0]);
+            }
+            return view('patient.notification', compact('notifications'));
+        } else {
+            abort(401);
+        }
     }
 
     /**
@@ -50,7 +71,40 @@ class NotificationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes = $request->validate([
+            'title_ar' => ['required', 'string', 'max:255'],
+            'title_en' => ['required', 'string', 'max:255'],
+            'message_ar' => ['required', 'string'],
+            'message_en' => ['required', 'string'],
+            'users_ids' => ['required'],
+            'offer_id' => ['nullable', 'exists:offers,id'],
+        ]);
+        $users = User::active()->where('user_type', 'U');
+        $user = null;
+        if (in_array('all', $request->users_ids)) {
+            $users = $users->get();
+        } else {
+            $user = $users->whereIn('id', $request->users_ids)->first();
+        }
+        // foreach ($users as $user) {
+        $notification = new Notification();
+        $notification->from_id = Auth::user()->id;
+        $notification->to_id = $user->id;
+        $notification->title_ar = $request->title_ar;
+        $notification->title_en = $request->title_en;
+        $notification->message_ar = $request->message_ar;
+        $notification->message_en = $request->message_en;
+        if ($request->offer_id) {
+            $notification->notifiable_type = Offer::class;
+            $notification->notifiable_id = $request->offer_id;
+        }
+        $notification->isRead = 0;
+        $notification->save();
+        if ($user && $user->device_token) {
+            $firebase = new FirebaseService();
+            $firebase->notify($notification->title_ar, $notification->message_ar, $user->device_token);
+        }
+        // }
     }
 
     /**

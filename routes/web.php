@@ -114,6 +114,8 @@ Route::middleware(['auth'])->group(function () {
     // notifications
     Route::resource('insurances', InsuranceController::class);
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::get('/notifications/send', [NotificationController::class, 'create'])->name('notifications.create');
+    Route::post('/notifications/send', [NotificationController::class, 'store'])->name('notifications.store');
 
     // Admin Routes
     Route::resource('hospitalDoctors', HospitalDoctorsController::class);

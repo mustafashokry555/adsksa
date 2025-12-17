@@ -72,11 +72,7 @@ class FirebaseService
     }
 
     /*----------------------------------------------------------------------------------------------------*/
-// if ($customer && $customer->device_token) {
-//             // Assuming you have a notification service set up
-//             $firebase = new FirebaseService();
-//             $firebase->notify("الطلب رقم #$order->id", "تم وصول المندوب الى الموقع المحدد.", $customer->device_token);
-//         }
+
     public function notify($title, $body, $devicesTokens, $additionalData = null)
     {
         // if ($additionalData) {
