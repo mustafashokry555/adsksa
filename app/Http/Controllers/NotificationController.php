@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\FirebaseService;
+use App\Jobs\SendNotificationJob;
 use App\Models\Notification;
 use App\Models\Offer;
 use App\Models\User;
@@ -79,32 +80,19 @@ class NotificationController extends Controller
             'users_ids' => ['required'],
             'offer_id' => ['nullable', 'exists:offers,id'],
         ]);
-        $users = User::active()->where('user_type', 'U');
-        $user = null;
-        if (in_array('all', $request->users_ids)) {
-            $users = $users->get();
-        } else {
-            $user = $users->whereIn('id', $request->users_ids)->first();
-        }
-        // foreach ($users as $user) {
-        $notification = new Notification();
-        $notification->from_id = Auth::user()->id;
-        $notification->to_id = $user->id;
-        $notification->title_ar = $request->title_ar;
-        $notification->title_en = $request->title_en;
-        $notification->message_ar = $request->message_ar;
-        $notification->message_en = $request->message_en;
-        if ($request->offer_id) {
-            $notification->notifiable_type = Offer::class;
-            $notification->notifiable_id = $request->offer_id;
-        }
-        $notification->isRead = 0;
-        $notification->save();
-        if ($user && $user->device_token) {
-            $firebase = new FirebaseService();
-            $firebase->notify($notification->title_ar, $notification->message_ar, $user->device_token);
-        }
-        // }
+
+        SendNotificationJob::dispatch([
+            'from_id' => auth()->id(),
+            'users_ids' => $request->users_ids,
+            'title_ar' => $request->title_ar,
+            'title_en' => $request->title_en,
+            'message_ar' => $request->message_ar,
+            'message_en' => $request->message_en,
+            'offer_id' => $request->offer_id,
+        ]);
+
+        return redirect()->back()
+        ->with('flash', ['type' => 'success', 'message' => 'Notification queued successfully']);
     }
 
     /**
