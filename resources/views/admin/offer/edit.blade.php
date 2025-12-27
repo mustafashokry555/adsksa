@@ -174,7 +174,10 @@
                                         @if ($doctors)
                                             @forelse($doctors as $item)
                                                 <option value="{{ $item->id }}"
-                                                    {{ in_array($item->id, $offer->doctor_ids) ? 'selected' : '' }}>
+                                                    @if ($offer->doctor_id != null)
+                                                        {{ in_array($item->id, $offer->doctor_ids) ? 'selected' : '' }}
+                                                    @endif
+                                                    >
                                                     {{ $item->name_en }} < {{ $item->name_ar }} ></option>
                                             @empty
                                             @endforelse
