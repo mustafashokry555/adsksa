@@ -87,7 +87,7 @@
                             </div>
 
                             {{-- Offers --}}
-                            <div class="form-group row">
+                            {{-- <div class="form-group row">
                                 <label for="offer_id" class="col-form-label col-md-2">Offers</label>
                                 <div class="col-md-10">
                                     <select id="offer_id" name="offer_id" class="form-select select">
@@ -102,7 +102,7 @@
                                         </div>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <button class="btn btn-primary btn-add"><i class="feather-plus-square me-1"></i>Send</button>
                         </form>

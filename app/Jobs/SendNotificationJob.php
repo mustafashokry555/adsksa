@@ -62,11 +62,11 @@ class SendNotificationJob implements ShouldQueue
                     $firebase->notify(
                         app()->getLocale() === 'ar'
                             ? $notification->title_ar
-                            : $notification->title_en,
+                            : $notification->title_ar,
 
                         app()->getLocale() === 'ar'
                             ? $notification->message_ar
-                            : $notification->message_en,
+                            : $notification->title_ar,
 
                         $user->device_token,
                         [
