@@ -43,22 +43,18 @@ class NotificationController extends Controller
      */
     public function create()
     {
-        $offers = Offer::where('is_active', 1)
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now());
+        // $offers = Offer::where('is_active', 1)
+        //     ->where('start_date', '<=', now())
+        //     ->where('end_date', '>=', now());
         $users = User::active()->where('user_type', 'U');
+        $users = $users->get();
         if (Auth::user()->is_admin()) {
-            $offers = $offers->whereHas('hospital', function ($q) {
-                $q->where('is_active', 1);
-            })->get();
-            $users = $users->get();
-            return view('admin.notification.send', compact('users', 'offers'));
+            // $offers = $offers->whereHas('hospital', function ($q) {
+            //     $q->where('is_active', 1);
+            // })->get();
+            return view('admin.notification.send', compact('users'));
         } elseif (Auth::user()->is_hospital()) {
-            $notifications = Notification::with('reciever')->where('to_id', Auth::user()->id)->where('isRead', 1)->get();
-            foreach ($notifications as $notification) {
-                $notification->update(['isRead' => 0]);
-            }
-            return view('patient.notification', compact('notifications'));
+            return view('hospital.notification.send', compact('users'));
         } else {
             abort(401);
         }

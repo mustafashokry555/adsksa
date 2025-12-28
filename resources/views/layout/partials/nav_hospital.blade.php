@@ -83,6 +83,12 @@
                                         <span>Invoices</span>
                                     </a>
                                 </li>
+                                <li class="{{ Request::routeIs('notifications.create') ? 'active' : '' }}">
+                                    <a href="{{ route('notifications.create') }}">
+                                        <i class="fas fa-calendar-check"></i>
+                                        <span>Send Votifications</span>
+                                    </a>
+                                </li>
                                 <li class="{{ Request::routeIs('reviews') ? 'active' : '' }}">
                                     <a href="{{ route('reviews') }}">
                                         <i class="fas fa-star"></i>
