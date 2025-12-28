@@ -66,7 +66,7 @@ class SendNotificationJob implements ShouldQueue
 
                         app()->getLocale() === 'ar'
                             ? $notification->message_ar
-                            : $notification->title_ar,
+                            : $notification->message_ar,
 
                         $user->device_token,
                         [
