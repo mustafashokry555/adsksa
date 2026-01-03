@@ -594,7 +594,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function verifyOtp2(Request $request)
+    public function verifyRestPasswprdOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
