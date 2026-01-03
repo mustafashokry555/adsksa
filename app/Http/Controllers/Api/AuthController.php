@@ -645,7 +645,7 @@ class AuthController extends Controller
             ]
         ]);
     }
-    public function reset(Request $request)
+    public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'token' => 'required',
