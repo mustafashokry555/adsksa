@@ -553,7 +553,7 @@ class AuthController extends Controller
 
 
     // Eamil Reset Pass
-    public function sendResetEmail(Request $request)
+    public function sendResetPasswordEmail(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
