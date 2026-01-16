@@ -47,14 +47,14 @@ class PaymentController extends Controller
             }
             // Check appointment status and invoice payment info
             $cart = $invoice->cart;
-            $hasNoPayment = empty($invoice->payment_id) && empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
-            $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
+            // $hasNoPayment = empty($invoice->payment_id) && empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
+            // $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
 
             if (
                 !$cart ||
-                $cart->is_paid == true ||
-                !$hasNoPayment ||
-                !$noPaymentRecord
+                $cart->is_paid == true
+                // !$hasNoPayment ||
+                // !$noPaymentRecord
             ) {
                 return response()->json([
                     'success' => false,
@@ -71,14 +71,14 @@ class PaymentController extends Controller
             }
             // Check appointment status and invoice payment info
             $appointment = $invoice->appointment;
-            $hasNoPayment = empty($invoice->payment_id) && empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
-            $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
+            $hasNoPayment = empty($invoice->paid_at) && strtolower($invoice->paymentstatus) === 'pending';
+            // $noPaymentRecord = Payment::where('invoice_id', $invoice->id)->doesntExist();
 
             if (
                 !$appointment ||
                 $appointment->status !== 'P' ||
-                !$hasNoPayment ||
-                !$noPaymentRecord
+                !$hasNoPayment
+                // !$noPaymentRecord
             ) {
                 return response()->json([
                     'success' => false,
