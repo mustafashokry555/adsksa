@@ -42,7 +42,7 @@ class PatientController extends Controller
                     ->join('appointments', 'users.id', '=', 'appointments.patient_id')
                     ->where('appointments.hospital_id', Auth::user()->hospital_id)
                     ->select('users.*')
-                    ->distinct('users.id') 
+                    ->distinct('users.id')
                     ->paginate(10),
             ]);
         } elseif (Auth::user()->is_doctor()) {
@@ -58,7 +58,7 @@ class PatientController extends Controller
                     ->join('appointments', 'users.id', '=', 'appointments.patient_id')
                     ->where('appointments.doctor_id', Auth::id())
                     ->select('users.*')
-                    ->distinct('users.id') 
+                    ->distinct('users.id')
                     ->paginate(10),
             ]);
         } else {
@@ -146,9 +146,9 @@ class PatientController extends Controller
                     'status' => 'required',
                     'profile_image' => 'image',
                     'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-                    
+
                     'mobile'=>'required|min:10|max:12|unique:users,mobile,'.$id,
-                    
+
                 ]);
                 if ($attributes['profile_image'] ?? false) {
                     if ($file = $request->file('profile_image')) {
@@ -184,12 +184,20 @@ class PatientController extends Controller
 
             $patient = User::find($id);
             $patient->delete();
-            
+
             return redirect()
             ->route('patient.index')
             ->with('flash', ['type', 'success', 'message' => 'Patient Deleted Successfuly']);
         }else{
             abort(401);
         }
+    }
+
+    public function toggleActive(Request $request, $id)
+    {
+        $patient = User::findOrFail($id);
+        $patient->status = $request->status ? "Active" : "Inactive";
+        $patient->save();
+        return response()->json(['message' => 'Status updated successfully']);
     }
 }

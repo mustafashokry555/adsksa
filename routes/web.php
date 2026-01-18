@@ -135,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/doctor/{id}/toggle-active', [DoctorController::class, 'toggleActive']);
     Route::resource('banner', BannerController::class);
     Route::resource('patient', PatientController::class);
+    Route::post('/patients/{id}/toggle-active', [PatientController::class, 'toggleActive']);
     Route::resource('hospital-types', HospitalTypesController::class);
     Route::resource('docotr-degree', DoctorDegreeController::class);
     Route::get('docotr-degree/restore/{id}', [DoctorDegreeController::class, 'restore'])->name('docotr-degree.restore');

@@ -18,7 +18,56 @@
             @if (session()->has('flash'))
                 <x-alert>{{ session('flash')['message'] }}</x-alert>
             @endif
+            <style>
+                .switch {
+                    position: relative;
+                    display: inline-block;
+                    width: 50px;
+                    height: 25px;
+                }
+
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                .slider {
+                    position: absolute;
+                    cursor: pointer;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: #ccc;
+                    transition: 0.4s;
+                    border-radius: 25px;
+                }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 19px;
+                    width: 19px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: 0.4s;
+                    border-radius: 50%;
+                }
+
+                input:checked+.slider {
+                    background-color: #4caf50;
+                }
+
+                input:checked+.slider:before {
+                    transform: translateX(24px);
+                }
+            </style>
             <!-- Patients List -->
+            <div id="flash-message" style="display: none" class="alert alert-success mt-2">
+                {{ session()->has('flash') ? session('flash')['message'] : '' }}
+            </div>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="card">
@@ -55,7 +104,7 @@
                                                             {{ in_array('Inactive', $status) ? 'checked' : '' }}>
                                                         <span class="checkmark"></span> Disabled
                                                     </label>
-                                                    <p class="lab-title">By Blood Type</p>
+                                                    {{-- <p class="lab-title">By Blood Type</p>
                                                     <label class="custom_check w-100">
                                                         <input type="checkbox" name="blood_group[]" value="AB+"
                                                             {{ in_array('AB+', $bloodGroup) ? 'checked' : '' }}>
@@ -92,7 +141,7 @@
                                                         <input type="checkbox" name="blood_group[]" value="AB-"
                                                             {{ in_array('AB-', $bloodGroup) ? 'checked' : '' }}>
                                                         <span class="checkmark"></span> AB-
-                                                    </label>
+                                                    </label> --}}
                                                 </div>
                                                 <button type="submit" class="btn w-100 btn-primary">Apply</button>
                                             </form>
@@ -109,11 +158,11 @@
                                             <th>{{ __('admin.patient.id') }}</th>
                                             <th>{{ __('admin.patient.patient') }}</th>
                                             <th>{{ __('admin.patient.mobile') }}</th>
-                                            <!-- <th>Status</th> -->
-                                            {{-- <th>Last Visit</th> --}}
-                                            <th>{{ __('admin.patient.blood_group') }}</th>
+                                            <th>Email</th>
+                                            <th>Verification Status</th>
+                                            {{-- <th>{{ __('admin.patient.blood_group') }}</th> --}}
                                             <!-- <th>Total Income</th> -->
-                                            {{-- <th>Account Status</th> --}}
+                                            <th>Account Status</th>
                                             <th>{{ __('admin.patient.action') }}</th>
                                         </tr>
                                     </thead>
@@ -133,31 +182,26 @@
                                                     </h2>
                                                 </td>
                                                 <td>{{ $patient->mobile ?? 'N/A' }}</td>
-                                                <!-- <td>{{ $patient->status }}</td> -->
-                                                {{--                                <td><span class="user-name">26 November 2022 </span><span class="d-block">12/20/2022</span></td> --}}
-                                                @if ($patient->blood_group ?? '')
-                                                    <td>{{ $patient->blood_group }}</td>
-                                                @else
-                                                    <td>N\A</td>
-                                                @endif
-
-                                                <!-- @if ($patient->pricing ?? '')
-    <td>${{ $patient->pricing }}</td>
-@else
-    <td>N\A</td>
-    @endif -->
-
-                                                {{--                                <td> --}}
-                                                {{--                                    <label class="toggle-switch" for="status1"> --}}
-                                                {{--                                        <input type="checkbox" class="toggle-switch-input" id="status1"> --}}
-                                                {{--                                        <span class="toggle-switch-label"> --}}
-                                                {{--																<span class="toggle-switch-indicator"></span> --}}
-                                                {{--															</span> --}}
-                                                {{--                                    </label> --}}
-                                                {{--                                </td> --}}
+                                                <td>{{ $patient->email }}</td>
+                                                <td>
+                                                    @if ($patient->is_verified)
+                                                        <span class="badge bg-success-light">Verified</span>
+                                                    @else
+                                                        <span class="badge bg-danger-light">Not Verified</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <label class="switch">
+                                                        <input type="checkbox"
+                                                            {{ $patient->status == 'Active' ? 'checked' : '' }}
+                                                            data-id="{{ $patient->id }}">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </td>
                                                 <td class="text-end">
                                                     <div class="actions">
-                                                        <a class="text-black" href="{{ route('patient.edit', $patient) }}">
+                                                        <a class="text-black"
+                                                            href="{{ route('patient.edit', $patient) }}">
                                                             <i class="feather-edit-3 me-1"></i> Edit
                                                         </a>
                                                         <a class="text-danger" href="javascript:void(0);"
@@ -188,5 +232,36 @@
     <!-- /Page Wrapper -->
     </div>
     <!-- /Main Wrapper -->
+    <script>
+        document.querySelectorAll('.switch input').forEach((toggle) => {
+            toggle.addEventListener('change', function() {
+                let patientId = this.dataset.id;
+                let status = this.checked ? 1 : 0;
 
+                fetch(`/patients/${patientId}/toggle-active`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            status: status
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Show flash message
+                        let flash = document.getElementById("flash-message");
+                        flash.innerText = data.message;
+                        flash.style.display = "block";
+
+                        // Auto-hide after 3s
+                        setTimeout(() => {
+                            flash.style.display = "none";
+                        }, 3000);
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
 @endsection
