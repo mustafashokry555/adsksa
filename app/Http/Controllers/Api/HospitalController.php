@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\DoctorResource;
 use App\Http\Resources\Api\HospitalResource;
 use App\Http\Resources\Api\OfferResource;
+use App\Http\Resources\Api\OfferTypeResource;
 use App\Models\Hospital;
+use App\Models\OfferType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -20,7 +22,8 @@ class HospitalController extends Controller
         $this->lang = $request->header('lang', 'en');
     }
 
-    public function hospitalProfile($id){
+    public function hospitalProfile($id)
+    {
         try {
             $profile = Hospital::where('hospitals.id', $id)
                 ->with([
@@ -58,9 +61,16 @@ class HospitalController extends Controller
             $doctorsList = $profile->doctors ? DoctorResource::collection($profile->doctors) : [];
             unset($profile->doctors);
             $profile->doctors = $doctorsList;
+            $offerTypesIds = $profile->offers
+                ->pluck('offer_type_id')
+                ->unique()
+                ->values();
+            $offerTypes = OfferType::whereIn('id', $offerTypesIds)->get();
+            $offerTypes = OfferTypeResource::collection($offerTypes);
             $offers = OfferResource::collection($profile->offers);
             unset($profile->offers);
             $profile->offers = $offers;
+            $profile->offerTypes = $offerTypes;
 
             return $this->SuccessResponse(200, 'Hospital Profile', $profile);
         } catch (\Throwable $th) {
@@ -144,14 +154,15 @@ class HospitalController extends Controller
                 })->values();
             }
             // ✅ keep pagination meta but replace data with transformed resource
-        // $hospitals->setCollection($hospitalsResource);
+            // $hospitals->setCollection($hospitalsResource);
             return $this->SuccessResponse(200, 'Hospitals list', $hospitals);
         } catch (\Throwable $th) {
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
 
-    public function HospitalsTest(Request $request){
+    public function HospitalsTest(Request $request)
+    {
         try {
             $query = Hospital::query();
             if (request('search')) {

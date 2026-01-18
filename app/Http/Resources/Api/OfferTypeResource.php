@@ -19,7 +19,7 @@ class OfferTypeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name ?? '',
             'status' => $this->status,
-            'images' => $this->image ? asset('images/offer_types/'.$this->image) : $this->image,
+            'images' => $this->image ? asset('images/offer_types/'.rawurlencode($this->image)) : $this->image,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];

@@ -78,8 +78,8 @@ Route::get('availability/{id}',[AppointController::class,'get_availability']);
 
 // Settings
 Route::get('privacy-policy',[SettingController::class,'privacy_policy']);
+Route::get('return-policy',[SettingController::class,'return_policy']);
 Route::get('help',[SettingController::class,'help']);
-
 
 
 // Route::get('hospitals',[CommonController::class,'Hospitals']);

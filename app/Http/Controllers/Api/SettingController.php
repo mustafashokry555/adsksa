@@ -42,6 +42,21 @@ class SettingController extends Controller
         }
     }
 
+    public function return_policy( Request $request ){
+        try {
+            $data = [];
+            $setting = Settings::first();
+            if ($setting) {
+                $data = [
+                    'return_policy' => $setting->return_policy,
+                ];
+            }
+            return $this->SuccessResponse(200, 'Data reterieved successfully', $data);
+        } catch (\Throwable $th) {
+            return $this->ErrorResponse(400, $th->getMessage());
+        }
+    }
+
     // API for Update Or Create App Setting (Done)
     public function updateOrCreateAppSetting(Request $request){
         try {
