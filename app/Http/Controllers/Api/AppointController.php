@@ -55,11 +55,16 @@ class AppointController extends Controller
                 $availability = $regularAvailability;
             }
         }
-        // return $availability;
+        $filteredSlots = collect([]);
+
         // if availability is null
         if (!$availability) {
 
-            return $this->SuccessResponse(200, "Not Available", []);
+            return $this->SuccessResponse(200, "Not Available", [
+                'day_availability' => $availability ? true : false,
+                'slots' => $filteredSlots->unique()->values()->all(),
+                'appointment_with_time' => $doctor->hospital->appointment_with_time,
+            ]);
         }
         // Appointments of selected date
         $appointments = Appointment::where('appointment_date', $date)
@@ -69,26 +74,32 @@ class AppointController extends Controller
         // Creating Slots
         $slots = [];
         $filteredSlots = collect([]);
-        $intervals = collect($availability->slots);
+        if ($doctor->hospital->appointment_with_time){
+            $intervals = collect($availability->slots);
 
 
-        // Fliter slots
-        foreach ($intervals as  $interval) {
-            $start_dt = $date . $interval["start_time"];
-            $end_dt = $date . $interval["end_time"];
+            // Fliter slots
+            foreach ($intervals as  $interval) {
+                $start_dt = $date . $interval["start_time"];
+                $end_dt = $date . $interval["end_time"];
 
-            // Create Slots
-            $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
-            foreach ($slots as $slot) {
-                if ($slot->greaterThan(Carbon::now()->addMinutes(20)) && $slot->lessThan($end_dt)) {
-                    if (!$appointments->contains($slot->format("H:i:s"))) {
-                        $filteredSlots->push($slot->format("H:i"));
+                // Create Slots
+                $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
+                foreach ($slots as $slot) {
+                    if ($slot->greaterThan(Carbon::now()->addMinutes(20)) && $slot->lessThan($end_dt)) {
+                        if (!$appointments->contains($slot->format("H:i:s"))) {
+                            $filteredSlots->push($slot->format("H:i"));
+                        }
                     }
                 }
             }
         }
         // return $filteredSlots;
-        return $this->SuccessResponse(200, 'Available slots', $filteredSlots->unique()->values()->all());
+        return $this->SuccessResponse(200, 'Available slots', [
+            'day_availability' => $availability ? true : false,
+            'slots' => $filteredSlots->unique()->values()->all(),
+            'appointment_with_time' => $doctor->hospital->appointment_with_time,
+        ]);
     }
     // Book New Appointmentneed need alot of updates
     public function BookAppointment(Request $request)
@@ -96,7 +107,6 @@ class AppointController extends Controller
         $validator = Validator::make($request->all(), [
             'doctor_id' => 'required',
             'appointment_date' => 'required|date_format:Y-m-d',
-            'appointment_time' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {
@@ -108,14 +118,6 @@ class AppointController extends Controller
 
         try {
             $baseUrl = getenv('BASE_URL') . 'images/';
-            $isExist = Appointment::where([
-                'appointment_date' => $request->appointment_date,
-                'appointment_time' => $request->appointment_time,
-                'doctor_id' => $request->doctor_id,
-            ])->whereIn('status', ['P', 'C'])->first();
-            if ($isExist) {
-                return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
-            }
             $doctor = User::where('id', $request->doctor_id)->first();
             if (!$doctor) {
                 return response()->json([
@@ -123,6 +125,25 @@ class AppointController extends Controller
                     'errors' => 'Doctor not Exist'
                 ], 422);
             }
+            $appointment_time = NULL;
+            if($doctor->hospital && $doctor->hospital->appointment_with_time ){
+                if (!$request->appointment_time) {
+                    return response()->json([
+                        'message' => 'Validation failed',
+                        'errors' => 'Appointment time is required'
+                    ], 422);
+                }
+                $isExist = Appointment::where([
+                    'appointment_date' => $request->appointment_date,
+                    'appointment_time' => $request->appointment_time,
+                    'doctor_id' => $request->doctor_id,
+                ])->whereIn('status', ['P', 'C'])->first();
+                if ($isExist) {
+                    return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+                }
+                $appointment_time = $request->appointment_time;
+            }
+
             $setting = Settings::first();
             $user = $request->user();
             $vat = $setting?->vat ?? 0.0;
@@ -138,7 +159,7 @@ class AppointController extends Controller
             $a->patient_id = $request->user()->id;
             $a->hospital_id = $doctor->hospital_id;
             $a->appointment_date = $request->appointment_date;
-            $a->appointment_time = $request->appointment_time;
+            $a->appointment_time = $appointment_time;
             $a->appointment_type = $request->appointment_type;
             $a->booking_for = $request->booking_for;
             $a->concern = $request->concern;
@@ -168,7 +189,6 @@ class AppointController extends Controller
             Notification::create([
                 'from_id' => $a->patient_id,
                 'to_id' => $a->doctor_id,
-                // 'appointment_id' => $appointment->id,
                 'title_en' => "New Appointment",
                 'title_ar' => "ميعاد جديد",
                 'notifiable_id' => $a->id,
@@ -177,12 +197,6 @@ class AppointController extends Controller
                 'message_en' => 'New Appointment (#' . $a->id . ') is waiting for approval',
             ]);
 
-            // $user = User::find($request->user()->id);
-            // $user->name = $request->name;
-            // $user->gender = $request->gender;
-            // $user->age = $request->age;
-
-            // $user->save();
 
             $appointment = Appointment::where('appointments.patient_id', $request->user()->id)
                 ->where('appointments.id', $a->id)
@@ -210,7 +224,6 @@ class AppointController extends Controller
 
             return $this->SuccessResponse(200, 'Appointment details', $appointment);
         } catch (\Throwable $th) {
-
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
@@ -299,7 +312,7 @@ class AppointController extends Controller
             $long = request("long");
             if ($lat != null && $long != null) {
                 $completed_appointments->map(function ($appointment) use ($lat, $long) {
-                    if($appointment->doctor){
+                    if ($appointment->doctor) {
                         if ($appointment->hospital?->lat != null && $appointment->hospital?->long != null) {
                             $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                         } else {
@@ -309,7 +322,7 @@ class AppointController extends Controller
                     return $appointment;
                 });
                 $upcoming_appointments->map(function ($appointment) use ($lat, $long) {
-                    if($appointment->doctor){
+                    if ($appointment->doctor) {
                         if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
                             $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                         } else {
@@ -319,7 +332,7 @@ class AppointController extends Controller
                     return $appointment;
                 });
                 $cancelled_appointments->map(function ($appointment) use ($lat, $long) {
-                    if($appointment->doctor){
+                    if ($appointment->doctor) {
                         if ($appointment->doctor->hospital?->lat != null && $appointment->doctor->hospital?->long != null) {
                             $appointment->doctor->distance = $this->getDistance($appointment->doctor->hospital->lat, $appointment->doctor->hospital->long, $lat, $long) ?? null;
                         } else {
@@ -363,5 +376,4 @@ class AppointController extends Controller
             return $this->ErrorResponse(400, $th->getMessage());
         }
     }
-
 }

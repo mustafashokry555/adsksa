@@ -289,10 +289,10 @@
                 success: function(resp) {
 
                     if (resp.status === "success") {
-                        if (resp.data.length === 0) {
-                            $("#slots-wrapper").html("<h4>No Available Slots</h4>");
+                        if (resp.data.appointment_with_time == false && resp.data.day_availability ) {
+                            $("#slots-wrapper").html("<h4>You Can Book An Appointment, This Day is Available</h4>");
                         } else {
-                            renderSlots(resp.data);
+                            renderSlots(resp.data.slots);
                         }
                     } else {
                         $("#slots-wrapper").html("<h4>" + resp.message + "</h4>");

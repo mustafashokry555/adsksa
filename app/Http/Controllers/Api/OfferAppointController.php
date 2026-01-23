@@ -107,15 +107,6 @@ class OfferAppointController extends Controller
 
         try {
             $baseUrl = getenv('BASE_URL') . 'images/';
-            $isExist = Appointment::where([
-                'appointment_date' => $request->appointment_date,
-                'appointment_time' => $request->appointment_time,
-                'offer_id' => $request->offer_id,
-                'doctor_id' => $request->doctor_id,
-            ])->whereIn('status', ['P', 'C'])->first();
-            if ($isExist) {
-                return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
-            }
             $offer = Offer::where('id', $request->offer_id)->where('is_active', 1)
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())->first();
@@ -125,7 +116,7 @@ class OfferAppointController extends Controller
                     'errors' => 'Offer not Exist'
                 ], 422);
             }
-            if(!$offer->doctor_ids){
+            if (!$offer->doctor_ids) {
                 return response()->json([
                     'message' => 'Validation failed',
                     'errors' => 'No Doctors in this Offer yet'
@@ -138,6 +129,33 @@ class OfferAppointController extends Controller
                     'errors' => 'Offer not Exist'
                 ], 422);
             }
+            $doctor = User::where('id', $request->doctor_id)->first();
+            if (!$doctor) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => 'Doctor not Exist'
+                ], 422);
+            }
+            $appointment_time = NULL;
+            if ($doctor->hospital && $doctor->hospital->appointment_with_time) {
+                if (!$request->appointment_time) {
+                    return response()->json([
+                        'message' => 'Validation failed',
+                        'errors' => 'Appointment time is required'
+                    ], 422);
+                }
+                $isExist = Appointment::where([
+                    'appointment_date' => $request->appointment_date,
+                    'appointment_time' => $request->appointment_time,
+                    'offer_id' => $request->offer_id,
+                    'doctor_id' => $request->doctor_id,
+                ])->whereIn('status', ['P', 'C'])->first();
+                if ($isExist) {
+                    return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+                }
+                $appointment_time = $request->appointment_time;
+            }
+
             $setting = Settings::first();
             $user = $request->user();
             $vat = $setting?->vat ?? 0.0;
@@ -154,7 +172,7 @@ class OfferAppointController extends Controller
             $a->patient_id = $request->user()->id;
             $a->hospital_id = $offer->hospital_id;
             $a->appointment_date = $request->appointment_date;
-            $a->appointment_time = $request->appointment_time;
+            $a->appointment_time = $appointment_time;
             $a->appointment_type = $request->appointment_type;
             $a->booking_for = $request->booking_for;
             $a->concern = $request->concern;
@@ -184,7 +202,6 @@ class OfferAppointController extends Controller
             Notification::create([
                 'from_id' => $a->patient_id,
                 'to_id' => $a->hospital->hospitalAdmin->id,
-                // 'appointment_id' => $appointment->id,
                 'title_en' => "New Appointment",
                 'title_ar' => "ميعاد جديد",
                 'notifiable_id' => $a->id,
@@ -192,13 +209,6 @@ class OfferAppointController extends Controller
                 'message_ar' => 'تم اضافه ميعاد (#' . $a->id . ') في انتظار الموافقة',
                 'message_en' => 'New Appointment (#' . $a->id . ') is waiting for approval',
             ]);
-
-            // $user = User::find($request->user()->id);
-            // $user->name = $request->name;
-            // $user->gender = $request->gender;
-            // $user->age = $request->age;
-
-            // $user->save();
 
             $appointment = Appointment::where('appointments.patient_id', $request->user()->id)
                 ->where('appointments.id', $a->id)
@@ -251,7 +261,6 @@ class OfferAppointController extends Controller
         Notification::create([
             'from_id' => $appointment->patient_id,
             'to_id' => $appointment->hospital->hospitalAdmin->id,
-            // 'appointment_id' => $appointment->id,
             'title_en' => "Appointment Canceled",
             'title_ar' => "تم الغاء الميعاد",
             'notifiable_id' => $appointment->id,

@@ -91,7 +91,7 @@ class DoctorController extends Controller
             $attributes = $request->validate([
                 'name_ar' => 'required',
                 'name_en' => 'required',
-                'email' => 'required',
+                'email' => 'required|unique:users,email',
                 'profile_image' => 'image',
                 'user_type' => 'required',
                 'gender' => 'required',
@@ -206,7 +206,7 @@ class DoctorController extends Controller
                 $attributes = $request->validate([
                     'name_en' => 'required',
                     'name_ar' => 'required',
-                    'email' => 'required',
+                    'email' => 'required|unique:users,email,' . $doctor->id,
                     'profile_image' => 'image',
                     'gender' => 'required',
                     'address' => 'required',

@@ -183,7 +183,7 @@ class AppointmentController extends Controller
         ]);
         $payment = $this->paytabs->initiate($appointment->id, 'SAR');
         Log::info('Payment initiation response: ', $payment);
-        if(!$payment['success']){
+        if (!$payment['success']) {
             $appointment->delete();
             $invoice->delete();
             return redirect()->back()->with('error', 'Payment initiation failed please try again later.');
@@ -689,67 +689,79 @@ class AppointmentController extends Controller
             }
         }
 
+        $slots = [];
+        $filteredSlots = collect([]);
         // if availability is null
         if (!$availability) {
             return response()->json([
                 "status" => "error",
                 "message" => "Not Available",
-                "data" => [],
+                "data" => [
+                    'day_availability' => $availability ? true : false,
+                    'slots' => $filteredSlots->unique()->values()->all(),
+                    'appointment_with_time' => $doctor->hospital->appointment_with_time,
+                ],
             ]);
         }
-        // Appointments of selected date
-        $appointments = Appointment::where('appointment_date', $date)
-            ->where('doctor_id', $doctor->id)
-            ->whereIn('status', ['P', 'C'])->pluck("appointment_time");
+        if ($doctor->hospital->appointment_with_time) {
+            // Appointments of selected date
+            $appointments = Appointment::where('appointment_date', $date)
+                ->where('doctor_id', $doctor->id)
+                ->whereIn('status', ['P', 'C'])->pluck("appointment_time");
 
-        // Creating Slots
-        $slots = [];
-        $filteredSlots = collect([]);
-        $intervals = collect($availability->slots);
+            // Creating Slots
 
-        // Fliter slots
-        foreach ($intervals as $key => $interval) {
-            if ($key == 0) {
-                $dateTime = \DateTime::createFromFormat('H:i', $interval["end_time"]);
-                $int = "PT" . $availability->time_interval . "M";
-                $dateTime->sub(new \DateInterval($int));
-                $interval["end_time"] = $dateTime->format('H:i');
-            }
-            $start_dt = $date . $interval["start_time"];
-            $end_dt = $date . $interval["end_time"];
+            $intervals = collect($availability->slots);
 
-            // Create Slots
-            $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
-            // return $slots;
+            // Fliter slots
+            foreach ($intervals as $key => $interval) {
+                if ($key == 0) {
+                    $dateTime = \DateTime::createFromFormat('H:i', $interval["end_time"]);
+                    $int = "PT" . $availability->time_interval . "M";
+                    $dateTime->sub(new \DateInterval($int));
+                    $interval["end_time"] = $dateTime->format('H:i');
+                }
+                $start_dt = $date . $interval["start_time"];
+                $end_dt = $date . $interval["end_time"];
 
-            foreach ($slots as $slot) {
-                $currentTime = Carbon::now(\Auth::user()->timezone);
-                $currentTimeFormatted = $currentTime->format('H:i:s');
+                // Create Slots
+                $slots = CarbonPeriod::create($start_dt, $availability->time_interval . ' minutes', $end_dt);
+                // return $slots;
 
-                // dd($slot->format("H:i:s"),$currentTimeFormatted);
-                //$slot->format("H:i:s")>   $currentTimeFormatted &&
-                // return Carbon::now(\Auth::user()->timezone)->toDateString();
+                foreach ($slots as $slot) {
+                    $currentTime = Carbon::now(\Auth::user()->timezone);
+                    $currentTimeFormatted = $currentTime->format('H:i:s');
 
-                if (Carbon::now(\Auth::user()->timezone)->toDateString() == $request->selectedDate) {
-                    if ($slot->format("H:i:s") > $currentTimeFormatted &&  $slot->greaterThan(Carbon::now()->addMinutes(20))) {
-                        if (!$appointments->contains($slot->format("H:i:s"))) {
-                            $filteredSlots->push($slot->format("Y-m-d H:i"));
+                    // dd($slot->format("H:i:s"),$currentTimeFormatted);
+                    //$slot->format("H:i:s")>   $currentTimeFormatted &&
+                    // return Carbon::now(\Auth::user()->timezone)->toDateString();
+
+                    if (Carbon::now(\Auth::user()->timezone)->toDateString() == $request->selectedDate) {
+                        if ($slot->format("H:i:s") > $currentTimeFormatted &&  $slot->greaterThan(Carbon::now()->addMinutes(20))) {
+                            if (!$appointments->contains($slot->format("H:i:s"))) {
+                                $filteredSlots->push($slot->format("Y-m-d H:i"));
+                            }
                         }
-                    }
-                } else {
-                    if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
-                        if (!$appointments->contains($slot->format("H:i:s"))) {
-                            $filteredSlots->push($slot->format("Y-m-d H:i"));
+                    } else {
+                        if ($slot->greaterThan(Carbon::now()->addMinutes(20))) {
+                            if (!$appointments->contains($slot->format("H:i:s"))) {
+                                $filteredSlots->push($slot->format("Y-m-d H:i"));
+                            }
                         }
                     }
                 }
             }
         }
 
+
         return response()->json([
             "status" => "success",
             "message" => "ok",
-            "data" => $filteredSlots->unique()->values()->slice(0, -1)->all()
+            "data" => [
+                'day_availability' => $availability ? true : false,
+                'slots' => $filteredSlots->unique()->values()->slice(0, -1)->all(),
+                'appointment_with_time' => $doctor->hospital->appointment_with_time,
+            ]
         ]);
     }
 

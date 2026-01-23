@@ -14,8 +14,8 @@ class ScheduleController extends Controller
 
     public function regularAvailabiltiyCreate(Request $request, User $doctor)
     {
-      
-        if(\Auth::user()->id!=  $doctor->id ){
+
+        if (\Auth::user()->id !=  $doctor->id) {
             abort(404);
         }
         $weekDay = $request->week_day;
@@ -25,28 +25,47 @@ class ScheduleController extends Controller
                 "doctor" => $doctor,
                 "weekDay" => $weekDay
             ]);
-        }else{
+        } else {
             abort(401);
         }
-        // If hospital
-        // if (Auth::user()->is_hospital()) {
-        //     $hospital = Auth::user()->load(['doctors' => function ($query) use ($doctor) {
-        //         return $query->where('id', $doctor->id);
-        //     }]);
-        //     if ($hospital->doctors->isEmpty()) {
-        //         abort(404);
-        //     }
-        //     $doctor = $hospital->doctors->first();
-        //     return view("hospital.doctor.schedule.regular_availability", [
-        //         "hospital" => $hospital,
-        //         "doctor" => $doctor,
-        //         "weekDay" => $weekDay
-        //     ]);
-        // }
+    }
+    public function regularAvailabiltiySave2(Request $request, User $doctor)
+    {
+        if (\Auth::user()->id !=  $doctor->id) {
+            abort(404);
+        }
+        if (!Auth::user()->is_doctor()) {
+            abort(401);
+        }
+        $request->validate([
+            'days' => 'nullable|array',
+            'days.*' => 'in:sunday,monday,tuesday,wednesday,thursday,friday,saturday',
+        ]);
+        // Selected days from form
+        $selectedDays = $request->days ?? [];
+
+        // Existing days in DB
+        $existingDays = $doctor->regularAvailabilities()
+            ->pluck('week_day')
+            ->toArray();
+        // Days to delete
+        $daysToDelete = array_diff($existingDays, $selectedDays);
+        if (!empty($daysToDelete)) {
+            $doctor->regularAvailabilities()
+                ->whereIn('week_day', $daysToDelete)
+                ->delete();
+        }
+        $daysToCreate = array_diff($selectedDays, $existingDays);
+        foreach ($daysToCreate as $day) {
+            $doctor->regularAvailabilities()->create([
+                'week_day' => $day,
+            ]);
+        }
+        return redirect()->route("profile.index", $doctor->id)->with('flash', ['type', 'success', 'message' => 'Regular Schedule has been created']);
     }
     public function regularAvailabiltiySave(Request $request, User $doctor)
     {
-        if(\Auth::user()->id!=  $doctor->id ){
+        if (\Auth::user()->id !=  $doctor->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -69,20 +88,7 @@ class ScheduleController extends Controller
             "week_day" => $request->weekDay,
         ]);
 
-        // if admin
-        // if (Auth::user()->is_admin()) {
-        //     $doctor = $doctor;
-        // }
-        // If hospital
-        // if (Auth::user()->is_hospital()) {
-        //     $hospital = Auth::user()->load(['doctors' => function ($query) use ($doctor) {
-        //         return $query->where('id', $doctor->id);
-        //     }]);
-        //     if ($hospital->doctors->isEmpty()) {
-        //         abort(404);
-        //     }
-        //     $doctor = $hospital->doctors->first();
-        // }
+
         $doctor->regularAvailabilities()->updateOrCreate(
             ['week_day' => $request->weekDay, 'doctor_id' => $doctor->id],
             $request->except("weekDay")
@@ -91,7 +97,7 @@ class ScheduleController extends Controller
     }
     public function regularAvailabiltiyEdit(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -103,16 +109,16 @@ class ScheduleController extends Controller
             return $query->where("week_day", $weekDay);
         }]);
         // if admin
-            return view("doctor.profile.schedule.regular_availability_edit", [
-                "doctor" => $doctor,
-                "weekDay" => $weekDay
-            ]);
+        return view("doctor.profile.schedule.regular_availability_edit", [
+            "doctor" => $doctor,
+            "weekDay" => $weekDay
+        ]);
         // If hospital
-       
+
     }
     public function regularAvailabiltiyUpdate(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -135,7 +141,7 @@ class ScheduleController extends Controller
             "week_day" => $request->weekDay,
         ]);
         // if admin
-      
+
 
         $doctor->regularAvailabilities()
             ->where(['week_day' => $request->weekDay, 'doctor_id' => $doctor->id])
@@ -145,7 +151,7 @@ class ScheduleController extends Controller
 
     public function regularAvailabiltiyDestroy(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         // if admin
@@ -161,23 +167,22 @@ class ScheduleController extends Controller
     // OneTime Availability
     public function oneTimeAvailabiltiyCreate(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
-         if (!Auth::user()->is_doctor()) {
+        if (!Auth::user()->is_doctor()) {
             abort(401);
         }
 
-        
-            return view("doctor.profile.schedule.onetime_availability", [
-                // "hospital" => $hospital,
-                "doctor" => $doctor,
-            ]);
-        
+
+        return view("doctor.profile.schedule.onetime_availability", [
+            // "hospital" => $hospital,
+            "doctor" => $doctor,
+        ]);
     }
     public function oneTimeAvailabiltiySave(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -201,8 +206,8 @@ class ScheduleController extends Controller
             "date" => $date,
         ]);
 
-       
-       
+
+
         $doctor->oneTimeailabilities()->updateOrCreate(
             ['date' => $date, 'doctor_id' => $doctor->id],
             $request->except("_token")
@@ -211,7 +216,7 @@ class ScheduleController extends Controller
     }
     public function oneTimeAvailabiltiyEdit(Request $request, User $doctor, $date)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -219,17 +224,17 @@ class ScheduleController extends Controller
         }
         $date = date("Y-m-d", strtotime($request->date));
         // if admin
-       
-      
-            return view("doctor.profile.schedule.onetime_availability_edit", [
-                // "hospital" => $hospital,
-                "doctor" => $doctor,
-                "date" => $date
-            ]);
+
+
+        return view("doctor.profile.schedule.onetime_availability_edit", [
+            // "hospital" => $hospital,
+            "doctor" => $doctor,
+            "date" => $date
+        ]);
     }
     public function oneTimeAvailabiltiyUpdate(Request $request, User $doctor, $date)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -252,7 +257,7 @@ class ScheduleController extends Controller
         $request->merge([
             "date" => $newdate,
         ]);
-       
+
 
         $doctor->oneTimeailabilities()
             ->where(['date' => $date, 'doctor_id' => $doctor->id])
@@ -262,7 +267,7 @@ class ScheduleController extends Controller
 
     public function oneTimeAvailabiltiyDestroy(Request $request, User $doctor, $date)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -278,21 +283,21 @@ class ScheduleController extends Controller
     // Unavailability
     public function unAvailabiltiyCreate(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
             abort(401);
         }
 
-            return view("doctor.profile.schedule.unavailability", [
-                // "hospital" => $hospital,
-                "doctor" => $doctor,
-            ]);
+        return view("doctor.profile.schedule.unavailability", [
+            // "hospital" => $hospital,
+            "doctor" => $doctor,
+        ]);
     }
     public function unAvailabiltiySave(Request $request, User $doctor)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -307,7 +312,7 @@ class ScheduleController extends Controller
             "date" => $date,
         ]);
         // if admin
-      
+
         $doctor->load("unavailailities");
 
         $doctor->unavailailities()->updateOrCreate(
@@ -318,7 +323,7 @@ class ScheduleController extends Controller
     }
     public function unAvailabiltiyEdit(Request $request, User $doctor, $date)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -330,17 +335,16 @@ class ScheduleController extends Controller
         }]);
 
         // if admin
-        
 
-            return view("doctor.profile.schedule.unavailability_edit", [
-                "doctor" => $doctor,
-                "date" => $date
-            ]);
-        
+
+        return view("doctor.profile.schedule.unavailability_edit", [
+            "doctor" => $doctor,
+            "date" => $date
+        ]);
     }
     public function unAvailabiltiyUpdate(Request $request, User $doctor, $date)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
@@ -355,7 +359,7 @@ class ScheduleController extends Controller
         ]);
 
         // if admin
-      
+
         $doctor->unavailailities()
             ->where(['date' => $date, 'doctor_id' => $doctor->id])
             ->update($request->except("_token"));
@@ -364,14 +368,14 @@ class ScheduleController extends Controller
 
     public function unAvailabiltiyDestroy(Request $request, User $doctor, $date)
     {
-        if(\Auth::user()?->id!=  $doctor?->id ){
+        if (\Auth::user()?->id !=  $doctor?->id) {
             abort(404);
         }
         if (!Auth::user()->is_doctor()) {
             abort(401);
         }
         // If hospital
-        
+
         $unavailability = $doctor->unavailailities()
             ->where(['date' => date("Y-m-d", strtotime($date)), 'doctor_id' => $doctor->id])
             ->delete();

@@ -198,6 +198,7 @@ Route::middleware(['auth'])->group(function () {
     // Repeat Schdule
     Route::get("/hospital/{doctor}/doctor-schedule", [DoctorScheduleController::class, "regularAvailabiltiyCreate"])->name("hospital.doctor-schedule.regular");
     Route::post("/hospital/{doctor}/doctor-schedule", [DoctorScheduleController::class, "regularAvailabiltiySave"]);
+    Route::post("/hospital/{doctor}/doctor-schedule2", [DoctorScheduleController::class, "regularAvailabiltiySave2"])->name("hospital.doctor-schedule.regular2");
     Route::get("/hospital/{doctor}/doctor-schedule/edit", [DoctorScheduleController::class, "regularAvailabiltiyEdit"])->name("hospital.doctor-schedule.regular.edit");
     Route::post("/hospital/{doctor}/doctor-schedule/update", [DoctorScheduleController::class, "regularAvailabiltiyUpdate"])->name("hospital.doctor-schedule.regular.update");
     Route::post("/hospital/{doctor}/doctor-schedule/clear-all", [DoctorScheduleController::class, "regularAvailabiltiyDestroy"])->name("hospital.doctor-schedule.regular.destroy");
@@ -235,6 +236,7 @@ Route::middleware(['auth'])->group(function () {
     // Repeat Schdule
     Route::get("/doctor/{doctor}/doctor-schedule", [ScheduleController::class, "regularAvailabiltiyCreate"])->name("doctor.doctor-schedule.regular");
     Route::post("/doctor/{doctor}/doctor-schedule", [ScheduleController::class, "regularAvailabiltiySave"]);
+    Route::post("/doctor/{doctor}/doctor-schedule2", [ScheduleController::class, "regularAvailabiltiySave2"])->name("doctor.doctor-schedule.regular2");
     Route::get("/doctor/{doctor}/doctor-schedule/edit", [ScheduleController::class, "regularAvailabiltiyEdit"])->name("doctor.doctor-schedule.regular.edit");
     Route::post("/doctor/{doctor}/doctor-schedule/update", [ScheduleController::class, "regularAvailabiltiyUpdate"])->name("doctor.doctor-schedule.regular.update");
     Route::post("/doctor/{doctor}/doctor-schedule/clear-all", [ScheduleController::class, "regularAvailabiltiyDestroy"])->name("doctor.doctor-schedule.regular.destroy");

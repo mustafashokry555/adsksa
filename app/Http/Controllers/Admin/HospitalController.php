@@ -90,6 +90,8 @@ class HospitalController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
             'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'appointment_with_time' => 'boolean|required',
+
         ]);
         if ($file = $request->file('image')) {
             $filename = time() . '-' . $file->getClientOriginalName();
@@ -231,6 +233,7 @@ class HospitalController extends Controller
                     'about_en' => 'string|nullable',
                     'about_ar' => 'string|nullable',
                     'opening_hours' => 'string|nullable',
+                    'appointment_with_time' => 'boolean|required',
                 ]);
                 $admin = User::where('hospital_id', $id)->where('user_type', 'H')->first();
                 if ($admin) {
@@ -279,6 +282,7 @@ class HospitalController extends Controller
                     'about_en' => 'string|nullable',
                     'about_ar' => 'string|nullable',
                     'opening_hours' => 'string|nullable',
+                    'appointment_with_time' => 'boolean|required',
                 ]);
             }
             if ($attributes['image'] ?? false) {

@@ -32,10 +32,12 @@ class Hospital extends Model
         'instagram',    // New field
         'tiktok',       // New field
         'is_active',       // New field
+        'appointment_with_time', // New field
     ];
     protected $casts = [
         'profile_images' => 'array', // Ensures profile_images is handled as an array
         'is_active' => 'boolean',
+        'appointment_with_time' => 'boolean',
     ];
     protected $appends = ['hospital_name', 'images_links', 'about'];
     public function scopeActive($query)

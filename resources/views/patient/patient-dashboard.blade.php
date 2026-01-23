@@ -110,113 +110,121 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                        @forelse($appointments as $appointment)
-                                                            @php
-                                                                $doctor = $appointment->doctor;
-                                                                $offer = $appointment->offer
-                                                            @endphp
-                                                            <tr>
-                                                                <td>{{$appointment->id}}</td>
+                                                            @forelse($appointments as $appointment)
+                                                                @php
+                                                                    $doctor = $appointment->doctor;
+                                                                    $offer = $appointment->offer;
+                                                                @endphp
+                                                                <tr>
+                                                                    <td>{{ $appointment->id }}</td>
 
-                                                                <td>
-                                                                    <h2 class="table-avatar">
-                                                                        @if ($doctor)
-                                                                            <a href="{{ route('doctor_profile',  $doctor->id) }}"
-                                                                                class="avatar avatar-sm me-2" target="_blank">
-                                                                                <img class="avatar-img rounded-circle"
-                                                                                    src="{{ asset( $doctor->profile_image) }}"
-                                                                                    alt="User Image">
-                                                                            </a>
-                                                                            <a href="{{ route('doctor_profile',  $doctor->id) }}" target="_blank">
-                                                                                Dr. {{ @$doctor->name }} <span>{{ @$doctor->speciality->name }}</span>
-                                                                            </a>
-                                                                        @elseif ($offer)
-                                                                            <a class="avatar avatar-sm me-2">
-                                                                                <img class="avatar-img rounded-circle"
-                                                                                    src="{{ asset( $offer->images[0]) }}"
-                                                                                    alt="offer Image">
-                                                                            </a>
-                                                                            <a >
-                                                                                {{ @$offer->title }}
-                                                                            </a>
-                                                                        @endif
-                                                                    </h2>
-                                                                </td>
-
-                                                                <td>{{ $appointment->insurance?->name??'N/A' }}</td>
-
-                                                                <td>{{ date('d M Y', strtotime($appointment->appointment_date)) }}
-                                                                    <span
-                                                                        class="d-block text-info">{{ date('H:i A', strtotime($appointment->appointment_time)) }}</span>
-                                                                </td>
-
-                                                                <td>{{ date('d M Y', strtotime($appointment->created_at)) }}
-                                                                </td>
-
-                                                                <td>
-                                                                    {{ @$appointment->fee? 'SAR '.@$appointment->fee:'FREE'}}
-                                                                </td>
-
-                                                                @if ($appointment->status == 'P')
-                                                                    <td><span
-                                                                            class="badge rounded-pill bg-warning-light">Pending</span>
+                                                                    <td>
+                                                                        <h2 class="table-avatar">
+                                                                            @if ($doctor)
+                                                                                <a href="{{ route('doctor_profile', $doctor->id) }}"
+                                                                                    class="avatar avatar-sm me-2"
+                                                                                    target="_blank">
+                                                                                    <img class="avatar-img rounded-circle"
+                                                                                        src="{{ asset($doctor->profile_image) }}"
+                                                                                        alt="User Image">
+                                                                                </a>
+                                                                                <a href="{{ route('doctor_profile', $doctor->id) }}"
+                                                                                    target="_blank">
+                                                                                    Dr. {{ @$doctor->name }}
+                                                                                    <span>{{ @$doctor->speciality->name }}</span>
+                                                                                </a>
+                                                                            @elseif ($offer)
+                                                                                <a class="avatar avatar-sm me-2">
+                                                                                    <img class="avatar-img rounded-circle"
+                                                                                        src="{{ asset($offer->images[0]) }}"
+                                                                                        alt="offer Image">
+                                                                                </a>
+                                                                                <a>
+                                                                                    {{ @$offer->title }}
+                                                                                </a>
+                                                                            @endif
+                                                                        </h2>
                                                                     </td>
-                                                                @elseif($appointment->status == 'C')
-                                                                    <td><span
-                                                                            class="badge rounded-pill bg-success-light">Confirm</span>
-                                                                    </td>
-                                                                @elseif($appointment->status == 'D')
-                                                                    <td><span
-                                                                            class="badge rounded-pill bg-danger-light">Cancelled</span>
-                                                                    </td>
-                                                                @else
-                                                                    <td>N/A</td>
-                                                                @endif
 
-                                                                @if ($appointment->status == 'D')
-                                                                    <td >
-                                                                        <div class="text-end d-flex justify-content-between">
-                                                                        <a class="btn btn-sm bg-success-light me-2"
-                                                                            href="{{ route('update-appointment', $appointment->id) }}">
-                                                                            <i class="fas fa-check"></i> Book Again
-                                                                        </a>
+                                                                    <td>{{ $appointment->insurance?->name ?? 'N/A' }}</td>
 
-                                                                        <form method="POST"
-                                                                            action="{{ route('update_appointment_status', $appointment) }}">
-                                                                            @method('patch')
-                                                                            @csrf
-                                                                            <input type="hidden" name="status"
-                                                                                value="D">
-                                                                            <button type="submit"
-                                                                                href="javascript:void(0);"
-                                                                                class="btn btn-sm bg-danger-light">
-                                                                                <i class="fas fa-times"></i> Cancel
-                                                                            </button>
-                                                                        </form>
-                                                                        </div>
+                                                                    <td>{{ date('d M Y', strtotime($appointment->appointment_date)) }}
+                                                                        <span
+                                                                            class="d-block text-info">{{ date('H:i A', strtotime($appointment->appointment_time)) }}</span>
                                                                     </td>
-                                                                @else
-                                                                    <td >
-                                                                        <div class="text-end d-flex justify-content-between">
-                                                                        <form method="POST"
-                                                                            action="{{ route('update_appointment_status', $appointment) }}">
-                                                                            @method('patch')
-                                                                            @csrf
-                                                                            <input type="hidden" name="status"
-                                                                                value="D">
-                                                                            <button type="submit"
-                                                                                href="javascript:void(0);"
-                                                                                class="btn btn-sm bg-danger-light">
-                                                                                <i class="fas fa-times"></i> Cancel
-                                                                            </button>
-                                                                        </form>
-                                                                        </div>
+
+                                                                    <td>{{ date('d M Y', strtotime($appointment->created_at)) }}
                                                                     </td>
-                                                                @endif
-                                                            </tr>
-                                                        @empty
-                                                        @endforelse
-                                                    </tbody>
+
+                                                                    <td>
+                                                                        {{ @$appointment->fee ? 'SAR ' . @$appointment->fee : 'FREE' }}
+                                                                    </td>
+
+                                                                    @if ($appointment->status == 'P')
+                                                                        <td><span
+                                                                                class="badge rounded-pill bg-warning-light">Pending</span>
+                                                                        </td>
+                                                                    @elseif($appointment->status == 'C')
+                                                                        <td><span
+                                                                                class="badge rounded-pill bg-success-light">Confirm</span>
+                                                                        </td>
+                                                                    @elseif($appointment->status == 'D')
+                                                                        <td><span
+                                                                                class="badge rounded-pill bg-danger-light">Cancelled</span>
+                                                                        </td>
+                                                                    @else
+                                                                        <td>N/A</td>
+                                                                    @endif
+
+                                                                    @if ($appointment->status == 'D')
+                                                                        <td>
+                                                                            <div
+                                                                                class="text-end d-flex justify-content-between">
+                                                                                @if ($doctor)
+                                                                                    <a class="btn btn-sm bg-success-light me-2"
+                                                                                        href="{{ route('create_appointment', $doctor->id) }}">
+                                                                                        <i class="fas fa-check"></i> Book
+                                                                                        Again
+                                                                                    </a>
+                                                                                @endif
+
+                                                                                <form method="POST"
+                                                                                    action="{{ route('update_appointment_status', $appointment) }}">
+                                                                                    @method('patch')
+                                                                                    @csrf
+                                                                                    <input type="hidden" name="status"
+                                                                                        value="D">
+                                                                                    <button type="submit"
+                                                                                        href="javascript:void(0);"
+                                                                                        class="btn btn-sm bg-danger-light">
+                                                                                        <i class="fas fa-times"></i> Cancel
+                                                                                    </button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </td>
+                                                                    @else
+                                                                        <td>
+                                                                            <div
+                                                                                class="text-end d-flex justify-content-between">
+                                                                                <form method="POST"
+                                                                                    action="{{ route('update_appointment_status', $appointment) }}">
+                                                                                    @method('patch')
+                                                                                    @csrf
+                                                                                    <input type="hidden" name="status"
+                                                                                        value="D">
+                                                                                    <button type="submit"
+                                                                                        href="javascript:void(0);"
+                                                                                        class="btn btn-sm bg-danger-light">
+                                                                                        <i class="fas fa-times"></i> Cancel
+                                                                                    </button>
+                                                                                </form>
+                                                                            </div>
+                                                                        </td>
+                                                                    @endif
+                                                                </tr>
+                                                            @empty
+                                                            @endforelse
+                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>

@@ -121,25 +121,13 @@
 
                                                                 @if ($appointment->status == 'D')
                                                                     <td>
-                                                                        <div
-                                                                            class="text-end d-flex justify-content-between">
-                                                                            {{-- <form method="GET" action="{{ route('update_appointment_status', $appointment)}}">
-                                                                @method('patch')
-                                                                @csrf
-                                                                <input type="hidden" name="status" value="P">
-                                                                <button type="submit" href="javascript:void(0);" class="btn btn-sm bg-success-light">
-                                                                    <i class="fas fa-check"></i> Book Again
-                                                                </button>
-                                                            </form> --}}
-
-                                                                            <a class="btn btn-sm bg-success-light me-2"
-                                                                                href="{{ route('update-appointment', $appointment->id) }}">
-                                                                                {{-- <button type="submit"
-                                                                                href="javascript:void(0);"
-                                                                                class="btn btn-sm bg-success-light">
-                                                                            </button> --}}
-                                                                                <i class="fas fa-check"></i> Book Again
-                                                                            </a>
+                                                                        <div class="text-end d-flex justify-content-between">
+                                                                            @if ($doctor)
+                                                                                <a class="btn btn-sm bg-success-light me-2"
+                                                                                    href="{{ route('create_appointment', $doctor->id) }}">
+                                                                                    <i class="fas fa-check"></i> Book Again
+                                                                                </a>
+                                                                            @endif
 
                                                                             <form method="POST"
                                                                                 action="{{ route('update_appointment_status', $appointment) }}">

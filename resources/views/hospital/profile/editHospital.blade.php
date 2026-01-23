@@ -191,6 +191,30 @@
                                 </div>
                             </div>
 
+                            {{-- appointment_with_time --}}
+                            <div class="form-group row">
+                                <label for="appointment_with_time"
+                                    class="col-form-label col-md-2">Appointment With Time</label>
+                                <div class="col-md-10">
+                                    <select id="appointment_with_time" name="appointment_with_time" class="form-select select" required>
+                                        <option value="" disabled selected>Select Appointment With Time</option>
+                                        <option value="1"
+                                            {{ old('appointment_with_time', $hospital->appointment_with_time) == '1' ? 'selected' : '' }}>
+                                            Yes
+                                        </option>
+                                        <option value="0"
+                                            {{ old('appointment_with_time', $hospital->appointment_with_time) == '0' ? 'selected' : '' }}>
+                                            No
+                                        </option>
+                                    </select>
+                                    @error('appointment_with_time')
+                                        <div class="text-danger pt-2">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             {{-- Country --}}
                             <div class="form-group row">
                                 <label for="country_id"
