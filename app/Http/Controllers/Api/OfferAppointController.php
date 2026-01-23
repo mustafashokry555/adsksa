@@ -95,7 +95,7 @@ class OfferAppointController extends Controller
             'offer_id' => 'required|exists:offers,id',
             'doctor_id' => 'required|exists:users,id',
             'appointment_date' => 'required|date_format:Y-m-d|after_or_equal:today',
-            'appointment_time' => 'required|date_format:H:i',
+            // 'appointment_time' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {
