@@ -10,6 +10,7 @@ use App\Models\CartItem;
 use App\Models\Invoice;
 use App\Models\Offer;
 use App\Models\Settings;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +28,7 @@ class CartController extends Controller
             'offer_id' => 'required|exists:offers,id',
             'doctor_id' => 'required|exists:users,id',
             'appointment_date' => 'required|date_format:Y-m-d|after_or_equal:today',
-            'appointment_time' => 'required|date_format:H:i',
+            // 'appointment_time' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {
@@ -39,15 +40,6 @@ class CartController extends Controller
 
         try {
             $baseUrl = getenv('BASE_URL') . 'images/';
-            $isExist = Appointment::where([
-                'appointment_date' => $request->appointment_date,
-                'appointment_time' => $request->appointment_time,
-                'offer_id' => $request->offer_id,
-                'doctor_id' => $request->doctor_id,
-            ])->whereIn('status', ['P', 'C'])->first();
-            if ($isExist) {
-                return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
-            }
             $offer = Offer::where('id', $request->offer_id)->where('is_active', 1)
                 ->where('start_date', '<=', now())
                 ->where('end_date', '>=', now())->first();
@@ -70,6 +62,35 @@ class CartController extends Controller
                     'errors' => 'Offer not Exist'
                 ], 422);
             }
+            $doctor = User::where('id', $request->doctor_id)->where('user_type', User::DOCTOR)->first();
+            if (!$doctor) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => 'Doctor not Exist'
+                ], 422);
+            }
+
+            $appointment_time = NULL;
+            if ($doctor->hospital && $doctor->hospital->appointment_with_time) {
+                if (!$request->appointment_time) {
+                    return response()->json([
+                        'message' => 'Validation failed',
+                        'errors' => 'Appointment time is required'
+                    ], 422);
+                }
+                $isExist = Appointment::where([
+                    'appointment_date' => $request->appointment_date,
+                    'appointment_time' => $request->appointment_time,
+                    'offer_id' => $request->offer_id,
+                    'doctor_id' => $request->doctor_id,
+                ])->whereIn('status', ['P', 'C'])->first();
+                if ($isExist) {
+                    return $this->SuccessResponse(200, 'This slot is already booked please try another one', null);
+                }
+                $appointment_time = $request->appointment_time;
+            }
+
+
             $setting = Settings::first();
             $user = $request->user();
             $vat = $setting?->vat ?? 0.0;
@@ -86,7 +107,7 @@ class CartController extends Controller
             $a->patient_id = $user->id;
             $a->hospital_id = $offer->hospital_id;
             $a->appointment_date = $request->appointment_date;
-            $a->appointment_time = $request->appointment_time;
+            $a->appointment_time = $appointment_time;
             $a->appointment_type = $request->appointment_type;
             $a->booking_for = $request->booking_for;
             $a->concern = $request->concern;
@@ -134,7 +155,7 @@ class CartController extends Controller
                 $invoice->subtotal = $cart->items->sum(fn($i) => $i->price);
                 $invoice->vat = $vat;
                 $invoice->save();
-            }else {
+            } else {
                 // update offer_id and doctor_id in case they changed
                 $invoice->subtotal = $cart->items->sum(fn($i) => $i->price);
                 $invoice->save();

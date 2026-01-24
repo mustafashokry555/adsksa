@@ -129,7 +129,7 @@ class OfferAppointController extends Controller
                     'errors' => 'Offer not Exist'
                 ], 422);
             }
-            $doctor = User::where('id', $request->doctor_id)->first();
+            $doctor = User::where('id', $request->doctor_id)->where('user_type', User::DOCTOR)->first();
             if (!$doctor) {
                 return response()->json([
                     'message' => 'Validation failed',
