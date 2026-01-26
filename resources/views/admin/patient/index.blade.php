@@ -184,7 +184,7 @@
                                                 <td>{{ $patient->mobile ?? 'N/A' }}</td>
                                                 <td>{{ $patient->email }}</td>
                                                 <td>
-                                                    @if ($patient->is_verified)
+                                                    @if ($patient->email_verified_at)
                                                         <span class="badge bg-success-light">Verified</span>
                                                     @else
                                                         <span class="badge bg-danger-light">Not Verified</span>
