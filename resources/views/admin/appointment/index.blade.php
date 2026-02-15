@@ -143,7 +143,7 @@
                                                         </a>
                                                         <a href="#" data-bs-target="#doctorlist"
                                                             data-bs-toggle="modal"
-                                                            class="user-name">{{ $hospital->hospital_name }}</a>
+                                                            class="user-name">{{ $hospital?->hospital_name }}</a>
                                                     </h2>
 
                                                 </td>
