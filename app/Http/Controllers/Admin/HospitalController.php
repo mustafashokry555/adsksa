@@ -89,7 +89,7 @@ class HospitalController extends Controller
             'opening_hours' => 'string|nullable',
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'profile_images.*' => 'nullable|image|max:2048',
             'appointment_with_time' => 'boolean|required',
 
         ]);
@@ -271,7 +271,7 @@ class HospitalController extends Controller
                     'long' => 'required',
                     'location' => 'required',
                     'insurance' => 'required',
-                    'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'profile_images.*' => 'nullable|image|max:2048',
                     'email' => 'string|nullable',
                     'mail' => 'string|nullable',
                     'phone' => 'string|nullable',
