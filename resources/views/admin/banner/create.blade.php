@@ -62,7 +62,7 @@
                                     <label for="is_active" class="col-form-label col-md-4">Active Status</label>
                                     <div class="col-md-8">
                                         <select id="is_active" name="is_active" class="form-select" required>
-                                            <option value="">-- Select Gender --</option>
+                                            <option value="">-- Select Status --</option>
                                             <option value="1">Active</option>
                                             <option value="0">In Active</option>
                                         </select>

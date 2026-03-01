@@ -69,7 +69,7 @@
                                     <label for="is_active" class="col-form-label col-md-4">Active Status</label>
                                     <div class="col-md-8">
                                         <select id="is_active" name="is_active" class="form-select" required>
-                                            <option value="">-- Select Gender --</option>
+                                            <option value="">-- Select Status --</option>
                                             <option value="1" {{ old('is_active', $banner->is_active) == '1' ? 'selected' : '' }}>
                                                 Active
                                             </option>
@@ -88,7 +88,7 @@
                                 <div class="form-group col-md-6 row">
                                     <label for="expired_at" class="col-form-label col-md-4">Expire Date</label>
                                     <div class="col-md-8">
-                                        <input id="expired_at" 
+                                        <input id="expired_at"
                                             value="{{ \Carbon\Carbon::parse($banner->expired_at)->format('Y-m-d') }}"
                                             name="expired_at" type="date" class="form-control" required>
                                         @error('expired_at')
