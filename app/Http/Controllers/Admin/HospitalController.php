@@ -221,7 +221,7 @@ class HospitalController extends Controller
                     'long' => 'required',
                     'location' => 'required',
                     'insurance' => 'required',
-                    'profile_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'profile_images.*' => 'nullable|image|max:2048',
                     'password' => ['nullable', 'string', 'min:6', 'confirmed'],
                     'email' => 'string|nullable',
                     'mail' => 'string|nullable',
